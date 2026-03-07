@@ -1,0 +1,86 @@
+spring:
+  application:
+    name: portfolio-platform
+  profiles:
+    active: local  # default for development; override with SPRING_PROFILES_ACTIVE=prod in production
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Flyway owns schema — Hibernate must NEVER create or modify tables
+    open-in-view: false   # Prevent lazy-loading anti-pattern in REST layer
+
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: false  # Fresh database — no baseline needed
+
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=100,expireAfterWrite=3600s  # 1h TTL for GitHub API cache
+
+server:
+  port: 8080
+
+springdoc:
+  swagger-ui:
+    path: /api-docs
+  api-docs:
+    path: /v3/api-docs
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never  # Do not expose DB health details publicly
+
+---
+# ─────────────────────────────────────────────────────────────
+# LOCAL PROFILE — development environment
+# Postgres must be running locally (Docker recommended)
+# ─────────────────────────────────────────────────────────────
+spring:
+  config:
+    activate:
+      on-profile: local
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/portfolio_v2_local
+    username: ${DB_USERNAME:postgres}   # default for local dev only
+    password: ${DB_PASSWORD:postgres}   # default for local dev only
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 30000
+
+  jpa:
+    show-sql: false  # set to true temporarily if debugging queries locally
+
+logging:
+  level:
+    dev.chinh.portfolio: DEBUG
+    org.springframework.security: DEBUG
+
+---
+# ─────────────────────────────────────────────────────────────
+# PROD PROFILE — Oracle A1 deployment
+# ALL credentials MUST be environment variables — no defaults
+# ─────────────────────────────────────────────────────────────
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 30000
+
+logging:
+  level:
+    dev.chinh.portfolio: INFO
+    org.springframework: WARN

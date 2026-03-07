@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <!-- ─────────────────────────────────────────────────────────
+       LOCAL PROFILE — human-readable console output
+       ───────────────────────────────────────────────────────── -->
+  <springProfile name="local">
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder>
+        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+      </encoder>
+    </appender>
+
+    <root level="INFO">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
+
+  <!-- ─────────────────────────────────────────────────────────
+       PROD PROFILE — structured JSON output (logstash format)
+       PII POLICY: NEVER log email, ip_address, password_hash,
+       access_token, refresh_token, or any user-identifying data.
+       ───────────────────────────────────────────────────────── -->
+  <springProfile name="prod">
+    <appender name="JSON" class="ch.qos.logback.core.ConsoleAppender">
+      <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+        <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+          <maxDepthPerThrowable>30</maxDepthPerThrowable>
+          <maxLength>2048</maxLength>
+          <shortenedClassNameLength>20</shortenedClassNameLength>
+          <rootCauseFirst>true</rootCauseFirst>
+        </throwableConverter>
+        <!-- Exclude fields that could contain PII -->
+        <fieldNames>
+          <timestamp>timestamp</timestamp>
+          <message>message</message>
+          <logger>logger</logger>
+          <thread>thread</thread>
+          <level>level</level>
+        </fieldNames>
+      </encoder>
+    </appender>
+
+    <root level="INFO">
+      <appender-ref ref="JSON"/>
+    </root>
+  </springProfile>
+
+</configuration>
