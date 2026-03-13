@@ -8,10 +8,10 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  # Tests skipped in CI - run locally before push
-  # To enable tests in CI, add Docker service for Testcontainers
-  build:
+  deploy:
     runs-on: ubuntu-latest
+    environment: production
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
 
@@ -27,32 +27,6 @@ jobs:
 
       - name: Build JAR
         run: ./mvnw clean package -DskipTests
-
-      - name: Upload JAR
-        uses: actions/upload-artifact@v4
-        with:
-          name: portfolio-platform.jar
-          path: target/*.jar
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment: production
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download JAR
-        uses: actions/download-artifact@v4
-        with:
-          name: portfolio-platform.jar
-
-      - name: Prepare JAR for Docker
-        run: |
-          ls -la
-          mkdir -p target
-          mv portfolio-platform*.jar target/app.jar
-          ls -la target/
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
