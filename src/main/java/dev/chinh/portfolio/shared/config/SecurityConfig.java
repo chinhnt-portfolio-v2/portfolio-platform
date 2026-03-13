@@ -29,7 +29,11 @@ public class SecurityConfig {
                                 "/api-docs/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
-                                "/swagger-ui.html"
+                                "/swagger-ui.html",
+                                "/api/v1/project-health",
+                                "/api/v1/project-health/**",
+                                "/api/v1/webhooks/github",
+                                "/api/v1/github/contributions"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

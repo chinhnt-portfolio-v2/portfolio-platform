@@ -3,6 +3,8 @@ spring:
     name: portfolio-platform
   profiles:
     active: local  # default for development; override with SPRING_PROFILES_ACTIVE=prod in production
+  config:
+    import: optional:classpath:demo-apps.yml
 
   jpa:
     hibernate:
@@ -62,9 +64,14 @@ logging:
     dev.chinh.portfolio: DEBUG
     org.springframework.security: DEBUG
 
+# GitHub webhook configuration
+github:
+  webhook:
+    secret: ${GITHUB_WEBHOOK_SECRET:dev-secret-for-testing}
+
 ---
 # ─────────────────────────────────────────────────────────────
-# PROD PROFILE — Oracle A1 deployment
+# PROD PROFILE — Google Cloud Run + Neon PostgreSQL
 # ALL credentials MUST be environment variables — no defaults
 # ─────────────────────────────────────────────────────────────
 spring:
@@ -73,12 +80,24 @@ spring:
       on-profile: prod
 
   datasource:
-    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
     hikari:
-      maximum-pool-size: 10
+      maximum-pool-size: 3        # Neon free tier connection limit — keep pool small
+      minimum-idle: 1
       connection-timeout: 30000
+      idle-timeout: 600000
+      keepalive-time: 30000       # Prevent Neon from closing idle connections on wake
+
+server:
+  # Cloud Run terminates TLS and forwards requests with X-Forwarded-* headers.
+  forward-headers-strategy: FRAMEWORK
+
+# GitHub webhook configuration - production requires secret
+github:
+  webhook:
+    secret: ${GITHUB_WEBHOOK_SECRET}  # Required in production
 
 logging:
   level:

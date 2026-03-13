@@ -33,6 +33,7 @@ build/
 .vscode/
 
 ### Secrets — NEVER commit these ###
+sa-key.json
 .env
 .env.local
 .env.prod

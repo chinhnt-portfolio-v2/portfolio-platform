@@ -82,3 +82,48 @@ dev.chinh.portfolio/
 - Reverse proxy: Nginx (SSL termination, WebSocket upgrade, rate limiting)
 - CI/CD: GitHub Actions → SSH deploy to Oracle A1
 - Database: PostgreSQL co-located on Oracle A1 (localhost only)
+
+## Config-Driven Demo App Registration
+
+This section documents the config-driven registration workflow for demo apps (Story 3.7).
+
+### Adding a New Demo App
+
+1. Edit `src/main/resources/demo-apps.yml`
+2. Add a new entry under `apps:`:
+
+```yaml
+apps:
+  - id: my-app
+    name: "My Application"
+    healthEndpoint: "https://myapp.example.com/health"
+    pollIntervalSeconds: 60  # optional, defaults to 60
+```
+
+3. Commit and redeploy the BE — polling starts automatically on next `@Scheduled` tick
+
+### Removing a Demo App
+
+1. Edit `src/main/resources/demo-apps.yml`
+2. Remove or comment out the app entry
+3. Commit and redeploy — polling stops for that app
+4. Historical metrics remain in the database but are no longer updated or broadcast via WebSocket
+
+### Config Validation
+
+- Spring Boot uses `spring.config.import: optional:classpath:demo-apps.yml` to load the config
+- If `demo-apps.yml` contains invalid YAML syntax, the application fails to start with a clear error
+- The `DemoAppRegistry` uses `@ConfigurationProperties(prefix = "")` to bind the root-level `apps` list
+- Unit test `DemoAppRegistryTest.getApps_bindingProperties_correctlyMapsFields()` validates the binding works correctly (runs without Docker)
+
+### Polling Behavior
+
+- `MetricsAggregationService.pollAll()` runs every 60 seconds (`@Scheduled(fixedDelay = 60000)`)
+- It iterates over `registry.getApps()` — if the config has 0 apps, nothing is polled
+- Each app's `/health` endpoint is called via `RestClient`
+- Results are stored in `ProjectHealth` table and broadcast via WebSocket to FE clients
+
+### Testing
+
+- Unit test: `DemoAppRegistryTest` — validates config loads correctly
+- Integration test: `MetricsAggregationServiceTest` — validates polling behavior (Story 3.1)

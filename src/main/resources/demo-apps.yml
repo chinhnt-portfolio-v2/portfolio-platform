@@ -1,0 +1,10 @@
+apps:
+  - id: wallet-app
+    name: "Wallet App"
+    healthEndpoint: "https://wallet.chinh.dev/health"
+    pollIntervalSeconds: 60
+  # Add new demo app here — restart BE to activate
+  # - id: new-app
+  #   name: "New App"
+  #   healthEndpoint: "https://newapp.chinh.dev/health"
+  #   pollIntervalSeconds: 60

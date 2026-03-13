@@ -1,0 +1,11 @@
+# Applied when Spring profile 'test' is active.
+# Datasource is NOT configured here — provided by @ServiceConnection via TestcontainersConfiguration.
+# (Using the TC JDBC URL approach here would conflict with @ServiceConnection.)
+spring:
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
