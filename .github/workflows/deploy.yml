@@ -50,7 +50,16 @@ jobs:
           service: portfolio-platform
           region: asia-southeast1
           image: asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/portfolio-repo/portfolio-platform:latest
-          flags: "--set-env-vars SPRING_PROFILES_ACTIVE=prod"
+          flags: >-
+            --set-env-vars
+            SPRING_PROFILES_ACTIVE=prod,
+            SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL},
+            SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME},
+            SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+        env:
+          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
+          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
+          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
 
       - name: Run smoke tests
         run: bash deploy/smoke-tests.sh
