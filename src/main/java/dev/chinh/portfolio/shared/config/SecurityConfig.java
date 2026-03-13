@@ -9,6 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * TEMP: Security disabled for testing. Re-enable after confirming deployment works.
+ * TODO: Enable proper security before Epic 5.
  */
 @Configuration
 @EnableWebSecurity
