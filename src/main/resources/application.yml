@@ -62,7 +62,6 @@ spring:
 logging:
   level:
     dev.chinh.portfolio: DEBUG
-    org.springframework.security: DEBUG
 
 # GitHub webhook configuration
 github:

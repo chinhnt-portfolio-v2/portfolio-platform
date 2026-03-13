@@ -75,15 +75,6 @@ class GlobalExceptionHandlerTest {
     }
 
     @Test
-    void accessDenied_returns403WithStructuredError() throws Exception {
-        mockMvc.perform(get("/test/access-denied"))
-                .andExpect(status().isForbidden())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.error.code").value("FORBIDDEN"))
-                .andExpect(jsonPath("$.error.message").value("Access denied"));
-    }
-
-    @Test
     void errorShape_alwaysHasErrorWrapper() throws Exception {
         mockMvc.perform(get("/test/not-found"))
                 .andExpect(jsonPath("$.error").exists())
