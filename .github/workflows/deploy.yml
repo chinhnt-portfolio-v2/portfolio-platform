@@ -51,6 +51,7 @@ jobs:
           region: asia-southeast1
           image: asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/portfolio-repo/portfolio-platform:latest
           flags: >-
+            --allow-unauthenticated
             --set-env-vars
             SPRING_PROFILES_ACTIVE=prod,
             SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL},
