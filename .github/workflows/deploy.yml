@@ -50,6 +50,7 @@ jobs:
           service: portfolio-platform
           region: asia-southeast1
           image: asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/portfolio-repo/portfolio-platform:latest
+          flags: "--set-env-vars SPRING_PROFILES_ACTIVE=prod"
 
       - name: Run smoke tests
         run: bash deploy/smoke-tests.sh
