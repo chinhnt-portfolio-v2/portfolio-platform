@@ -48,7 +48,11 @@ jobs:
           name: portfolio-platform.jar
 
       - name: Prepare JAR for Docker
-        run: mkdir -p target && mv portfolio-platform*.jar target/portfolio-platform.jar
+        run: |
+          ls -la
+          mkdir -p target
+          mv portfolio-platform*.jar target/app.jar
+          ls -la target/
 
       - name: Authenticate to GCP
         uses: google-github-actions/auth@v2
