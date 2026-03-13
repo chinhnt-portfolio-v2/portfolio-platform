@@ -6,4 +6,5 @@ ENTRYPOINT ["java", \
   "-XX:MaxRAMPercentage=60", \
   "-XX:+UseSerialGC", \
   "-Dspring.profiles.active=prod", \
+  "-Dlogging.level.dev.chinh.portfolio=DEBUG", \
   "-jar", "app.jar"]
