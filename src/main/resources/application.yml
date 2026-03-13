@@ -96,7 +96,7 @@ server:
 # GitHub webhook configuration - production requires secret
 github:
   webhook:
-    secret: ${GITHUB_WEBHOOK_SECRET}  # Required in production
+    secret: ${GITHUB_WEBHOOK_SECRET:}
 
 logging:
   level:
