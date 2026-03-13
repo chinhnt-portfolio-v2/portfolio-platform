@@ -1,13 +1,23 @@
 package dev.chinh.portfolio.shared.config;
 
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Security config - TEMP disabled for MVP.
- * Security will be added in Epic 5.
+ * Security config - all endpoints public for MVP.
  */
 @Configuration
-// @EnableWebSecurity - commented out, security starter disabled in pom.xml
+@EnableWebSecurity
 public class SecurityConfig {
-    // No beans - security disabled for MVP
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(csrf -> csrf.disable())
+            .authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+        return http.build();
+    }
 }
