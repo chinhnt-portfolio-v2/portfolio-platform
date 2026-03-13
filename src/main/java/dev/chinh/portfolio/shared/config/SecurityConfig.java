@@ -9,6 +9,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 /**
  * Security config - all endpoints public for MVP.
+ * Updated: force redeploy
  */
 @Configuration
 @EnableWebSecurity
