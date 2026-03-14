@@ -70,10 +70,19 @@ public class GitHubService {
     }
 
     private int extractTotal(String json) {
-        Pattern pattern = Pattern.compile("\"total\":\\s*(\\d+)");
+        // JSON structure: {"total":{"2022":86,"2023":43,...}}
+        // Extract all year counts and sum them
+        Pattern pattern = Pattern.compile("\"total\":\\s*\\{([^}]+)\\}");
         Matcher matcher = pattern.matcher(json);
         if (matcher.find()) {
-            return Integer.parseInt(matcher.group(1));
+            String totalObj = matcher.group(1);
+            Pattern yearPattern = Pattern.compile(":\\s*(\\d+)");
+            Matcher yearMatcher = yearPattern.matcher(totalObj);
+            int sum = 0;
+            while (yearMatcher.find()) {
+                sum += Integer.parseInt(yearMatcher.group(1));
+            }
+            return sum;
         }
         return 0;
     }
