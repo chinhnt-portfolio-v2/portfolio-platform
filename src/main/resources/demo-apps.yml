@@ -3,6 +3,10 @@ apps:
     name: "Wallet App"
     healthEndpoint: "https://wallet.chinh.dev/health"
     pollIntervalSeconds: 60
+  - id: portfolio-v2
+    name: "Portfolio v2"
+    healthEndpoint: "https://portfolio-fe-omega-gold.vercel.app/"
+    pollIntervalSeconds: 60
   # Add new demo app here — restart BE to activate
   # - id: new-app
   #   name: "New App"
