@@ -19,6 +19,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "https://chinh.dev",
                         "https://wallet.chinh.dev",
+                        "https://portfolio-fe-omega-gold.vercel.app",
                         "http://localhost:5173"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
