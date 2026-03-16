@@ -1,3 +1,5 @@
 package dev.chinh.portfolio.platform.contact;
 
-public record ContactSubmissionResponse(Long id, String message) {}
+import java.util.UUID;
+
+public record ContactSubmissionResponse(UUID id, String message) {}
