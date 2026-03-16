@@ -1,6 +1,7 @@
 package dev.chinh.portfolio.platform.contact;
 
 import dev.chinh.portfolio.platform.contact.dto.ContactSubmissionRequest;
+import dev.chinh.portfolio.platform.contact.ContactSubmissionResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -45,7 +46,8 @@ public class ContactController {
 
         repository.save(submission);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(new ContactSubmissionResponse(submission.getId(), "Message sent successfully"));
     }
 
     private String getClientIp(HttpServletRequest request) {
