@@ -26,7 +26,7 @@ public class ContactController {
     }
 
     @PostMapping("/contact-submissions")
-    public ResponseEntity<Void> submitContact(
+    public ResponseEntity<ContactSubmissionResponse> submitContact(
             @Valid @RequestBody ContactSubmissionRequest request,
             HttpServletRequest httpRequest) {
 
