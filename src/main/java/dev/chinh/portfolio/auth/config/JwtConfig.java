@@ -11,6 +11,7 @@ public class JwtConfig {
     private int accessTokenTtlMinutes = 15;
     private int refreshTokenTtlDays = 7;
     private String keyPath = "classpath:keys/private.pem";
+    private String secret; // Used for HMAC (HS256) in production
 
     public String getIssuer() {
         return issuer;
@@ -42,5 +43,13 @@ public class JwtConfig {
 
     public void setKeyPath(String keyPath) {
         this.keyPath = keyPath;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }
