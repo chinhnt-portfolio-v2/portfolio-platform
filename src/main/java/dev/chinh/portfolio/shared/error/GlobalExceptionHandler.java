@@ -35,6 +35,33 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(new ErrorDetail("NOT_FOUND", ex.getMessage())));
     }
 
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<ErrorResponse> handleForbidden(ForbiddenException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ErrorResponse(new ErrorDetail("FORBIDDEN", ex.getMessage())));
+    }
+
+    @ExceptionHandler(dev.chinh.portfolio.auth.user.UserService.EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(
+            dev.chinh.portfolio.auth.user.UserService.EmailAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(new ErrorResponse(new ErrorDetail("EMAIL_ALREADY_EXISTS", ex.getMessage())));
+    }
+
+    @ExceptionHandler(dev.chinh.portfolio.auth.AuthController.InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(
+            dev.chinh.portfolio.auth.AuthController.InvalidCredentialsException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(new ErrorDetail("INVALID_CREDENTIALS", "Invalid email or password")));
+    }
+
+    @ExceptionHandler(dev.chinh.portfolio.auth.AuthController.InvalidRefreshTokenException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidRefreshToken(
+            dev.chinh.portfolio.auth.AuthController.InvalidRefreshTokenException ex) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(new ErrorResponse(new ErrorDetail("INVALID_REFRESH_TOKEN", "Invalid or expired refresh token")));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGeneric(Exception ex) {
         log.error("Unhandled exception", ex);

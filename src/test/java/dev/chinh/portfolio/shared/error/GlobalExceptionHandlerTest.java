@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(
         controllers = TestStubController.class,
-        excludeAutoConfiguration = SecurityAutoConfiguration.class
+        excludeAutoConfiguration = {SecurityAutoConfiguration.class, org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration.class}
 )
 @Import(GlobalExceptionHandler.class)
 class GlobalExceptionHandlerTest {
@@ -80,5 +80,14 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.error").exists())
                 .andExpect(jsonPath("$.error.code").exists())
                 .andExpect(jsonPath("$.error.message").exists());
+    }
+
+    @Test
+    void forbiddenException_returns403WithStructuredError() throws Exception {
+        mockMvc.perform(get("/test/forbidden"))
+                .andExpect(status().isForbidden())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.error.code").value("FORBIDDEN"))
+                .andExpect(jsonPath("$.error.message").value("Access denied: resource does not belong to user"));
     }
 }

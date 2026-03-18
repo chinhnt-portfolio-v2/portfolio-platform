@@ -44,3 +44,7 @@ application-secrets.yml
 ### Logs ###
 *.log
 logs/
+
+### JWT Keys - NEVER commit private keys ###
+**/keys/*.pem
+!**/keys/public.pem

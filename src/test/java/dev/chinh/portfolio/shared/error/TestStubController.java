@@ -31,5 +31,10 @@ class TestStubController {
     public void validateBody(@Valid @RequestBody ValidatedRequest req) {
     }
 
+    @GetMapping("/forbidden")
+    public void throwForbidden() {
+        throw new ForbiddenException("Access denied: resource does not belong to user");
+    }
+
     record ValidatedRequest(@Email @NotBlank String email) {}
 }

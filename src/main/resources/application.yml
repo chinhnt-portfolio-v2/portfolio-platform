@@ -63,6 +63,25 @@ logging:
   level:
     dev.chinh.portfolio: DEBUG
 
+# JWT Configuration
+jwt:
+  issuer: https://api.portfolio-v2.com
+  access-token-ttl-minutes: 15
+  refresh-token-ttl-days: 7
+  key-path: classpath:keys/private.pem
+
+# Google OAuth2 Configuration
+# Required env vars: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET
+# Set real values for production; uses dummy for local development
+spring.security.oauth2.client.registration.google.client-id: ${GOOGLE_CLIENT_ID:dummy}
+spring.security.oauth2.client.registration.google.client-secret: ${GOOGLE_CLIENT_SECRET:dummy}
+spring.security.oauth2.client.registration.google.scope: profile,email
+spring.security.oauth2.client.registration.google.redirect-uri: "{baseUrl}/api/v1/auth/oauth2/callback/google"
+spring.security.oauth2.client.provider.google.authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+spring.security.oauth2.client.provider.google.token-uri: https://oauth2.googleapis.com/token
+spring.security.oauth2.client.provider.google.user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+spring.security.oauth2.client.provider.google.user-name-attribute: sub
+
 # GitHub webhook configuration
 github:
   webhook:

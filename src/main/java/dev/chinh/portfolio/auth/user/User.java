@@ -42,7 +42,7 @@ public class User {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt = Instant.now();
 
-    protected User() {}
+    public User() {}
 
     @PreUpdate
     void onUpdate() { this.updatedAt = Instant.now(); }

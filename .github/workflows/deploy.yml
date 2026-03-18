@@ -55,7 +55,11 @@ jobs:
             SPRING_PROFILES_ACTIVE=prod,
             SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }},
             SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }},
-            SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+            SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }},
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},
+            CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }},
+            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
 
       - name: Run smoke tests
         run: bash deploy/smoke-tests.sh

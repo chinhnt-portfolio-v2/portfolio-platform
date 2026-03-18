@@ -1,0 +1,110 @@
+# Portfolio Platform - Production Configuration
+# =============================================
+# This file contains production-specific configuration.
+# ALL credentials MUST be provided via environment variables - no defaults.
+#
+# Required environment variables (must be set in Cloud Run secrets):
+#   - SPRING_DATASOURCE_URL      (Neon PostgreSQL connection string)
+#   - SPRING_DATASOURCE_USERNAME (Neon database username)
+#   - SPRING_DATASOURCE_PASSWORD (Neon database password)
+#   - GOOGLE_CLIENT_ID           (Google OAuth2 client ID)
+#   - GOOGLE_CLIENT_SECRET       (Google OAuth2 client secret)
+#   - JWT_SECRET_KEY             (64+ character random string)
+#   - CORS_ALLOWED_ORIGINS       (comma-separated production frontend domains)
+
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      # Neon free tier connection limit is 3 concurrent connections
+      maximum-pool-size: 3
+      minimum-idle: 1
+      connection-timeout: 30000
+      idle-timeout: 600000
+      keepalive-time: 30000  # Prevent Neon from closing idle connections on wake
+      max-lifetime: 1800000  # 30 minutes - refresh connections before they expire
+
+  jpa:
+    show-sql: false  # Never log SQL in production
+    properties:
+      hibernate:
+        format_sql: false
+
+server:
+  # Cloud Run terminates TLS and forwards requests with X-Forwarded-* headers
+  forward-headers-strategy: FRAMEWORK
+  # Response compression for better performance
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,application/javascript,application/json
+
+# JWT Configuration for Production
+jwt:
+  issuer: https://api.portfolio-v2.com
+  access-token-ttl-minutes: 15
+  refresh-token-ttl-days: 7
+  key-path: classpath:keys/private.pem
+  secret: ${JWT_SECRET_KEY:}  # 64+ character random string required
+
+# Google OAuth2 Configuration
+spring.security.oauth2.client.registration.google.client-id: ${GOOGLE_CLIENT_ID}
+spring.security.oauth2.client.registration.google.client-secret: ${GOOGLE_CLIENT_SECRET}
+spring.security.oauth2.client.registration.google.scope: profile,email
+spring.security.oauth2.client.registration.google.redirect-uri: "{baseUrl}/api/v1/auth/oauth2/callback/google"
+spring.security.oauth2.client.provider.google.authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
+spring.security.oauth2.client.provider.google.token-uri: https://oauth2.googleapis.com/token
+spring.security.oauth2.client.provider.google.user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
+spring.security.oauth2.client.provider.google.user-name-attribute: sub
+
+# CORS Configuration - Production only
+spring.security.cors.configuration-source:
+  corsConfigurations:
+    /api/**:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:}  # Set to production frontend domain(s)
+      allowed-methods: GET,POST,PUT,DELETE,OPTIONS
+      allowed-headers: "*"
+      allow-credentials: true
+      max-age: 3600
+    /ws/**:
+      allowed-origins: ${CORS_ALLOWED_ORIGINS:}
+      allowed-methods: GET,POST
+      allowed-headers: "*"
+      allow-credentials: true
+      max-age: 3600
+
+# Rate Limiting Configuration
+dev.chinh.portfolio.rate-limit:
+  requests-per-minute: 60
+  burst-capacity: 10
+
+# GitHub webhook configuration - production requires secret
+github:
+  webhook:
+    secret: ${GITHUB_WEBHOOK_SECRET:}
+
+# Logging Configuration - Production
+logging:
+  level:
+    dev.chinh.portfolio: INFO
+    org.springframework: WARN
+    org.hibernate: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# Actuator Configuration - Production (limited exposure)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: never  # Never expose detailed health in production
+    info:
+      show-details: when-authorized

@@ -2,18 +2,90 @@
 
 This directory contains deployment artifacts for the Portfolio Platform backend.
 
+## Current Deployment Architecture
+
+| Component | Target | Method |
+|-----------|--------|--------|
+| Portfolio FE | Vercel CDN | Auto-deploy on push to main |
+| Platform BE | GCP Cloud Run | GitHub Actions → Docker image |
+| Database | Neon PostgreSQL | Free tier, managed |
+
+> **Note:** Oracle A1 deployment was abandoned in favor of Cloud Run + Neon. This README contains legacy Oracle instructions for reference only.
+
 ## Files
 
 | File | Description |
 |------|-------------|
-| `nginx/portfolio-v2.nginx.conf` | Nginx reverse proxy config (deployed by CI/CD) |
-| `portfolio-platform.service` | systemd unit file for the Spring Boot service |
-| `deploy.sh` | Manual deployment fallback script |
-| `smoke-tests.sh` | Post-deploy health check script (NFR-R7) |
+| `smoke-tests.sh` | Post-deploy health check script |
+| `README.md` | This file (deployment guide) |
 
 ---
 
-## One-Time Oracle A1 Bootstrap
+## Neon PostgreSQL Setup
+
+### 1. Create Neon Project
+
+1. Sign up at https://neon.tech
+2. Create a new project: `portfolio-v2-prod`
+3. Copy the connection string from the dashboard
+
+### 2. Connection String Format
+
+```
+postgresql://username:password@ep-xxx.us-east-1.aws.neon.tech/portfolio_v2_prod?sslmode=require
+```
+
+### 3. Run Flyway Migrations
+
+The application runs Flyway migrations on startup. Ensure your database is empty or baseline the existing schema:
+
+```bash
+# In application-prod.yml, set for initial deployment:
+spring:
+  flyway:
+    baseline-on-migrate: true
+```
+
+After first successful deployment, set back to `false`.
+
+---
+
+## Cloud Run Deployment
+
+### GitHub Secrets Required
+
+Configure these secrets at: **GitHub repo → Settings → Secrets and variables → Actions**
+
+| Secret | Value |
+|--------|-------|
+| `GCP_SA_KEY` | Service account JSON with Cloud Run Admin + Artifact Registry roles |
+| `GCP_PROJECT_ID` | GCP project ID |
+| `SPRING_DATASOURCE_URL` | Neon connection string |
+| `SPRING_DATASOURCE_USERNAME` | Neon username |
+| `SPRING_DATASOURCE_PASSWORD` | Neon password |
+| `GOOGLE_CLIENT_ID` | Google OAuth2 client ID |
+| `GOOGLE_CLIENT_SECRET` | Google OAuth2 client secret |
+| `CORS_ALLOWED_ORIGINS` | Production frontend domain(s) |
+| `JWT_SECRET_KEY` | 64+ character random string |
+
+### Deploy
+
+Push to `main` branch to trigger deployment:
+
+```bash
+git push origin main
+```
+
+The CI/CD pipeline will:
+1. Build JAR with Maven
+2. Build Docker image
+3. Push to Artifact Registry
+4. Deploy to Cloud Run
+5. Run smoke tests
+
+---
+
+## One-Time Oracle A1 Bootstrap (Legacy - Deprecated)
 
 These steps must be performed **once** via SSH before CI/CD can function.
 
