@@ -57,6 +57,7 @@ public class SecurityConfig {
                                 "/api/v1/webhooks/**",
                                 "/api/v1/auth/**",
                                 "/api/v1/.well-known/**",
+                                "/api/v1/project-health",
                                 "/api-docs/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
