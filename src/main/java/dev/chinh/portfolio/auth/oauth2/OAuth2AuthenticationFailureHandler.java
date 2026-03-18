@@ -3,6 +3,8 @@ package dev.chinh.portfolio.auth.oauth2;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -18,9 +20,13 @@ import java.io.IOException;
 @Component
 public class OAuth2AuthenticationFailureHandler implements AuthenticationFailureHandler {
 
+    private static final Logger log = LoggerFactory.getLogger(OAuth2AuthenticationFailureHandler.class);
+
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
                                         AuthenticationException exception) throws IOException, ServletException {
+
+        log.error("OAuth2 authentication FAILED!", exception);
 
         String errorMessage;
 
@@ -29,6 +35,7 @@ public class OAuth2AuthenticationFailureHandler implements AuthenticationFailure
             errorMessage = "cancelled";
         } else if (exception instanceof OAuth2AuthenticationException oAuth2Ex) {
             String errorCode = oAuth2Ex.getError().getErrorCode();
+            log.error("OAuth2 error code: {}, error: {}", errorCode, oAuth2Ex.getError());
             if ("access_denied".equals(errorCode) || "consent_required".equals(errorCode)) {
                 errorMessage = "cancelled";
             } else {
