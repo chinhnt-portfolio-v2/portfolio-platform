@@ -54,15 +54,13 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         // Return tokens in same format as password login
         AuthResponse authResponse = AuthResponse.of(accessToken, session.getRefreshToken());
 
-        // Set content type to JSON
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-
-        // Write JSON response
-        response.getWriter().write(String.format(
-                "{\"accessToken\":\"%s\",\"refreshToken\":\"%s\",\"tokenType\":\"Bearer\"}",
+        // Redirect to frontend with tokens as query parameters
+        String frontendUrl = System.getenv().getOrDefault("FRONTEND_URL", "https://portfolio-fe-omega-gold.vercel.app");
+        String redirectUrl = String.format("%s?accessToken=%s&refreshToken=%s&tokenType=Bearer",
+                frontendUrl,
                 authResponse.accessToken(),
-                authResponse.refreshToken()
-        ));
+                authResponse.refreshToken());
+
+        response.sendRedirect(redirectUrl);
     }
 }
