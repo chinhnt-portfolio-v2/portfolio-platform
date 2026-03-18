@@ -5,17 +5,19 @@ import dev.chinh.portfolio.auth.user.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.time.Instant;
@@ -26,32 +28,57 @@ import java.util.UUID;
 @Service
 public class JwtService {
 
+    private static final Logger log = LoggerFactory.getLogger(JwtService.class);
+
     private final JwtConfig jwtConfig;
     private final PrivateKey privateKey;
     private final PublicKey publicKey;
 
     public JwtService(JwtConfig jwtConfig) throws Exception {
         this.jwtConfig = jwtConfig;
-        this.privateKey = loadPrivateKey();
-        this.publicKey = loadPublicKey();
+        KeyPair keyPair = loadOrGenerateKeyPair();
+        this.privateKey = keyPair.getPrivate();
+        this.publicKey = keyPair.getPublic();
     }
 
-    private PrivateKey loadPrivateKey() throws Exception {
+    private KeyPair loadOrGenerateKeyPair() throws Exception {
         String keyPath = jwtConfig.getKeyPath().replace("classpath:", "");
-        InputStream is = getClass().getClassLoader().getResourceAsStream(keyPath);
+        Path privateKeyPath = Path.of("src/main/resources", keyPath);
 
-        if (is == null) {
-            // Try file system for development
-            Path path = Path.of("src/main/resources", keyPath);
-            String pem = Files.readString(path);
-            return parsePrivateKey(pem);
+        // Try to load existing keys
+        if (Files.exists(privateKeyPath)) {
+            log.info("Loading existing JWT keys from {}", privateKeyPath);
+            PrivateKey privateKey = loadPrivateKey(Files.readString(privateKeyPath));
+            PublicKey publicKey = loadPublicKey(privateKey);
+            return new KeyPair(publicKey, privateKey);
         }
 
-        String pem = new String(is.readAllBytes());
-        return parsePrivateKey(pem);
+        // Generate new keys if not exist (for production or first run)
+        log.warn("JWT keys not found - generating new key pair. This should NOT happen in production!");
+        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
+        generator.initialize(2048);
+        KeyPair keyPair = generator.generateKeyPair();
+
+        // Save keys for next run
+        try {
+            Files.createDirectories(privateKeyPath.getParent());
+            Files.writeString(privateKeyPath, encodePrivateKey(keyPair.getPrivate()));
+            log.info("Generated and saved new JWT keys to {}", privateKeyPath);
+        } catch (Exception e) {
+            log.warn("Could not save JWT keys to file system: {}", e.getMessage());
+        }
+
+        return keyPair;
     }
 
-    private PrivateKey parsePrivateKey(String pem) throws Exception {
+    private String encodePrivateKey(PrivateKey privateKey) {
+        byte[] encoded = privateKey.getEncoded();
+        return "-----BEGIN PRIVATE KEY-----\n" +
+                Base64.getEncoder().encodeToString(encoded) +
+                "\n-----END PRIVATE KEY-----";
+    }
+
+    private PrivateKey loadPrivateKey(String pem) throws Exception {
         String keyContent = pem
                 .replace("-----BEGIN PRIVATE KEY-----", "")
                 .replace("-----END PRIVATE KEY-----", "")
@@ -63,16 +90,29 @@ public class JwtService {
         return keyFactory.generatePrivate(keySpec);
     }
 
-    private PublicKey loadPublicKey() throws Exception {
+    private PublicKey loadPublicKey(PrivateKey privateKey) throws Exception {
         String keyPath = "keys/public.pem";
         Path path = Path.of("src/main/resources", keyPath);
 
         if (!Files.exists(path)) {
-            throw new IllegalStateException("Public key not found at: " + path);
+            // Generate public key from private key if public key doesn't exist
+            log.warn("Public key not found - deriving from private key");
+            RSAPrivateKey rsaPrivateKey = (RSAPrivateKey) privateKey;
+            return extractPublicFromPrivate(rsaPrivateKey);
         }
 
         String pem = Files.readString(path);
         return parsePublicKey(pem);
+    }
+
+    private PublicKey extractPublicFromPrivate(RSAPrivateKey privateKey) throws Exception {
+        // Extract public key parameters from private key
+        BigInteger modulus = privateKey.getModulus();
+        BigInteger publicExponent = BigInteger.valueOf(65537L); // Standard RSA exponent
+
+        java.security.spec.RSAPublicKeySpec spec = new java.security.spec.RSAPublicKeySpec(modulus, publicExponent);
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+        return keyFactory.generatePublic(spec);
     }
 
     private PublicKey parsePublicKey(String pem) throws Exception {
