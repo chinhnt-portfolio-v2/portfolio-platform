@@ -78,6 +78,9 @@ jobs:
     timeout-minutes: 10
     needs: deploy
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Download deployed URL
         uses: actions/download-artifact@v4
         with:
@@ -100,14 +103,14 @@ jobs:
         run: npm run smoke:test -- --testPathPattern=rest
         continue-on-error: false
         env:
-          DEPLOYED_BE_URL: ${{ needs.deploy.outputs.deployed_url }}
+          DEPLOYED_BE_URL: ${{ steps.read_url.outputs.url }}
           SMOKE_TEST_ADMIN_TOKEN: ${{ secrets.SMOKE_TEST_ADMIN_TOKEN }}
 
       - name: Run WebSocket smoke tests
         run: npm run smoke:test -- --testPathPattern=websocket
         continue-on-error: false
         env:
-          DEPLOYED_BE_URL: ${{ needs.deploy.outputs.deployed_url }}
+          DEPLOYED_BE_URL: ${{ steps.read_url.outputs.url }}
 
       - name: Report smoke test failure
         if: failure()
