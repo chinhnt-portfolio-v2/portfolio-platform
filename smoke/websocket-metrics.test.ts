@@ -32,10 +32,7 @@ if (!BASE_URL) {
 
     it(`AC-2: WebSocket /ws/metrics receives project_health message with valid status within ${TIMEOUT_MS}ms`, (done) => {
       let messageReceived = false;
-      let closedByTest = false;
       let timerId: NodeJS.Timeout;
-
-      console.log(`  -> Connecting to ${WS_URL} (timeout: ${TIMEOUT_MS}ms) ...`);
 
       const ws = new WebSocket(WS_URL, {
         handshakeTimeout: 10000,
@@ -56,6 +53,10 @@ if (!BASE_URL) {
       });
 
       ws.on('message', (data: Buffer) => {
+        // Log only if test is still active — suppress extra messages that arrive
+        // after done() has been called (e.g. second project snapshot after first message).
+        if (done.hasBeenCalled) return;
+
         try {
           const message = JSON.parse(data.toString());
           console.log(`  <- Received WebSocket message:`, JSON.stringify(message));
@@ -68,7 +69,8 @@ if (!BASE_URL) {
               expect(message.status.length).toBeGreaterThan(0);
               console.log(`  + project_health message received -- status: "${message.status}"`);
               closedByTest = true;
-              ws.close(1000, 'Smoke test passed');
+              ws.terminate(); // Force destroy immediately — prevents queued messages from
+                             // arriving after done() is called and causing Jest exit-1
               done();
             }
           } else {
@@ -80,11 +82,9 @@ if (!BASE_URL) {
       });
 
       ws.on('close', (code: number) => {
-        // Do NOT log here — done() has already been called; Jest will error
-        // if any console output happens after the test callback returns.
-        if (closedByTest || messageReceived) {
-          return; // graceful close after successful message receipt
-        }
+        // done.hasBeenCalled catches both ws.terminate() and ws.close(1000).
+        // If done() was already called, suppress any close-triggered logging.
+        if (done.hasBeenCalled || messageReceived) return;
         clearTimeout(timerId);
         done(new Error(`WebSocket closed (code=${code}) without receiving a valid project_health message.`));
       });
