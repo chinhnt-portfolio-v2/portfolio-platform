@@ -5,6 +5,7 @@ import dev.chinh.portfolio.auth.user.User;
 import dev.chinh.portfolio.auth.user.UserRepository;
 import dev.chinh.portfolio.auth.user.UserRole;
 import dev.chinh.portfolio.shared.config.DemoAppRegistry;
+import dev.chinh.portfolio.shared.error.ForbiddenException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
@@ -162,78 +164,67 @@ class AdminShowcaseControllerTest {
     // ── Authorization: non-owner ──────────────────────────────────────────────
 
     /**
-     * Non-owner JWT → HTTP 403 Forbidden.
+     * Non-owner JWT → throws ForbiddenException.
      */
     @Test
-    void getApps_asMember_returns403() {
+    void getApps_asMember_throwsForbiddenException() {
         when(userRepository.findById(NON_OWNER_USER_ID)).thenReturn(Optional.of(memberUser()));
         setSecurityContext(memberPrincipal(NON_OWNER_USER_ID));
 
-        ResponseEntity<?> response = controller.getApps();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThatThrownBy(() -> controller.getApps())
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessageContaining("Owner role required");
         verifyNoInteractions(demoAppRegistry);
     }
 
     /**
-     * User ID not found in database → 403 (treat as non-owner).
+     * User ID not found in database → throws ForbiddenException.
      */
     @Test
-    void getApps_unknownUser_returns403() {
+    void getApps_unknownUser_throwsForbiddenException() {
         when(userRepository.findById(any(UUID.class))).thenReturn(Optional.empty());
         setSecurityContext(ownerPrincipal(OWNER_USER_ID));
 
-        ResponseEntity<?> response = controller.getApps();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThatThrownBy(() -> controller.getApps())
+                .isInstanceOf(ForbiddenException.class);
     }
 
     /**
-     * String principal (fallback) not parseable as UUID → 403.
+     * String principal (fallback) not parseable as UUID → throws ForbiddenException.
      */
     @Test
-    void getApps_unparseablePrincipal_returns403() {
+    void getApps_unparseablePrincipal_throwsForbiddenException() {
         setSecurityContext(new UsernamePasswordAuthenticationToken("not-a-uuid", null, List.of()));
 
-        ResponseEntity<?> response = controller.getApps();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThatThrownBy(() -> controller.getApps())
+                .isInstanceOf(ForbiddenException.class);
     }
 
     /**
-     * Null authentication → 403 (should not happen via Spring Security).
+     * Null authentication → throws ForbiddenException.
      */
     @Test
-    void getApps_noAuthentication_returns403() {
+    void getApps_noAuthentication_throwsForbiddenException() {
         SecurityContextHolder.clearContext();
 
-        ResponseEntity<?> response = controller.getApps();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+        assertThatThrownBy(() -> controller.getApps())
+                .isInstanceOf(ForbiddenException.class);
     }
 
     // ── Structured error format ─────────────────────────────────────────────
 
     /**
-     * 403 response uses the project's structured error format:
-     * { "error": { "code": "FORBIDDEN", "message": "..." } }
+     * ForbiddenException is caught by GlobalExceptionHandler and returns the
+     * structured error format: { "error": { "code": "FORBIDDEN", "message": "..." } }
      */
     @Test
     void getApps_nonOwner_errorFormatMatchesProjectStandard() {
         when(userRepository.findById(NON_OWNER_USER_ID)).thenReturn(Optional.of(memberUser()));
         setSecurityContext(memberPrincipal(NON_OWNER_USER_ID));
 
-        ResponseEntity<?> response = controller.getApps();
-
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-        @SuppressWarnings("unchecked")
-        Map<String, Object> body = (Map<String, Object>) response.getBody();
-        assertThat(body).containsKey("error");
-
-        @SuppressWarnings("unchecked")
-        Map<String, String> error = (Map<String, String>) body.get("error");
-        assertThat(error).containsEntry("code", "FORBIDDEN");
-        assertThat(error).containsEntry("message", "Access denied. Owner role required.");
+        assertThatThrownBy(() -> controller.getApps())
+                .isInstanceOf(ForbiddenException.class)
+                .hasMessage("Access denied. Owner role required.");
     }
 
     // ── Security context helpers ─────────────────────────────────────────────

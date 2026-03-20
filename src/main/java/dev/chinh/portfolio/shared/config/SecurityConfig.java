@@ -5,6 +5,7 @@ import dev.chinh.portfolio.auth.jwt.JwtAuthenticationFilter;
 import dev.chinh.portfolio.auth.oauth2.GoogleOAuth2UserService;
 import dev.chinh.portfolio.auth.oauth2.OAuth2AuthenticationFailureHandler;
 import dev.chinh.portfolio.auth.oauth2.OAuth2AuthenticationSuccessHandler;
+import dev.chinh.portfolio.shared.ratelimit.RateLimitFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -30,17 +31,20 @@ public class SecurityConfig {
     private final GoogleOAuth2UserService googleOAuth2UserService;
     private final OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler;
     private final OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler;
+    private final RateLimitFilter rateLimitFilter;
 
     public SecurityConfig(JwtAuthenticationFilter jwtAuthenticationFilter,
                           JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint,
                           GoogleOAuth2UserService googleOAuth2UserService,
                           OAuth2AuthenticationSuccessHandler oAuth2AuthenticationSuccessHandler,
-                          OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler) {
+                          OAuth2AuthenticationFailureHandler oAuth2AuthenticationFailureHandler,
+                          RateLimitFilter rateLimitFilter) {
         this.jwtAuthenticationFilter = jwtAuthenticationFilter;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.googleOAuth2UserService = googleOAuth2UserService;
         this.oAuth2AuthenticationSuccessHandler = oAuth2AuthenticationSuccessHandler;
         this.oAuth2AuthenticationFailureHandler = oAuth2AuthenticationFailureHandler;
+        this.rateLimitFilter = rateLimitFilter;
     }
 
     @Bean
@@ -80,7 +84,8 @@ public class SecurityConfig {
                         .successHandler(oAuth2AuthenticationSuccessHandler)
                         .failureHandler(oAuth2AuthenticationFailureHandler)
                 )
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(rateLimitFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

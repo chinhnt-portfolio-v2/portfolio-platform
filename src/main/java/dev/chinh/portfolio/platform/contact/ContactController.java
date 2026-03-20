@@ -2,6 +2,8 @@ package dev.chinh.portfolio.platform.contact;
 
 import dev.chinh.portfolio.platform.contact.dto.ContactSubmissionRequest;
 import dev.chinh.portfolio.platform.contact.ContactSubmissionResponse;
+import dev.chinh.portfolio.shared.error.RateLimitExceededException;
+import dev.chinh.portfolio.shared.ratelimit.RateLimitService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -20,9 +22,12 @@ public class ContactController {
     private static final Logger log = LoggerFactory.getLogger(ContactController.class);
 
     private final ContactSubmissionRepository repository;
+    private final RateLimitService rateLimitService;
 
-    public ContactController(ContactSubmissionRepository repository) {
+    public ContactController(ContactSubmissionRepository repository,
+                             RateLimitService rateLimitService) {
         this.repository = repository;
+        this.rateLimitService = rateLimitService;
     }
 
     @PostMapping("/contact-submissions")
@@ -37,6 +42,12 @@ public class ContactController {
         }
 
         String clientIp = getClientIp(httpRequest);
+
+        if (!rateLimitService.tryContact(clientIp)) {
+            log.debug("Contact form rate limit exceeded for IP: {}", clientIp);
+            throw new RateLimitExceededException(
+                    "Rate limit exceeded. Maximum 3 submissions per day. Please try again tomorrow.");
+        }
 
         ContactSubmission submission = new ContactSubmission();
         submission.setEmail(request.email());

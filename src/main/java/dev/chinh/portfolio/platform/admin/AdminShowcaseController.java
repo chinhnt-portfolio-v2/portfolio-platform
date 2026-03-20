@@ -4,6 +4,7 @@ import dev.chinh.portfolio.auth.jwt.JwtAuthenticationFilter.JwtUserPrincipal;
 import dev.chinh.portfolio.auth.user.UserRepository;
 import dev.chinh.portfolio.auth.user.UserRole;
 import dev.chinh.portfolio.shared.config.DemoAppRegistry;
+import dev.chinh.portfolio.shared.error.ForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -54,13 +55,7 @@ public class AdminShowcaseController {
 
         if (!isCurrentUserOwner()) {
             log.warn("Non-owner user attempted to access admin showcase endpoint");
-            return ResponseEntity.status(403)
-                    .body(Map.of(
-                            "error", Map.of(
-                                    "code", "FORBIDDEN",
-                                    "message", "Access denied. Owner role required."
-                            )
-                    ));
+            throw new ForbiddenException("Access denied. Owner role required.");
         }
 
         List<DemoAppRegistry.DemoApp> apps = demoAppRegistry.getApps();

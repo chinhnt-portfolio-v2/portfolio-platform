@@ -38,6 +38,9 @@ public class ContactSubmission {
     @Column(name = "submitted_at", nullable = false, updatable = false)
     private Instant submittedAt = Instant.now();
 
+    @Column(name = "is_read", nullable = false)
+    private boolean isRead = false;
+
     protected ContactSubmission() {}
 
     public UUID getId() { return id; }
@@ -56,4 +59,7 @@ public class ContactSubmission {
     public void setIpAddress(String ipAddress) { this.ipAddress = ipAddress; }
 
     public Instant getSubmittedAt() { return submittedAt; }
+
+    public boolean isRead() { return isRead; }
+    public void setIsRead(boolean isRead) { this.isRead = isRead; }
 }

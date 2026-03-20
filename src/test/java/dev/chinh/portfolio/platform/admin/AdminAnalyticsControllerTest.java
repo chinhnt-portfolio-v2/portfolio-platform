@@ -5,6 +5,7 @@ import dev.chinh.portfolio.auth.user.User;
 import dev.chinh.portfolio.auth.user.UserRepository;
 import dev.chinh.portfolio.auth.user.UserRole;
 import dev.chinh.portfolio.platform.admin.dto.*;
+import dev.chinh.portfolio.shared.error.ForbiddenException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -21,11 +22,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.time.Instant;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 /**
@@ -156,47 +157,26 @@ class AdminAnalyticsControllerTest {
     class NonOwnerAccessTests {
 
         @Test
-        @DisplayName("should return 403 when user does not have Owner role")
-        void shouldReturn403ForNonOwner() {
+        @DisplayName("should throw ForbiddenException when user does not have Owner role")
+        void shouldThrowForbiddenExceptionForNonOwner() {
             setSecurityContext(new JwtUserPrincipal(NON_OWNER_USER_ID.toString(), "visitor@example.com"));
             when(userRepository.findById(NON_OWNER_USER_ID))
                     .thenReturn(Optional.of(realUser(NON_OWNER_USER_ID, UserRole.USER)));
 
-            ResponseEntity<?> response = controller.getAnalytics();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThatThrownBy(() -> controller.getAnalytics())
+                    .isInstanceOf(ForbiddenException.class)
+                    .hasMessageContaining("Owner role required");
             verify(analyticsService, never()).getAnalytics();
         }
 
         @Test
-        @DisplayName("should return 403 with structured error body matching spec")
-        void shouldReturn403WithStructuredError() {
-            setSecurityContext(new JwtUserPrincipal(NON_OWNER_USER_ID.toString(), "visitor@example.com"));
-            when(userRepository.findById(NON_OWNER_USER_ID))
-                    .thenReturn(Optional.of(realUser(NON_OWNER_USER_ID, UserRole.USER)));
-
-            ResponseEntity<?> response = controller.getAnalytics();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
-            assertThat(response.getBody()).isInstanceOf(Map.class);
-            @SuppressWarnings("unchecked")
-            Map<String, Object> body = (Map<String, Object>) response.getBody();
-            assertThat(body).containsKey("error");
-            @SuppressWarnings("unchecked")
-            Map<String, String> error = (Map<String, String>) body.get("error");
-            assertThat(error.get("code")).isEqualTo("FORBIDDEN");
-            assertThat(error.get("message")).isNotBlank();
-        }
-
-        @Test
-        @DisplayName("should return 403 when user does not exist in database")
-        void shouldReturn403WhenUserNotFound() {
+        @DisplayName("should throw ForbiddenException when user does not exist in database")
+        void shouldThrowForbiddenExceptionWhenUserNotFound() {
             setSecurityContext(new JwtUserPrincipal(NON_OWNER_USER_ID.toString(), "visitor@example.com"));
             when(userRepository.findById(NON_OWNER_USER_ID)).thenReturn(Optional.empty());
 
-            ResponseEntity<?> response = controller.getAnalytics();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThatThrownBy(() -> controller.getAnalytics())
+                    .isInstanceOf(ForbiddenException.class);
             verify(analyticsService, never()).getAnalytics();
         }
     }
@@ -208,28 +188,26 @@ class AdminAnalyticsControllerTest {
     class UnrecognizedPrincipalTests {
 
         @Test
-        @DisplayName("should return 403 when principal is unrecognized type (String instead of JwtUserPrincipal)")
-        void shouldReturn403ForUnrecognizedPrincipal() {
+        @DisplayName("should throw ForbiddenException when principal is unrecognized type")
+        void shouldThrowForbiddenExceptionForUnrecognizedPrincipal() {
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken("unknown-principal", null, Collections.emptyList());
             SecurityContext ctx = SecurityContextHolder.createEmptyContext();
             ctx.setAuthentication(auth);
             SecurityContextHolder.setContext(ctx);
 
-            ResponseEntity<?> response = controller.getAnalytics();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThatThrownBy(() -> controller.getAnalytics())
+                    .isInstanceOf(ForbiddenException.class);
             verify(analyticsService, never()).getAnalytics();
         }
 
         @Test
-        @DisplayName("should return 403 when SecurityContext has no authentication")
-        void shouldReturn403WhenNoAuthentication() {
+        @DisplayName("should throw ForbiddenException when SecurityContext has no authentication")
+        void shouldThrowForbiddenExceptionWhenNoAuthentication() {
             clearSecurityContext();
 
-            ResponseEntity<?> response = controller.getAnalytics();
-
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.FORBIDDEN);
+            assertThatThrownBy(() -> controller.getAnalytics())
+                    .isInstanceOf(ForbiddenException.class);
             verify(analyticsService, never()).getAnalytics();
         }
     }

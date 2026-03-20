@@ -4,6 +4,7 @@ import dev.chinh.portfolio.auth.jwt.JwtAuthenticationFilter.JwtUserPrincipal;
 import dev.chinh.portfolio.auth.user.UserRepository;
 import dev.chinh.portfolio.auth.user.UserRole;
 import dev.chinh.portfolio.platform.admin.dto.AdminAnalyticsDto;
+import dev.chinh.portfolio.shared.error.ForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -57,13 +57,7 @@ public class AdminAnalyticsController {
 
         if (!isCurrentUserOwner()) {
             log.warn("Non-owner user attempted to access admin analytics endpoint");
-            return ResponseEntity.status(403)
-                    .body(Map.of(
-                            "error", Map.of(
-                                    "code", "FORBIDDEN",
-                                    "message", "Access denied. Owner role required."
-                            )
-                    ));
+            throw new ForbiddenException("Access denied. Owner role required.");
         }
 
         AdminAnalyticsDto analytics = analyticsService.getAnalytics();

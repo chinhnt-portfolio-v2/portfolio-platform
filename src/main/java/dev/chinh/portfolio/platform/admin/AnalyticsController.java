@@ -5,6 +5,7 @@ import dev.chinh.portfolio.auth.user.User;
 import dev.chinh.portfolio.auth.user.UserRepository;
 import dev.chinh.portfolio.auth.user.UserRole;
 import dev.chinh.portfolio.platform.admin.dto.TrackEventRequest;
+import dev.chinh.portfolio.shared.error.ForbiddenException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -15,7 +16,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -93,8 +93,7 @@ public class AnalyticsController {
         // Verify the authenticated user has OWNER role
         if (!isCurrentUserOwner()) {
             log.warn("Non-owner user attempted to access analytics dashboard");
-            return ResponseEntity.status(403)
-                    .body(Map.of("error", "Access denied. Admin role required."));
+            throw new ForbiddenException("Access denied. Admin role required.");
         }
 
         Instant periodStart = periodStartEpoch != null ? Instant.ofEpochSecond(periodStartEpoch) : null;
