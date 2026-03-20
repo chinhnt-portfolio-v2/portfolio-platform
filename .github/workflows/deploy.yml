@@ -111,6 +111,8 @@ jobs:
         continue-on-error: false
         env:
           DEPLOYED_BE_URL: ${{ steps.read_url.outputs.url }}
+          # Override test timeout for CI — Cloud Run cold start can delay first broadcast
+          SMOKE_WS_TIMEOUT_MS: 15000
 
       - name: Report smoke test failure
         if: failure()

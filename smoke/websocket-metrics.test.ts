@@ -24,14 +24,18 @@ if (!BASE_URL) {
 } else {
   const WS_URL = BASE_URL.replace(/^http/, 'ws') + '/ws/metrics';
 
+  // CI can override timeout via SMOKE_WS_TIMEOUT_MS env var (default: 5000ms)
+  // Cloud Run cold start + scheduler 60s cycle means first broadcast may take >5s
+  const TIMEOUT_MS = parseInt(process.env.SMOKE_WS_TIMEOUT_MS ?? '5000', 10);
+
   describe('WebSocket Smoke Tests — Metrics Broadcast', () => {
 
-    it('AC-2: WebSocket /ws/metrics receives project_health message with valid status within 5s', (done) => {
+    it(`AC-2: WebSocket /ws/metrics receives project_health message with valid status within ${TIMEOUT_MS}ms`, (done) => {
       let messageReceived = false;
       let closedByTest = false;
       let timerId: NodeJS.Timeout;
 
-      console.log(`  -> Connecting to ${WS_URL} ...`);
+      console.log(`  -> Connecting to ${WS_URL} (timeout: ${TIMEOUT_MS}ms) ...`);
 
       const ws = new WebSocket(WS_URL, {
         handshakeTimeout: 10000,
@@ -43,11 +47,12 @@ if (!BASE_URL) {
           if (!messageReceived) {
             ws.close();
             done(new Error(
-              `TIMEOUT: No project_health message received within 5 seconds from ${WS_URL}. ` +
-              'The metrics broadcast pipeline may be down.'
+              `TIMEOUT: No project_health message received within ${TIMEOUT_MS}ms from ${WS_URL}. ` +
+              'The metrics broadcast pipeline may be down or the scheduler cycle (>60s) ' +
+              'has not completed since deployment.'
             ));
           }
-        }, 5000);
+        }, TIMEOUT_MS);
       });
 
       ws.on('message', (data: Buffer) => {
