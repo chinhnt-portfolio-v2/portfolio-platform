@@ -63,7 +63,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/actuator/health"
+                                "/actuator/health",
+                                "/ws/**"            // WebSocket upgrade — unauthenticated, public metrics broadcast
                         ).permitAll()
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().permitAll()
