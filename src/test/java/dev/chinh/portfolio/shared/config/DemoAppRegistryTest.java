@@ -3,6 +3,7 @@ package dev.chinh.portfolio.shared.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.junit.jupiter.api.Test;
+import org.springframework.core.io.DefaultResourceLoader;
 
 import java.util.List;
 
@@ -12,8 +13,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  * Unit tests for DemoAppRegistry — YAML binding and field mapping.
  *
  * <p>These tests run WITHOUT Spring context and WITHOUT Docker/Testcontainers.
- * They parse the actual {@code showcase.yml} file directly using Jackson, verifying
- * the POJO binding matches what Spring's {@code @ConfigurationProperties} produces.
+ * They parse the actual {@code showcase.yml} file directly using Jackson.
  */
 class DemoAppRegistryTest {
 
@@ -23,15 +23,14 @@ class DemoAppRegistryTest {
 
     @Test
     void showcaseYaml_twoEntries_parsedCorrectly() throws Exception {
-        DemoAppRegistry registry = YAML.readValue(
+        ShowcasesDto dto = YAML.readValue(
                 getClass().getResource("/showcase.yml"),
-                DemoAppRegistry.class
+                ShowcasesDto.class
         );
 
-        List<DemoAppRegistry.DemoApp> apps = registry.getApps();
-        assertThat(apps).hasSizeGreaterThanOrEqualTo(2);
+        assertThat(dto.apps).hasSizeGreaterThanOrEqualTo(2);
 
-        DemoAppRegistry.DemoApp wallet = apps.stream()
+        DemoAppRegistry.DemoApp wallet = dto.apps.stream()
                 .filter(a -> "wallet-app".equals(a.getSlug()))
                 .findFirst()
                 .orElseThrow();
@@ -45,12 +44,12 @@ class DemoAppRegistryTest {
     void showcaseYaml_slugsMatchProjectsTs() throws Exception {
         // Story 6.4.2 AC: slug values in showcase.yml MUST match projects.ts slugs.
         // Wallet App and Portfolio v2 are defined in both configs.
-        DemoAppRegistry registry = YAML.readValue(
+        ShowcasesDto dto = YAML.readValue(
                 getClass().getResource("/showcase.yml"),
-                DemoAppRegistry.class
+                ShowcasesDto.class
         );
 
-        List<String> slugs = registry.getApps().stream()
+        List<String> slugs = dto.apps.stream()
                 .map(DemoAppRegistry.DemoApp::getSlug)
                 .toList();
 
@@ -81,20 +80,21 @@ class DemoAppRegistryTest {
 
     @Test
     void demoAppRegistry_getApps_returnsUnmodifiableList() {
-        DemoAppRegistry.DemoApp app = new DemoAppRegistry.DemoApp();
-        app.setSlug("test-app");
-        app.setName("Test App");
-        app.setHealthEndpoint("https://test.chinh.dev/health");
+        // Programmatic loading via ResourceLoader tests actual startup behavior
+        DemoAppRegistry registry = new DemoAppRegistry(new DefaultResourceLoader());
+        registry.loadShowcase(); // loads from classpath:showcase.yml
 
-        DemoAppRegistry registry = new DemoAppRegistry();
-        registry.setApps(List.of(app));
+        List<DemoAppRegistry.DemoApp> apps = registry.getApps();
+        assertThat(apps).isNotEmpty(); // showcase.yml has 2 entries
 
-        assertThat(registry.getApps()).isUnmodifiable();
+        // Verify the list is unmodifiable (copyOf in loadShowcase)
+        assertThat(apps).isUnmodifiable();
     }
 
     @Test
-    void demoAppRegistry_emptyApps_returnsEmptyList() {
-        DemoAppRegistry registry = new DemoAppRegistry();
+    void demoAppRegistry_getApps_emptyByDefault_beforeLoadShowcase() {
+        // @PostConstruct is NOT called in unit tests — apps stays empty ArrayList
+        DemoAppRegistry registry = new DemoAppRegistry(new DefaultResourceLoader());
         assertThat(registry.getApps()).isEmpty();
     }
 
@@ -111,7 +111,14 @@ class DemoAppRegistryTest {
 
         org.junit.jupiter.api.Assertions.assertThrows(
                 Exception.class,
-                () -> YAML.readValue(badYaml, DemoAppRegistry.class)
+                () -> YAML.readValue(badYaml, ShowcasesDto.class)
         );
+    }
+
+    // ── DTO mirror (same as DemoAppRegistry inner class) ────────────────────────
+
+    /** Must mirror ShowcasesDto from DemoAppRegistry for Jackson deserialization. */
+    static class ShowcasesDto {
+        public List<DemoAppRegistry.DemoApp> apps;
     }
 }
