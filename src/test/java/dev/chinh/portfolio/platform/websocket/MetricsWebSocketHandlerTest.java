@@ -1,6 +1,9 @@
 package dev.chinh.portfolio.platform.websocket;
 
+import dev.chinh.portfolio.platform.metrics.MetricsMapper;
+import dev.chinh.portfolio.platform.metrics.ProjectHealth;
 import dev.chinh.portfolio.platform.metrics.ProjectHealthDto;
+import dev.chinh.portfolio.platform.metrics.ProjectHealthRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -12,27 +15,59 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@org.mockito.junit.jupiter.MockitoSettings(strictness = org.mockito.quality.Strictness.LENIENT)
 class MetricsWebSocketHandlerTest {
 
     private MetricsWebSocketHandler handler;
+    private ProjectHealthRepository repository;
+    private MetricsMapper mapper;
 
     @BeforeEach
     void setUp() {
-        handler = new MetricsWebSocketHandler();
+        repository = mock(ProjectHealthRepository.class);
+        mapper = mock(MetricsMapper.class);
+        handler = new MetricsWebSocketHandler(repository, mapper);
     }
 
     @Test
-    void afterConnectionEstablished_doesNotThrow() {
+    void afterConnectionEstablished_sendsInitialSnapshot() throws IOException {
         WebSocketSession session = mock(WebSocketSession.class);
         when(session.getId()).thenReturn("session-1");
+        when(session.isOpen()).thenReturn(true);
+        when(repository.findAll()).thenReturn(Collections.emptyList());
 
-        assertDoesNotThrow(() -> handler.afterConnectionEstablished(session));
+        handler.afterConnectionEstablished(session);
+
+        verify(repository).findAll();
+    }
+
+    @Test
+    void afterConnectionEstablished_sendsCurrentRecords() throws IOException {
+        WebSocketSession session = mock(WebSocketSession.class);
+        when(session.getId()).thenReturn("session-1");
+        when(session.isOpen()).thenReturn(true);
+
+        ProjectHealth health = mock(ProjectHealth.class);
+        when(health.getProjectSlug()).thenReturn("wallet-app");
+        when(repository.findAll()).thenReturn(List.of(health));
+
+        ProjectHealthDto dto = new ProjectHealthDto("wallet-app", "UP",
+                new BigDecimal("100.00"), 150, null, Instant.now());
+        when(mapper.toDto(health)).thenReturn(dto);
+
+        handler.afterConnectionEstablished(session);
+
+        verify(repository).findAll();
+        verify(mapper).toDto(health);
+        verify(session).sendMessage(any(TextMessage.class));
     }
 
     @Test
