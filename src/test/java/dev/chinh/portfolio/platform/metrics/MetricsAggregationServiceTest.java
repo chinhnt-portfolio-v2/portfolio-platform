@@ -1,7 +1,6 @@
 package dev.chinh.portfolio.platform.metrics;
 
 import dev.chinh.portfolio.platform.websocket.MetricsWebSocketHandler;
-import dev.chinh.portfolio.shared.config.DemoApp;
 import dev.chinh.portfolio.shared.config.DemoAppRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,7 +33,7 @@ class MetricsAggregationServiceTest {
     @Mock
     private ProjectHealthRepository repository;
     @Mock
-    private DemoAppRegistry registry;
+    private DemoAppRegistry demoAppRegistry;
     @Mock
     private RestClient restClient;
     @Mock
@@ -49,15 +48,14 @@ class MetricsAggregationServiceTest {
     @InjectMocks
     private MetricsAggregationService service;
 
-    private DemoApp walletApp;
+    private DemoAppRegistry.DemoApp walletApp;
 
     @BeforeEach
     void setUp() {
-        walletApp = new DemoApp();
-        walletApp.setId("wallet-app");
+        walletApp = new DemoAppRegistry.DemoApp();
+        walletApp.setSlug("wallet-app");
+        walletApp.setName("Wallet App");
         walletApp.setHealthEndpoint("https://wallet.chinh.dev/health");
-        // Note: registry.getApps() is NOT stubbed here — only tests that call pollAll()
-        // or triggerRefresh() need this stub; tests calling pollApp() directly do not.
     }
 
     /** Configures the full RestClient chain to return a success response */
@@ -86,13 +84,10 @@ class MetricsAggregationServiceTest {
 
     @Test
     void pollApp_successfulResponse_upsertsStatusUp() {
-        // Stub repository.save() to return the saved entity
         ProjectHealth savedEntity = new ProjectHealth();
         savedEntity.setProjectSlug("wallet-app");
         savedEntity.setStatus(HealthStatus.UP);
         when(repository.save(any(ProjectHealth.class))).thenReturn(savedEntity);
-
-        // Stub mapper to return a valid DTO
         when(mapper.toDto(any(ProjectHealth.class))).thenReturn(
                 new ProjectHealthDto("wallet-app", "UP", new BigDecimal("100.00"), 150, null, Instant.now())
         );
@@ -110,8 +105,6 @@ class MetricsAggregationServiceTest {
         assertThat(saved.getResponseTimeMs()).isNotNull();
         assertThat(saved.getLastOnlineAt()).isNotNull();
         assertThat(saved.getLastPolledAt()).isNotNull();
-
-        // Verify WebSocket broadcast was called
         verify(mapper).toDto(any(ProjectHealth.class));
         verify(webSocketHandler).broadcast(any(ProjectHealthDto.class));
     }
@@ -123,9 +116,7 @@ class MetricsAggregationServiceTest {
         existing.setUptimePercent(new BigDecimal("95.50"));
         existing.setConsecutiveFailures(0);
         when(repository.findByProjectSlug("wallet-app")).thenReturn(Optional.of(existing));
-        // Must stub repository.save() to return the entity (otherwise toDto receives null)
         when(repository.save(any(ProjectHealth.class))).thenReturn(existing);
-        // Use lenient stubbing because we don't care about exact argument matching
         lenient().when(mapper.toDto(any(ProjectHealth.class))).thenReturn(
                 new ProjectHealthDto("wallet-app", "DOWN", new BigDecimal("95.50"), 150, null, Instant.now())
         );
@@ -140,8 +131,6 @@ class MetricsAggregationServiceTest {
         assertThat(saved.getConsecutiveFailures()).isEqualTo(1);
         assertThat(saved.getUptimePercent()).isEqualByComparingTo("95.50"); // preserved
         assertThat(saved.getLastPolledAt()).isNotNull();
-
-        // Verify WebSocket broadcast is called even on failure (AC2)
         verify(mapper).toDto(any(ProjectHealth.class));
         verify(webSocketHandler).broadcast(any(ProjectHealthDto.class));
     }
@@ -165,13 +154,15 @@ class MetricsAggregationServiceTest {
 
     @Test
     void pollAll_firstAppFails_secondAppStillPolled() {
-        DemoApp app1 = new DemoApp();
-        app1.setId("app-1");
+        DemoAppRegistry.DemoApp app1 = new DemoAppRegistry.DemoApp();
+        app1.setSlug("app-1");
+        app1.setName("App One");
         app1.setHealthEndpoint("https://app1.chinh.dev/health");
-        DemoApp app2 = new DemoApp();
-        app2.setId("app-2");
+        DemoAppRegistry.DemoApp app2 = new DemoAppRegistry.DemoApp();
+        app2.setSlug("app-2");
+        app2.setName("App Two");
         app2.setHealthEndpoint("https://app2.chinh.dev/health");
-        when(registry.getApps()).thenReturn(List.of(app1, app2));
+        when(demoAppRegistry.getApps()).thenReturn(List.of(app1, app2));
         when(repository.findByProjectSlug(anyString())).thenReturn(Optional.empty());
 
         doReturn(requestSpec).when(restClient).get();
@@ -204,7 +195,7 @@ class MetricsAggregationServiceTest {
 
     @Test
     void triggerRefresh_knownApp_callsPollApp() {
-        when(registry.getApps()).thenReturn(List.of(walletApp));
+        when(demoAppRegistry.getApps()).thenReturn(List.of(walletApp));
         when(repository.findByProjectSlug("wallet-app")).thenReturn(Optional.empty());
         stubRestClientSuccessAnyUri();
 
@@ -216,7 +207,7 @@ class MetricsAggregationServiceTest {
 
     @Test
     void triggerRefresh_unknownApp_doesNotCallRepository() {
-        when(registry.getApps()).thenReturn(List.of(walletApp));
+        when(demoAppRegistry.getApps()).thenReturn(List.of(walletApp));
         service.triggerRefresh("unknown-app");
 
         verify(repository, times(0)).findByProjectSlug(anyString());
@@ -240,18 +231,15 @@ class MetricsAggregationServiceTest {
 
     @Test
     void pollApp_failure_doesNotUpdateResponseTimeMs() {
-        // Arrange: existing record with responseTimeMs
         ProjectHealth existing = new ProjectHealth();
         existing.setProjectSlug("wallet-app");
-        existing.setResponseTimeMs(150);  // Previous measurement
+        existing.setResponseTimeMs(150);
         existing.setConsecutiveFailures(0);
         when(repository.findByProjectSlug("wallet-app")).thenReturn(Optional.of(existing));
         stubRestClientFailureAnyUri(new RuntimeException("Connection refused"));
 
-        // Act
         service.pollApp(walletApp);
 
-        // Assert: responseTimeMs should be preserved (not updated to null or new value)
         ArgumentCaptor<ProjectHealth> captor = ArgumentCaptor.forClass(ProjectHealth.class);
         verify(repository).save(captor.capture());
         assertThat(captor.getValue().getResponseTimeMs()).isEqualTo(150); // preserved
@@ -259,7 +247,7 @@ class MetricsAggregationServiceTest {
 
     @Test
     void pollAll_noExceptionPropagates_whenPollAppFails() {
-        when(registry.getApps()).thenReturn(List.of(walletApp));
+        when(demoAppRegistry.getApps()).thenReturn(List.of(walletApp));
         when(repository.findByProjectSlug(anyString())).thenReturn(Optional.empty());
         stubRestClientFailureAnyUri(new RuntimeException("unexpected"));
 
@@ -267,22 +255,83 @@ class MetricsAggregationServiceTest {
         service.pollAll();
     }
 
-    // ======= Story 3.7: Config-Only Demo App Registration =======
+    // ======= Story 3.7 / Story 6.4.2: Config-driven polling =======
 
     /**
-     * AC#2: When an app is removed from config, polling stops for that app.
-     * This test verifies that when registry returns empty list, no polling occurs.
-     * Note: getApps() is called twice - once for .size() in debug log, once for for-each loop
+     * AC#2 (Story 3.7): When an app is removed from config, polling stops.
+     * AC#4 (Story 6.4.2): Removing entry from showcase.yml → restart → polling stops.
+     *
+     * Verifies that when the registry returns an empty list, no polling occurs.
+     * Note: getApps() is called twice — once for .size() in debug log, once in for-each.
      */
     @Test
     void pollAll_emptyRegistry_noPollingOccurs() {
-        when(registry.getApps()).thenReturn(List.of());
+        when(demoAppRegistry.getApps()).thenReturn(List.of());
 
-        // Should not throw and should not call repository or restClient
         service.pollAll();
 
-        verify(registry, times(2)).getApps();
+        verify(demoAppRegistry, times(2)).getApps();
         verify(repository, times(0)).findByProjectSlug(anyString());
         verify(repository, times(0)).save(any());
+    }
+
+    // ======= Story 6.4.2: Showcase.yml config-driven polling =======
+
+    /**
+     * AC#1 (Story 6.4.2): showcase.yml drives demo app polling automatically.
+     * Adding a new entry to showcase.yml and restarting BE starts polling.
+     *
+     * Verifies that 2-app config polls both apps.
+     */
+    @Test
+    void pollAll_twoAppConfig_pollsBothApps() {
+        DemoAppRegistry.DemoApp app1 = new DemoAppRegistry.DemoApp();
+        app1.setSlug("wallet-app");
+        app1.setName("Wallet App");
+        app1.setHealthEndpoint("https://wallet.chinh.dev/health");
+        DemoAppRegistry.DemoApp app2 = new DemoAppRegistry.DemoApp();
+        app2.setSlug("portfolio-v2");
+        app2.setName("Portfolio v2");
+        app2.setHealthEndpoint("https://portfolio.chinh.dev/health");
+
+        when(demoAppRegistry.getApps()).thenReturn(List.of(app1, app2));
+        when(repository.findByProjectSlug(anyString())).thenReturn(Optional.empty());
+
+        doReturn(requestSpec).when(restClient).get();
+        doReturn(requestSpec).when(requestSpec).uri(anyString());
+        doReturn(responseSpec).when(requestSpec).retrieve();
+        doReturn(ResponseEntity.ok("{ \"status\": \"UP\" }")).when(responseSpec).toEntity(String.class);
+        when(repository.save(any(ProjectHealth.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        service.pollAll();
+
+        // Both apps should have been polled
+        verify(repository, times(2)).save(any(ProjectHealth.class));
+    }
+
+    /**
+     * AC#3 (Story 6.4.2): Graceful degradation — unreachable endpoint → DOWN,
+     * no exception propagated, polling continues for other apps.
+     */
+    @Test
+    void pollApp_unreachableEndpoint_recordsDownAndContinues() {
+        ProjectHealth existing = new ProjectHealth();
+        existing.setProjectSlug("wallet-app");
+        existing.setConsecutiveFailures(0);
+        when(repository.findByProjectSlug("wallet-app")).thenReturn(Optional.of(existing));
+        when(repository.save(any(ProjectHealth.class))).thenReturn(existing);
+        lenient().when(mapper.toDto(any(ProjectHealth.class))).thenReturn(
+                new ProjectHealthDto("wallet-app", "DOWN", null, null, null, Instant.now())
+        );
+        stubRestClientFailureAnyUri(new RuntimeException("Connection refused"));
+
+        // Must NOT throw
+        service.pollApp(walletApp);
+
+        ArgumentCaptor<ProjectHealth> captor = ArgumentCaptor.forClass(ProjectHealth.class);
+        verify(repository).save(captor.capture());
+        ProjectHealth saved = captor.getValue();
+        assertThat(saved.getStatus()).isEqualTo(HealthStatus.DOWN);
+        assertThat(saved.getConsecutiveFailures()).isEqualTo(1);
     }
 }

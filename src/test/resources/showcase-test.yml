@@ -1,0 +1,11 @@
+# Test fixture for MetricsAggregationIntegrationTest.
+# Defines exactly 2 apps with stable slugs for deterministic assertions.
+apps:
+  - slug: integration-test-up-app
+    name: "Integration Test UP App"
+    healthEndpoint: "http://localhost:18080/health"
+    demoUrl: "http://localhost:18080"
+  - slug: integration-test-down-app
+    name: "Integration Test DOWN App"
+    healthEndpoint: "http://localhost:18080/down"
+    demoUrl: "http://localhost:18080/down-page"

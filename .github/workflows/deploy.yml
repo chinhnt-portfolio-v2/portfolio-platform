@@ -61,6 +61,16 @@ jobs:
             CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }},
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
 
+      - name: Upload deployed URL artifact
+        run: echo "${{ steps.deploy.outputs.url }}" > deployed_url.txt
+
+      - name: Upload deployed URL artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployed-url
+          path: deployed_url.txt
+          retention-days: 1
+
       - name: Run smoke tests
         run: bash deploy/smoke-tests.sh
         env:

@@ -4,7 +4,7 @@ spring:
   profiles:
     active: local  # default for development; override with SPRING_PROFILES_ACTIVE=prod in production
   config:
-    import: optional:classpath:demo-apps.yml
+    import: optional:classpath:showcase.yml
 
   jpa:
     hibernate:
@@ -121,3 +121,27 @@ logging:
   level:
     dev.chinh.portfolio: INFO
     org.springframework: WARN
+
+---
+# ─────────────────────────────────────────────────────────────
+# DEV PROFILE — development environment using Neon dev database
+# ─────────────────────────────────────────────────────────────
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    hikari:
+      maximum-pool-size: 5
+      connection-timeout: 30000
+
+  jpa:
+    show-sql: false
+
+logging:
+  level:
+    dev.chinh.portfolio: DEBUG

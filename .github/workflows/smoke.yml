@@ -1,0 +1,96 @@
+name: Smoke Tests (CI Gate)
+
+on:
+  workflow_run:
+    workflows: ["Deploy Platform BE"]
+    types: [completed]
+
+  # Allow manual trigger for ad-hoc smoke testing
+  workflow_dispatch:
+    inputs:
+      deployed_url:
+        description: "Deployed BE URL (e.g. https://portfolio-platform-xxxx.as.a.run.app)"
+        required: false
+        type: string
+
+env:
+  SMOKE_TEST_ADMIN_TOKEN: ${{ secrets.SMOKE_TEST_ADMIN_TOKEN }}
+
+jobs:
+  smoke-tests:
+    name: Smoke Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      actions: read
+    if: >
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Download deployed URL artifact from the triggering deploy.yml run
+      - name: Download deployed URL artifact
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: deployed-url
+          workflow-run-id: ${{ github.event.workflow_run.id }}
+        env:
+          # Fallback: read from artifact content if download succeeds
+          DEPLOYED_BE_URL_FILE: ${{ github.event.workflow_run.id }}
+
+      - name: Read deployed URL
+        id: read_url
+        if: github.event_name == 'workflow_run'
+        run: |
+          if [ -f deployed_url.txt ]; then
+            echo "content=$(cat deployed_url.txt)" >> $GITHUB_OUTPUT
+          else
+            echo "content=" >> $GITHUB_OUTPUT
+            echo "WARNING: deployed_url.txt not found. Set deployed_url manually or check deploy.yml artifact step." >&2
+          fi
+
+      - name: Set up Node.js 20
+        if: env.DEPLOYED_BE_URL != ''
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        if: env.DEPLOYED_BE_URL != ''
+        run: npm ci
+        continue-on-error: false
+
+      - name: Run REST smoke tests
+        if: env.DEPLOYED_BE_URL != ''
+        run: npm run smoke:test -- --testPathPattern=rest
+        continue-on-error: false
+        env:
+          DEPLOYED_BE_URL: ${{ env.DEPLOYED_BE_URL || github.event.inputs.deployed_url }}
+          SMOKE_TEST_ADMIN_TOKEN: ${{ secrets.SMOKE_TEST_ADMIN_TOKEN }}
+
+      - name: Run WebSocket smoke tests
+        if: env.DEPLOYED_BE_URL != ''
+        run: npm run smoke:test -- --testPathPattern=websocket
+        continue-on-error: false
+        env:
+          DEPLOYED_BE_URL: ${{ env.DEPLOYED_BE_URL || github.event.inputs.deployed_url }}
+
+      - name: Smoke test failure — log error
+        if: failure()
+        run: |
+          echo "=========================================="
+          echo "SMOKE TEST FAILURE — CI GATE FAILED"
+          echo "=========================================="
+          echo "Workflow : ${{ github.workflow }}"
+          echo "Run ID   : ${{ github.run_id }}"
+          echo "URL      : ${{ env.DEPLOYED_BE_URL || 'unknown' }}"
+          echo ""
+          echo "One or more smoke tests failed. The deploy is flagged as requiring investigation."
+          echo "No automatic rollback is performed. Manual intervention may be required."
+          exit 1

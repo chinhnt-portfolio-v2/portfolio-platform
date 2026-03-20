@@ -78,7 +78,47 @@ This verifies:
 
 ---
 
-## Troubleshooting
+### 6. Admin Showcase Apps (Owner Only)
+
+```bash
+# Requires Owner JWT token
+curl https://portfolio-platform-1095331155372.asia-southeast1.run.app/api/v1/admin/showcase/apps \
+  -H "Authorization: Bearer <owner-jwt>"
+```
+
+**Expected:** `{"apps":[{"slug":"wallet-app","name":"Wallet App",...}]}`
+
+---
+
+## Managing Demo App Health Polling
+
+Demo apps are registered in `src/main/resources/showcase.yml`. Edit this file to add or remove apps:
+
+```yaml
+apps:
+  - slug: wallet-app
+    name: "Wallet App"
+    healthEndpoint: "https://wallet.chinh.dev/health"
+    demoUrl: "https://wallet.chinh.dev"
+```
+
+### Adding a new demo app
+
+1. Edit `showcase.yml`, add a new entry with `slug`, `name`, `healthEndpoint`, and optional `demoUrl`
+2. Commit and push to `main`
+3. CI/CD deploys automatically — BE restarts and begins polling the new app
+
+### Removing a demo app
+
+1. Remove the entry from `showcase.yml`
+2. Commit and push — orphan `project_health` records are automatically hidden after 7 days of staleness (Story 3.5)
+
+### Caveats
+
+- **Fail-fast:** Malformed YAML → application refuses to start. Check YAML syntax before pushing.
+- **Restart required:** Changes to `showcase.yml` take effect on BE restart (next deploy or manual restart).
+- **Slug alignment:** `slug` values in `showcase.yml` MUST match `slug` values in `portfolio-fe/src/config/projects.ts` for the same apps.
+- **dev profile:** Run with `SPRING_PROFILES_ACTIVE=dev` for Neon dev database + DEBUG logging.
 
 ### Health Check Fails
 

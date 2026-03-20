@@ -89,7 +89,7 @@ This section documents the config-driven registration workflow for demo apps (St
 
 ### Adding a New Demo App
 
-1. Edit `src/main/resources/demo-apps.yml`
+1. Edit `src/main/resources/showcase.yml`
 2. Add a new entry under `apps:`:
 
 ```yaml
@@ -104,15 +104,15 @@ apps:
 
 ### Removing a Demo App
 
-1. Edit `src/main/resources/demo-apps.yml`
+1. Edit `src/main/resources/showcase.yml`
 2. Remove or comment out the app entry
 3. Commit and redeploy — polling stops for that app
 4. Historical metrics remain in the database but are no longer updated or broadcast via WebSocket
 
 ### Config Validation
 
-- Spring Boot uses `spring.config.import: optional:classpath:demo-apps.yml` to load the config
-- If `demo-apps.yml` contains invalid YAML syntax, the application fails to start with a clear error
+- Spring Boot uses `spring.config.import: optional:classpath:showcase.yml` to load the config
+- If `showcase.yml` contains invalid YAML syntax, the application fails to start with a clear error
 - The `DemoAppRegistry` uses `@ConfigurationProperties(prefix = "")` to bind the root-level `apps` list
 - Unit test `DemoAppRegistryTest.getApps_bindingProperties_correctlyMapsFields()` validates the binding works correctly (runs without Docker)
 
@@ -127,3 +127,67 @@ apps:
 
 - Unit test: `DemoAppRegistryTest` — validates config loads correctly
 - Integration test: `MetricsAggregationServiceTest` — validates polling behavior (Story 3.1)
+
+## Smoke Test CI Gate (Story 6.4.3)
+
+### Stack Rationale
+
+| Tool | Purpose | Rationale |
+|---|---|---|
+| Jest | Test runner | Industry standard, fast, great TypeScript support |
+| `supertest` | HTTP assertions | Clean declarative API for REST endpoint testing |
+| `ws` | WebSocket client | Most widely used Node.js WebSocket library |
+| `dotenv` | Env loading | Loads `DEPLOYED_BE_URL` from CI environment |
+
+**Why Node.js for a Java Spring Boot app?**
+
+Smoke tests are HTTP/WebSocket **black-box** integration tests that run against the **deployed** Cloud Run endpoint — not against the Spring Boot JAR in-process. Node.js is the ideal runtime for this because:
+- `supertest` and `ws` are purpose-built for HTTP/WS client scripting
+- `npm` is natively supported in GitHub Actions without extra setup
+- No Java test environment needed in the CI runner
+- The BE remains the system-under-test; the test runtime is irrelevant to it
+
+**Alternative rejected:** JUnit `@SpringBootTest` — would run inside the JAR (not against the deployed endpoint) and requires Java in the CI runner.
+
+### CI Integration
+
+Two workflows work together:
+
+```
+deploy.yml (on success)
+  ├── uploads: deployed-url artifact
+  └── runs: bash deploy/smoke-tests.sh  (curl health checks only — lightweight pass/fail)
+
+smoke.yml (triggered by workflow_run from deploy.yml)
+  ├── downloads: deployed-url artifact
+  └── runs: npm run smoke:test  (Jest suite — primary CI gate)
+```
+
+- `smoke.yml` is the **primary CI gate** (triggered automatically after every deploy via `workflow_run`)
+- `deploy/smoke-tests.sh` in `deploy.yml` runs lightweight curl health checks only; the full Jest smoke test suite runs exclusively in `smoke.yml`
+- Both exit with non-zero on failure → GitHub Actions marks the workflow as failed → deploy flagged for investigation
+
+### Smoke Test Suites
+
+| Suite | File | What it tests |
+|---|---|---|
+| REST | `smoke/rest-smoke-tests.test.ts` | POST /api/v1/contact-submissions (201), GET /api/v1/admin/analytics (200, ≥1 submissions) |
+| WebSocket | `smoke/websocket-metrics.test.ts` | Connect to /ws/metrics, receive project_health message with valid `status` within 5s |
+
+### Required GitHub Secrets
+
+| Secret | Purpose |
+|---|---|
+| `SMOKE_TEST_ADMIN_TOKEN` | JWT for the Owner account — enables the admin analytics assertion (AC-1b). Optional: if absent, only the contact POST is validated (AC-1a). |
+
+### Cloud Run WebSocket Support
+
+As of 2025, Cloud Run natively supports WebSocket (no additional configuration needed beyond HTTPS/WSS). If the WebSocket handshake fails, `smoke/websocket-metrics.test.ts` fails with a clear error message including the attempted URL.
+
+### Timeout Configuration
+
+| Layer | Value | Rationale |
+|---|---|---|
+| Jest `testTimeout` | 30,000ms | Per-test timeout; sufficient for HTTP round-trips and WS handshake |
+| `smoke.yml` job `timeout-minutes` | 10 | GitHub Actions safety limit; smoke tests should complete in < 1 minute |
+| WebSocket message wait | 5,000ms | AC-2 hard requirement; metrics pipeline must broadcast within 5s |

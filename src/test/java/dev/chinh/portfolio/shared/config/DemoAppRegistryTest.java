@@ -1,5 +1,7 @@
 package dev.chinh.portfolio.shared.config;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -7,44 +9,109 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * Unit test for DemoAppRegistry - tests the POJO binding without Spring context.
- * This test runs without Docker/Testcontainers.
+ * Unit tests for DemoAppRegistry — YAML binding and field mapping.
+ *
+ * <p>These tests run WITHOUT Spring context and WITHOUT Docker/Testcontainers.
+ * They parse the actual {@code showcase.yml} file directly using Jackson, verifying
+ * the POJO binding matches what Spring's {@code @ConfigurationProperties} produces.
  */
 class DemoAppRegistryTest {
 
+    private static final ObjectMapper YAML = new ObjectMapper(new YAMLFactory());
+
+    // ── showcase.yml schema ───────────────────────────────────────────────────
+
     @Test
-    void getApps_bindingProperties_correctlyMapsFields() {
-        // Manually create and configure registry (simulates what @ConfigurationProperties does)
-        DemoApp app1 = new DemoApp();
-        app1.setId("wallet-app");
-        app1.setName("Wallet App");
-        app1.setHealthEndpoint("https://wallet.chinh.dev/health");
-        app1.setPollIntervalSeconds(60);
+    void showcaseYaml_twoEntries_parsedCorrectly() throws Exception {
+        DemoAppRegistry registry = YAML.readValue(
+                getClass().getResource("/showcase.yml"),
+                DemoAppRegistry.class
+        );
 
-        DemoAppRegistry registry = new DemoAppRegistry();
-        registry.setApps(List.of(app1));
+        List<DemoAppRegistry.DemoApp> apps = registry.getApps();
+        assertThat(apps).hasSizeGreaterThanOrEqualTo(2);
 
-        assertThat(registry.getApps()).hasSize(1);
-        DemoApp app = registry.getApps().get(0);
-        assertThat(app.getId()).isEqualTo("wallet-app");
-        assertThat(app.getName()).isEqualTo("Wallet App");
-        assertThat(app.getHealthEndpoint()).isEqualTo("https://wallet.chinh.dev/health");
-        assertThat(app.getPollIntervalSeconds()).isEqualTo(60);
+        DemoAppRegistry.DemoApp wallet = apps.stream()
+                .filter(a -> "wallet-app".equals(a.getSlug()))
+                .findFirst()
+                .orElseThrow();
+
+        assertThat(wallet.getName()).isEqualTo("Wallet App");
+        assertThat(wallet.getHealthEndpoint()).isEqualTo("https://wallet.chinh.dev/health");
+        assertThat(wallet.getDemoUrl()).isEqualTo("https://wallet.chinh.dev");
     }
 
     @Test
-    void getApps_emptyList_defaultConstructor() {
-        DemoAppRegistry registry = new DemoAppRegistry();
+    void showcaseYaml_slugsMatchProjectsTs() throws Exception {
+        // Story 6.4.2 AC: slug values in showcase.yml MUST match projects.ts slugs.
+        // Wallet App and Portfolio v2 are defined in both configs.
+        DemoAppRegistry registry = YAML.readValue(
+                getClass().getResource("/showcase.yml"),
+                DemoAppRegistry.class
+        );
 
+        List<String> slugs = registry.getApps().stream()
+                .map(DemoAppRegistry.DemoApp::getSlug)
+                .toList();
+
+        assertThat(slugs).contains("wallet-app", "portfolio-v2");
+    }
+
+    // ── POJO construction ─────────────────────────────────────────────────────
+
+    @Test
+    void demoApp_setterGetter_roundTrip() {
+        DemoAppRegistry.DemoApp app = new DemoAppRegistry.DemoApp();
+        app.setSlug("test-app");
+        app.setName("Test App");
+        app.setHealthEndpoint("https://test.chinh.dev/health");
+        app.setDemoUrl("https://test.chinh.dev");
+
+        assertThat(app.getSlug()).isEqualTo("test-app");
+        assertThat(app.getName()).isEqualTo("Test App");
+        assertThat(app.getHealthEndpoint()).isEqualTo("https://test.chinh.dev/health");
+        assertThat(app.getDemoUrl()).isEqualTo("https://test.chinh.dev");
+    }
+
+    @Test
+    void demoApp_demoUrl_optionalNullByDefault() {
+        DemoAppRegistry.DemoApp app = new DemoAppRegistry.DemoApp();
+        assertThat(app.getDemoUrl()).isNull();
+    }
+
+    @Test
+    void demoAppRegistry_getApps_returnsUnmodifiableList() {
+        DemoAppRegistry.DemoApp app = new DemoAppRegistry.DemoApp();
+        app.setSlug("test-app");
+        app.setName("Test App");
+        app.setHealthEndpoint("https://test.chinh.dev/health");
+
+        DemoAppRegistry registry = new DemoAppRegistry();
+        registry.setApps(List.of(app));
+
+        assertThat(registry.getApps()).isUnmodifiable();
+    }
+
+    @Test
+    void demoAppRegistry_emptyApps_returnsEmptyList() {
+        DemoAppRegistry registry = new DemoAppRegistry();
         assertThat(registry.getApps()).isEmpty();
     }
 
-    @Test
-    void getApps_defaultPollInterval_is60() {
-        // Java field initializer runs on object creation: private int pollIntervalSeconds = 60;
-        DemoApp app = new DemoApp();
+    // ── Malformed YAML handling ───────────────────────────────────────────────
 
-        // Verify default value from field initializer
-        assertThat(app.getPollIntervalSeconds()).isEqualTo(60);
+    @Test
+    void showcaseYaml_malformedYml_throwsException() {
+        String badYaml = """
+                apps:
+                  - slug: wallet-app
+                    name: "Wallet App"
+                      healthEndpoint: "https://wallet.chinh.dev/health"  # bad indent
+                """;
+
+        org.junit.jupiter.api.Assertions.assertThrows(
+                Exception.class,
+                () -> YAML.readValue(badYaml, DemoAppRegistry.class)
+        );
     }
 }

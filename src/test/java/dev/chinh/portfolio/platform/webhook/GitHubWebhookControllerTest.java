@@ -1,7 +1,6 @@
 package dev.chinh.portfolio.platform.webhook;
 
 import dev.chinh.portfolio.platform.metrics.MetricsAggregationService;
-import dev.chinh.portfolio.shared.config.DemoApp;
 import dev.chinh.portfolio.shared.config.DemoAppRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -178,12 +177,11 @@ class GitHubWebhookControllerTest {
         verify(metricsService).triggerRefresh("portfolio-fe");
     }
 
-    private DemoApp app(String id) {
-        DemoApp demoApp = new DemoApp();
-        demoApp.setId(id);
-        demoApp.setName(id);
+    private DemoAppRegistry.DemoApp app(String slug) {
+        DemoAppRegistry.DemoApp demoApp = new DemoAppRegistry.DemoApp();
+        demoApp.setSlug(slug);
+        demoApp.setName(slug);
         demoApp.setHealthEndpoint("http://localhost:8080/health");
-        demoApp.setPollIntervalSeconds(60);
         return demoApp;
     }
 }

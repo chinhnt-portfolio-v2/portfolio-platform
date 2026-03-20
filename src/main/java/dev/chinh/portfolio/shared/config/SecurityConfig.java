@@ -52,6 +52,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
+                                "/api/v1/analytics/track",   // fire-and-forget, public
                                 "/api/v1/contact",
                                 "/api/v1/contact-submissions",
                                 "/api/v1/webhooks/**",

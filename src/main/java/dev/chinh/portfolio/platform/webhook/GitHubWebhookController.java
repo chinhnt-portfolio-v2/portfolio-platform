@@ -75,7 +75,7 @@ public class GitHubWebhookController {
 
             // Check if app is registered (AC3 - silent ignore if not found)
             boolean appFound = demoAppRegistry.getApps().stream()
-                    .anyMatch(app -> app.getId().equals(projectSlug));
+                    .anyMatch(app -> app.getSlug().equals(projectSlug));
 
             if (!appFound) {
                 log.debug("Webhook for unknown repository: {}", repoFullName);
