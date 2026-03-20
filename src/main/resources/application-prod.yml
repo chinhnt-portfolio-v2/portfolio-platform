@@ -16,6 +16,7 @@ spring:
   config:
     activate:
       on-profile: prod
+    import: optional:classpath:showcase.yml
 
   datasource:
     url: ${SPRING_DATASOURCE_URL}
