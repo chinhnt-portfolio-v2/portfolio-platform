@@ -79,10 +79,11 @@ if (!BASE_URL) {
         }
       });
 
-      ws.on('close', (code: number, reason: Buffer) => {
+      ws.on('close', (code: number) => {
+        // Do NOT log here — done() has already been called; Jest will error
+        // if any console output happens after the test callback returns.
         if (closedByTest || messageReceived) {
-          console.log(`  + WebSocket closed by test -- code: ${code}`);
-          return;
+          return; // graceful close after successful message receipt
         }
         clearTimeout(timerId);
         done(new Error(`WebSocket closed (code=${code}) without receiving a valid project_health message.`));
