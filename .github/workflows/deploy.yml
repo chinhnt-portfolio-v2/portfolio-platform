@@ -12,6 +12,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     timeout-minutes: 20
+    outputs:
+      deployed_url: ${{ steps.deploy.outputs.url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -71,8 +73,52 @@ jobs:
           path: deployed_url.txt
           retention-days: 1
 
-      - name: Run smoke tests
-        run: bash deploy/smoke-tests.sh
+  smoke-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: deploy
+    steps:
+      - name: Download deployed URL
+        uses: actions/download-artifact@v4
+        with:
+          name: deployed-url
+
+      - name: Read deployed URL
+        id: read_url
+        run: echo "url=$(cat deployed_url.txt)" >> $GITHUB_OUTPUT
+
+      - name: Set up Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Run REST smoke tests
+        run: npm run smoke:test -- --testPathPattern=rest
+        continue-on-error: false
         env:
-          BASE_URL: ${{ steps.deploy.outputs.url }}
+          DEPLOYED_BE_URL: ${{ needs.deploy.outputs.deployed_url }}
           SMOKE_TEST_ADMIN_TOKEN: ${{ secrets.SMOKE_TEST_ADMIN_TOKEN }}
+
+      - name: Run WebSocket smoke tests
+        run: npm run smoke:test -- --testPathPattern=websocket
+        continue-on-error: false
+        env:
+          DEPLOYED_BE_URL: ${{ needs.deploy.outputs.deployed_url }}
+
+      - name: Report smoke test failure
+        if: failure()
+        run: |
+          echo "=========================================="
+          echo "SMOKE TEST FAILURE — CI GATE FAILED"
+          echo "=========================================="
+          echo "Workflow : Deploy Platform BE"
+          echo "Run ID   : ${{ github.run_id }}"
+          echo "URL      : ${{ needs.deploy.outputs.deployed_url }}"
+          echo ""
+          echo "One or more smoke tests failed. The deploy is flagged as requiring investigation."
+          echo "No automatic rollback is performed. Manual intervention may be required."
+          exit 1
