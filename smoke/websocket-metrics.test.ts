@@ -6,7 +6,7 @@
  * within ≤ 5 seconds.
  *
  * Run: npm run smoke:test -- --testPathPattern=websocket
- * Required env: DEPLOYED_BE_URL (e.g. https://portfolio-platform-xxxx.as.a.run.app)
+ * Required env: DEPLOYED_BE_URL (e.g. https://portfolio-platform-xxxx.as.run.app)
  */
 
 import { WebSocket } from 'ws';
@@ -31,8 +31,14 @@ if (!BASE_URL) {
   describe('WebSocket Smoke Tests — Metrics Broadcast', () => {
 
     it(`AC-2: WebSocket /ws/metrics receives project_health message with valid status within ${TIMEOUT_MS}ms`, (done) => {
+      // Use jest.fn() wrapper so we can check hasBeenCalled on the mock — avoids
+      // TypeScript complaint about DoneCallback not having hasBeenCalled.
+      const doneMock = jest.fn(done);
+
       let messageReceived = false;
-      let timerId: NodeJS.Timeout;
+      let timerId: ReturnType<typeof setTimeout>;
+
+      console.log(`  -> Connecting to ${WS_URL} (timeout: ${TIMEOUT_MS}ms) ...`);
 
       const ws = new WebSocket(WS_URL, {
         handshakeTimeout: 10000,
@@ -42,8 +48,8 @@ if (!BASE_URL) {
         console.log('  + WebSocket connection opened');
         timerId = setTimeout(() => {
           if (!messageReceived) {
-            ws.close();
-            done(new Error(
+            ws.terminate();
+            doneMock(new Error(
               `TIMEOUT: No project_health message received within ${TIMEOUT_MS}ms from ${WS_URL}. ` +
               'The metrics broadcast pipeline may be down or the scheduler cycle (>60s) ' +
               'has not completed since deployment.'
@@ -53,9 +59,8 @@ if (!BASE_URL) {
       });
 
       ws.on('message', (data: Buffer) => {
-        // Log only if test is still active — suppress extra messages that arrive
-        // after done() has been called (e.g. second project snapshot after first message).
-        if (done.hasBeenCalled) return;
+        // Skip any messages that arrive after done() was called
+        if (doneMock.mock.calls.length > 0) return;
 
         try {
           const message = JSON.parse(data.toString());
@@ -68,10 +73,8 @@ if (!BASE_URL) {
               expect(typeof message.status).toBe('string');
               expect(message.status.length).toBeGreaterThan(0);
               console.log(`  + project_health message received -- status: "${message.status}"`);
-              closedByTest = true;
-              ws.terminate(); // Force destroy immediately — prevents queued messages from
-                             // arriving after done() is called and causing Jest exit-1
-              done();
+              ws.terminate(); // Force destroy — prevents queued messages arriving after done()
+              doneMock();
             }
           } else {
             console.warn(`  ! Received message without valid status field:`, message);
@@ -82,17 +85,17 @@ if (!BASE_URL) {
       });
 
       ws.on('close', (code: number) => {
-        // done.hasBeenCalled catches both ws.terminate() and ws.close(1000).
-        // If done() was already called, suppress any close-triggered logging.
-        if (done.hasBeenCalled || messageReceived) return;
+        // doneMock mock.calls.length > 0 means done() was already called — suppress
+        // any post-done logging that would cause Jest exit-1.
+        if (doneMock.mock.calls.length > 0 || messageReceived) return;
         clearTimeout(timerId);
-        done(new Error(`WebSocket closed (code=${code}) without receiving a valid project_health message.`));
+        doneMock(new Error(`WebSocket closed (code=${code}) without receiving a valid project_health message.`));
       });
 
       ws.on('error', (err: Error) => {
         clearTimeout(timerId);
         console.error(`  x WebSocket error: ${err.message}`);
-        done(new Error(`WebSocket connection failed: ${err.message}`));
+        doneMock(new Error(`WebSocket connection failed: ${err.message}`));
       });
     });
   });
