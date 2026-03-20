@@ -31,7 +31,6 @@ describeOrSkip('REST Smoke Tests — Contact Form → Admin Analytics', () => {
       .post('/api/v1/contact-submissions')
       .set('Content-Type', 'application/json')
       .send({
-        name: 'Smoke Test Bot',
         email: `smoke-${Date.now()}@test.chinh.dev`,
         message: 'Automated smoke test contact submission',
         referralSource: 'direct',
@@ -57,7 +56,22 @@ describeOrSkip('REST Smoke Tests — Contact Form → Admin Analytics', () => {
       .expect(200);
 
     expect(response.body).toBeDefined();
-    const body = response.body as { summary?: { totalSubmissions: number } };
+    const body = response.body as {
+      summary?: { totalSubmissions: number; last30DaysCount: number; last7DaysCount: number };
+      byReferralSource?: unknown[];
+      recentSubmissions?: unknown[];
+      dateRange?: unknown;
+    };
+
+    // AdminAnalyticsDto response shape — all fields are present and typed
+    expect(body.summary).toBeDefined();
+    expect(body.byReferralSource).toBeDefined();
+    expect(body.recentSubmissions).toBeDefined();
+    // dateRange is nullable — only assert shape if present
+    if (body.dateRange !== undefined) {
+      expect(body.dateRange).not.toBeNull();
+    }
+
     const total = body.summary?.totalSubmissions ?? 0;
     console.log(`  + Admin analytics -- totalSubmissions: ${total}`);
     expect(total).toBeGreaterThanOrEqual(1);

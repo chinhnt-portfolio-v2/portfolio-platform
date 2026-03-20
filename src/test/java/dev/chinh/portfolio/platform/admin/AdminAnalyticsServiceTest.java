@@ -67,7 +67,7 @@ class AdminAnalyticsServiceTest {
     }
 
     private void stubEmpty() {
-        when(repository.countAll()).thenReturn(0L);
+        when(repository.count()).thenReturn(0L);
         when(repository.countBySubmittedAtAfter(any(Instant.class))).thenReturn(0L);
         when(repository.countGroupByReferralSource()).thenReturn(List.of());
         when(repository.findAllByOrderBySubmittedAtDesc(any(Pageable.class))).thenReturn(new PageImpl<>(List.of()));
@@ -115,7 +115,7 @@ class AdminAnalyticsServiceTest {
 
     @Test
     void ac4_shouldSortByCountDescending() {
-        when(repository.countAll()).thenReturn(34L);
+        when(repository.count()).thenReturn(34L);
         when(repository.countBySubmittedAtAfter(any(Instant.class))).thenReturn(0L);
         when(repository.countGroupByReferralSource()).thenReturn(groupBy(
                 new Object[]{"linkedin", 18L},
@@ -138,7 +138,7 @@ class AdminAnalyticsServiceTest {
 
     @Test
     void ac4_shouldIncludeNullSourceForDirectVisits() {
-        when(repository.countAll()).thenReturn(10L);
+        when(repository.count()).thenReturn(10L);
         when(repository.countBySubmittedAtAfter(any(Instant.class))).thenReturn(0L);
         when(repository.countGroupByReferralSource()).thenReturn(groupBy(
                 new Object[]{"linkedin", 7L},
@@ -158,7 +158,7 @@ class AdminAnalyticsServiceTest {
     @Test
     void ac4_shouldRoundPercentagesTo1DecimalPlace() {
         // 18/34 = 52.941…% → 52.9; 12/34 = 35.294…% → 35.3; 4/34 = 11.764…% → 11.8
-        when(repository.countAll()).thenReturn(34L);
+        when(repository.count()).thenReturn(34L);
         when(repository.countBySubmittedAtAfter(any(Instant.class))).thenReturn(0L);
         when(repository.countGroupByReferralSource()).thenReturn(groupBy(
                 new Object[]{"linkedin", 18L},
@@ -178,7 +178,7 @@ class AdminAnalyticsServiceTest {
     @Test
     void ac4_shouldHandleRoundingBoundaryAtOneThird_HALF_UP() {
         // 1/3 = 33.333…% → 33.3 (rounds down: second decimal 3 < 5)
-        when(repository.countAll()).thenReturn(3L);
+        when(repository.count()).thenReturn(3L);
         when(repository.countBySubmittedAtAfter(any(Instant.class))).thenReturn(0L);
         when(repository.countGroupByReferralSource()).thenReturn(groupBy(
                 new Object[]{"linkedin", 1L},
@@ -211,7 +211,7 @@ class AdminAnalyticsServiceTest {
                 "00000000-0000-0000-0000-000000000001",
                 "recruiter@example.com", now, "linkedin");
 
-        when(repository.countAll()).thenReturn(1L);
+        when(repository.count()).thenReturn(1L);
         when(repository.countBySubmittedAtAfter(any(Instant.class))).thenReturn(0L);
         when(repository.countGroupByReferralSource()).thenReturn(groupBy(new Object[]{"linkedin", 1L}));
         when(repository.findAllByOrderBySubmittedAtDesc(any(Pageable.class))).thenReturn(new PageImpl<>(List.of(s)));
@@ -244,7 +244,7 @@ class AdminAnalyticsServiceTest {
         }
         RecentSubmissionDto dto = new RecentSubmissionDto("id", "email", now, "linkedin");
 
-        when(repository.countAll()).thenReturn(25L);
+        when(repository.count()).thenReturn(25L);
         when(repository.countBySubmittedAtAfter(any(Instant.class))).thenReturn(0L);
         when(repository.countGroupByReferralSource()).thenReturn(groupBy(new Object[]{"linkedin", 25L}));
         when(repository.findAllByOrderBySubmittedAtDesc(any(Pageable.class)))
@@ -270,7 +270,7 @@ class AdminAnalyticsServiceTest {
         );
         RecentSubmissionDto dto = new RecentSubmissionDto("id", "email", early, "linkedin");
 
-        when(repository.countAll()).thenReturn(3L);
+        when(repository.count()).thenReturn(3L);
         when(repository.countBySubmittedAtAfter(any(Instant.class))).thenReturn(0L);
         when(repository.countGroupByReferralSource()).thenReturn(groupBy(
                 new Object[]{"linkedin", 1L},
@@ -291,7 +291,7 @@ class AdminAnalyticsServiceTest {
     @Test
     void summary_shouldReturnTotalCount() {
         stubEmpty();
-        when(repository.countAll()).thenReturn(42L);
+        when(repository.count()).thenReturn(42L);
 
         AdminAnalyticsDto dto = service.getAnalytics();
         assertThat(dto.summary().totalSubmissions()).isEqualTo(42L);

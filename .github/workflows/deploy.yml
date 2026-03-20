@@ -75,3 +75,4 @@ jobs:
         run: bash deploy/smoke-tests.sh
         env:
           BASE_URL: ${{ steps.deploy.outputs.url }}
+          SMOKE_TEST_ADMIN_TOKEN: ${{ secrets.SMOKE_TEST_ADMIN_TOKEN }}

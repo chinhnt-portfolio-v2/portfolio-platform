@@ -19,11 +19,6 @@ public interface ContactSubmissionRepository extends JpaRepository<ContactSubmis
     // ── Story 6.2: Analytics Aggregation Queries ────────────────────────────────────
 
     /**
-     * Count all submissions.
-     */
-    long countAll();
-
-    /**
      * Count submissions submitted after the given instant.
      */
     long countBySubmittedAtAfter(Instant after);

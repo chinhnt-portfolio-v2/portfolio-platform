@@ -16,11 +16,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.Instant;
 import java.time.ZoneOffset;
-import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
-import java.util.OptionalLong;
 
 /**
  * Aggregation logic for the admin analytics endpoint.
@@ -84,7 +81,7 @@ public class AdminAnalyticsService {
         Instant last30Days = now.atZone(ZoneOffset.UTC).minusDays(30).toInstant();
         Instant last7Days  = now.atZone(ZoneOffset.UTC).minusDays(7).toInstant();
 
-        long total = repository.countAll();
+        long total = repository.count();
 
         // countBySubmittedAtAfter returns 0 when called on empty table — no null risk
         long last30 = repository.countBySubmittedAtAfter(last30Days);

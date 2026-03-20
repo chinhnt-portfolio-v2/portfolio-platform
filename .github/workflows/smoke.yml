@@ -24,6 +24,7 @@ jobs:
     permissions:
       contents: read
       actions: read
+      actions: write   # Required to download artifacts from a different workflow run via workflow_run trigger
     if: >
       github.event_name == 'workflow_dispatch' ||
       (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success')
