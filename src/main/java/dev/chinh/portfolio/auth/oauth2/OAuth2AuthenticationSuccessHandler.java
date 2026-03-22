@@ -67,7 +67,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         AuthResponse authResponse = AuthResponse.of(accessToken, session.getRefreshToken());
 
         // Redirect to frontend with tokens as query parameters
-        String frontendUrl = System.getenv().getOrDefault("FRONTEND_URL", "https://portfolio-fe-omega-gold.vercel.app");
+        String frontendUrl = System.getenv().getOrDefault("FRONTEND_URL", "https://chinhnt-portfolio.vercel.app");
         String redirectUrl = String.format("%s?accessToken=%s&refreshToken=%s&tokenType=Bearer",
                 frontendUrl,
                 authResponse.accessToken(),

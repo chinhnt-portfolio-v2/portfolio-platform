@@ -21,7 +21,7 @@ apps:
     demoUrl: "https://wallet.chinh.dev"
   - slug: portfolio-v2
     name: "Portfolio v2"
-    healthEndpoint: "https://portfolio-fe-omega-gold.vercel.app/"
+    healthEndpoint: "https://chinhnt-portfolio.vercel.app/"
     demoUrl: "https://portfolio.chinh.dev"
   # ── Adding a new app ────────────────────────────────────────────────────
   # Uncomment and fill the template below, then restart BE.
