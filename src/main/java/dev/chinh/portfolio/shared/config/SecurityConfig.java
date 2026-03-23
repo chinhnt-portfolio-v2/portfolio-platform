@@ -99,20 +99,25 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
 
         // Support production domain via environment variable (comma-separated)
+        // Use setAllowedOriginPatterns for wildcard support (e.g. https://*.vercel.app)
+        // This is more flexible than setAllowedOrigins which requires exact match.
         String corsOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
         if (corsOrigins != null && !corsOrigins.isBlank()) {
-            configuration.setAllowedOrigins(Arrays.asList(corsOrigins.split(",")));
+            configuration.setAllowedOriginPatterns(Arrays.asList(corsOrigins.split(",")));
         } else {
-            // Default: local development origins
-            configuration.setAllowedOrigins(Arrays.asList(
-                    "https://portfolio-v2.vercel.app",
+            // Default: local + Vercel preview domains
+            configuration.setAllowedOriginPatterns(Arrays.asList(
+                    "https://*.vercel.app",
                     "http://localhost:5173",
                     "http://localhost:3000"
             ));
         }
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        configuration.setAllowCredentials(true);
+        // Note: allowCredentials(true) is NOT set here — analytics/track endpoint is
+        // fire-and-forget, anonymous, and uses fetch without credentials (omit).
+        // If credentials were needed, we would use allowedOriginPatterns with specific
+        // origins (not wildcards) to avoid "Invalid CORS request" rejection.
         configuration.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
