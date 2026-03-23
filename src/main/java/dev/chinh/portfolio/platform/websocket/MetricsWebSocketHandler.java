@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -32,6 +33,7 @@ public class MetricsWebSocketHandler extends TextWebSocketHandler {
 
     private final ProjectHealthRepository projectHealthRepository;
     private final MetricsMapper metricsMapper;
+    @Lazy
     private final MetricsAggregationService metricsAggregationService;
 
     public MetricsWebSocketHandler(ProjectHealthRepository projectHealthRepository,
