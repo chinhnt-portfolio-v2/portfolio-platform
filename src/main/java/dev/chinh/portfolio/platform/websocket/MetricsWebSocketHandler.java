@@ -1,5 +1,6 @@
 package dev.chinh.portfolio.platform.websocket;
 
+import dev.chinh.portfolio.platform.metrics.MetricsAggregationService;
 import dev.chinh.portfolio.platform.metrics.MetricsMapper;
 import dev.chinh.portfolio.platform.metrics.ProjectHealthDto;
 import dev.chinh.portfolio.platform.metrics.ProjectHealthRepository;
@@ -31,11 +32,14 @@ public class MetricsWebSocketHandler extends TextWebSocketHandler {
 
     private final ProjectHealthRepository projectHealthRepository;
     private final MetricsMapper metricsMapper;
+    private final MetricsAggregationService metricsAggregationService;
 
     public MetricsWebSocketHandler(ProjectHealthRepository projectHealthRepository,
-                                  MetricsMapper metricsMapper) {
+                                  MetricsMapper metricsMapper,
+                                  MetricsAggregationService metricsAggregationService) {
         this.projectHealthRepository = projectHealthRepository;
         this.metricsMapper = metricsMapper;
+        this.metricsAggregationService = metricsAggregationService;
     }
 
     @Override
@@ -47,6 +51,10 @@ public class MetricsWebSocketHandler extends TextWebSocketHandler {
         // This ensures a newly connected client immediately receives data without
         // waiting for the next scheduler poll cycle (60s).
         sendInitialSnapshot(session);
+
+        // Trigger a fresh poll immediately so the new client gets up-to-date data
+        // even if DB was previously empty. Broadcast below handles all sessions.
+        metricsAggregationService.pollAll();
     }
 
     @Override

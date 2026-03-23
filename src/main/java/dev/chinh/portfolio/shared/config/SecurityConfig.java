@@ -12,6 +12,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -62,6 +63,7 @@ public class SecurityConfig {
                                 "/api/v1/webhooks/**",
                                 "/api/v1/auth/**",
                                 "/api/v1/.well-known/**",
+                                "/api/v1/github/contributions", // GitHub contributions proxy — unauthenticated
                                 "/api/v1/project-health",
                                 "/api-docs/**",
                                 "/v3/api-docs/**",
@@ -70,6 +72,8 @@ public class SecurityConfig {
                                 "/actuator/health",
                                 "/ws/**"            // WebSocket upgrade — unauthenticated, public metrics broadcast
                         ).permitAll()
+                        // CORS preflight: permit all OPTIONS requests so browser preflight never hits auth/RateLimit
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().permitAll()
                 )

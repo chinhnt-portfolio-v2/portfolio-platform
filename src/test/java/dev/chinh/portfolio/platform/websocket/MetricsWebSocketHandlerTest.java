@@ -1,5 +1,6 @@
 package dev.chinh.portfolio.platform.websocket;
 
+import dev.chinh.portfolio.platform.metrics.MetricsAggregationService;
 import dev.chinh.portfolio.platform.metrics.MetricsMapper;
 import dev.chinh.portfolio.platform.metrics.ProjectHealth;
 import dev.chinh.portfolio.platform.metrics.ProjectHealthDto;
@@ -29,12 +30,14 @@ class MetricsWebSocketHandlerTest {
     private MetricsWebSocketHandler handler;
     private ProjectHealthRepository repository;
     private MetricsMapper mapper;
+    private MetricsAggregationService metricsAggregationService;
 
     @BeforeEach
     void setUp() {
         repository = mock(ProjectHealthRepository.class);
         mapper = mock(MetricsMapper.class);
-        handler = new MetricsWebSocketHandler(repository, mapper);
+        metricsAggregationService = mock(MetricsAggregationService.class);
+        handler = new MetricsWebSocketHandler(repository, mapper, metricsAggregationService);
     }
 
     @Test
@@ -47,6 +50,8 @@ class MetricsWebSocketHandlerTest {
         handler.afterConnectionEstablished(session);
 
         verify(repository).findAll();
+        // Fresh poll must be triggered so new clients always receive data
+        verify(metricsAggregationService).pollAll();
     }
 
     @Test
@@ -68,6 +73,7 @@ class MetricsWebSocketHandlerTest {
         verify(repository).findAll();
         verify(mapper).toDto(health);
         verify(session).sendMessage(any(TextMessage.class));
+        verify(metricsAggregationService).pollAll();
     }
 
     @Test
