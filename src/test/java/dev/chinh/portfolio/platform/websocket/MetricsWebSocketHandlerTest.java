@@ -1,6 +1,5 @@
 package dev.chinh.portfolio.platform.websocket;
 
-import dev.chinh.portfolio.platform.metrics.MetricsAggregationService;
 import dev.chinh.portfolio.platform.metrics.MetricsMapper;
 import dev.chinh.portfolio.platform.metrics.ProjectHealth;
 import dev.chinh.portfolio.platform.metrics.ProjectHealthDto;
@@ -8,6 +7,8 @@ import dev.chinh.portfolio.platform.metrics.ProjectHealthRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -30,14 +31,17 @@ class MetricsWebSocketHandlerTest {
     private MetricsWebSocketHandler handler;
     private ProjectHealthRepository repository;
     private MetricsMapper mapper;
-    private MetricsAggregationService metricsAggregationService;
+    private org.springframework.context.ApplicationEventPublisher eventPublisher;
+
+    @Captor
+    private ArgumentCaptor<RefreshMetricsEvent> refreshEventCaptor;
 
     @BeforeEach
     void setUp() {
         repository = mock(ProjectHealthRepository.class);
         mapper = mock(MetricsMapper.class);
-        metricsAggregationService = mock(MetricsAggregationService.class);
-        handler = new MetricsWebSocketHandler(repository, mapper, metricsAggregationService);
+        eventPublisher = mock(org.springframework.context.ApplicationEventPublisher.class);
+        handler = new MetricsWebSocketHandler(repository, mapper, eventPublisher);
     }
 
     @Test
@@ -50,8 +54,9 @@ class MetricsWebSocketHandlerTest {
         handler.afterConnectionEstablished(session);
 
         verify(repository).findAll();
-        // Fresh poll must be triggered so new clients always receive data
-        verify(metricsAggregationService).pollAll();
+        // Verify a RefreshMetricsEvent is published so the new client gets fresh data
+        verify(eventPublisher).publishEvent(refreshEventCaptor.capture());
+        assertInstanceOf(RefreshMetricsEvent.class, refreshEventCaptor.getValue());
     }
 
     @Test
@@ -73,7 +78,7 @@ class MetricsWebSocketHandlerTest {
         verify(repository).findAll();
         verify(mapper).toDto(health);
         verify(session).sendMessage(any(TextMessage.class));
-        verify(metricsAggregationService).pollAll();
+        verify(eventPublisher).publishEvent(any(RefreshMetricsEvent.class));
     }
 
     @Test
@@ -114,8 +119,6 @@ class MetricsWebSocketHandlerTest {
 
     @Test
     void broadcast_withClosedSessions_handlesGracefully() {
-        // This test verifies broadcast handles mixed open/closed sessions gracefully
-        // We can't easily test with mocks due to reflection, but we verify no exceptions
         ProjectHealthDto dto = new ProjectHealthDto(
                 "wallet-app",
                 "UP",
@@ -131,7 +134,6 @@ class MetricsWebSocketHandlerTest {
 
     @Test
     void broadcast_serializationHandlesNullFields() {
-        // Test that broadcast handles DTOs with null fields gracefully
         ProjectHealthDto dto = new ProjectHealthDto(
                 "test-app",
                 "DOWN",

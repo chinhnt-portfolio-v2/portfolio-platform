@@ -1,9 +1,11 @@
 package dev.chinh.portfolio.platform.metrics;
 
-import dev.chinh.portfolio.platform.websocket.MetricsWebSocketHandler;
+import dev.chinh.portfolio.platform.websocket.RefreshMetricsEvent;
 import dev.chinh.portfolio.shared.config.DemoAppRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
@@ -20,18 +22,18 @@ public class MetricsAggregationService {
     private final DemoAppRegistry demoAppRegistry;
     private final RestClient restClient;
     private final MetricsMapper mapper;
-    private final MetricsWebSocketHandler webSocketHandler;
+    private final ApplicationEventPublisher eventPublisher;
 
     public MetricsAggregationService(ProjectHealthRepository repository,
                                      DemoAppRegistry demoAppRegistry,
                                      RestClient restClient,
                                      MetricsMapper mapper,
-                                     MetricsWebSocketHandler webSocketHandler) {
+                                     ApplicationEventPublisher eventPublisher) {
         this.repository = repository;
         this.demoAppRegistry = demoAppRegistry;
         this.restClient = restClient;
         this.mapper = mapper;
-        this.webSocketHandler = webSocketHandler;
+        this.eventPublisher = eventPublisher;
     }
 
     @Scheduled(fixedDelay = 60_000)
@@ -45,6 +47,16 @@ public class MetricsAggregationService {
                 log.warn("Unexpected error polling app '{}': {}", app.getSlug(), e.getMessage());
             }
         }
+    }
+
+    /**
+     * Trigger an immediate poll when a new WebSocket client connects.
+     * MetricsWebSocketHandler publishes this event to request fresh data.
+     */
+    @EventListener
+    public void onRefreshRequest(RefreshMetricsEvent event) {
+        log.debug("RefreshMetricsEvent received — triggering immediate poll");
+        pollAll();
     }
 
     public void pollApp(DemoAppRegistry.DemoApp app) {
@@ -71,7 +83,7 @@ public class MetricsAggregationService {
             record.setConsecutiveFailures(0);
             ProjectHealth saved = repository.save(record);
             ProjectHealthDto dto = mapper.toDto(saved);
-            webSocketHandler.broadcast(dto);
+            eventPublisher.publishEvent(new ProjectHealthUpdatedEvent(this, dto));
             log.debug("Poll success for '{}' ({}): {}ms", app.getSlug(), app.getName(), responseTimeMs);
 
         } catch (Exception e) {
@@ -80,7 +92,7 @@ public class MetricsAggregationService {
             record.setConsecutiveFailures(record.getConsecutiveFailures() + 1);
             ProjectHealth saved = repository.save(record);
             ProjectHealthDto dto = mapper.toDto(saved);
-            webSocketHandler.broadcast(dto);
+            eventPublisher.publishEvent(new ProjectHealthUpdatedEvent(this, dto));
             log.warn("Health poll failed for app '{}' ({}): {}", app.getSlug(), app.getName(), e.getMessage());
             if (log.isDebugEnabled()) {
                 log.debug("Stack trace", e);

@@ -1,15 +1,17 @@
 package dev.chinh.portfolio.platform.websocket;
 
-import dev.chinh.portfolio.platform.metrics.MetricsAggregationService;
 import dev.chinh.portfolio.platform.metrics.MetricsMapper;
 import dev.chinh.portfolio.platform.metrics.ProjectHealthDto;
 import dev.chinh.portfolio.platform.metrics.ProjectHealthRepository;
+import dev.chinh.portfolio.platform.metrics.ProjectHealthUpdatedEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Lazy;
+import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -33,15 +35,14 @@ public class MetricsWebSocketHandler extends TextWebSocketHandler {
 
     private final ProjectHealthRepository projectHealthRepository;
     private final MetricsMapper metricsMapper;
-    @Lazy
-    private final MetricsAggregationService metricsAggregationService;
+    private final ApplicationEventPublisher eventPublisher;
 
     public MetricsWebSocketHandler(ProjectHealthRepository projectHealthRepository,
                                   MetricsMapper metricsMapper,
-                                  MetricsAggregationService metricsAggregationService) {
+                                  ApplicationEventPublisher eventPublisher) {
         this.projectHealthRepository = projectHealthRepository;
         this.metricsMapper = metricsMapper;
-        this.metricsAggregationService = metricsAggregationService;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -54,9 +55,9 @@ public class MetricsWebSocketHandler extends TextWebSocketHandler {
         // waiting for the next scheduler poll cycle (60s).
         sendInitialSnapshot(session);
 
-        // Trigger a fresh poll immediately so the new client gets up-to-date data
-        // even if DB was previously empty. Broadcast below handles all sessions.
-        metricsAggregationService.pollAll();
+        // Request a fresh poll so the new client gets up-to-date data
+        // even if DB was previously empty.
+        eventPublisher.publishEvent(new RefreshMetricsEvent(this));
     }
 
     @Override
@@ -69,6 +70,24 @@ public class MetricsWebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         // One-way: BE → FE only. Incoming messages are ignored.
         log.debug("Received message from {} (ignored - one-way channel): {}", session.getId(), message.getPayload());
+    }
+
+    /**
+     * Listen for metrics refresh requests (from new WebSocket connections).
+     * MetricsAggregationService triggers pollAll() on receipt.
+     */
+    @EventListener
+    public void onRefreshRequest(RefreshMetricsEvent event) {
+        // MetricsAggregationService handles this via its own @EventListener
+    }
+
+    /**
+     * Listen for project health updates from MetricsAggregationService
+     * and broadcast to all connected WebSocket clients.
+     */
+    @EventListener
+    public void onProjectHealthUpdated(ProjectHealthUpdatedEvent event) {
+        broadcast(event.getDto());
     }
 
     /**
@@ -118,4 +137,3 @@ public class MetricsWebSocketHandler extends TextWebSocketHandler {
         }
     }
 }
-
