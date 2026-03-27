@@ -3,6 +3,8 @@ package dev.chinh.portfolio.apps.wallet.service;
 import dev.chinh.portfolio.apps.wallet.*;
 import dev.chinh.portfolio.apps.wallet.dto.*;
 import dev.chinh.portfolio.shared.error.EntityNotFoundException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
@@ -36,9 +38,8 @@ public class TransactionService {
     }
 
     public List<TransactionResponse> listTransactions(UUID userId, String type, Long walletId, Long groupId, int page, int size) {
-        // Simple implementation — returns all paginated
-        List<Transaction> txs = txRepo.findByUserIdOrderByDateDesc(userId)
-                .stream().skip((long) page * size).limit(size).toList();
+        var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
+        var txs = txRepo.findByUserIdOrderByDateDesc(userId, pageable).getContent();
         return txs.stream().map(this::toResponse).toList();
     }
 
