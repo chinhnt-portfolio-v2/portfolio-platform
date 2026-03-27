@@ -82,7 +82,9 @@ jobs:
             --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
             --set-env-vars=SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }} \
             --set-env-vars=SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
-            --set-env-vars=SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+            --set-env-vars=SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }} \
+            --set-env-vars=GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+            --set-env-vars=GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
 
       - name: Verify Deployment
         run: |
