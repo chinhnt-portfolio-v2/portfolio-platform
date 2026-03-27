@@ -80,7 +80,9 @@ jobs:
             --platform=managed \
             --allow-unauthenticated \
             --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
-            --set-secrets=NEON_DATABASE_URL=neon-database:latest
+            --set-env-vars=SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }} \
+            --set-env-vars=SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
+            --set-env-vars=SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
 
       - name: Verify Deployment
         run: |
