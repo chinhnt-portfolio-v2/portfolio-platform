@@ -8,12 +8,13 @@ env:
   PROJECT_ID: portfolio-v2-489714
   REGION: asia-southeast1
   SERVICE_NAME: portfolio-platform
+  IMAGE: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/github-actions/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
     outputs:
-      image: asia-southeast1-docker.pkg.dev/${{ env.PROJECT_ID }}/github-actions/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
+      image: ${{ env.IMAGE }}:${{ github.run_number }}
     steps:
       - uses: actions/checkout@v4
 
@@ -38,7 +39,9 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/github-actions/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
+          tags: |
+            ${{ env.IMAGE }}:${{ github.run_number }}
+            ${{ env.IMAGE }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
@@ -46,8 +49,12 @@ jobs:
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
 
   deploy:
-    needs: build
+    needs: build-and-push
     runs-on: ubuntu-latest
+    # Thêm permissions để deploy
+    permissions:
+      contents: 'read'
+      id-token: 'write'
     steps:
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -59,41 +66,25 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           region: ${{ env.REGION }}
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Docker Auth
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
       - name: Deploy to Cloud Run
         run: |
-          SERVICE_ACCOUNT_KEY='${{ secrets.GCP_CREDENTIALS }}'
-          IMAGE="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/github-actions/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}"
-
-          echo "Deploying image: $IMAGE"
-          docker run \
-            --rm \
-            --tty \
-            --volume=$(pwd):/app \
-            --workdir=/app \
-            google/cloud-sdk:slim \
-            bash -c "
-              echo $SERVICE_ACCOUNT_KEY | base64 -d > /tmp/sa.json
-              gcloud auth activate-service-account --key-file=/tmp/sa.json
-              gcloud run deploy ${{ env.SERVICE_NAME }} \
-                --image=$IMAGE \
-                --region=${{ env.REGION }} \
-                --platform=managed \
-                --allow-unauthenticated \
-                --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
-                --set-secrets=NEON_DATABASE_URL=neon-database:latest \
-                --add-cloudsql-instances=${{ vars.CLOUDSQL_INSTANCE }} \
-                --service-account=${{ vars.CLOUD_RUN_SA }}
-            "
+          echo "Deploying ${{ needs.build-and-push.outputs.image }}"
+          gcloud run deploy ${{ env.SERVICE_NAME }} \
+            --image=${{ needs.build-and-push.outputs.image }} \
+            --region=${{ env.REGION }} \
+            --platform=managed \
+            --allow-unauthenticated \
+            --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
+            --set-secrets=NEON_DATABASE_URL=neon-database:latest \
+            --service-account=${{ vars.CLOUD_RUN_SA }}
 
       - name: Verify Deployment
         run: |
-          sleep 10
+          sleep 15
           URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --format="value(status.url)")
-          echo "Service URL: $URL"
-          curl -s -o /dev/null -w "%{http_code}" "$URL/api/v1/health"
+          echo "Deployed to: $URL"
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/v1/health")
+          echo "Health check: $HTTP_CODE"
