@@ -4,17 +4,16 @@ on:
   push:
     branches: [main]
 
-env:
-  PROJECT_ID: portfolio-v2-489714
-  REGION: asia-southeast1
-  SERVICE_NAME: portfolio-platform
-  IMAGE: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/github-actions/${{ env.SERVICE_NAME }}/${{ env.SERVICE_NAME }}
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    env:
+      PROJECT_ID: portfolio-v2-489714
+      REGION: asia-southeast1
+      SERVICE_NAME: portfolio-platform
+      REGISTRY: asia-southeast1-docker.pkg.dev/portfolio-v2-489714/github-actions
     outputs:
-      image: ${{ env.IMAGE }}:${{ github.run_number }}
+      image: ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
     steps:
       - uses: actions/checkout@v4
 
@@ -40,8 +39,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ env.IMAGE }}:${{ github.run_number }}
-            ${{ env.IMAGE }}:latest
+            ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
+            ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
@@ -51,10 +50,13 @@ jobs:
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
-    # Thêm permissions để deploy
     permissions:
       contents: 'read'
       id-token: 'write'
+    env:
+      PROJECT_ID: portfolio-v2-489714
+      REGION: asia-southeast1
+      SERVICE_NAME: portfolio-platform
     steps:
       - id: 'auth'
         uses: 'google-github-actions/auth@v2'
@@ -71,7 +73,6 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          echo "Deploying ${{ needs.build-and-push.outputs.image }}"
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image=${{ needs.build-and-push.outputs.image }} \
             --region=${{ env.REGION }} \
