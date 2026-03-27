@@ -1,4 +1,4 @@
-FROM ghcr.io/adoptium/temurin:21-jre
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY target/portfolio-platform-*.jar app.jar
 EXPOSE 8080

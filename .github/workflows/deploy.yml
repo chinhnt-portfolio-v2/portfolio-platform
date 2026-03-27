@@ -25,19 +25,26 @@ jobs:
       - name: Configure Docker for GCP
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
-      - name: Build Docker image
-        run: |
-          docker build \
-            --tag=${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }} \
-            --tag=${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:latest \
-            --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
-            --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
-            .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver-opts: |
+            image=moby/buildkit:latest
+            network=host
 
-      - name: Push Docker images
-        run: |
-          docker push ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
-          docker push ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:latest
+      - name: Build with cache
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
+            ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:latest
+          build-args: |
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          cache-from: type=gha,scope=portfolio-platform
+          cache-to: type=gha,mode=max,scope=portfolio-platform
 
   deploy:
     needs: build-and-push
