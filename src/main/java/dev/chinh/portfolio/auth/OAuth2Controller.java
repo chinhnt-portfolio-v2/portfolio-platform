@@ -1,7 +1,7 @@
 package dev.chinh.portfolio.auth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +10,8 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Map;
 
 @RestController
@@ -17,6 +19,8 @@ import java.util.Map;
 public class OAuth2Controller {
 
     private final ClientRegistrationRepository clientRegistrationRepository;
+    private static final String STATE_SEPARATOR = "|";
+    private static final String SECRET = "wallet-oauth2-secret-key-change-in-production";
 
     @Value("${app.frontend.url:https://chinhnt-portfolio.vercel.app}")
     private String defaultFrontendUrl;
@@ -42,16 +46,11 @@ public class OAuth2Controller {
         String clientId = registration.getClientId();
         String callbackUrl = baseUrl + "/api/v1/auth/oauth2/callback/" + provider;
 
-        // Determine redirect URL: use provided redirect_uri, or default
+        // Determine redirect URL
         String targetUrl = (redirect_uri != null && !redirect_uri.isBlank()) ? redirect_uri : defaultFrontendUrl;
 
-        // Store redirect URL in session so callback handler can retrieve it
-        HttpSession session = request.getSession(true);
-        session.setAttribute("oauth2_redirect_uri", targetUrl);
-        System.out.println("[OAuth2Controller] Stored redirect_uri in session: " + targetUrl);
-
-        // Generate random state for CSRF protection
-        String state = java.util.UUID.randomUUID().toString();
+        // Encode redirect URL into state (base64) to avoid issues with special chars
+        String state = encodeState(targetUrl);
 
         String authorizationUrl = authorizationUri
                 + "?client_id=" + clientId
@@ -63,5 +62,15 @@ public class OAuth2Controller {
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header("Location", authorizationUrl)
                 .build();
+    }
+
+    /**
+     * Encodes the redirect URL into a state token.
+     * Format: base64(targetUrl)
+     */
+    private String encodeState(String redirectUrl) {
+        String raw = redirectUrl + STATE_SEPARATOR + System.currentTimeMillis();
+        return Base64.getUrlEncoder().withoutPadding()
+                .encodeToString(raw.getBytes(StandardCharsets.UTF_8));
     }
 }

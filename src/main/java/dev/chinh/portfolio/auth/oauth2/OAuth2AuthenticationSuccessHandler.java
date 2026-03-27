@@ -4,22 +4,20 @@ import dev.chinh.portfolio.auth.jwt.JwtTokenProvider;
 import dev.chinh.portfolio.user.User;
 import dev.chinh.portfolio.user.UserRepository;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.OAuth2AccessToken;
-import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Optional;
 
 @Component
@@ -45,15 +43,11 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         String provider = authToken.getAuthorizedClientRegistrationId();
         String providerId = oauth2User.getName();
 
-        // Get redirect URL from session (set by OAuth2Controller)
-        HttpSession session = request.getSession(false);
-        String frontendUrl = defaultFrontendUrl;
-        if (session != null) {
-            String stored = (String) session.getAttribute("oauth2_redirect_uri");
-            if (stored != null && !stored.isBlank()) {
-                frontendUrl = stored;
-            }
-        }
+        // Extract redirect URL from state parameter (set as base64 by frontend)
+        String state = request.getParameter("state");
+        String frontendUrl = decodeState(state);
+
+        System.out.println("[OAuth2Success] state=" + state);
         System.out.println("[OAuth2Success] Redirecting to: " + frontendUrl);
 
         // Get or create user
@@ -70,12 +64,28 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                 + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8)
                 + "&tokenType=Bearer";
 
-        // Invalidate session after use
-        if (session != null) {
-            session.invalidate();
-        }
-
         response.sendRedirect(redirectUrl);
+    }
+
+    /**
+     * Decodes redirect URL from base64 state token.
+     * Format: base64(redirectUrl|PART_SEPARATOR|timestamp)
+     */
+    private String decodeState(String state) {
+        if (state == null || state.isBlank()) {
+            return defaultFrontendUrl;
+        }
+        try {
+            String decoded = new String(Base64.getUrlDecoder().decode(state), StandardCharsets.UTF_8);
+            int sepIndex = decoded.lastIndexOf('|');
+            if (sepIndex > 0) {
+                return decoded.substring(0, sepIndex);
+            }
+            return decoded;
+        } catch (Exception e) {
+            System.out.println("[OAuth2Success] Failed to decode state: " + e.getMessage());
+            return defaultFrontendUrl;
+        }
     }
 
     private User createUserFromOAuth2(OAuth2User oauth2User, String provider, String providerId) {
