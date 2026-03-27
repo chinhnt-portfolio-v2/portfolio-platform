@@ -32,6 +32,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     private AuthProvider provider = AuthProvider.LOCAL;
 
+    @Column(name = "provider_id", length = 255)
+    private String providerId;  // e.g. Google sub (unique per provider)
+
     @Column(name = "role", nullable = false, length = 20)
     @Enumerated(EnumType.STRING)
     private UserRole role = UserRole.USER;
@@ -58,6 +61,9 @@ public class User {
 
     public AuthProvider getProvider() { return provider; }
     public void setProvider(AuthProvider provider) { this.provider = provider; }
+
+    public String getProviderId() { return providerId; }
+    public void setProviderId(String providerId) { this.providerId = providerId; }
 
     public UserRole getRole() { return role; }
     public void setRole(UserRole role) { this.role = role; }

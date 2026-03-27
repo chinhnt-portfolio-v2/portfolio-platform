@@ -35,37 +35,39 @@ public class GoogleOAuth2UserService extends DefaultOAuth2UserService {
         // Extract user info from Google
         Map<String, Object> attributes = oAuth2User.getAttributes();
         String email = (String) attributes.get("email");
+        String providerId = (String) attributes.get("sub");  // Google unique user ID
 
-        // Find or create user by email
-        User user = findOrCreateUser(email);
+        // Find or create user by provider + providerId
+        User user = findOrCreateUser(email, providerId);
 
         return new GoogleOAuth2UserPrincipal(user, attributes);
     }
 
     /**
-     * Find existing user by email or create new one with GOOGLE provider.
+     * Find existing user by provider + providerId, or create new one.
      */
-    private User findOrCreateUser(String email) {
-        Optional<User> existingUser = userRepository.findByEmail(email);
+    private User findOrCreateUser(String email, String providerId) {
+        Optional<User> existingUser = userRepository.findByProviderAndProviderId(AuthProvider.GOOGLE, providerId);
 
         if (existingUser.isPresent()) {
-            // User exists - ensure provider is GOOGLE (or LOCAL with same email is fine)
-            User user = existingUser.get();
-            // Update provider to GOOGLE if it was LOCAL (user linked their Google account)
-            if (user.getProvider() == AuthProvider.LOCAL) {
-                user.setProvider(AuthProvider.GOOGLE);
-                return userRepository.save(user);
-            }
-            return user;
+            return existingUser.get();
         }
 
-        // Create new user with GOOGLE provider
+        // No user with this providerId — check by email and link
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        if (byEmail.isPresent()) {
+            User user = byEmail.get();
+            user.setProvider(AuthProvider.GOOGLE);
+            user.setProviderId(providerId);
+            return userRepository.save(user);
+        }
+
+        // Create new user
         User newUser = new User();
         newUser.setEmail(email);
         newUser.setProvider(AuthProvider.GOOGLE);
+        newUser.setProviderId(providerId);
         newUser.setRole(UserRole.USER);
-        // passwordHash remains null for OAuth users
-
         return userRepository.save(newUser);
     }
 }
