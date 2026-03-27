@@ -22,37 +22,29 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-      - uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          region: ${{ env.REGION }}
-
-      - name: Docker Auth
+      - name: Configure Docker for GCP
         run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+      - name: Build Docker image
+        run: |
+          docker build \
+            --tag=${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }} \
+            --tag=${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:latest \
+            --build-arg GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+            --build-arg GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+            .
 
-      - name: Build & Push Docker
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
-            ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:latest
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+      - name: Push Docker images
+        run: |
+          docker push ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
+          docker push ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:latest
 
   deploy:
     needs: build-and-push
     runs-on: ubuntu-latest
     permissions:
-      contents: 'read'
       id-token: 'write'
+      contents: 'read'
     env:
       PROJECT_ID: portfolio-v2-489714
       REGION: asia-southeast1
@@ -63,14 +55,6 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
 
-      - uses: google-github-actions/setup-gcloud@v2
-        with:
-          project_id: ${{ env.PROJECT_ID }}
-          region: ${{ env.REGION }}
-
-      - name: Docker Auth
-        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
-
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.SERVICE_NAME }} \
@@ -79,13 +63,10 @@ jobs:
             --platform=managed \
             --allow-unauthenticated \
             --set-env-vars=SPRING_PROFILES_ACTIVE=prod \
-            --set-secrets=NEON_DATABASE_URL=neon-database:latest \
-            --service-account=${{ vars.CLOUD_RUN_SA }}
+            --set-secrets=NEON_DATABASE_URL=neon-database:latest
 
       - name: Verify Deployment
         run: |
           sleep 15
           URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --format="value(status.url)")
           echo "Deployed to: $URL"
-          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$URL/api/v1/health")
-          echo "Health check: $HTTP_CODE"

@@ -132,7 +132,7 @@ class OAuth2AuthenticationHandlersTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // Create mock authentication with wrong principal type
-        OAuth2User wrongPrincipal = new DefaultOAuth2User(Collections.emptyList(), Map.of("email", "test@gmail.com"), "sub");
+        OAuth2User wrongPrincipal = new DefaultOAuth2User(Collections.emptyList(), Map.of("email", "test@gmail.com", "sub", "test-sub-id"), "sub");
 
         Authentication authentication = mock(Authentication.class);
         when(authentication.getPrincipal()).thenReturn(wrongPrincipal);

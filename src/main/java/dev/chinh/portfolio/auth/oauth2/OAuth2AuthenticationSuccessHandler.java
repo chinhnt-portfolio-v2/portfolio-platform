@@ -1,107 +1,84 @@
 package dev.chinh.portfolio.auth.oauth2;
 
-import dev.chinh.portfolio.auth.jwt.JwtTokenProvider;
-import dev.chinh.portfolio.user.User;
-import dev.chinh.portfolio.user.UserRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.chinh.portfolio.auth.jwt.JwtService;
+import dev.chinh.portfolio.auth.session.Session;
+import dev.chinh.portfolio.auth.session.SessionService;
+import dev.chinh.portfolio.auth.user.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserRepository userRepository;
+    private final JwtService jwtService;
+    private final SessionService sessionService;
 
-    @Value("${app.frontend.url:https://chinhnt-portfolio.vercel.app}")
+    @Value("${app.frontend.url:https://wallet-fe-two.vercel.app}")
     private String defaultFrontendUrl;
 
-    public OAuth2AuthenticationSuccessHandler(JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.userRepository = userRepository;
+    private static final Set<String> ALLOWED_REDIRECT_DOMAINS = Set.of(
+            "wallet-fe-two.vercel.app",
+            "chinhnt-portfolio.vercel.app",
+            "chinh.dev",
+            "wallet.chinh.dev",
+            "localhost"
+    );
+
+    public OAuth2AuthenticationSuccessHandler(JwtService jwtService, SessionService sessionService) {
+        this.jwtService = jwtService;
+        this.sessionService = sessionService;
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
-        OAuth2User oauth2User = authToken.getPrincipal();
-        String provider = authToken.getAuthorizedClientRegistrationId();
-        String providerId = oauth2User.getName();
+        Object principal = authentication.getPrincipal();
 
-        // Extract redirect URL from state parameter (set as base64 by frontend)
-        String state = request.getParameter("state");
-        String frontendUrl = decodeState(state);
+        if (!(principal instanceof GoogleOAuth2UserPrincipal googlePrincipal)) {
+            response.sendRedirect("/login?error=oauth2_failure");
+            return;
+        }
 
-        System.out.println("[OAuth2Success] state=" + state);
-        System.out.println("[OAuth2Success] Redirecting to: " + frontendUrl);
+        User user = googlePrincipal.getUser();
 
-        // Get or create user
-        Optional<User> existingUser = userRepository.findByProviderAndProviderId(provider, providerId);
-        User user = existingUser.orElseGet(() -> createUserFromOAuth2(oauth2User, provider, providerId));
+        // Read redirect_uri directly (frontend sends plain URL, not base64 state)
+        // Validation result stored for potential future use (e.g. logging/auditing)
+        String redirectUri = request.getParameter("redirect_uri");
+        resolveAndValidateRedirectUri(redirectUri);
 
-        // Generate JWT tokens
-        String accessToken = jwtTokenProvider.generateAccessToken(user);
-        String refreshToken = jwtTokenProvider.generateRefreshToken(user);
+        // Generate tokens
+        String accessToken = jwtService.generateAccessToken(user);
+        Session session = sessionService.createSession(user);
+        String refreshToken = session.getRefreshToken();
 
-        // Build redirect URL with tokens
-        String redirectUrl = frontendUrl
-                + "/?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
-                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8)
-                + "&tokenType=Bearer";
-
-        response.sendRedirect(redirectUrl);
+        // Return tokens as JSON body
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.setStatus(HttpServletResponse.SC_OK);
+        new ObjectMapper().writeValue(response.getWriter(), Map.of(
+                "accessToken", accessToken,
+                "refreshToken", refreshToken,
+                "tokenType", "Bearer"
+        ));
     }
 
-    /**
-     * Decodes redirect URL from base64 state token.
-     * Format: base64(redirectUrl|PART_SEPARATOR|timestamp)
-     */
-    private String decodeState(String state) {
-        if (state == null || state.isBlank()) {
+    private String resolveAndValidateRedirectUri(String uri) {
+        if (uri == null || uri.isBlank()) {
             return defaultFrontendUrl;
         }
-        try {
-            String decoded = new String(Base64.getUrlDecoder().decode(state), StandardCharsets.UTF_8);
-            int sepIndex = decoded.lastIndexOf('|');
-            if (sepIndex > 0) {
-                return decoded.substring(0, sepIndex);
-            }
-            return decoded;
-        } catch (Exception e) {
-            System.out.println("[OAuth2Success] Failed to decode state: " + e.getMessage());
-            return defaultFrontendUrl;
-        }
-    }
-
-    private User createUserFromOAuth2(OAuth2User oauth2User, String provider, String providerId) {
-        String email = oauth2User.getAttribute("email");
-        String name = oauth2User.getAttribute("name");
-        String picture = oauth2User.getAttribute("picture");
-
-        User user = new User();
-        user.setEmail(email != null ? email : providerId + "@" + provider + ".oauth");
-        user.setName(name != null ? name : "User");
-        user.setProvider(provider);
-        user.setProviderId(providerId);
-        if (picture != null) user.setImageUrl(picture);
-        user.setRole("USER");
-        user.setIsActive(true);
-
-        return userRepository.save(user);
+        boolean allowed = ALLOWED_REDIRECT_DOMAINS.stream()
+                .anyMatch(uri::contains);
+        return allowed ? uri : defaultFrontendUrl;
     }
 }
