@@ -1,6 +1,5 @@
 package dev.chinh.portfolio.auth.oauth2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.chinh.portfolio.auth.jwt.JwtService;
 import dev.chinh.portfolio.auth.session.Session;
 import dev.chinh.portfolio.auth.session.SessionService;
@@ -14,7 +13,6 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.Set;
 
 @Component
@@ -53,24 +51,21 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         User user = googlePrincipal.getUser();
 
         // Read redirect_uri directly (frontend sends plain URL, not base64 state)
-        // Validation result stored for potential future use (e.g. logging/auditing)
         String redirectUri = request.getParameter("redirect_uri");
-        resolveAndValidateRedirectUri(redirectUri);
+        String targetUrl = resolveAndValidateRedirectUri(redirectUri);
 
         // Generate tokens
         String accessToken = jwtService.generateAccessToken(user);
         Session session = sessionService.createSession(user);
         String refreshToken = session.getRefreshToken();
 
-        // Return tokens as JSON body
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.setStatus(HttpServletResponse.SC_OK);
-        new ObjectMapper().writeValue(response.getWriter(), Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken,
-                "tokenType", "Bearer"
-        ));
+        // Build redirect URL with tokens as query params (frontend expects this)
+        String redirectUrl = targetUrl
+                + "?accessToken=" + accessToken
+                + "&refreshToken=" + refreshToken
+                + "&tokenType=Bearer";
+
+        response.sendRedirect(redirectUrl);
     }
 
     private String resolveAndValidateRedirectUri(String uri) {
