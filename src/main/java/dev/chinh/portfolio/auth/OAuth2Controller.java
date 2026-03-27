@@ -1,6 +1,5 @@
 package dev.chinh.portfolio.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -9,7 +8,7 @@ import org.springframework.security.oauth2.client.registration.ClientRegistratio
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
@@ -54,7 +53,7 @@ public class OAuth2Controller {
 
         String authorizationUrl = authorizationUri
                 + "?client_id=" + clientId
-                + "&redirect_uri=" + URI.encode(callbackUrl)
+                + "&redirect_uri=" + URLEncoder.encode(callbackUrl, StandardCharsets.UTF_8)
                 + "&response_type=code"
                 + "&scope=openid%20profile%20email"
                 + "&state=" + state;
