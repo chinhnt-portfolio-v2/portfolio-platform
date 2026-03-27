@@ -13,6 +13,8 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Set;
 
 @Component
@@ -20,6 +22,7 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
     private final JwtService jwtService;
     private final SessionService sessionService;
+    private static final String STATE_SEPARATOR = "|";
 
     @Value("${app.frontend.url:https://wallet-fe-two.vercel.app}")
     private String defaultFrontendUrl;
@@ -50,16 +53,16 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
         User user = googlePrincipal.getUser();
 
-        // Read redirect_uri directly (frontend sends plain URL, not base64 state)
-        String redirectUri = request.getParameter("redirect_uri");
-        String targetUrl = resolveAndValidateRedirectUri(redirectUri);
+        // Decode redirect URL from state param (frontend encoded it as base64)
+        String state = request.getParameter("state");
+        String targetUrl = resolveRedirectUriFromState(state);
 
         // Generate tokens
         String accessToken = jwtService.generateAccessToken(user);
         Session session = sessionService.createSession(user);
         String refreshToken = session.getRefreshToken();
 
-        // Build redirect URL with tokens as query params (frontend expects this)
+        // Redirect to frontend with tokens in URL
         String redirectUrl = targetUrl
                 + "?accessToken=" + accessToken
                 + "&refreshToken=" + refreshToken
@@ -68,12 +71,29 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         response.sendRedirect(redirectUrl);
     }
 
-    private String resolveAndValidateRedirectUri(String uri) {
-        if (uri == null || uri.isBlank()) {
+    /**
+     * Decodes redirect URL from base64 state parameter.
+     * State format: base64(redirectUrl|timestamp)
+     */
+    private String resolveRedirectUriFromState(String state) {
+        if (state == null || state.isBlank()) {
             return defaultFrontendUrl;
         }
-        boolean allowed = ALLOWED_REDIRECT_DOMAINS.stream()
-                .anyMatch(uri::contains);
-        return allowed ? uri : defaultFrontendUrl;
+        try {
+            String decoded = new String(Base64.getUrlDecoder().decode(state), StandardCharsets.UTF_8);
+            int sepIndex = decoded.lastIndexOf(STATE_SEPARATOR);
+            if (sepIndex > 0) {
+                String redirectUrl = decoded.substring(0, sepIndex);
+                return validateRedirectUrl(redirectUrl) ? redirectUrl : defaultFrontendUrl;
+            }
+            return validateRedirectUrl(decoded) ? decoded : defaultFrontendUrl;
+        } catch (Exception e) {
+            return defaultFrontendUrl;
+        }
+    }
+
+    private boolean validateRedirectUrl(String url) {
+        return url != null && ALLOWED_REDIRECT_DOMAINS.stream()
+                .anyMatch(url::contains);
     }
 }
