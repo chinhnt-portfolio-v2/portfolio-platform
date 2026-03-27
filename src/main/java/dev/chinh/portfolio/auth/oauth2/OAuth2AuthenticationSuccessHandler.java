@@ -1,79 +1,87 @@
 package dev.chinh.portfolio.auth.oauth2;
 
-import dev.chinh.portfolio.auth.dto.AuthResponse;
-import dev.chinh.portfolio.auth.jwt.JwtService;
-import dev.chinh.portfolio.auth.session.Session;
-import dev.chinh.portfolio.auth.session.SessionService;
-import dev.chinh.portfolio.auth.user.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.chinh.portfolio.auth.jwt.JwtTokenProvider;
+import dev.chinh.portfolio.user.User;
+import dev.chinh.portfolio.user.UserRepository;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2AccessToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.Optional;
 
-/**
- * Authentication success handler for OAuth2 login.
- * Generates JWT tokens and returns them to the client.
- */
 @Component
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(OAuth2AuthenticationSuccessHandler.class);
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private final JwtService jwtService;
-    private final SessionService sessionService;
+    @Value("${app.frontend.url:https://chinhnt-portfolio.vercel.app}")
+    private String defaultFrontendUrl;
 
-    public OAuth2AuthenticationSuccessHandler(JwtService jwtService, SessionService sessionService) {
-        this.jwtService = jwtService;
-        this.sessionService = sessionService;
+    public OAuth2AuthenticationSuccessHandler(JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userRepository = userRepository;
     }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                         Authentication authentication) throws IOException, ServletException {
 
-        log.info("OAuth2 authentication success! Authentication: {}", authentication);
+        OAuth2AuthenticationToken authToken = (OAuth2AuthenticationToken) authentication;
+        OAuth2User oauth2User = authToken.getPrincipal();
+        String provider = authToken.getAuthorizedClientRegistrationId();
+        String providerId = oauth2User.getName();
 
-        // Get the OAuth2 user from authentication
-        OAuth2User oAuth2User = (OAuth2User) authentication.getPrincipal();
-        log.info("OAuth2 user principal: {}", oAuth2User);
-        log.info("OAuth2 user attributes: {}", oAuth2User.getAttributes());
+        // Extract redirect_uri from state parameter (set by frontend)
+        String state = request.getParameter("state");
+        String frontendUrl = (state != null && !state.isBlank()) ? state : defaultFrontendUrl;
 
-        // Extract our custom User entity from the principal
-        if (!(oAuth2User instanceof GoogleOAuth2UserPrincipal googlePrincipal)) {
-            log.error("OAuth2 user is not GoogleOAuth2UserPrincipal, redirecting to error");
-            response.sendRedirect("/login?error=oauth2_failure");
-            return;
-        }
+        // Get or create user
+        Optional<User> existingUser = userRepository.findByProviderAndProviderId(provider, providerId);
+        User user = existingUser.orElseGet(() -> createUserFromOAuth2(oauth2User, provider, providerId));
 
-        User user = googlePrincipal.getUser();
-        log.info("Google user from principal: {}", user.getEmail());
+        // Generate JWT tokens
+        String accessToken = jwtTokenProvider.generateAccessToken(user);
+        String refreshToken = jwtTokenProvider.generateRefreshToken(user);
 
-        // Generate JWT access token
-        String accessToken = jwtService.generateAccessToken(user);
-        log.info("Generated access token for user: {}", user.getEmail());
+        // Build redirect URL with tokens
+        String redirectUrl = frontendUrl
+                + "/?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
+                + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8)
+                + "&tokenType=Bearer";
 
-        // Create session with refresh token
-        Session session = sessionService.createSession(user);
-        log.info("Created session for user: {}", user.getEmail());
-
-        // Return tokens in same format as password login
-        AuthResponse authResponse = AuthResponse.of(accessToken, session.getRefreshToken());
-
-        // Redirect to frontend with tokens as query parameters
-        String frontendUrl = System.getenv().getOrDefault("FRONTEND_URL", "https://chinhnt-portfolio.vercel.app");
-        String redirectUrl = String.format("%s?accessToken=%s&refreshToken=%s&tokenType=Bearer",
-                frontendUrl,
-                authResponse.accessToken(),
-                authResponse.refreshToken());
-
-        log.info("Redirecting to frontend with tokens");
         response.sendRedirect(redirectUrl);
+    }
+
+    private User createUserFromOAuth2(OAuth2User oauth2User, String provider, String providerId) {
+        String email = oauth2User.getAttribute("email");
+        String name = oauth2User.getAttribute("name");
+        String picture = oauth2User.getAttribute("picture");
+
+        User user = new User();
+        user.setEmail(email != null ? email : providerId + "@" + provider + ".oauth");
+        user.setName(name != null ? name : "User");
+        user.setProvider(provider);
+        user.setProviderId(providerId);
+        if (picture != null) user.setImageUrl(picture);
+        user.setRole("USER");
+        user.setIsActive(true);
+
+        return userRepository.save(user);
     }
 }
