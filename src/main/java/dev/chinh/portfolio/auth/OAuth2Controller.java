@@ -1,13 +1,12 @@
 package dev.chinh.portfolio.auth;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -43,15 +42,23 @@ public class OAuth2Controller {
         String clientId = registration.getClientId();
         String callbackUrl = baseUrl + "/api/v1/auth/oauth2/callback/" + provider;
 
-        // Store redirect_uri in session or state parameter
-        String state = redirect_uri != null ? redirect_uri : defaultFrontendUrl;
+        // Determine redirect URL: use provided redirect_uri, or default
+        String targetUrl = (redirect_uri != null && !redirect_uri.isBlank()) ? redirect_uri : defaultFrontendUrl;
+
+        // Store redirect URL in session so callback handler can retrieve it
+        HttpSession session = request.getSession(true);
+        session.setAttribute("oauth2_redirect_uri", targetUrl);
+        System.out.println("[OAuth2Controller] Stored redirect_uri in session: " + targetUrl);
+
+        // Generate random state for CSRF protection
+        String state = java.util.UUID.randomUUID().toString();
 
         String authorizationUrl = authorizationUri
                 + "?client_id=" + clientId
                 + "&redirect_uri=" + URI.encode(callbackUrl)
                 + "&response_type=code"
                 + "&scope=openid%20profile%20email"
-                + "&state=" + URI.encode(state);
+                + "&state=" + state;
 
         return ResponseEntity.status(HttpStatus.FOUND)
                 .header("Location", authorizationUrl)

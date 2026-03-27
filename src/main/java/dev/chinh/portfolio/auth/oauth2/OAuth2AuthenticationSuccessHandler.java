@@ -1,6 +1,5 @@
 package dev.chinh.portfolio.auth.oauth2;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.chinh.portfolio.auth.jwt.JwtTokenProvider;
 import dev.chinh.portfolio.user.User;
 import dev.chinh.portfolio.user.UserRepository;
@@ -8,6 +7,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -28,7 +27,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Value("${app.frontend.url:https://chinhnt-portfolio.vercel.app}")
     private String defaultFrontendUrl;
@@ -47,9 +45,16 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
         String provider = authToken.getAuthorizedClientRegistrationId();
         String providerId = oauth2User.getName();
 
-        // Extract redirect_uri from state parameter (set by frontend)
-        String state = request.getParameter("state");
-        String frontendUrl = (state != null && !state.isBlank()) ? state : defaultFrontendUrl;
+        // Get redirect URL from session (set by OAuth2Controller)
+        HttpSession session = request.getSession(false);
+        String frontendUrl = defaultFrontendUrl;
+        if (session != null) {
+            String stored = (String) session.getAttribute("oauth2_redirect_uri");
+            if (stored != null && !stored.isBlank()) {
+                frontendUrl = stored;
+            }
+        }
+        System.out.println("[OAuth2Success] Redirecting to: " + frontendUrl);
 
         // Get or create user
         Optional<User> existingUser = userRepository.findByProviderAndProviderId(provider, providerId);
@@ -64,6 +69,11 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
                 + "/?accessToken=" + URLEncoder.encode(accessToken, StandardCharsets.UTF_8)
                 + "&refreshToken=" + URLEncoder.encode(refreshToken, StandardCharsets.UTF_8)
                 + "&tokenType=Bearer";
+
+        // Invalidate session after use
+        if (session != null) {
+            session.invalidate();
+        }
 
         response.sendRedirect(redirectUrl);
     }
