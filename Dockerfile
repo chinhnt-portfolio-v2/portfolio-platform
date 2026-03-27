@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jre-jammy AS runtime
+FROM ghcr.io/adoptium/temurin:21-jre
 WORKDIR /app
 COPY target/portfolio-platform-*.jar app.jar
 EXPOSE 8080
