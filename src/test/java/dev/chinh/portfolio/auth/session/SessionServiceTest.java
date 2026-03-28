@@ -30,11 +30,14 @@ class SessionServiceTest {
     @Mock
     private SessionRepository sessionRepository;
 
+    @Mock
+    private dev.chinh.portfolio.auth.user.UserRepository userRepository;
+
     private SessionService sessionService;
 
     @BeforeEach
     void setUp() {
-        sessionService = new SessionService(sessionRepository);
+        sessionService = new SessionService(sessionRepository, userRepository);
     }
 
     @Nested
