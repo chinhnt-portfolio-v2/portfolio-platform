@@ -1,6 +1,9 @@
 package dev.chinh.portfolio.auth.session;
 
+import dev.chinh.portfolio.auth.user.AuthProvider;
 import dev.chinh.portfolio.auth.user.User;
+import dev.chinh.portfolio.auth.user.UserRepository;
+import dev.chinh.portfolio.auth.user.UserRole;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,12 +19,52 @@ import java.util.UUID;
 public class SessionService {
 
     private final SessionRepository sessionRepository;
+    private final UserRepository userRepository;
 
     // Refresh token TTL: 7 days (matches JWT config)
     private static final int REFRESH_TOKEN_TTL_DAYS = 7;
 
-    public SessionService(SessionRepository sessionRepository) {
+    public SessionService(SessionRepository sessionRepository, UserRepository userRepository) {
         this.sessionRepository = sessionRepository;
+        this.userRepository = userRepository;
+    }
+
+    /**
+     * Find or create an OAuth user by email and provider ID.
+     */
+    @Transactional
+    public User findOrCreateOAuthUser(String email, String name, String providerId, String provider) {
+        AuthProvider authProvider = AuthProvider.valueOf(provider.toUpperCase());
+
+        // Try by provider + providerId first
+        Optional<User> byProvider = userRepository.findByProviderAndProviderId(authProvider, providerId);
+        if (byProvider.isPresent()) {
+            User user = byProvider.get();
+            if (name != null && !name.isBlank() && user.getName() == null) {
+                user.setName(name);
+                return userRepository.save(user);
+            }
+            return user;
+        }
+
+        // Try by email
+        Optional<User> byEmail = userRepository.findByEmail(email);
+        if (byEmail.isPresent()) {
+            User user = byEmail.get();
+            user.setProvider(authProvider);
+            user.setProviderId(providerId);
+            if (name != null && !name.isBlank()) user.setName(name);
+            return userRepository.save(user);
+        }
+
+        // Create new user
+        User newUser = new User();
+        newUser.setEmail(email);
+        if (name != null && !name.isBlank()) newUser.setName(name);
+        newUser.setProvider(authProvider);
+        newUser.setProviderId(providerId);
+        newUser.setRole(UserRole.USER);
+        return userRepository.save(newUser);
     }
 
     /**

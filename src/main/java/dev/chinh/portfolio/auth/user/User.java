@@ -25,6 +25,9 @@ public class User {
     @Column(name = "email", nullable = false, unique = true, length = 255)
     private String email;
 
+    @Column(name = "name", length = 255)
+    private String name;
+
     @Column(name = "password_hash", length = 255)
     private String passwordHash;  // null for OAuth users
 
@@ -54,6 +57,9 @@ public class User {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
     @JsonIgnore
     public String getPasswordHash() { return passwordHash; }
