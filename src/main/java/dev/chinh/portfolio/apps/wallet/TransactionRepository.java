@@ -34,4 +34,15 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
            "WHERE t.userId = :userId AND t.type = 'EXPENSE' AND t.date >= :since")
     BigDecimal sumExpenseSince(@Param("userId") UUID userId, @Param("since") Instant since);
+
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
+           "WHERE t.userId = :userId AND t.type = 'EXPENSE' " +
+           "AND t.categoryId = :categoryId AND t.date >= :from AND t.date < :to")
+    BigDecimal sumExpenseSince(@Param("userId") UUID userId,
+                               @Param("categoryId") Long categoryId,
+                               @Param("from") Instant from,
+                               @Param("to") Instant to);
+
+    List<Transaction> findByUserIdAndCategoryIdOrderByDateDesc(UUID userId, Long categoryId,
+                                                             org.springframework.data.domain.Pageable pageable);
 }
