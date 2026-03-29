@@ -5,18 +5,17 @@ import dev.chinh.portfolio.shared.error.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
-import java.time.*;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.*;
 
 @Service
 public class RecurringService {
 
     private final RecurringRuleRepository recurringRuleRepository;
-    private final OwnershipHelper ownershipHelper;
 
-    public RecurringService(RecurringRuleRepository repository, OwnershipHelper ownershipHelper) {
+    public RecurringService(RecurringRuleRepository repository) {
         this.recurringRuleRepository = repository;
-        this.ownershipHelper = ownershipHelper;
     }
 
     public List<RecurringRuleResponse> getAll(UUID userId) {

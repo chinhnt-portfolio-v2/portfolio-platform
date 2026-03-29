@@ -1,10 +1,11 @@
 package dev.chinh.portfolio.apps.wallet;
 
 import dev.chinh.portfolio.apps.wallet.dto.*;
+import dev.chinh.portfolio.shared.auth.CurrentUser;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/wallet/recurring")
@@ -17,19 +18,19 @@ public class RecurringController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RecurringRuleResponse>> getAll(@CurrentUser UUID userId) {
+    public ResponseEntity<?> getAll(@CurrentUser UUID userId) {
         return ResponseEntity.ok(recurringService.getAll(userId));
     }
 
     @PostMapping
-    public ResponseEntity<RecurringRuleResponse> create(
+    public ResponseEntity<?> create(
             @CurrentUser UUID userId,
             @Valid @RequestBody CreateRecurringRequest req) {
         return ResponseEntity.ok(recurringService.create(userId, req));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<RecurringRuleResponse> update(
+    public ResponseEntity<?> update(
             @CurrentUser UUID userId,
             @PathVariable Long id,
             @Valid @RequestBody CreateRecurringRequest req) {
@@ -37,7 +38,7 @@ public class RecurringController {
     }
 
     @PatchMapping("/{id}/status")
-    public ResponseEntity<RecurringRuleResponse> toggleStatus(
+    public ResponseEntity<?> toggleStatus(
             @CurrentUser UUID userId,
             @PathVariable Long id,
             @RequestBody java.util.Map<String, String> body) {
@@ -50,3 +51,4 @@ public class RecurringController {
         return ResponseEntity.noContent().build();
     }
 }
+

@@ -6,22 +6,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.util.*;
+import java.util.UUID;
 
 @Service
 public class TransferService {
 
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
-    private final OwnershipHelper ownershipHelper;
 
     public TransferService(
             WalletRepository walletRepository,
-            TransactionRepository transactionRepository,
-            OwnershipHelper ownershipHelper) {
+            TransactionRepository transactionRepository) {
         this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
-        this.ownershipHelper = ownershipHelper;
     }
 
     @Transactional

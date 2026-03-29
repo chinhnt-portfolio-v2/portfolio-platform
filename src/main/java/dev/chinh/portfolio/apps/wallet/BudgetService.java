@@ -15,15 +15,12 @@ public class BudgetService {
 
     private final BudgetRepository budgetRepository;
     private final TransactionRepository transactionRepository;
-    private final OwnershipHelper ownershipHelper;
 
     public BudgetService(
             BudgetRepository budgetRepository,
-            TransactionRepository transactionRepository,
-            OwnershipHelper ownershipHelper) {
+            TransactionRepository transactionRepository) {
         this.budgetRepository = budgetRepository;
         this.transactionRepository = transactionRepository;
-        this.ownershipHelper = ownershipHelper;
     }
 
     public List<BudgetResponse> getBudgets(UUID userId, String period) {

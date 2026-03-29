@@ -1,9 +1,10 @@
 package dev.chinh.portfolio.apps.wallet;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.chinh.portfolio.shared.auth.CurrentUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/notifications")
@@ -26,7 +27,7 @@ public class PushController {
     public ResponseEntity<?> subscribe(@CurrentUser UUID userId, @RequestBody Map<String, Object> body) {
         String endpoint = (String) body.get("endpoint");
         @SuppressWarnings("unchecked")
-        java.util.Map<String, String> keys = (java.util.Map<String, String>) body.get("keys");
+        Map<String, String> keys = (Map<String, String>) body.get("keys");
 
         // Upsert — replace old subscription
         repository.deleteByUserId(userId);
@@ -47,3 +48,4 @@ public class PushController {
         return ResponseEntity.noContent().build();
     }
 }
+

@@ -1,10 +1,11 @@
 package dev.chinh.portfolio.apps.wallet;
 
 import dev.chinh.portfolio.apps.wallet.dto.*;
+import dev.chinh.portfolio.shared.auth.CurrentUser;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.util.*;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/wallet")
@@ -24,3 +25,4 @@ public class TransferController {
         return ResponseEntity.ok(result);
     }
 }
+
