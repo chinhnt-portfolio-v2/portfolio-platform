@@ -57,6 +57,7 @@ public class WalletService {
         w.setCurrency(req.currency() != null ? req.currency() : "VND");
         w.setIcon(req.icon() != null ? req.icon() : "💰");
         w.setColor(req.color() != null ? req.color() : "#0EA5E9");
+        w.setBalance(req.initialBalance() != null ? req.initialBalance() : BigDecimal.ZERO);
         w = walletRepo.save(w);
 
         // Seed categories on first wallet

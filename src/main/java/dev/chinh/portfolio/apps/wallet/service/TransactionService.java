@@ -49,20 +49,45 @@ public class TransactionService {
         var wallet = walletRepo.findByIdAndUserId(req.walletId(), userId)
                 .orElseThrow(() -> new EntityNotFoundException("Wallet not found"));
 
-        // Validate group if provided
-        if (req.groupId() != null) {
-            if (!debtGroupRepo.existsByIdAndUserId(req.groupId(), userId))
+        // Resolve groupId: use provided groupId, or auto-create BNPL group for EXPENSE on POSTPAID wallet
+        Long resolvedGroupId = req.groupId();
+        if (resolvedGroupId == null && req.type().equals("EXPENSE") && wallet.getType().equals("POSTPAID")) {
+            // Auto-create a BNPL debt group for this expense
+            DebtGroup autoGroup = new DebtGroup();
+            autoGroup.setUserId(userId);
+            autoGroup.setWalletId(req.walletId());
+            autoGroup.setTitle(req.groupTitle() != null ? req.groupTitle() : "Mua trả sau");
+            autoGroup.setGroupType("BNPL");
+            autoGroup.setTotalAmount(BigDecimal.valueOf(req.amount()));
+            autoGroup.setPaidAmount(BigDecimal.ZERO);
+            autoGroup.setCurrency("VND");
+            autoGroup.setStatus("OPEN");
+            if (req.groupDueDate() != null) {
+                autoGroup.setDueDate(Instant.parse(req.groupDueDate()));
+            }
+            if (req.groupCounterparty() != null) {
+                autoGroup.setCounterparty(req.groupCounterparty());
+            }
+            autoGroup = debtGroupRepo.save(autoGroup);
+            resolvedGroupId = autoGroup.getId();
+        } else if (resolvedGroupId != null) {
+            // Validate provided group belongs to user
+            if (!debtGroupRepo.existsByIdAndUserId(resolvedGroupId, userId))
                 throw new EntityNotFoundException("Debt group not found");
         }
+
+        // Build txnType label
+        String txnType = req.txnType() != null ? req.txnType()
+                : (resolvedGroupId != null ? "PRINCIPAL" : null);
 
         Transaction tx = new Transaction();
         tx.setUserId(userId);
         tx.setWalletId(req.walletId());
         tx.setCategoryId(req.categoryId());
-        tx.setGroupId(req.groupId());
+        tx.setGroupId(resolvedGroupId);
         tx.setAmount(BigDecimal.valueOf(req.amount()));
         tx.setType(req.type());
-        tx.setTxnType(req.txnType() != null ? req.txnType() : "PRINCIPAL");
+        tx.setTxnType(txnType);
         tx.setNote(req.note());
         tx.setDate(req.date() != null ? Instant.parse(req.date()) : Instant.now());
 
@@ -75,9 +100,9 @@ public class TransactionService {
         wallet.setBalance(wallet.getBalance().add(delta));
         walletRepo.save(wallet);
 
-        // If linked to a debt group, update paid amount
-        if (req.groupId() != null && req.type().equals("INCOME")) {
-            debtGroupRepo.findByIdAndUserId(req.groupId(), userId).ifPresent(group -> {
+        // If linked to a debt group, update paid amount (for INCOME = repayment)
+        if (resolvedGroupId != null && req.type().equals("INCOME")) {
+            debtGroupRepo.findByIdAndUserId(resolvedGroupId, userId).ifPresent(group -> {
                 BigDecimal newPaid = group.getPaidAmount().add(BigDecimal.valueOf(req.amount()));
                 group.setPaidAmount(newPaid);
                 if (newPaid.compareTo(group.getTotalAmount()) >= 0) {

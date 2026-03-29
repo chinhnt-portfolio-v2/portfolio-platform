@@ -10,5 +10,9 @@ public record CreateTransactionRequest(
     @NotBlank String type,
     String txnType,
     String note,
-    String date
+    String date,
+    // Auto-create debt group (used when expense on POSTPAID wallet without groupId)
+    String groupTitle,
+    String groupDueDate,
+    String groupCounterparty
 ) {}
