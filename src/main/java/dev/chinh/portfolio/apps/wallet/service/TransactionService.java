@@ -63,7 +63,12 @@ public class TransactionService {
             autoGroup.setCurrency("VND");
             autoGroup.setStatus("OPEN");
             if (req.groupDueDate() != null) {
-                autoGroup.setDueDate(Instant.parse(req.groupDueDate()));
+                // Accepts both "2026-04-28" (date-only) and "2026-04-28T00:00:00Z" (ISO instant)
+                String raw = req.groupDueDate();
+                Instant dueDate = raw.contains("T")
+                        ? Instant.parse(raw)
+                        : java.time.LocalDate.parse(raw).atStartOfDay(java.time.ZoneOffset.UTC).toInstant();
+                autoGroup.setDueDate(dueDate);
             }
             if (req.groupCounterparty() != null) {
                 autoGroup.setCounterparty(req.groupCounterparty());
