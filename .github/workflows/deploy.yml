@@ -43,7 +43,7 @@ jobs:
             image=moby/buildkit:latest
             network=host
 
-      - name: Build with cache
+      - name: Build without cache
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -54,8 +54,6 @@ jobs:
           build-args: |
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-          cache-from: type=gha,scope=portfolio-platform,key=portfolio-platform-${{ github.sha }},restore-keys=portfolio-platform-
-          cache-to: type=gha,mode=max,scope=portfolio-platform,key=portfolio-platform-${{ github.sha }}
 
   deploy:
     needs: build-and-push
