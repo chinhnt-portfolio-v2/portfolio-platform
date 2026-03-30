@@ -31,6 +31,9 @@ spring:
       keepalive-time: 30000  # Prevent Neon from closing idle connections on wake
       max-lifetime: 1800000  # 30 minutes - refresh connections before they expire
 
+  flyway:
+    out-of-order: true   # Allow newer migrations to run out of sequence (V6 checksum mismatch workaround)
+
   jpa:
     show-sql: false  # Never log SQL in production
     properties:
