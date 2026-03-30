@@ -15,8 +15,13 @@ public class RecurringRule {
     private Long id;
 
     private UUID userId;
+
+    @Column(name = "wallet_id")
     private Long walletId;
+
+    @Column(name = "category_id")
     private Long categoryId;
+
     private BigDecimal amount;
     private String type; // EXPENSE or INCOME
     private String frequency; // DAILY, WEEKLY, MONTHLY, YEARLY
@@ -27,11 +32,11 @@ public class RecurringRule {
     private String note;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "walletId", insertable = false, updatable = false)
+    @JoinColumn(name = "wallet_id", insertable = false, updatable = false)
     private Wallet wallet;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "categoryId", insertable = false, updatable = false)
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
 
     private Instant createdAt;
