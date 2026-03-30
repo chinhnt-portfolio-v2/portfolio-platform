@@ -31,6 +31,7 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
           cache: 'maven'
+          cache-dependency-path: pom.xml
 
       - name: Build JAR
         run: mvn package -DskipTests -q
@@ -53,8 +54,8 @@ jobs:
           build-args: |
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-          cache-from: type=gha,scope=portfolio-platform
-          cache-to: type=gha,mode=max,scope=portfolio-platform
+          cache-from: type=gha,scope=portfolio-platform,key=portfolio-platform-${{ github.sha }},restore-keys=portfolio-platform-
+          cache-to: type=gha,mode=max,scope=portfolio-platform,key=portfolio-platform-${{ github.sha }}
 
   deploy:
     needs: build-and-push
