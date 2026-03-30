@@ -33,8 +33,7 @@ spring:
 
   flyway:
     out-of-order: true
-    validate-on-migrate: false               # Disable checksum validation — production DB already has V6/V7 applied
-    ignore-migration-patterns: '*:ignored'   # All migrations already applied — skip execution entirely
+    validate-on-migrate: false               # Disable checksum validation — V6/V7 checksums mismatch due to BOM history
 
   jpa:
     show-sql: false  # Never log SQL in production

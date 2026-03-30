@@ -1,3 +1,4 @@
+# Production Dockerfile - portfolio-platform
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 COPY target/portfolio-platform-*.jar app.jar
