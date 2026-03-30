@@ -15,6 +15,7 @@ public class Budget {
     private Long id;
 
     private UUID userId;
+    @Column(name = "category_id")
     private Long categoryId;
     private BigDecimal monthlyLimit;
     private Integer alertThreshold; // percentage: 80, 90, 100
