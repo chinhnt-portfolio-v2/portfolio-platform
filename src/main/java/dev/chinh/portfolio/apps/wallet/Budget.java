@@ -21,7 +21,7 @@ public class Budget {
     private String period; // YYYY-MM
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", insertable = false, updatable = false)
+    @JoinColumn(name = "category_id", referencedColumnName = "id", insertable = false, updatable = false)
     private Category category;
 
     private Instant createdAt;
