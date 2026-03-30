@@ -1,6 +1,6 @@
 package dev.chinh.portfolio.apps.wallet;
 
-import dev.chinh.portfolio.shared.auth.CurrentUser;
+import dev.chinh.portfolio.auth.annotation.CurrentUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.Map;

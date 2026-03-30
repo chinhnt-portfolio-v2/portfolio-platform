@@ -155,16 +155,17 @@ public class TransactionService {
         var group = tx.getGroupId() != null
                 ? debtGroupRepo.findById(tx.getGroupId()).orElse(null) : null;
 
+        String dateStr = tx.getDate() != null ? tx.getDate().toString().substring(0, 10) : null;
+
         return new TransactionResponse(
             tx.getId(), tx.getUserId(), tx.getWalletId(), tx.getCategoryId(), tx.getGroupId(),
-            tx.getAmount(), tx.getType(), tx.getTxnType(), tx.getNote(), tx.getDate(),
+            tx.getAmount(), tx.getType(), tx.getTxnType(), tx.getNote(), dateStr,
+            tx.getCreatedAt(), tx.getUpdatedAt(),
+            group != null ? new TransactionResponse.GroupSummary(group.getId(), group.getTitle()) : null,
             wallet != null ? new TransactionResponse.WalletSummary(
                     wallet.getId(), wallet.getName(), wallet.getIcon(), wallet.getColor(), wallet.getType()) : null,
             category != null ? new TransactionResponse.CategorySummary(
-                    category.getId(), category.getName(), category.getIcon(), category.getColor()) : null,
-            group != null ? new TransactionResponse.DebtGroupSummary(
-                    group.getId(), group.getTitle(), group.getGroupType()) : null,
-            tx.getCreatedAt(), tx.getUpdatedAt()
+                    category.getId(), category.getName(), category.getIcon(), category.getColor()) : null
         );
     }
 }

@@ -1,7 +1,7 @@
 package dev.chinh.portfolio.apps.wallet;
 
 import dev.chinh.portfolio.apps.wallet.dto.*;
-import dev.chinh.portfolio.shared.auth.CurrentUser;
+import dev.chinh.portfolio.auth.annotation.CurrentUser;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

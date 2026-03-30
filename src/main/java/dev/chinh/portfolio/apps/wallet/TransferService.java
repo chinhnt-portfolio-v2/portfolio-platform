@@ -14,9 +14,7 @@ public class TransferService {
     private final WalletRepository walletRepository;
     private final TransactionRepository transactionRepository;
 
-    public TransferService(
-            WalletRepository walletRepository,
-            TransactionRepository transactionRepository) {
+    public TransferService(WalletRepository walletRepository, TransactionRepository transactionRepository) {
         this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
     }
@@ -41,7 +39,7 @@ public class TransferService {
 
         Instant now = Instant.now();
 
-        // Debit from source — type stays EXPENSE/INCOME per DB CHECK constraint
+        // Debit from source — type must be EXPENSE per DB CHECK constraint
         Transaction debit = new Transaction();
         debit.setUserId(userId);
         debit.setWalletId(from.getId());
@@ -50,11 +48,9 @@ public class TransferService {
         debit.setTxnType("TRANSFER_OUT");
         debit.setNote("Chuyển đến " + to.getName() + (req.note() != null ? ": " + req.note() : ""));
         debit.setDate(now);
-        debit.setCreatedAt(now);
-        debit.setUpdatedAt(now);
         debit = transactionRepository.save(debit);
 
-        // Credit to target
+        // Credit to target — type must be INCOME per DB CHECK constraint
         Transaction credit = new Transaction();
         credit.setUserId(userId);
         credit.setWalletId(to.getId());
@@ -63,15 +59,11 @@ public class TransferService {
         credit.setTxnType("TRANSFER_IN");
         credit.setNote("Nhận từ " + from.getName() + (req.note() != null ? ": " + req.note() : ""));
         credit.setDate(now);
-        credit.setCreatedAt(now);
-        credit.setUpdatedAt(now);
         credit = transactionRepository.save(credit);
 
-        // Update balances
+        // Update wallet balances
         from.setBalance(from.getBalance().subtract(req.amount()));
-        from.setUpdatedAt(now);
         to.setBalance(to.getBalance().add(req.amount()));
-        to.setUpdatedAt(now);
         walletRepository.save(from);
         walletRepository.save(to);
 
