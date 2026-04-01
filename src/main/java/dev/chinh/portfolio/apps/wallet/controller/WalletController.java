@@ -67,4 +67,11 @@ public class WalletController {
     public ResponseEntity<WalletResponse.Summary> getSummary(@CurrentUser UUID userId) {
         return ResponseEntity.ok(walletService.getSummary(userId));
     }
+
+    @GetMapping("/dashboard/monthly")
+    public ResponseEntity<List<WalletResponse.MonthlyComparison>> getMonthlyComparison(
+            @CurrentUser UUID userId,
+            @RequestParam(defaultValue = "3") int months) {
+        return ResponseEntity.ok(walletService.getMonthlyComparison(userId, months));
+    }
 }

@@ -25,4 +25,17 @@ public record WalletResponse(
         BigDecimal netWorth,
         String currency
     ) {}
+
+    /**
+     * Single month slice in the monthly comparison list.
+     * label is formatted in Vietnamese, e.g. "Thg 3".
+     */
+    public record MonthlyComparison(
+        String month,          // ISO year-month "2026-03"
+        String label,          // Vietnamese "Thg M"
+        BigDecimal totalIncome,
+        BigDecimal totalExpense,
+        BigDecimal netSavings,
+        long transactionCount
+    ) {}
 }

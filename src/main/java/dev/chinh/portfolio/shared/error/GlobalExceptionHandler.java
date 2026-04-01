@@ -62,6 +62,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(new ErrorDetail("INVALID_REFRESH_TOKEN", "Invalid or expired refresh token")));
     }
 
+    @ExceptionHandler(dev.chinh.portfolio.auth.AuthController.UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(
+            dev.chinh.portfolio.auth.AuthController.UserNotFoundException ex) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(new ErrorDetail("USER_NOT_FOUND", ex.getMessage())));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)

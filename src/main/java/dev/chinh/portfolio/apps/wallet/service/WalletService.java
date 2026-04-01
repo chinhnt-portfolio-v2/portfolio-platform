@@ -11,7 +11,12 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -107,7 +112,70 @@ public class WalletService {
         return new WalletResponse.Summary(assets, debt, receivable, netWorth, "VND");
     }
 
-    // ── Helpers ─────────────────────────────────────────────
+    /**
+     * Monthly income/expense comparison for the last N calendar months.
+     * Groups transactions by year-month, calculates totals and net savings.
+     */
+    @SuppressWarnings("unchecked")
+    public List<WalletResponse.MonthlyComparison> getMonthlyComparison(UUID userId, int months) {
+        Instant since = LocalDate.now(ZoneOffset.UTC)
+                .minusMonths(months - 1)
+                .withDayOfMonth(1)
+                .atStartOfDay(ZoneOffset.UTC)
+                .toInstant();
+
+        List<Object[]> rows = em.createQuery(
+                "SELECT FUNCTION('DATE_FORMAT', t.date, '%Y-%m'), t.type, COUNT(t), COALESCE(SUM(t.amount), 0) " +
+                "FROM Transaction t " +
+                "WHERE t.userId = :uid AND t.date >= :since " +
+                "GROUP BY FUNCTION('DATE_FORMAT', t.date, '%Y-%m'), t.type " +
+                "ORDER BY FUNCTION('DATE_FORMAT', t.date, '%Y-%m') DESC",
+                Object[].class)
+                .setParameter("uid", userId)
+                .setParameter("since", since)
+                .getResultList();
+
+        // Aggregate: month → {INCOME → {count, sum}, EXPENSE → {count, sum}}
+        Map<String, Map<String, MonthAgg>> agg = new LinkedHashMap<>();
+        for (Object[] row : rows) {
+            String month = (String) row[0];
+            String type = (String) row[1];
+            long count = ((Number) row[2]).longValue();
+            BigDecimal sum = (BigDecimal) row[3];
+            agg.computeIfAbsent(month, k -> new java.util.HashMap<>())
+               .put(type, new MonthAgg(count, sum));
+        }
+
+        List<WalletResponse.MonthlyComparison> result = new ArrayList<>();
+        for (Map.Entry<String, Map<String, MonthAgg>> entry : agg.entrySet()) {
+            String month = entry.getKey();
+            Map<String, MonthAgg> types = entry.getValue();
+
+            MonthAgg income = types.get("INCOME");
+            MonthAgg expense = types.get("EXPENSE");
+
+            BigDecimal totalIncome   = income   != null ? income.sum()   : BigDecimal.ZERO;
+            BigDecimal totalExpense  = expense  != null ? expense.sum()  : BigDecimal.ZERO;
+            long incomeCount   = income   != null ? income.count() : 0;
+            long expenseCount  = expense  != null ? expense.count() : 0;
+
+            String[] parts = month.split("-");
+            int monthNum = Integer.parseInt(parts[1]);
+            String label = "Thg " + monthNum;
+
+            result.add(new WalletResponse.MonthlyComparison(
+                    month,
+                    label,
+                    totalIncome,
+                    totalExpense,
+                    totalIncome.subtract(totalExpense),
+                    incomeCount + expenseCount
+            ));
+        }
+        return result;
+    }
+
+    private record MonthAgg(long count, BigDecimal sum) {}
 
     private void seedCategories(UUID userId) {
         List<Category> existing = categoryRepo.findByUserIdAndIsActiveTrueOrderByIsDefaultDescNameAsc(userId);

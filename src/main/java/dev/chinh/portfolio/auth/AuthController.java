@@ -1,9 +1,11 @@
 package dev.chinh.portfolio.auth;
 
+import dev.chinh.portfolio.auth.annotation.CurrentUser;
 import dev.chinh.portfolio.auth.dto.AuthResponse;
 import dev.chinh.portfolio.auth.dto.LoginRequest;
 import dev.chinh.portfolio.auth.dto.RefreshRequest;
 import dev.chinh.portfolio.auth.dto.RegisterRequest;
+import dev.chinh.portfolio.auth.dto.UserProfileResponse;
 import dev.chinh.portfolio.auth.jwt.JwtAuthenticationFilter;
 import dev.chinh.portfolio.auth.jwt.JwtService;
 import dev.chinh.portfolio.auth.session.Session;
@@ -20,6 +22,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -166,6 +169,40 @@ public class AuthController {
         sessionService.deleteSession(userId);
 
         return ResponseEntity.ok(Map.of("message", "Logged out successfully"));
+    }
+
+    /**
+     * Get the currently authenticated user's profile.
+     * Uses the JWT `sub` claim to look up the user from the database.
+     */
+    @Operation(summary = "Get current user", description = "Return profile of the authenticated user")
+    @ApiResponse(responseCode = "200", description = "User profile returned")
+    @ApiResponse(responseCode = "401", description = "Authentication required")
+    @ApiResponse(responseCode = "404", description = "User not found")
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(@CurrentUser UUID userId) {
+        User user = userService.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+
+        UserProfileResponse profile = new UserProfileResponse(
+                user.getId(),
+                user.getEmail(),
+                user.getName(),
+                null, // picture URL sourced from OAuth provider on first login; DB does not persist it
+                user.getProvider(),
+                user.getRole(),
+                user.getCreatedAt()
+        );
+        return ResponseEntity.ok(profile);
+    }
+
+    /**
+     * Exception thrown when a user cannot be found.
+     */
+    public static class UserNotFoundException extends RuntimeException {
+        public UserNotFoundException(String message) {
+            super(message);
+        }
     }
 
     private UserDto toUserDto(User user) {
