@@ -114,7 +114,8 @@ public class WalletService {
 
     /**
      * Monthly income/expense comparison for the last N calendar months.
-     * Groups transactions by year-month, calculates totals and net savings.
+     * Groups transactions by year-month in Java to stay database-agnostic
+     * (MySQL and PostgreSQL have incompatible date-formatting functions).
      */
     @SuppressWarnings("unchecked")
     public List<WalletResponse.MonthlyComparison> getMonthlyComparison(UUID userId, int months) {
@@ -124,12 +125,11 @@ public class WalletService {
                 .atStartOfDay(ZoneOffset.UTC)
                 .toInstant();
 
+        // Fetch raw rows — let Java do the year-month grouping
         List<Object[]> rows = em.createQuery(
-                "SELECT FUNCTION('DATE_FORMAT', t.date, '%Y-%m'), t.type, COUNT(t), COALESCE(SUM(t.amount), 0) " +
-                "FROM Transaction t " +
+                "SELECT t.date, t.type, t.amount FROM Transaction t " +
                 "WHERE t.userId = :uid AND t.date >= :since " +
-                "GROUP BY FUNCTION('DATE_FORMAT', t.date, '%Y-%m'), t.type " +
-                "ORDER BY FUNCTION('DATE_FORMAT', t.date, '%Y-%m') DESC",
+                "ORDER BY t.date DESC",
                 Object[].class)
                 .setParameter("uid", userId)
                 .setParameter("since", since)
@@ -138,12 +138,15 @@ public class WalletService {
         // Aggregate: month → {INCOME → {count, sum}, EXPENSE → {count, sum}}
         Map<String, Map<String, MonthAgg>> agg = new LinkedHashMap<>();
         for (Object[] row : rows) {
-            String month = (String) row[0];
+            Instant date = (Instant) row[0];
             String type = (String) row[1];
-            long count = ((Number) row[2]).longValue();
-            BigDecimal sum = (BigDecimal) row[3];
+            BigDecimal amount = row[2] != null ? (BigDecimal) row[2] : BigDecimal.ZERO;
+            String month = date.toString().substring(0, 7); // "2026-03"
+
             agg.computeIfAbsent(month, k -> new java.util.HashMap<>())
-               .put(type, new MonthAgg(count, sum));
+               .computeIfAbsent(type, k -> new MonthAgg(0, BigDecimal.ZERO));
+            MonthAgg existing = agg.get(month).get(type);
+            agg.get(month).put(type, new MonthAgg(existing.count() + 1, existing.sum().add(amount)));
         }
 
         List<WalletResponse.MonthlyComparison> result = new ArrayList<>();
@@ -151,13 +154,13 @@ public class WalletService {
             String month = entry.getKey();
             Map<String, MonthAgg> types = entry.getValue();
 
-            MonthAgg income = types.get("INCOME");
+            MonthAgg income  = types.get("INCOME");
             MonthAgg expense = types.get("EXPENSE");
 
-            BigDecimal totalIncome   = income   != null ? income.sum()   : BigDecimal.ZERO;
-            BigDecimal totalExpense  = expense  != null ? expense.sum()  : BigDecimal.ZERO;
-            long incomeCount   = income   != null ? income.count() : 0;
-            long expenseCount  = expense  != null ? expense.count() : 0;
+            BigDecimal totalIncome   = income  != null ? income.sum()   : BigDecimal.ZERO;
+            BigDecimal totalExpense  = expense != null ? expense.sum() : BigDecimal.ZERO;
+            long incomeCount   = income  != null ? income.count() : 0;
+            long expenseCount  = expense != null ? expense.count() : 0;
 
             String[] parts = month.split("-");
             int monthNum = Integer.parseInt(parts[1]);
