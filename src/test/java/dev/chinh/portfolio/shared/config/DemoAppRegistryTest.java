@@ -36,8 +36,8 @@ class DemoAppRegistryTest {
                 .orElseThrow();
 
         assertThat(wallet.getName()).isEqualTo("Wallet App");
-        assertThat(wallet.getHealthEndpoint()).isEqualTo("https://wallet.chinh.dev/health");
-        assertThat(wallet.getDemoUrl()).isEqualTo("https://wallet.chinh.dev");
+        assertThat(wallet.getHealthEndpoint()).isEqualTo("https://portfolio-platform-1095331155372.asia-southeast1.run.app/actuator/health");
+        assertThat(wallet.getDemoUrl()).isEqualTo("https://wallet-fe-two.vercel.app");
     }
 
     @Test

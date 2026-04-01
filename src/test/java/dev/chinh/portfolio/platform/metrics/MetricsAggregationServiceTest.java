@@ -1,6 +1,7 @@
 package dev.chinh.portfolio.platform.metrics;
 
-import dev.chinh.portfolio.platform.websocket.MetricsWebSocketHandler;
+import dev.chinh.portfolio.platform.metrics.ProjectHealthUpdatedEvent;
+import dev.chinh.portfolio.platform.websocket.RefreshMetricsEvent;
 import dev.chinh.portfolio.shared.config.DemoAppRegistry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClient;
 
@@ -43,7 +45,7 @@ class MetricsAggregationServiceTest {
     @Mock
     private MetricsMapper mapper;
     @Mock
-    private MetricsWebSocketHandler webSocketHandler;
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private MetricsAggregationService service;
@@ -106,7 +108,7 @@ class MetricsAggregationServiceTest {
         assertThat(saved.getLastOnlineAt()).isNotNull();
         assertThat(saved.getLastPolledAt()).isNotNull();
         verify(mapper).toDto(any(ProjectHealth.class));
-        verify(webSocketHandler).broadcast(any(ProjectHealthDto.class));
+        verify(eventPublisher).publishEvent(any(ProjectHealthUpdatedEvent.class));
     }
 
     @Test
@@ -132,7 +134,7 @@ class MetricsAggregationServiceTest {
         assertThat(saved.getUptimePercent()).isEqualByComparingTo("95.50"); // preserved
         assertThat(saved.getLastPolledAt()).isNotNull();
         verify(mapper).toDto(any(ProjectHealth.class));
-        verify(webSocketHandler).broadcast(any(ProjectHealthDto.class));
+        verify(eventPublisher).publishEvent(any(ProjectHealthUpdatedEvent.class));
     }
 
     @Test
@@ -144,6 +146,7 @@ class MetricsAggregationServiceTest {
         existing.setConsecutiveFailures(0);
         when(repository.findByProjectSlug("wallet-app")).thenReturn(Optional.of(existing));
         stubRestClientFailureAnyUri(new RuntimeException("timeout"));
+        lenient().when(repository.save(any(ProjectHealth.class))).thenAnswer(inv -> inv.getArgument(0));
 
         service.pollApp(walletApp);
 
@@ -221,6 +224,7 @@ class MetricsAggregationServiceTest {
         existing.setConsecutiveFailures(3);
         when(repository.findByProjectSlug("wallet-app")).thenReturn(Optional.of(existing));
         stubRestClientFailureAnyUri(new RuntimeException("still down"));
+        when(repository.save(any(ProjectHealth.class))).thenAnswer(inv -> inv.getArgument(0));
 
         service.pollApp(walletApp);
 
@@ -237,6 +241,7 @@ class MetricsAggregationServiceTest {
         existing.setConsecutiveFailures(0);
         when(repository.findByProjectSlug("wallet-app")).thenReturn(Optional.of(existing));
         stubRestClientFailureAnyUri(new RuntimeException("Connection refused"));
+        when(repository.save(any(ProjectHealth.class))).thenAnswer(inv -> inv.getArgument(0));
 
         service.pollApp(walletApp);
 
