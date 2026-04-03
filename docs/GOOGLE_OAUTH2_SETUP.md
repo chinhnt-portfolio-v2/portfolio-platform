@@ -43,7 +43,7 @@ http://localhost:8080/api/v1/auth/oauth2/callback/google
 
 Add to **Authorized JavaScript origins**:
 ```
-https://portfolio-fe.vercel.app
+https://portfolio.chinhnt.xyz
 ```
 
 Add to **Authorized redirect URIs**:
@@ -51,7 +51,7 @@ Add to **Authorized redirect URIs**:
 https://portfolio-platform-1095331155372.asia-southeast1.run.app/api/v1/auth/oauth2/callback/google
 ```
 
-> **Note:** If using a custom domain, replace with your actual domain. The Cloud Run URL is shown in the GCP Cloud Run console after first deployment.
+> **Note:** The Cloud Run URL is shown in the GCP Cloud Run console after first deployment.
 
 ---
 
@@ -94,7 +94,7 @@ Set the CORS origins environment variable:
 | Environment | Value |
 |------------|-------|
 | Development | `http://localhost:5173` |
-| Production | `https://portfolio-fe.vercel.app` |
+| Production | `https://portfolio.chinhnt.xyz` |
 
 ---
 

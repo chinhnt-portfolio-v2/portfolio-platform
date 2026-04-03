@@ -26,15 +26,14 @@ public class OAuth2Controller {
     private final SessionService sessionService;
     private static final String STATE_SEPARATOR = "|";
 
-    @Value("${app.frontend.url:https://wallet-fe-two.vercel.app}")
+    @Value("${app.frontend.url:https://wallet.chinhnt.xyz}")
     private String defaultFrontendUrl;
 
     private static final Set<String> ALLOWED_REDIRECT_DOMAINS = Set.of(
-            "wallet-fe-two.vercel.app",
-            "chinhnt-portfolio.vercel.app",
+            "wallet.chinhnt.xyz",
+            "portfolio.chinhnt.xyz",
             "chinh.dev",
             "wallet.chinh.dev",
-            "wallet.chinhnt.xyz",
             "localhost"
     );
 

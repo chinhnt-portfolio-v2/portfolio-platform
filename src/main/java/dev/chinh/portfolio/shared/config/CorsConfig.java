@@ -11,7 +11,8 @@ import java.util.List;
 /**
  * CORS configuration — explicit allow-list, no wildcards.
  *
- * <p>Allowed origins: production domain, wallet subdomain, and local dev server.
+ * <p>Allowed origins: production domains (chinhnt.xyz), legacy domains (chinh.dev),
+ * and local dev server.
  * Never use "*" for allowedOrigins — architectural security constraint.
  */
 @Configuration
@@ -23,7 +24,8 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "https://chinh.dev",
                         "https://wallet.chinh.dev",
-                        "https://chinhnt-portfolio.vercel.app",
+                        "https://portfolio.chinhnt.xyz",
+                        "https://wallet.chinhnt.xyz",
                         "http://localhost:5173"
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
