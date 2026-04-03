@@ -19,13 +19,18 @@ apps:
     name: "Wallet App"
     healthEndpoint: "https://portfolio-platform-1095331155372.asia-southeast1.run.app/actuator/health"
     demoUrl: "https://wallet.chinhnt.xyz"
+  - slug: ledger-app
+    name: "Expense Ledger"
+    healthEndpoint: "https://portfolio-platform-1095331155372.asia-southeast1.run.app/actuator/health"
+    demoUrl: "https://ledger.chinhnt.xyz"
+  - slug: vault-app
+    name: "Bookmark Vault"
+    healthEndpoint: "https://portfolio-platform-1095331155372.asia-southeast1.run.app/actuator/health"
+    demoUrl: "https://vault.chinhnt.xyz"
+  - slug: codebin-app
+    name: "CodeBin"
+    healthEndpoint: "https://portfolio-platform-1095331155372.asia-southeast1.run.app/actuator/health"
+    demoUrl: "https://codebin.chinhnt.xyz"
   - slug: portfolio-v2
     name: "Portfolio v2"
     healthEndpoint: "https://portfolio-platform-1095331155372.asia-southeast1.run.app/actuator/health"
-  # ── Adding a new app ────────────────────────────────────────────────────
-  # Uncomment and fill the template below, then restart BE.
-  #
-  # - slug: my-new-app
-  #   name: "My New App"
-  #   healthEndpoint: "https://myapp.chinh.dev/health"
-  #   demoUrl: "https://myapp.chinh.dev"
