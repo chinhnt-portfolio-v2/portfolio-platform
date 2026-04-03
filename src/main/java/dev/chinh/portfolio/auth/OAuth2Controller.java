@@ -34,6 +34,7 @@ public class OAuth2Controller {
             "chinhnt-portfolio.vercel.app",
             "chinh.dev",
             "wallet.chinh.dev",
+            "wallet.chinhnt.xyz",
             "localhost"
     );
 

@@ -95,6 +95,11 @@ github:
   webhook:
     secret: ${GITHUB_WEBHOOK_SECRET:}
 
+# App Configuration - Production
+app:
+  frontend:
+    url: https://wallet.chinhnt.xyz
+
 # Logging Configuration - Production
 logging:
   level:
