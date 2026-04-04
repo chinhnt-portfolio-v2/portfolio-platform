@@ -139,8 +139,8 @@ public class VaultService {
                 .map(BookmarkResponse::from);
         List<String> allTags = bookmarkRepo.allTags(userId);
         return new VaultDashboardResponse(
-                bookmarkRepo.count(),
-                folderRepo.count(),
+                bookmarkRepo.findByUserIdAndIsArchivedFalseOrderByCreatedAtDesc(userId, Pageable.unpaged()).getTotalElements(),
+                folderRepo.findByUserIdOrderBySortOrderAscNameAsc(userId).size(),
                 bookmarkRepo.findByUserIdAndIsFavoriteTrueAndIsArchivedFalseOrderByCreatedAtDesc(userId).size(),
                 allTags,
                 recent.getContent()
