@@ -22,10 +22,15 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
@@ -104,6 +109,7 @@ public class SecurityConfig {
         String envOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
         if (envOrigins != null && !envOrigins.isBlank()) {
             configuration.setAllowedOriginPatterns(Arrays.asList(envOrigins.split(",")));
+            logger.info("CORS using env origins: {}", envOrigins);
         } else {
             // Safe fallback: all known production + localhost dev origins.
             // This ensures local dev always works even when the env var is unset.
@@ -115,6 +121,7 @@ public class SecurityConfig {
                     "http://localhost:3000",
                     "http://localhost:3001"
             ));
+            logger.info("CORS using DEFAULT fallback origins (env var not set or blank)");
         }
 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
