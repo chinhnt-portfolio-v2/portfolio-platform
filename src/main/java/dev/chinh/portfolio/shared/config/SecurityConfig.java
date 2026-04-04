@@ -97,28 +97,29 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowCredentials(true);
+        configuration.setMaxAge(3600L);
 
-        // Support production domain via environment variable (comma-separated)
-        // Use setAllowedOriginPatterns for wildcard support (e.g. https://*.vercel.app)
-        // This is more flexible than setAllowedOrigins which requires exact match.
-        String corsOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
-        if (corsOrigins != null && !corsOrigins.isBlank()) {
-            configuration.setAllowedOriginPatterns(Arrays.asList(corsOrigins.split(",")));
+        // Environment variable overrides defaults (comma-separated patterns)
+        String envOrigins = System.getenv("CORS_ALLOWED_ORIGINS");
+        if (envOrigins != null && !envOrigins.isBlank()) {
+            configuration.setAllowedOriginPatterns(Arrays.asList(envOrigins.split(",")));
         } else {
-            // Default: local + Vercel preview domains
+            // Safe fallback: all known production + localhost dev origins.
+            // This ensures local dev always works even when the env var is unset.
             configuration.setAllowedOriginPatterns(Arrays.asList(
-                    "https://*.vercel.app",
+                    "https://*.chinhnt.xyz",
+                    "https://*.chinh.dev",
                     "http://localhost:5173",
-                    "http://localhost:3000"
+                    "http://localhost:5174",
+                    "http://localhost:3000",
+                    "http://localhost:3001"
             ));
         }
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
-        // Note: allowCredentials(true) is NOT set here — analytics/track endpoint is
-        // fire-and-forget, anonymous, and uses fetch without credentials (omit).
-        // If credentials were needed, we would use allowedOriginPatterns with specific
-        // origins (not wildcards) to avoid "Invalid CORS request" rejection.
-        configuration.setMaxAge(3600L);
+
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
