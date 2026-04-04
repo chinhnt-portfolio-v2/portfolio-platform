@@ -26,9 +26,33 @@ public class CorsConfig implements WebMvcConfigurer {
                         "https://wallet.chinh.dev",
                         "https://portfolio.chinhnt.xyz",
                         "https://wallet.chinhnt.xyz",
-                        "http://localhost:5173"
+                        "https://ledger.chinhnt.xyz",
+                        "https://vault.chinhnt.xyz",
+                        "https://codebin.chinhnt.xyz",
+                        "http://localhost:5173",
+                        "http://localhost:5174",
+                        "http://localhost:3001"
                 )
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH")
+                .allowedHeaders("*")
+                .allowCredentials(true);
+
+        // OAuth2 callback redirects
+        registry.addMapping("/login/oauth2/**")
+                .allowedOrigins(
+                        "https://accounts.google.com"
+                )
+                .allowedMethods("GET")
+                .allowedHeaders("*");
+
+        registry.addMapping("/oauth2/**")
+                .allowedOrigins(
+                        "https://accounts.google.com",
+                        "http://localhost:5173",
+                        "http://localhost:5174",
+                        "http://localhost:3001"
+                )
+                .allowedMethods("GET", "POST")
                 .allowedHeaders("*")
                 .allowCredentials(true);
     }
