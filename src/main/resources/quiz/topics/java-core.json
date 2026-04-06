@@ -1,0 +1,135 @@
+{
+  "topicSlug": "java-core",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the correct way to ensure proper encapsulation in a Java class?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Declare all fields as public so other classes can access them directly" },
+        { "id": "b", "text": "Declare fields as private and provide public getter/setter methods" },
+        { "id": "c", "text": "Declare fields as protected to restrict access to the same package only" },
+        { "id": "d", "text": "Avoid using any access modifiers so fields default to public" }
+      ],
+      "correctKey": "b",
+      "explanation": "Encapsulation hides internal state and requires all access through well-defined interfaces. Private fields with public accessors are the standard Java idiom. Option A exposes internals directly, breaking the abstraction. Option C's protected modifier allows package-wide access, not full encapsulation. Option D relies on default (package-private) access, which is neither explicit nor safe."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of this code?\n\nclass Main {\n  static int count = 0;\n  \n  Main() { count++; }\n  \n  public static void main(String[] args) {\n    Main a = new Main();\n    Main b = new Main();\n    Main c = new Main();\n    System.out.println(count);\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0" },
+        { "id": "b", "text": "1" },
+        { "id": "c", "text": "3" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "c",
+      "explanation": "The static field `count` is shared across all instances of `Main`. Each constructor call increments it once, so three objects created means three increments, yielding `count = 3`. Static fields belong to the class itself, not any individual instance, so all three references see the same counter."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which statement about `toString()` is correct?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The default toString() from Object returns the class name and the object's hash code in hex" },
+        { "id": "b", "text": "toString() is automatically called whenever you concatenate a string with an object" },
+        { "id": "c", "text": "Overriding toString() is required for any class that stores data" },
+        { "id": "d", "text": "Both A and B are correct" }
+      ],
+      "correctKey": "d",
+      "explanation": "Option A is true — Object's default toString() produces strings like `Test@4aa298b7`. Option B is also true — the JVM automatically invokes toString() via `String.valueOf()` during concatenation (`\"obj=\" + myObj` → `\"obj=\" + myObj.toString()`). Option C is false; toString() override is a best practice, not a language requirement. Since both A and B are correct, D is the answer."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the key difference between `==` and `.equals()` when comparing two String objects?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "== compares character sequences; equals() compares object references" },
+        { "id": "b", "text": "== compares object references (identity); equals() compares character content (value)" },
+        { "id": "c", "text": "There is no difference — both operators compare value for String objects" },
+        { "id": "d", "text": "equals() is faster because it bypasses the String pool" }
+      ],
+      "correctKey": "b",
+      "explanation": "`==` checks reference equality (whether two variables point to the same object in heap memory). `.equals()` on String overrides Object's default to compare character sequences. Using == between two distinct String objects (even with identical content) returns false, while equals() returns true. The String pool can cause interned literals to share references, masking this distinction in simple tests."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What happens when you call `map.get(new Key(\"a\"))` if Key only overrides `equals()` but not `hashCode()`? (Assume Key objects with equals content have different hash codes.)",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The correct value is always found, because equals() is used as a fallback" },
+        { "id": "b", "text": "The lookup may fail unexpectedly even when equals() would return true" },
+        { "id": "c", "text": "HashMap throws a NullPointerException at runtime" },
+        { "id": "d", "text": "The value is stored and retrieved correctly since equals() is sufficient" }
+      ],
+      "correctKey": "b",
+      "explanation": "HashMap first computes the key's hash code to narrow the bucket search. If two objects that are equal produce different hash codes, the lookup bucket will be wrong — the object won't be found even though equals() would match. This violates the HashMap contract: equal objects must have equal hash codes. Option A is wrong because HashMap doesn't fall back to linear equals() scanning across all buckets by default."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which Stream API operation is an intermediate operation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "collect()" },
+        { "id": "b", "text": "findFirst()" },
+        { "id": "c", "text": "filter()" },
+        { "id": "d", "text": "forEach()" }
+      ],
+      "correctKey": "c",
+      "explanation": "Intermediate operations (filter, map, flatMap, distinct, sorted, limit, skip) return a new Stream and are lazy — they don't execute until a terminal operation triggers the pipeline. Terminal operations (collect, findFirst, forEach, reduce, toList) trigger execution and return a non-Stream result. Calling filter() alone without a terminal operation does nothing; the pipeline is lazy and only runs when findFirst() or collect() is added."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `List<? super Integer>` mean in Java generics?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A list of Integer or any of its supertypes (Integer's parents)" },
+        { "id": "b", "text": "A list of Integer or any of its subtypes" },
+        { "id": "c", "text": "A list that can hold both Integer and all its subtypes as elements" },
+        { "id": "d", "text": "A list where you can read elements as Integer but cannot write Integer into it" }
+      ],
+      "correctKey": "a",
+      "explanation": "`? super Integer` is a lower-bounded wildcard. It accepts List<Integer>, List<Number>, or List<Object> — any list whose element type is a supertype of Integer. This makes the list safe for writes: you can add an Integer (which is a valid subtype of all those bounds) but reading gives you Object at best. The PECS rule: Producer Extends, Consumer Super."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which garbage collection algorithm would you choose for an application with very short-lived objects (e.g., request processing in a web server)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Serial GC — it is the simplest and works well for single-threaded environments" },
+        { "id": "b", "text": "G1GC with Young Generation focused settings and a large Eden space" },
+        { "id": "c", "text": "ZGC — designed for ultra-low latency applications regardless of heap size" },
+        { "id": "d", "text": "Mark-Sweep-Compact running on the old generation only" }
+      ],
+      "correctKey": "b",
+      "explanation": "Short-lived object workloads (request/response) benefit most from generational collectors that allocate in young generation (Eden) and quickly reclaim dead objects via minor GC without scanning the old generation. G1GC with tuned young generation settings (large Eden, appropriate survivor ratios) is the standard choice for such workloads. ZGC targets sub-millisecond pause times with very large heaps — overkill here. Serial GC causes stop-the-world pauses unacceptable for latency-sensitive servers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the primary issue with this code in a multi-threaded context?\n\npublic class Counter {\n  private long count = 0;\n  \n  public void increment() { count++; }\n  public long getCount()  { return count; }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "count should be declared volatile since it is a primitive type" },
+        { "id": "b", "text": "count++ is not atomic — it reads, increments, then writes — leading to lost updates under contention" },
+        { "id": "c", "text": "getCount() should be synchronized to ensure visibility of the latest value" },
+        { "id": "d", "text": "Long is not thread-safe for increment; you must use AtomicLong instead" }
+      ],
+      "correctKey": "b",
+      "explanation": "The compound read-modify-write of count++ (read → increment → write) is not atomic even though Long is 64-bit and fits in a single register. Two threads can read the same value, both increment it, and both write the same result — losing one update. Declaring volatile only ensures visibility, not atomicity of the compound operation. Option A is incomplete (volatile alone doesn't fix lost updates). Option D's AtomicLong is one valid fix, but the core issue is the non-atomic nature of the compound operation, which is what B directly identifies."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which mechanism allows Java to invoke a method on an object without knowing its exact runtime type at compile time?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Reflection — used at runtime to inspect and invoke methods on class metadata" },
+        { "id": "b", "text": "Dynamic proxy — a runtime-generated proxy implementing known interfaces" },
+        { "id": "c", "text": "Virtual method dispatch — the JVM resolves the method implementation at runtime based on the actual object type" },
+        { "id": "d", "text": "Method handles — a low-level JVM feature for invokeinterface calls" }
+      ],
+      "correctKey": "c",
+      "explanation": "Virtual method dispatch (dynamic dispatch) is the OOP mechanism the JVM uses to call the overridden method on the actual runtime type — this is the core of polymorphism. When a superclass reference points to a subclass object, calling an overridden method dispatches to the subclass version at runtime without compile-time knowledge. Reflection (A) inspects types at runtime but is not the standard polymorphism mechanism. Dynamic proxy (B) creates new classes; it doesn't invoke existing methods polymorphically. Method handles (D) are a JVM optimization layer, not the primary OOP feature."
+    }
+  ]
+}

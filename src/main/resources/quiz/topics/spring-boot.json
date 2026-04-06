@@ -1,0 +1,135 @@
+{
+  "topicSlug": "spring-boot",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the key advantage of constructor injection over @Autowired field injection?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Constructor injection is faster because it bypasses Spring's dependency resolution" },
+        { "id": "b", "text": "Constructor injection makes dependencies explicit and enables immutable, testable objects without Spring-specific annotations" },
+        { "id": "c", "text": "@Autowired field injection is deprecated in Spring 6.x, so constructor injection is the only option" },
+        { "id": "d", "text": "Field injection allows circular dependencies that constructor injection cannot resolve" }
+      ],
+      "correctKey": "b",
+      "explanation": "Constructor injection creates immutable dependencies (final fields), makes the contract explicit in the IDE/API signature, and enables plain unit testing without a Spring context — you just `new` the class with mocks. Field injection hides dependencies, circumvents final semantics, and makes testing harder. Option A is false (no speed difference). Option C is false (field injection still works, just discouraged). Option D is backwards: field injection masks circular dependencies rather than solving them — constructor injection fails fast and explicitly."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which annotation should you use to define a class that handles business logic and transaction boundaries?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Component — generic Spring-managed bean for any purpose" },
+        { "id": "b", "text": "@Service — semantically marks the class as a service layer with business logic" },
+        { "id": "c", "text": "@Repository — marks the class as a data access component" },
+        { "id": "d", "text": "@Controller — used for request handling in the web layer" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Service is a specialized @Component with semantic meaning: it denotes a service-layer class that encapsulates business logic and typically sits between controllers and repositories. Functionally it is identical to @Component (all are singleton-scoped Spring beans), but the stereotype aids code organization and AOP targeting (e.g., transactions). @Component is too generic. @Repository carries DataAccessException translation semantics. @Controller is for web layer handlers."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does this application.properties entry do?\n\nspring.datasource.url=jdbc:postgresql://localhost:5432/mydb\nspring.datasource.username=admin\nspring.datasource.password=secret",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It configures a HikariCP connection pool automatically with the provided credentials" },
+        { "id": "b", "text": "It defines only the connection URL and credentials; a DataSource bean must be created manually" },
+        { "id": "c", "text": "It creates a Tomcat connection pool with default settings equal to HikariCP" },
+        { "id": "d", "text": "It is ignored unless @EnableConfigurationProperties is added to the main class" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot's auto-configuration automatically creates a HikariCP DataSource bean using the spring.datasource.* properties — no explicit @Bean required. Spring Boot 2.x switched default pool from Tomcat to HikariCP. Option B is wrong because auto-configuration handles bean creation. Option C incorrectly conflates the two pool implementations. Option D is wrong; @EnableConfigurationProperties is for binding custom configuration properties, not built-in datasource auto-config."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which HTTP method is semantically correct for updating a resource partially?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PUT — replaces the entire resource" },
+        { "id": "b", "text": "PATCH — applies a partial update to the resource" },
+        { "id": "c", "text": "POST — creates a new sub-resource under the given URI" },
+        { "id": "d", "text": "OPTIONS — returns allowed operations on the resource" }
+      ],
+      "correctKey": "b",
+      "explanation": "PATCH is designed for partial updates — the request body contains only the fields to change. PUT is idempotent and meant for full replacement (sending the complete resource). In practice, many APIs use PUT for both, but semantically PATCH is correct for partial updates. POST creates resources at a server-determined URI or processes an action; it is neither idempotent nor resource-replacing. OPTIONS reveals capabilities but doesn't modify anything."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which @Transactional propagation level causes a new transaction to be started if a transaction already exists?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "REQUIRED (default) — joins an existing transaction or creates a new one" },
+        { "id": "b", "text": "REQUIRES_NEW — always suspends the existing transaction and starts a new one" },
+        { "id": "c", "text": "MANDATORY — requires an existing transaction or throws an exception" },
+        { "id": "d", "text": "NESTED — creates a savepoint within the current transaction" }
+      ],
+      "correctKey": "a",
+      "explanation": "REQUIRED is the default propagation. If a transaction exists, the method joins it; otherwise Spring creates a new one. REQUIRES_NEW (B) always creates a new transaction, suspending the outer one — useful for independent operations. MANDATORY (C) fails if no transaction exists. NESTED (D) uses JDBC savepoints to nest a sub-transaction within the outer one (requires JPA/JDBC savepoint support). The key distinction between REQUIRED and REQUIRES_NEW is the suspension behavior."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of @Configuration classes being processed via CGLIB proxy by Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CGLIB enables bytecode-level security checks on configuration classes" },
+        { "id": "b", "text": "CGLIB allows method calls on @Bean methods within the same @Configuration class to return cached singleton instances rather than re-executing the method body" },
+        { "id": "c", "text": "CGLIB compiles @Configuration classes ahead of time for faster startup" },
+        { "id": "d", "text": "CGLIB proxies are required to deserialize JSON into Java objects in REST controllers" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring wraps @Configuration classes in a CGLIB subclass that intercepts @Bean method calls. This interception ensures that calling `userService()` within the same @Configuration class returns the singleton bean created on first call — not a new object from re-executing the method body. This is called 'configuration class enhancement' or 'lite mode avoidance'. Without CGLIB, calling `new UserService()` inside another @Bean would create a distinct instance, breaking singleton semantics. This is not about security, ahead-of-time compilation, or JSON serialization."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which Spring Data JPA annotation correctly maps a unidirectional one-to-many relationship where the child is the owning side?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@OneToMany on the parent with mappedBy pointing to the foreign key column in the child entity" },
+        { "id": "b", "text": "@ManyToOne on the child entity referencing the parent's primary key column" },
+        { "id": "c", "text": "@JoinColumn on the parent to name the foreign key column in the child table" },
+        { "id": "d", "text": "Both B and C — @ManyToOne on child + @JoinColumn(name = \"...\") to specify the FK column" }
+      ],
+      "correctKey": "d",
+      "explanation": "In a unidirectional one-to-many where the child is owning side, you place @ManyToOne + @JoinColumn on the child entity. The @JoinColumn specifies the foreign key column name in the child table (owning side). The parent entity only has a simple List<Child> field — no inverse @OneToMany needed (that would be bidirectional). Option A describes the inverse side of a bidirectional mapping. Option C alone is incomplete (needs @ManyToOne on the child). The owning side determines where Hibernate stores the FK."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "In Spring Security, what is the correct order of filters in the default filter chain for a JWT-based stateless API?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SessionCreationFilter → JwtAuthenticationFilter → AuthorizationFilter → UsernamePasswordAuthenticationFilter" },
+        { "id": "b", "text": "AuthorizationFilter → JwtAuthenticationFilter → ExceptionHandlingFilter → UsernamePasswordAuthenticationFilter" },
+        { "id": "c", "text": "SecurityContextPersistenceFilter → BearerTokenAuthenticationFilter → AuthorizationFilter" },
+        { "id": "d", "text": "WsSecurityFilter → Saml2AuthenticationFilter → OAuth2AuthorizationFilter" }
+      ],
+      "correctKey": "c",
+      "explanation": "Spring Security 5+ uses a filter chain with a specific order. For a stateless JWT (Bearer token) API, SecurityContextPersistenceFilter loads the security context (if session-based) then clears it, followed by BearerTokenAuthenticationFilter which extracts and validates the JWT from the Authorization header, and finally AuthorizationFilter which checks access rules. Option A reverses the order and includes UsernamePasswordAuthenticationFilter (form-login, not applicable for pure JWT APIs). Option B puts AuthorizationFilter first (it needs an authenticated context first). Option D describes WS-Federation/SAML/OAuth2 login flows, not stateless JWT bearer tokens."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of @EnableCaching and how does Spring manage cache eviction?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@EnableCaching creates an in-memory ConcurrentHashMap cache automatically; eviction is manual only via CacheManager.clear()" },
+        { "id": "b", "text": "@Cacheable intercepts method calls and stores results in a cache (e.g., Caffeine, Redis); @CacheEvict removes entries before or after method execution" },
+        { "id": "c", "text": "@EnableCaching synchronizes method calls across JVM instances using JGroups; @CacheEvict broadcasts invalidation messages" },
+        { "id": "d", "text": "@Cacheable runs synchronously — the method executes and the result is stored; @CacheEvict runs asynchronously in a separate thread" }
+      ],
+      "correctKey": "b",
+      "explanation": "@EnableCaching switches on Spring's cache abstraction, allowing @Cacheable (read from cache before method call), @CacheEvict (remove entries — before or after via `beforeInvocation`), and @CachePut (update without interfering with return value). Spring integrates with Redis, Caffeine, EhCache, etc. via a CacheManager. Option A's ConcurrentHashMap is only used if no cache provider is configured — it's not production-ready. Option C incorrectly describes JGroups-based distributed caching. Option D is wrong because @CacheEvict is synchronous; async eviction would cause race conditions where a stale value is read before eviction completes."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which Spring Boot actuator endpoint is used to check the health of external dependencies (e.g., database, Redis) as part of a liveness/readiness probe?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "/actuator/beans — lists all Spring beans and their dependency graph" },
+        { "id": "b", "text": "/actuator/health — aggregates health indicators including DataSource, Redis, disk space; exposes liveness and readiness states" },
+        { "id": "c", "text": "/actuator/httptrace — records recent HTTP request/response exchanges for debugging" },
+        { "id": "d", "text": "/actuator/info — returns arbitrary application metadata configured via management.info.* properties" }
+      ],
+      "correctKey": "b",
+      "explanation": "/actuator/health is the standard endpoint for probes. Spring Boot auto-registers health indicators for common dependencies (DataSource, Redis, MongoDB, etc.). With Spring Boot 2.3+, Kubernetes probe support is built in: `management.endpoint.health.probes.enabled=true` exposes /health/liveness and /health/readiness separate from the aggregate /health endpoint. Each probe can be configured independently to depend on specific indicators. Option A lists beans, not health. Option C traces HTTP calls for debugging. Option D returns custom info, not dependency health."
+    }
+  ]
+}

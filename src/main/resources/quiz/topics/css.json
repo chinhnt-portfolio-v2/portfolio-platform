@@ -1,0 +1,135 @@
+{
+  "topicSlug": "css",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In the CSS box model, which property adds space BETWEEN the element's border and its surrounding elements?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "padding" },
+        { "id": "b", "text": "border" },
+        { "id": "c", "text": "margin" },
+        { "id": "d", "text": "content" }
+      ],
+      "correctKey": "c",
+      "explanation": "Margin is the space OUTSIDE the border — between the border and neighboring elements. Padding is space INSIDE the border, between the border and the content. Confusing margin with padding is one of the most common CSS mistakes. When debugging unexpected spacing, check margins first on adjacent elements. Note: margins collapse vertically between block elements (the larger margin wins), but padding never collapses."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS display value makes an element generate a block-level box that flows like a paragraph — starting on its own line and taking the full available width?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "display: inline" },
+        { "id": "b", "text": "display: flex" },
+        { "id": "c", "text": "display: block" },
+        { "id": "d", "text": "display: grid" }
+      ],
+      "correctKey": "c",
+      "explanation": "display: block generates a block-level box: it starts on a new line, takes the full width of its container (unless width is set), and respects vertical margin/padding. display: inline (A) flows with text and doesn't generate line breaks or full-width boxes. display: flex (B) enables flex layout (one-dimensional). display: grid (D) enables grid layout (two-dimensional). The block formatting context is the default for elements like <div>, <p>, <section>."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `position: relative` and `position: absolute`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "relative positions relative to the document root; absolute positions relative to the nearest positioned ancestor" },
+        { "id": "b", "text": "relative keeps the element in the normal document flow and offsets it relative to itself; absolute removes it from the flow and positions relative to the nearest positioned ancestor" },
+        { "id": "c", "text": "Both remove the element from the document flow; the only difference is the reference coordinate system" },
+        { "id": "d", "text": "absolute cannot be used without first setting top/left; relative can be used without any offset properties" }
+      ],
+      "correctKey": "b",
+      "explanation": "position: relative keeps the element in the normal document flow (space is reserved), and top/left/right/bottom offset it from its original position. position: absolute removes the element from the normal flow (no space reserved), and positions it relative to the nearest ancestor with position != static (the containing block). This is the critical distinction — relative stays in flow, absolute does not. Option A is wrong (relative is relative to self, not the root). Option D is technically true (you can use relative without offset) but doesn't address the core flow difference."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `em` and `rem` units?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "em is relative to the document root (html); rem is relative to the parent element's font size" },
+        { "id": "b", "text": "em is relative to the parent element's font size; rem is relative to the document root's font size" },
+        { "id": "c", "text": "em and rem are identical — both are deprecated units replaced by px" },
+        { "id": "d", "text": "em is for element dimensions only; rem is for font sizes only" }
+      ],
+      "correctKey": "b",
+      "explanation": "rem (root em) is relative to the root element's (html) font size — it is predictable and consistent across nested components. em is relative to the current element's parent font size — which compounds in deeply nested elements (1.2em × 1.2em × ...), making sizing unpredictable. The common pattern is: use rem for typography and spacing (consistent, accessible), use em for component-internal relative sizing (margins/padding that scale with the component's font). Option A reverses the definitions. Option C is false. Option D incorrectly restricts usage."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "In a flex container with `flex-direction: row`, what does `flex-grow: 1` on a child do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It makes the element 1 pixel wider than its content" },
+        { "id": "b", "text": "It tells the flex child to grow to fill available space in the main axis, sharing the space proportionally with other flex-grow siblings" },
+        { "id": "c", "text": "It repeats the element 1 time horizontally" },
+        { "id": "d", "text": "It prevents the element from shrinking below its content size" }
+      ],
+      "correctKey": "b",
+      "explanation": "flex-grow defines the proportion of available space the item takes. With flex-grow: 1 on one child in a flex-row, that child absorbs all remaining space after content and other flex-basis values are accounted for. If two children both have flex-grow: 1, they share space equally (1:1 ratio). flex-shrink controls the opposite (shrinking). flex-basis sets the starting size before growing/shrinking. Option A is wrong. Option C is wrong. Option D describes flex-shrink behavior."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is CSS specificity, and which selector has the highest specificity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Specificity is the order in which CSS rules appear in the stylesheet — the last rule wins" },
+        { "id": "b", "text": "Specificity is a weight system: inline styles > IDs > classes/attributes/pseudo-classes > elements/pseudo-elements; when weights are equal, source order decides" },
+        { "id": "c", "text": "!important overrides specificity entirely, so inline styles and IDs are irrelevant when !important is used" },
+        { "id": "d", "text": "Universal selector (*) has the highest specificity to reset all browser defaults" }
+      ],
+      "correctKey": "b",
+      "explanation": "Specificity is calculated as (inline, IDs, classes/attributes/pseudo-classes, elements/pseudo-elements). The universal selector (*) has zero specificity. Inline styles (1,0,0,0) beat IDs (0,1,0,0). !important overrides everything in its category but does not reset specificity math — the rule with !important still competes within its specificity tier. Option A describes source order alone, which only breaks ties. Option C is partially true but misleading — !important still loses to higher-specificity !important rules. Option D is false (universal selector has zero specificity)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `transition` in CSS, and what properties does it accept?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "transition animates the interpolation of CSS property values between states when they change; it accepts property, duration, timing-function, and delay" },
+        { "id": "b", "text": "transition enables CSS keyframe animations for all properties simultaneously" },
+        { "id": "c", "text": "transition can animate any CSS property including display and visibility without special handling" },
+        { "id": "d", "text": "transition is a shorthand for animation that replaces the need for @keyframes" }
+      ],
+      "correctKey": "a",
+      "explanation": "transition is a shorthand for: transition-property (which property), transition-duration (how long), transition-timing-function (ease/linear/cubic-bezier), transition-delay (wait before starting). It animates between old and new values when a property changes (hover, JS class toggles, etc.). It cannot animate display:none→display:block directly (use opacity + visibility instead). Keyframe animations (@keyframes) are for multi-step sequences; transition is for simple state changes. Option B confuses transition with @keyframes. Option C is wrong (display transitions require alternative approaches). Option D is wrong."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What are CSS Layers (@layer) and why would you use them over traditional specificity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@layer defines stacking contexts for z-index management; use it to control which positioned elements appear above others" },
+        { "id": "b", "text": "@layer controls the cascade order at the origin level — rules in earlier layers win over later layers regardless of specificity, making large-scale CSS overrides predictable" },
+        { "id": "c", "text": "@layer is a performance optimization that isolates GPU-rendered components from the main thread" },
+        { "id": "d", "text": "@layer replaces CSS Modules by scoping styles to named layers instead of component boundaries" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS @layer establishes a cascade hierarchy independent of specificity. Styles in earlier layers lose to later layers (regardless of specificity within each layer), making it possible to build CSS systems where reset > base > components, with explicit control over override priority. This solves the specificity wars problem in large codebases — instead of fighting specificity with more specificity, you add a layer. Option A describes stacking contexts (z-index + position), not @layer. Option C describes will-change/contain, not @layer. Option D confuses @layer scoping with CSS Modules (which scope by component class names)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of `will-change` in CSS, and what is the correct way to use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "will-change forces the browser to create a new stacking context immediately; use it on all animated elements for maximum performance" },
+        { "id": "b", "text": "will-change hints to the browser that an element's properties will change, allowing it to optimize ahead of time (e.g., promoting to GPU layer); apply it shortly before animation and remove it after" },
+        { "id": "c", "text": "will-change is a shorthand that replaces transform and opacity for all animated properties" },
+        { "id": "d", "text": "will-change improves rendering performance by reducing the number of DOM nodes the browser needs to repaint" }
+      ],
+      "correctKey": "b",
+      "explanation": "will-change signals the browser to prepare for upcoming changes so it can optimize proactively (e.g., promoting the element to its own compositor layer). The correct pattern is to apply it shortly before the animation/transition and remove it after (or use `will-change: auto` to reset). Applied too early or too broadly, it wastes GPU memory. The properties it can hint for are: scroll-position, contents, transform, opacity. Option A is wrong (creates layers, not stacking contexts — and shouldn't be permanent). Option C is false. Option D describes contain, not will-change."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the key advantage of container queries over media queries?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Container queries make components responsive to their PARENT container's width, not the viewport — enabling truly reusable, context-aware components" },
+        { "id": "b", "text": "Container queries are faster than media queries because they use the GPU instead of the CPU" },
+        { "id": "c", "text": "Media queries are deprecated in favor of container queries in modern browsers" },
+        { "id": "d", "text": "Container queries replace media queries entirely by querying both the container and the viewport simultaneously" }
+      ],
+      "correctKey": "a",
+      "explanation": "Media queries respond to the viewport size — a component cannot adapt to being placed in a sidebar vs main content if they share the same viewport. Container queries let a component query its own containing element (requires `container-type` on the parent), making it truly portable: the same component renders differently in a 300px sidebar vs a 600px main column. This is the key use case for design systems and CMS-driven sites. Option B is a performance myth. Option C is false. Option D is false — container queries don't query the viewport (that's what media queries do)."
+    }
+  ]
+}

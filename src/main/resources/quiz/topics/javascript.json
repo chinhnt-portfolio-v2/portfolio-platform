@@ -1,0 +1,135 @@
+{
+  "topicSlug": "javascript",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of this code?\n\nconsole.log(x);\nvar x = 5;\nconsole.log(y);\nlet y = 10;",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "undefined then 5" },
+        { "id": "b", "text": "undefined then ReferenceError: Cannot access 'y' before initialization" },
+        { "id": "c", "text": "ReferenceError: Cannot access 'x' before initialization for both lines" },
+        { "id": "d", "text": "5 then undefined" }
+      ],
+      "correctKey": "b",
+      "explanation": "`var` is hoisted to the top of its function/script scope and initialized with `undefined` — so `x` logs as undefined (not a ReferenceError). `let` is also hoisted but NOT initialized (temporal dead zone) — accessing it before its declaration line throws ReferenceError. This is the key difference: var is hoisted+initialized (safe), let/const are hoisted but uninitialized (unsafe to access before declaration). The first log runs before `var x = 5` executes, but after hoisting, so undefined. The second log runs before `let y = 10`, hitting the TDZ."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `==` and `===`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "=== compares value only; == compares both value and type" },
+        { "id": "b", "text": "== performs type coercion before comparing values; === compares both value and type without coercion" },
+        { "id": "c", "text": "== is used for numbers; === is used for strings" },
+        { "id": "d", "text": "There is no functional difference — === is simply a shorter syntax for ==" }
+      ],
+      "correctKey": "b",
+      "explanation": "== (loose equality) coerces operands to a common type before comparing: `1 == '1'` is true, `0 == false` is true. === (strict equality) compares both value and type without coercion: `1 === '1'` is false. The type coercion in == leads to surprising results — `'' == false` is true, `' ' == 0` is true — making === the safe default. Option A reverses the definitions. Option C is nonsense. Option D is false."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which array method returns a new array with elements transformed by a callback, without modifying the original?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "array.forEach(fn) — calls fn on each element and returns undefined" },
+        { "id": "b", "text": "array.map(fn) — returns a new array with each element transformed by fn" },
+        { "id": "c", "text": "array.reduce(fn, acc) — reduces the array to a single accumulated value but modifies the original" },
+        { "id": "d", "text": "array.filter(fn) — removes elements from the original array in place" }
+      ],
+      "correctKey": "b",
+      "explanation": "map() creates and returns a new array of the same length, with each element transformed by the callback — the original array is untouched. forEach() (A) returns undefined and is used for side effects, not transformation. reduce() (C) accumulates to a single value and doesn't modify the original unless the callback intentionally does so. filter() (D) returns a new array with only matching elements; it doesn't modify the original either, but it doesn't transform elements — that's map's job."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which value is NOT a falsy value in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0" },
+        { "id": "b", "text": "null" },
+        { "id": "c", "text": "'false'" },
+        { "id": "d", "text": "undefined" }
+      ],
+      "correctKey": "c",
+      "explanation": "The complete list of falsy values is: false, 0, -0, 0n, '', \"\", ``, null, undefined, NaN, and document.all. The string 'false' (a non-empty string, even with word 'false') is truthy — it's the word 'false', not the boolean false. Options A, B, and D are all on the falsy list. Option C is the only truthy value."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a closure in JavaScript, and when is it created?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A closure is a function that remembers its lexical scope even when executed outside that scope — created every time a function is defined" },
+        { "id": "b", "text": "A closure is a function that returns another function — only created when you explicitly nest functions" },
+        { "id": "c", "text": "Closures are only created in arrow functions because they don't have their own `this` binding" },
+        { "id": "d", "text": "A closure is JavaScript's module pattern — it requires IIFE (Immediately Invoked Function Expression) syntax" }
+      ],
+      "correctKey": "a",
+      "explanation": "A closure is the combination of a function and its lexical environment (the variables in scope when the function was defined). Every function in JavaScript forms a closure over its surrounding scope — this is a fundamental language feature, not a special pattern. The classic use case is a factory: `makeAdder(x) { return y => x + y; }` — the returned inner function closes over `x`. Option B is too narrow (closures don't require nested return). Option C is false. Option D over-restricts — IIFE is one way to create module privacy via closures, but not a requirement for closures themselves."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the correct order of execution for the following?\n\nsetTimeout(() => console.log('A'), 0);\nPromise.resolve().then(() => console.log('B'));\nconsole.log('C');",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A, B, C" },
+        { "id": "b", "text": "C, B, A" },
+        { "id": "c", "text": "C, A, B" },
+        { "id": "d", "text": "B, C, A" }
+      ],
+      "correctKey": "b",
+      "explanation": "Synchronous code runs first: `console.log('C')` executes immediately. Then the event loop picks up microtasks (Promises) before macrotasks (setTimeout). The Promise `.then()` callback (B) is a microtask and runs before the next macrotask. setTimeout with delay 0 (A) is a macrotask that runs after all microtasks are exhausted. Order: C (sync) → B (microtask) → A (macrotask). This is the microtask vs macrotask queue ordering."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does the prototype chain work for property lookup?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JavaScript looks up the property on the object itself; if not found, it follows [[Prototype]] links up to Object.prototype, stopping when found or returning undefined" },
+        { "id": "b", "text": "JavaScript always looks on Object.prototype first, then the object's own properties" },
+        { "id": "c", "text": "The prototype chain is static — it is determined at compile time and cannot change at runtime" },
+        { "id": "d", "text": "Prototype lookups are shallow — they only check one level up before returning undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "JavaScript uses prototypal inheritance. Property lookup starts on the object itself (own properties). If not found, it follows [[Prototype]] to the prototype object, and continues recursively up the chain until either the property is found or null is reached (then undefined). This chain is dynamic — you can mutate it at runtime via Object.setPrototypeOf() or __proto__. Option B reverses the lookup order. Option C is wrong (chain is dynamic). Option D is wrong (it's recursive, not single-level)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the Event Loop's role in JavaScript's concurrency model, and how does it interact with microtasks and macrotasks?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The Event Loop continuously checks the call stack; when empty, it drains ALL queues (microtasks and macrotasks) in a single tick before returning to the call stack" },
+        { "id": "b", "text": "The Event Loop checks the call stack; when empty, it drains all microtasks, then takes one macrotask, then repeats — with microtasks being processed before any new macrotask" },
+        { "id": "c", "text": "Microtasks and macrotasks are processed in parallel by the Web APIs thread pool" },
+        { "id": "d", "text": "The Event Loop prioritizes macrotasks because they represent user interactions, not Promise callbacks" }
+      ],
+      "correctKey": "b",
+      "explanation": "After the call stack is empty, the Event Loop drains the microtask queue completely (all Promise callbacks, queueMicrotask) before picking ONE macrotask (setTimeout, setInterval, I/O). After that macrotask's synchronous code runs (and may add more microtasks), microtasks are drained again before the next macrotask. This is why a Promise chain can starve a setTimeout — microtasks keep the loop busy. Option A is wrong (macrotasks run interleaved with microtask flushes). Option C is false (single-threaded loop). Option D reverses the priority."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `Symbol.iterator` enable on an object, and how does it relate to the iterator protocol?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Symbol.iterator marks an object as iterable by for...of loops and spread operators; it must return an iterator object with next() method" },
+        { "id": "b", "text": "Symbol.iterator is a unique identifier that prevents object property name collisions — it has no relationship to iteration protocols" },
+        { "id": "c", "text": "Symbol.iterator automatically makes an object iterable in JSON serialization" },
+        { "id": "d", "text": "Only built-in JavaScript objects (Array, Map, Set) can have Symbol.iterator — user objects cannot implement the iterator protocol" }
+      ],
+      "correctKey": "a",
+      "explanation": "Symbol.iterator is a well-known symbol that, when defined on an object, makes it an Iterable. The iterator protocol requires the method to return an iterator object (with next() returning {value, done} objects). This enables `for (const x of myObj)`, spread `...myObj`, destructuring, and Array.from(myObj). Symbol keys are unique and non-enumerable, preventing collision with string keys. Option B describes Symbol's uniqueness but not its iterator role. Option C is false. Option D is false — any object can implement the protocol."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a Web Worker and when should you use one?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A Web Worker is a background thread for CPU-intensive computation that cannot directly manipulate the DOM — use it for heavy data processing to keep the main thread responsive" },
+        { "id": "b", "text": "Web Workers replace the main thread for all JavaScript execution in modern SPAs" },
+        { "id": "c", "text": "Web Workers run in the same thread as the event loop, sharing memory with the main context via a shared buffer" },
+        { "id": "d", "text": "Web Workers are required for any async operation like fetch() or setTimeout()" }
+      ],
+      "correctKey": "a",
+      "explanation": "Web Workers run in an isolated background thread with their own event loop and no DOM access — they communicate with the main thread via postMessage (structured clone) or SharedArrayBuffer. They are ideal for heavy computation (JSON parsing large datasets, image processing, complex calculations) that would otherwise block the UI. Option B is false — the main thread still owns the DOM and UI rendering. Option C describes SharedArrayBuffer (used with Worker postMessage for high-performance scenarios), not the standard Worker model. Option D is false — fetch and setTimeout are asynchronous APIs provided by the main thread; Workers are for compute, not I/O."
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "topicSlug": "dsa",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of inserting at the end of an ArrayList in the average case?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — appending to the end of an array takes constant time" },
+        { "id": "b", "text": "O(n) — the array must be scanned to find the end position" },
+        { "id": "c", "text": "O(n²) — nested loops are required for each insertion" },
+        { "id": "d", "text": "O(log n) — binary search is needed to find the insertion point" }
+      ],
+      "correctKey": "a",
+      "explanation": "ArrayList's internal array is indexed — accessing arr[size] is O(1). When capacity is available, append is a simple write + increment: O(1). The O(n) cost comes only when the internal array is full and must be resized (typically 1.5×), which happens infrequently enough that amortized append remains O(1). The confusion often comes from LinkedList — appending to a LinkedList is also O(1) but has higher constant factors due to node allocation. Option B describes a naive list scan, not ArrayList internals. Option C and D are not applicable here."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following algorithm?\n\narr = [64, 34, 25, 12, 22, 11, 90]\nn = len(arr)\nfor i in range(n):\n    for j in range(0, n-i-1):\n        if arr[j] > arr[j+1]:\n            arr[j], arr[j+1] = arr[j+1], arr[j]\nprint(arr)",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Selection sort — finds minimum and swaps it to position i each iteration" },
+        { "id": "b", "text": "Insertion sort — shifts elements right to insert arr[i] in sorted portion" },
+        { "id": "c", "text": "Bubble sort — repeatedly swaps adjacent elements if out of order, largest bubbles to the end" },
+        { "id": "d", "text": "Merge sort — divides array in half recursively and merges" }
+      ],
+      "correctKey": "c",
+      "explanation": "The outer loop runs n times; the inner loop shrinks from n-i-1 each iteration, swapping adjacent pairs if out of order. This is the classic bubble sort: the largest unsorted element 'bubbles up' to the end in each pass. Option A (selection sort) scans for the minimum and makes one swap per outer iteration. Option B (insertion sort) builds a sorted prefix by inserting each element into its correct position. Option D (merge sort) uses divide-and-conquer, not nested loops with swapping. After n-1 passes the array is sorted ascending."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a stack data structure's LIFO property, and what is its most common use?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Last-In-First-Out — the most recently pushed element is popped first; used for DFS traversal, function call stack, undo mechanisms, and expression parsing" },
+        { "id": "b", "text": "Last-In-First-Out — the first pushed element is popped first; used for BFS traversal and task queues" },
+        { "id": "c", "text": "First-In-First-Out — used for breadth-first search and scheduling" },
+        { "id": "d", "text": "LIFO only applies to linked lists; arrays use FIFO ordering" }
+      ],
+      "correctKey": "a",
+      "explanation": "LIFO (Last-In, First-Out) means the top of the stack (most recent push) is what gets popped next. This models real-world stacks like a pile of plates. Common uses: function call stack (recursion depth), undo/redo (most recent action undone first), matching brackets and expression evaluation (shunting-yard algorithm), and DFS graph traversal. Option B reverses LIFO. Option C describes a queue, not a stack. Option D is false."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a hash table collision, and what is one common resolution strategy?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A collision occurs when two distinct keys produce the same hash code; chaining stores all colliding entries in a linked list at the bucket" },
+        { "id": "b", "text": "A collision is when two threads access the hash table simultaneously; it requires locking to resolve" },
+        { "id": "c", "text": "Collisions only occur with string keys; numeric keys never collide" },
+        { "id": "d", "text": "The only resolution strategy is to rehash the entire table with a new hash function" }
+      ],
+      "correctKey": "a",
+      "explanation": "A collision is when hash(k1) == hash(k2) for distinct keys. The two main strategies are chaining (linked list or balanced tree at each bucket, O(n) worst-case but O(1) average) and open addressing / probing (linear/quadratic probing or double hashing, where colliding entries are placed in nearby slots). Load factor (n/m) and rehashing thresholds govern when to grow the table. Option B describes thread safety, not collision resolution. Option C is false (any hash function can produce collisions regardless of key type). Option D is too narrow — rehashing with a new function is one approach, but not the only one."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the time complexity of binary search on a sorted array of n elements?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(log n) — the search space is halved with each comparison" },
+        { "id": "b", "text": "O(n) — the array must be scanned in the worst case" },
+        { "id": "c", "text": "O(1) — binary search accesses the middle element directly" },
+        { "id": "d", "text": "O(n log n) — binary search requires log n passes over n elements" }
+      ],
+      "correctKey": "a",
+      "explanation": "Binary search repeatedly halves the search space: mid = (lo + hi) / 2, compare, then recurse left or right. After k steps, the remaining space is n/2^k, reduced to size 1 when 2^k ≥ n → k = ⌈log₂ n⌉. This is why sorted arrays enable O(log n) search vs O(n) linear search. Binary search requires random access (indexed array or equivalent), making it unsuitable for linked lists. Option C is wrong (the comparison takes O(1), not the whole algorithm). Option D miscounts — it's O(log n) total comparisons, not O(n log n)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "In a binary search tree (BST), what is the time complexity of searching, inserting, and finding the minimum element?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "All operations are O(1) because BSTs use a hash-based lookup internally" },
+        { "id": "b", "text": "Average case O(log n) for balanced trees; worst case O(n) for skewed trees (degenerate chain)" },
+        { "id": "c", "text": "All operations are O(n) because the tree must be traversed completely" },
+        { "id": "d", "text": "Search is O(n); insert is O(log n) — insertion only checks one path" }
+      ],
+      "correctKey": "b",
+      "explanation": "BST operations traverse a single path from root to a leaf (not the whole tree), giving O(h) where h is the height. For a balanced BST (self-balancing like AVL or Red-Black), h ≈ log₂ n → O(log n). For a skewed/degenerate BST (sorted insertion order), h = n → O(n). Finding minimum is O(h) — traverse left children until null. This is why self-balancing trees (AVL, Red-Black, B-trees) are used in databases: they maintain near-logarithmic height. Option A is false (BST ≠ hash table). Option C is false for balanced trees. Option D reverses search and insert."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is dynamic programming, and which classic problem does it solve optimally using memoization?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "DP is a divide-and-conquer approach where subproblems are solved independently; it solves the Fibonacci sequence by computing F(n) = F(n-1) + F(n-2) without caching" },
+        { "id": "b", "text": "DP trades memory for time by storing results of overlapping subproblems to avoid recomputation; the naive recursive Fibonacci (exponential) becomes O(n) with memoization" },
+        { "id": "c", "text": "DP is a greedy algorithm that always picks the locally optimal subproblem choice; it solves the knapsack problem optimally" },
+        { "id": "d", "text": "DP only applies to problems with no overlapping subproblems, making it equivalent to divide-and-conquer" }
+      ],
+      "correctKey": "b",
+      "explanation": "DP applies when subproblems overlap (same subproblem solved multiple times). Memoization (top-down, caching recursive calls) or tabulation (bottom-up, filling a table) eliminates redundant computation. Fibonacci naive recursive is O(2^n) — exponential because it recomputes F(k) many times. With memoization, each F(k) is computed once → O(n) time, O(n) space. Option A describes memoized DP but omits the key distinction from naive recursion. Option C confuses DP with greedy (knapsack's fractional version is greedy; 0/1 knapsack is DP). Option D reverses the definition."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is Dijkstra's algorithm, and what is its time complexity with a binary min-heap priority queue?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dijkstra finds shortest paths from one source to all vertices in a graph with negative edge weights; complexity is O(V log V + E)" },
+        { "id": "b", "text": "Dijkstra finds shortest paths from a source to all vertices in a non-negative weighted graph; with a binary heap, complexity is O((V+E) log V)" },
+        { "id": "c", "text": "Dijkstra uses BFS to find shortest paths in unweighted graphs; complexity is O(V+E)" },
+        { "id": "d", "text": "Dijkstra solves the all-pairs shortest path problem using dynamic programming; complexity is O(V³ log V)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Dijkstra's algorithm computes shortest paths from a single source to all reachable vertices in graphs with non-negative edge weights. Using a binary min-heap (extract-min in O(log V), decrease-key in O(log V)), each edge relaxation costs O(log V) → total O(E log V) with O((V+E) log V) accounting for V extract-mins. With a Fibonacci heap, extract-min is O(1) amortized, giving O(E + V log V). Option A is wrong (negative weights break Dijkstra's greedy choice property). Option C describes BFS, not Dijkstra. Option D describes Floyd-Warshall (all-pairs, DP, O(V³))."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a Trie (prefix tree) and what operations does it support efficiently?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A Trie is a binary search tree optimized for numeric keys; search, insert, and delete are all O(log n)" },
+        { "id": "b", "text": "A Trie is a tree where each node stores a character and edges represent possible next characters; it supports O(m) search, insert, and prefix matching where m is the key length" },
+        { "id": "c", "text": "A Trie is a hash table variant that uses prefix compression to reduce memory usage; operations are O(1) average" },
+        { "id": "d", "text": "A Trie is equivalent to a B-tree with a branching factor equal to the alphabet size; it is used for sorting" }
+      ],
+      "correctKey": "b",
+      "explanation": "A Trie (from retrieval) stores strings by paths: each node is a character, edges are characters, and a flag marks word ends. Operations are O(m) where m is the string length (not n, the number of stored keys) — independent of dictionary size. This makes prefix/autocomplete (find all words starting with a prefix), longest prefix matching (IP routing), and spelling correction extremely efficient. Space is O(Σ m × alphabet size), which can be high for large alphabets (use compressed/ternary search trees to mitigate). Option A describes a BST, not Trie. Option C is wrong (Trie ≠ hash table). Option D confuses Tries with B-trees."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the longest increasing subsequence (LIS) problem, and what is an optimal DP approach to solve it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "LIS finds the shortest contiguous subarray with the maximum sum using Kadane's algorithm in O(n)" },
+        { "id": "b", "text": "LIS finds the longest non-contiguous subsequence where elements are in strictly increasing order; DP solution is O(n²) using dp[i] = max(dp[j] + 1) for all j < i where arr[j] < arr[i]" },
+        { "id": "c", "text": "LIS finds all sorted permutations of the array using bit manipulation in O(n log n)" },
+        { "id": "d", "text": "LIS can only be solved using a greedy algorithm that picks the smallest available element at each step" }
+      ],
+      "correctKey": "b",
+      "explanation": "The LIS problem: given an array, find the longest subsequence (not necessarily contiguous) where elements are in increasing order. The O(n²) DP solution computes dp[i] = 1 + max(dp[j]) for all j < i where arr[j] < arr[i]. The overall LIS is max(dp[i]). The O(n log n) solution uses binary search with a tails array — for each element, find the first index ≥ itself in tails and replace (or append), maintaining a sorted list of minimal ending values. Option A describes maximum subarray sum (Kadane), not LIS. Option C is false. Option D is wrong (greedy fails for LIS — consider [3, 1, 2] where greedy picks 3 first, missing 1, 2)."
+    }
+  ]
+}

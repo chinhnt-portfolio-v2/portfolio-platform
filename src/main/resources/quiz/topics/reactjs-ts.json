@@ -1,0 +1,135 @@
+{
+  "topicSlug": "reactjs-ts",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What causes this TypeScript error?\n\nType 'string | undefined' is not assignable to type 'string'.",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The variable is typed as `string | undefined` but the target expects a non-nullable string — you must narrow the type via a null check" },
+        { "id": "b", "text": "TypeScript requires all variables to be initialized at declaration time" },
+        { "id": "c", "text": "The variable name conflicts with a built-in TypeScript DOM type" },
+        { "id": "d", "text": "This is a lint error from ESLint, not a TypeScript compiler error" }
+      ],
+      "correctKey": "a",
+      "explanation": "TypeScript's strict null checks mean `string | undefined` is not assignable to `string`. You must narrow via if/throw/optional chaining (`value!` for non-null assertion, or `value ?? 'default'`) before passing it where a plain string is required. Option B is incorrect — TypeScript does not require initialization at declaration. Option C describes a real but unrelated issue (shadowing global types). Option D is wrong because this is a compiler-level type error, not a lint rule."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is wrong with this component?\n\nfunction Greeting({ name }: { name: string }) {\n  useEffect(() => {\n    document.title = name;\n  }); // missing dependency\n  \n  return <h1>Hello, {name}!</h1>;\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The useEffect hook is missing the dependency array argument, causing it to run on every render instead of when `name` changes" },
+        { "id": "b", "text": "useEffect cannot access props directly — you must destructure `name` outside the hook" },
+        { "id": "c", "text": "The component will infinite-loop because useEffect returns a value without a cleanup function" },
+        { "id": "d", "text": "JSX is invalid because `name` is typed as string and cannot be rendered directly" }
+      ],
+      "correctKey": "a",
+      "explanation": "useEffect's dependency array controls when the effect runs. Omitting it (or passing `[]`) causes different behavior: no array → runs after every render; `[]` → runs once after mount; `[name]` → runs when name changes. The current code (no array) runs on every render, which is usually a bug when synchronizing state with external systems. Option B is wrong (props are in scope inside useEffect). Option C confuses the return value (cleanup function) with side effects. Option D is wrong — string values render normally in JSX."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which pattern correctly implements conditional rendering in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Using a ternary operator: `{isLoggedIn ? <Dashboard /> : <Login />}`" },
+        { "id": "b", "text": "Using && for non-falsy fallback: `{count && <Badge count={count} />}` — but this breaks if count is 0" },
+        { "id": "c", "text": "Both ternary and short-circuit && are valid depending on whether 0 or empty string are legitimate values" },
+        { "id": "d", "text": "Conditional rendering should only be done using a higher-order component (HOC), not inline expressions" }
+      ],
+      "correctKey": "c",
+      "explanation": "Both patterns are valid but have different failure modes. The ternary is explicit and safe for all values including 0 and empty string. The && short-circuit pattern is idiomatic but dangerous: `{count && <Badge />}` renders 0 (not nothing) when count is 0, because 0 is falsy but not ignored by JSX. The fix is `{count !== 0 && <Badge />}`. Option D is false — HOCs are for cross-cutting concerns, not conditional rendering."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between an event handler defined as `onClick={handleClick}` and `onClick={() => handleClick(id)}`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "No difference — both pass the function reference to onClick and execute it when the event fires" },
+        { "id": "b", "text": "handleClick passes the function directly; the arrow function version creates a new function on every render, breaking React.memo optimization" },
+        { "id": "c", "text": "Arrow functions cannot be used as event handlers — they must be plain functions" },
+        { "id": "d", "text": "The arrow function version automatically receives the SyntheticEvent as its first argument" }
+      ],
+      "correctKey": "b",
+      "explanation": "When you write `onClick={() => handleClick(id)}`, React creates a new function object on every render. For a memoized child component, this means the prop reference changes each render, defeating React.memo's shallow comparison. For plain (non-memoized) components the difference is negligible. The inline arrow function is correct when you need to pass arguments, but in performance-critical or frequently re-rendered contexts, useCallback or use the data-* attribute pattern. Option A is wrong because the two forms behave differently in terms of referential stability."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When should you use useRef instead of useState?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useRef for values that drive UI re-renders; useState for mutable values that should not cause re-renders" },
+        { "id": "b", "text": "useRef for storing a mutable value that persists across renders without triggering re-renders; useState for values that when changed should update the UI" },
+        { "id": "c", "text": "useRef is deprecated in React 18 — useState should be used for all mutable state" },
+        { "id": "d", "text": "useRef is for DOM element references only; useState handles all other state" }
+      ],
+      "correctKey": "b",
+      "explanation": "useRef holds a mutable .current value (initialValue argument) that persists across renders without causing re-renders when updated — perfect for timers, enzyme句柄, or caching a value without triggering UI updates. useState triggers re-renders. Option A reverses the purposes. Option C is false (useRef is not deprecated). Option D is wrong — useRef's generic `<T>` type makes it suitable for any mutable value, not just DOM refs (though that is a common use)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does useCallback do, and when is its optimization meaningful?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useCallback memoizes the function body so it never re-evaluates, even if dependencies change" },
+        { "id": "b", "text": "useCallback returns a memoized function reference that only changes when its dependencies change — useful to prevent child component re-renders when passed as props" },
+        { "id": "c", "text": "useCallback always improves performance — it should be used on every function in a React component" },
+        { "id": "d", "text": "useCallback is equivalent to useMemo(() => fn, deps)" }
+      ],
+      "correctKey": "b",
+      "explanation": "useCallback(fn, deps) is useMemo(() => fn, deps) — both are memoization utilities. The optimization is only meaningful when the function is passed as a prop to a React.memo-wrapped child (so the child's shallow prop comparison avoids re-render), or when the function is used as a useEffect dependency (avoiding infinite loops). Wrapping every function with useCallback adds overhead without benefit and makes code harder to read. Option A is wrong — useCallback does re-create the function when deps change. Option C is anti-pattern (useCallback is not free — it has a cost). Option D is technically true but doesn't answer the 'when is it meaningful' question."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which TypeScript type correctly describes a React component that accepts children as ReactNode?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "type Props = { children: string }" },
+        { "id": "b", "text": "type Props = { children: React.ReactNode }" },
+        { "id": "c", "text": "type Props = { children: JSX.Element }" },
+        { "id": "d", "text": "type Props = { children: ReactElement }" }
+      ],
+      "correctKey": "b",
+      "explanation": "React.ReactNode is the most permissive children type — it includes JSX elements, strings, numbers, booleans, null, undefined, fragments, and arrays of all these. JSX.Element (C) and ReactElement (D) only cover JSX expressions, not plain strings or numbers. Using `children: string` (A) would reject `<MyComp>some text</MyComp>` wrapping other components. ReactNode is the idiomatic choice for component prop interfaces."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does useTransition do in React 18's concurrent rendering?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useTransition marks state updates as non-urgent, allowing the UI to remain responsive while the transition renders in the background" },
+        { "id": "b", "text": "useTransition replaces useEffect for async data fetching in concurrent mode" },
+        { "id": "c", "text": "useTransition suspends all child components until the parent finishes rendering" },
+        { "id": "d", "text": "useTransition enables CSS transitions on state changes in React 18" }
+      ],
+      "correctKey": "a",
+      "explanation": "useTransition wraps state updates in an isPending flag, marking them as 'transition' so concurrent React can interrupt lower-priority work (like a slow filter/rerender) to keep the UI responsive. The isPending boolean lets you show a loading indicator during the transition. Option B is wrong — transitions don't fetch data; useEffect or frameworks like React Query/SWR do. Option C describes Suspense's behavior, not transitions. Option D is misleading — CSS transitions are a CSS feature; useTransition is a React scheduling mechanism."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the key difference between React Server Components (RSC) and Client Components?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Server Components execute only on the server and can access server-only resources (DB, filesystem); Client Components run in the browser and cannot access server resources" },
+        { "id": "b", "text": "Server Components ship less JavaScript to the browser because they render HTML on the server; Client Components hydrate and run interactivity in the browser" },
+        { "id": "c", "text": "Both A and B are correct — Server Components eliminate client-side JS for static parts while enabling direct server resource access" },
+        { "id": "d", "text": "Server Components are just Server-Side Rendering (SSR) with a new name; the JavaScript bundle is identical to Client Components" }
+      ],
+      "correctKey": "c",
+      "explanation": "RSCs (React Server Components) run on the server and never ship their code to the browser — this reduces bundle size. They can directly access databases, file systems, and secrets. Client Components (marked 'use client') hydrate in the browser and handle interactivity. They are complementary in the same tree. Option D is wrong because RSC genuinely reduces client bundle size vs SSR, which still requires hydration. SSR renders the same component tree on server and client; RSC never sends the server component code to the browser."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does Zustand's store compare to React Context for global state management?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context re-renders all consumers on any state change; Zustand uses selectors so only components subscribed to changed slices re-render" },
+        { "id": "b", "text": "Zustand stores are synchronous and cannot hold async state; Context can hold both sync and async state" },
+        { "id": "c", "text": "Context has better performance because it uses memoization automatically; Zustand requires manual selector optimization" },
+        { "id": "d", "text": "Zustand requires a provider tree like Context; the difference is only the API syntax" }
+      ],
+      "correctKey": "a",
+      "explanation": "Context's Provider broadcasts to all consumers on any value change — even with useMemo on the value, all components reading that Context re-render. Zustand (and TanStack Store) use a subscription model with selectors: only components whose selected slice actually changed will re-render, making it significantly more granular and performant for large applications. Option B is wrong — Zustand holds any state value, async included. Option C reverses the truth. Option D is wrong — Zustand has no Provider; it creates a standalone store via create()."
+    }
+  ]
+}

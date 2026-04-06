@@ -1,0 +1,135 @@
+{
+  "topicSlug": "system-design",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the key difference between HTTP POST and GET methods?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "GET sends data in the request body; POST appends data to the URL query string" },
+        { "id": "b", "text": "GET requests are idempotent (safe, cacheable) and send data in the URL; POST requests are non-idempotent and send data in the request body" },
+        { "id": "c", "text": "POST is faster than GET because it bypasses URL parsing" },
+        { "id": "d", "text": "GET can handle binary file uploads; POST cannot" }
+      ],
+      "correctKey": "b",
+      "explanation": "GET is idempotent (no side effect on the server) and sends parameters in the URL query string — making results bookmarkable and cacheable. POST sends data in the request body (not in the URL), is non-idempotent by default, and should be used for submitting forms, creating resources, or triggering actions. Option A reverses the two. Option C is false (performance difference is negligible). Option D is false — both can technically carry binary data, but file uploads conventionally use POST."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a CDN (Content Delivery Network) and what problem does it solve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A CDN caches static assets at edge servers close to users, reducing latency and offloading traffic from origin servers" },
+        { "id": "b", "text": "A CDN runs application logic at the edge to replace traditional application servers" },
+        { "id": "c", "text": "A CDN is a distributed database that stores user session data across multiple regions" },
+        { "id": "d", "text": "A CDN is a load balancer that routes traffic between availability zones within a region" }
+      ],
+      "correctKey": "a",
+      "explanation": "CDNs cache static content (images, CSS, JS, fonts, video) at geographically distributed edge PoPs (points of presence). Instead of every user hitting the origin server, requests are served from the nearest edge — reducing round-trip latency, lowering bandwidth costs, and providing DDoS protection. CDNs do not run application logic (that's edge functions, a different concept). Option B describes edge computing, not CDN caching. Option C describes a distributed session store, not CDN. Option D describes a load balancer."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is sticky sessions (session affinity) in load balancing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A technique that binds a user's requests to a specific server using a cookie or IP hash; useful when server-side session storage is not available" },
+        { "id": "b", "text": "A way to prevent any server from caching user sessions by forcing all sessions to be stored in a shared database" },
+        { "id": "c", "text": "A load balancing algorithm that distributes traffic equally using round-robin regardless of server load" },
+        { "id": "d", "text": "A method of encrypting session tokens before sending them over HTTPS" }
+      ],
+      "correctKey": "a",
+      "explanation": "Sticky sessions route all requests from the same user to the same backend server using a cookie (e.g., JSESSIONID) or source IP hash. This works around the problem of in-memory sessions being lost when a load balancer routes requests to different servers. However, it creates load imbalance and reduces horizontal scalability — the preferred approach is shared session storage (Redis/Memcached) without sticky sessions. Option B describes session storage strategy, not affinity. Option C describes round-robin, not sticky sessions. Option D describes TLS encryption."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What are the HTTP status code ranges and their meanings?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1xx informational, 2xx success, 3xx redirection, 4xx client error, 5xx server error" },
+        { "id": "b", "text": "1xx server errors, 2xx client errors, 3xx success, 4xx redirects, 5xx informational" },
+        { "id": "c", "text": "1xx resource moved, 2xx found, 3xx not modified, 4xx auth required, 5xx server overloaded" },
+        { "id": "d", "text": "1xx-3xx are client errors, 4xx-5xx are server errors" }
+      ],
+      "correctKey": "a",
+      "explanation": "Standard HTTP status ranges: 1xx (Informational: request received, continuing), 2xx (Success: action received and accepted), 3xx (Redirection: further action needed), 4xx (Client Error: bad syntax or impossible request), 5xx (Server Error: server failed to fulfill valid request). Common codes to know: 200 OK, 201 Created, 204 No Content, 301/302 Redirect, 304 Not Modified, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 429 Too Many Requests, 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable. Option B reverses 1xx/2xx meanings. Option C is inaccurate. Option D miscategorizes 4xx/5xx."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the CAP theorem state, and which two properties can a distributed system guarantee at any given moment?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A distributed system can guarantee all three: Consistency, Availability, and Partition Tolerance simultaneously" },
+        { "id": "b", "text": "CAP states that during a network partition, you must choose between Consistency and Availability; without partition, you can have both" },
+        { "id": "c", "text": "CAP is only relevant for database systems; microservices are exempt" },
+        { "id": "d", "text": "Consistency, Availability, and Partition Tolerance are always guaranteed, but Performance degrades when two are strong" }
+      ],
+      "correctKey": "b",
+      "explanation": "The CAP theorem (Brewer's theorem) states that a distributed data store can provide at most two of three guarantees during a network partition: Consistency (all nodes see the same data at the same time), Availability (every request gets a response), and Partition Tolerance (the system continues operating when network partitions occur). Since partitions are unavoidable in real networks, the real choice is CP (prioritize consistency, sacrifice availability during partition) or AP (prioritize availability, allow stale reads during partition). Option A is false (impossible per CAP). Option C is false. Option D is a misreading of PACELC, not CAP."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is database indexing, and what is the trade-off when creating an index?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "An index creates a sorted copy of a column's data, enabling O(log n) lookups instead of O(n) full table scans at the cost of extra storage and slower writes" },
+        { "id": "b", "text": "An index compresses table data to reduce disk usage; reads are faster but writes are faster too due to better locality" },
+        { "id": "c", "text": "An index is a primary key that uniquely identifies each row; it has no trade-offs because databases are optimized for it" },
+        { "id": "d", "text": "An index speeds up reads but has no effect on write performance" }
+      ],
+      "correctKey": "a",
+      "explanation": "A database index (commonly a B+ tree) maintains a sorted data structure mapped to row locations, enabling logarithmic seek for queries targeting indexed columns. The cost: extra disk/memory storage, and slower writes (INSERT/UPDATE/DELETE must update both the table and all relevant indexes). Index selection is a trade-off: columns used in WHERE, JOIN, and ORDER BY benefit; columns with low cardinality (e.g., gender) may not help much. Over-indexing a write-heavy table hurts throughput significantly. Option B is false (writes are slower, not faster). Option C describes a primary key constraint, not a general index. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is sharding (horizontal partitioning) of a database, and what are common sharding keys?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Sharding distributes rows of a table across multiple database servers using a shard key; user_id or tenant_id are common choices that enable even distribution" },
+        { "id": "b", "text": "Sharding is a vertical partitioning strategy that splits hot and cold columns into separate tables on the same server" },
+        { "id": "c", "text": "Sharding is a replication strategy that creates multiple read-only copies of the database for redundancy" },
+        { "id": "d", "text": "Sharding requires that every query include the shard key to route to the correct node; queries without the shard key require scatter-gather across all shards" }
+      ],
+      "correctKey": "a",
+      "explanation": "Sharding (horizontal partitioning) splits rows of a logical table across N physical database servers (shards). A shard key (e.g., user_id, date, region) determines which shard owns each row. Good shard keys distribute load evenly — a poor key (e.g., country code) can create hotspots on one shard. Cross-shard queries (joins, aggregations) are expensive and often require scatter-gather or denormalization. Option B describes vertical partitioning (splitting columns). Option C describes read replicas. Option D's statement about requiring the shard key is generally true but the statement format mixes it with cross-shard query cost — the correct answer highlights the key properties cleanly."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the Raft consensus algorithm and what problem does it solve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Raft is a leader election and log replication algorithm that achieves consensus in a distributed system; a leader receives writes, replicates to followers, and confirms after a majority acknowledges" },
+        { "id": "b", "text": "Raft is a gossip protocol that propagates state changes across nodes using eventual consistency without a leader" },
+        { "id": "c", "text": "Raft guarantees linearizability for all reads without a leader, similar to read-your-writes consistency" },
+        { "id": "d", "text": "Raft is a two-phase commit protocol variant used for distributed transactions within a single database cluster" }
+      ],
+      "correctKey": "a",
+      "explanation": "Raft (designed to be more understandable than Paxos) solves distributed consensus: electing a leader, replicating log entries from the leader to followers, and ensuring safety despite node failures. Writes go through the leader; the leader replicates entries to a majority of followers before committing. Reads can be served by the leader. Raft requires majority (quorum) for committing — 3-node cluster tolerates 1 failure, 5-node tolerates 2. Option B describes gossip protocols (e.g., Cassandra, SWIM), not Raft. Option C describes linearizability without a leader (not Raft). Option D confuses Raft with 2PC (2-phase commit, used for distributed transactions across databases)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is consistent hashing and what problem does it solve in distributed systems?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Consistent hashing maps keys and servers onto a ring (hash ring); adding or removing nodes only remaps a fraction of keys, minimizing cache/shard redistribution compared to modulo hashing" },
+        { "id": "b", "text": "Consistent hashing ensures that all nodes in a distributed system always agree on the same value for a given key, regardless of network latency" },
+        { "id": "c", "text": "Consistent hashing uses a deterministic hash function that always produces the same result on any node — it is not affected by network partitions" },
+        { "id": "d", "text": "Consistent hashing is a load balancing algorithm that distributes requests evenly using a modulo of current load divided by total capacity" }
+      ],
+      "correctKey": "a",
+      "explanation": "In standard modulo hashing (hash(key) % N servers), adding or removing a server remaps almost all keys — causing a cache/shard miss storm. Consistent hashing maps both servers and keys onto a circular hash space (ring); a key is owned by the nearest server clockwise on the ring. When a server is added or removed, only adjacent keys on the ring are remapped (O(1/n) fraction). Virtual nodes (replicas) further distribute load more evenly across physical nodes. Used in DynamoDB, Cassandra, Memcached, Redis Cluster. Option B describes linearizability, not consistent hashing. Option C is misleading. Option D describes weighted round-robin."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is event sourcing and how does it compare to traditional CRUD (state-based) persistence?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Event sourcing stores the full sequence of state-changing events (journal) rather than current state; current state is derived by replaying events — enabling audit trails, temporal queries, and replay-based debugging" },
+        { "id": "b", "text": "Event sourcing is equivalent to a traditional database with ACID transactions; the difference is only the API naming (save vs publish)" },
+        { "id": "c", "text": "Event sourcing is a messaging pattern used in message queues; it has no relationship to database persistence" },
+        { "id": "d", "text": "Event sourcing requires CQRS — you cannot use event sourcing without also implementing command query responsibility segregation" }
+      ],
+      "correctKey": "a",
+      "explanation": "Instead of storing current state (UPDATE row SET balance = 100), event sourcing stores every domain event (AccountOpened, Deposit(50), Withdrawal(10), BalanceInquired...) in an append-only log. Current state is computed by replaying the event log — making the audit trail complete and immutable. Benefits: full history, temporal queries ('what was my balance on Jan 1?'), event replay for debugging, and easy integration with event-driven microservices. Challenges: event schema evolution (upcasting), eventual consistency, and snapshot strategies for long-lived aggregates. Option B is false. Option C is false. Option D is false — CQRS and event sourcing are complementary but independently optional patterns."
+    }
+  ]
+}
