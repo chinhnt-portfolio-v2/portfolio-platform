@@ -32,6 +32,8 @@ public class OAuth2Controller {
     private static final Set<String> ALLOWED_REDIRECT_DOMAINS = Set.of(
             "wallet.chinhnt.xyz",
             "portfolio.chinhnt.xyz",
+            "devquiz.chinhnt.xyz",
+            "quiz.chinhnt.xyz",
             "chinh.dev",
             "wallet.chinh.dev",
             "localhost"
