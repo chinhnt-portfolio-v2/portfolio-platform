@@ -43,6 +43,10 @@ http://localhost:8080/api/v1/auth/oauth2/callback/google
 
 Add to **Authorized JavaScript origins**:
 ```
+https://wallet.chinhnt.xyz
+https://vault.chinhnt.xyz
+https://ledger.chinhnt.xyz
+https://codebin.chinhnt.xyz
 https://portfolio.chinhnt.xyz
 ```
 
@@ -50,6 +54,9 @@ Add to **Authorized redirect URIs**:
 ```
 https://portfolio-platform-1095331155372.asia-southeast1.run.app/api/v1/auth/oauth2/callback/google
 ```
+
+> **Active flow:** Frontends call `/api/v1/auth/oauth2/login/google` (custom controller) → backend builds Google auth URL with `redirect_uri=.../callback/google` → Google redirects to callback → tokens sent to frontend.
+> **Legacy flow:** Spring Security default `/oauth2/authorization/google` with `redirect_uri=.../login/oauth2/code/google` is wired but NOT used by frontends.
 
 > **Note:** The Cloud Run URL is shown in the GCP Cloud Run console after first deployment.
 
@@ -121,8 +128,9 @@ If you see "invalid_client" error:
 ### Redirect URI Mismatch
 
 If you see "redirect_uri_mismatch":
-- Verify the redirect URI in Google Cloud Console matches exactly
-- The correct redirect URI is: `/api/v1/auth/oauth2/callback/google`
+- Verify the redirect URI in Google Cloud Console matches exactly: `https://portfolio-platform-1095331155372.asia-southeast1.run.app/api/v1/auth/oauth2/callback/google`
+- All frontends MUST use the custom controller: `/api/v1/auth/oauth2/login/google` (NOT `/oauth2/authorization/google`)
+- Ensure all app domains (`wallet`, `vault`, `ledger`, `codebin`) are in `ALLOWED_REDIRECT_DOMAINS` in `OAuth2Controller.java` and `OAuth2AuthenticationSuccessHandler.java`
 
 ### CORS Errors
 
