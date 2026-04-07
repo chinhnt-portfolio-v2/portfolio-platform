@@ -160,12 +160,18 @@ public class QuestionBankService {
      * Returns count of newly seeded questions.
      */
     @Transactional
-    public void seedQuestionBank() {
+    public SeedStatus seedQuestionBank() {
         long existing = questionRepository.count();
         log.info("Manual re-seed triggered (current: {} questions). Deleting all and re-seeding...", existing);
-        questionRepository.deleteAll();
-        seedIfEmpty();
+        try {
+            questionRepository.deleteAll();
+            seedIfEmpty();
+        } catch (Exception e) {
+            log.error("Seed failed: {}", e.getMessage(), e);
+            throw new RuntimeException("Seed failed: " + e.getMessage(), e);
+        }
         log.info("Manual re-seed complete.");
+        return getSeedStatus();
     }
 
     public SeedStatus getSeedStatus() {

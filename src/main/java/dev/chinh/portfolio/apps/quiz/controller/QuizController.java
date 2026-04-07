@@ -4,6 +4,8 @@ import dev.chinh.portfolio.apps.quiz.dto.*;
 import dev.chinh.portfolio.apps.quiz.service.QuestionBankService;
 import dev.chinh.portfolio.apps.quiz.service.QuizService;
 import dev.chinh.portfolio.auth.annotation.CurrentUser;
+import dev.chinh.portfolio.shared.error.ErrorDetail;
+import dev.chinh.portfolio.shared.error.ErrorResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -65,8 +67,13 @@ public class QuizController {
      * Resets all existing questions and re-loads from JSON seed files.
      */
     @PostMapping("/seed")
-    public ResponseEntity<QuestionBankService.SeedStatus> triggerSeed() {
-        questionBankService.seedQuestionBank();
-        return ResponseEntity.ok(questionBankService.getSeedStatus());
+    public ResponseEntity<?> triggerSeed() {
+        try {
+            QuestionBankService.SeedStatus status = questionBankService.seedQuestionBank();
+            return ResponseEntity.ok(status);
+        } catch (RuntimeException e) {
+            return ResponseEntity.internalServerError()
+                    .body(new ErrorResponse(new ErrorDetail("SEED_FAILED", e.getMessage())));
+        }
     }
 }
