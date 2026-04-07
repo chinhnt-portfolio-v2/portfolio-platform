@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -151,6 +152,20 @@ public class QuestionBankService {
             saved++;
         }
         return saved;
+    }
+
+    /**
+     * Forcefully re-seed the question bank from JSON files.
+     * Deletes all existing questions and reloads from seed files.
+     * Returns count of newly seeded questions.
+     */
+    @Transactional
+    public void seedQuestionBank() {
+        long existing = questionRepository.count();
+        log.info("Manual re-seed triggered (current: {} questions). Deleting all and re-seeding...", existing);
+        questionRepository.deleteAll();
+        seedIfEmpty();
+        log.info("Manual re-seed complete.");
     }
 
     public SeedStatus getSeedStatus() {

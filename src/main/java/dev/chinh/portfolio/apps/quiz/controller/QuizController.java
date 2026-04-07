@@ -59,4 +59,14 @@ public class QuizController {
     public ResponseEntity<QuestionBankService.SeedStatus> getSeedStatus() {
         return ResponseEntity.ok(questionBankService.getSeedStatus());
     }
+
+    /**
+     * Manually trigger a re-seed of the question bank.
+     * Resets all existing questions and re-loads from JSON seed files.
+     */
+    @PostMapping("/seed")
+    public ResponseEntity<QuestionBankService.SeedStatus> triggerSeed() {
+        questionBankService.seedQuestionBank();
+        return ResponseEntity.ok(questionBankService.getSeedStatus());
+    }
 }
