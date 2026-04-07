@@ -49,6 +49,7 @@ public class QuestionBankService {
      * Seed the question bank if the DB is empty.
      * Loads both top-level topic JSONs and all sub-topic JSONs in parallel.
      */
+    @Transactional
     public void seedIfEmpty() {
         if (questionRepository.count() > 0) {
             log.info("Quiz question bank already seeded ({} questions). Skipping.",
@@ -170,9 +171,8 @@ public class QuestionBankService {
         long existing = questionRepository.count();
         log.info("Manual re-seed triggered (current: {} questions). Deleting all and re-seeding...", existing);
         try {
-            questionRepository.deleteAll();
-            entityManager.flush();
-            entityManager.clear();
+            // Use native DELETE to bypass JPA persistence context entirely
+            entityManager.createNativeQuery("DELETE FROM quiz_questions").executeUpdate();
             seedIfEmpty();
         } catch (Exception e) {
             log.error("Seed failed: {}", e.getMessage(), e);
