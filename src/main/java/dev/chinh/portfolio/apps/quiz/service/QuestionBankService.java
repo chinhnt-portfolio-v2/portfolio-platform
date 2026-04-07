@@ -171,8 +171,9 @@ public class QuestionBankService {
         long existing = questionRepository.count();
         log.info("Manual re-seed triggered (current: {} questions). Deleting all and re-seeding...", existing);
         try {
-            // Use native DELETE to bypass JPA persistence context entirely
-            entityManager.createNativeQuery("DELETE FROM quiz_questions").executeUpdate();
+            questionRepository.deleteAll();
+            entityManager.flush();
+            entityManager.clear();
             seedIfEmpty();
         } catch (Exception e) {
             log.error("Seed failed: {}", e.getMessage(), e);
