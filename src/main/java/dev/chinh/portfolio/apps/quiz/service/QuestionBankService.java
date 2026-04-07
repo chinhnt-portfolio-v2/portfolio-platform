@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -43,7 +42,6 @@ public class QuestionBankService {
      * Seed the question bank if the DB is empty.
      * Loads both top-level topic JSONs and all sub-topic JSONs in parallel.
      */
-    @Transactional
     public void seedIfEmpty() {
         if (questionRepository.count() > 0) {
             log.info("Quiz question bank already seeded ({} questions). Skipping.",
@@ -94,7 +92,7 @@ public class QuestionBankService {
         String[] knownFiles = subDir.equals("java") ? new String[]{
                     "java-collections.json", "java-oop.json"} :
                     subDir.equals("spring") ? new String[]{
-                            "spring-auto.json", "spring-di.json", "spring-jpa.json",
+                            "spring-boot-auto.json", "spring-di.json", "spring-jpa.json",
                             "spring-mvc.json", "spring-security.json", "spring-testing.json", "spring-transactions.json"} :
                     subDir.equals("react") ? new String[]{
                             "react-components.json", "react-ecosystem.json", "react-hooks.json",
