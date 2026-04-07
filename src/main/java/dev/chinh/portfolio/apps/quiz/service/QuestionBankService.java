@@ -45,11 +45,26 @@ public class QuestionBankService {
         this.objectMapper = objectMapper;
     }
 
+    @Transactional
+    public SeedStatus seedQuestionBank() {
+        long existing = questionRepository.count();
+        log.info("Manual re-seed triggered (current: {} questions). Deleting all and re-seeding...", existing);
+        try {
+            // Native DELETE bypasses JPA cascade logic — no orphaned entities in persistence context
+            entityManager.createNativeQuery("TRUNCATE TABLE quiz_questions RESTART IDENTITY CASCADE").executeUpdate();
+            seedIfEmpty();
+        } catch (Exception e) {
+            log.error("Seed failed: {}", e.getMessage(), e);
+            throw new RuntimeException("Seed failed: " + e.getMessage(), e);
+        }
+        log.info("Manual re-seed complete.");
+        return getSeedStatus();
+    }
+
     /**
      * Seed the question bank if the DB is empty.
      * Loads both top-level topic JSONs and all sub-topic JSONs in parallel.
      */
-    @Transactional
     public void seedIfEmpty() {
         if (questionRepository.count() > 0) {
             log.info("Quiz question bank already seeded ({} questions). Skipping.",
@@ -159,28 +174,6 @@ public class QuestionBankService {
             saved++;
         }
         return saved;
-    }
-
-    /**
-     * Forcefully re-seed the question bank from JSON files.
-     * Deletes all existing questions and reloads from seed files.
-     * Returns count of newly seeded questions.
-     */
-    @Transactional
-    public SeedStatus seedQuestionBank() {
-        long existing = questionRepository.count();
-        log.info("Manual re-seed triggered (current: {} questions). Deleting all and re-seeding...", existing);
-        try {
-            questionRepository.deleteAll();
-            entityManager.flush();
-            entityManager.clear();
-            seedIfEmpty();
-        } catch (Exception e) {
-            log.error("Seed failed: {}", e.getMessage(), e);
-            throw new RuntimeException("Seed failed: " + e.getMessage(), e);
-        }
-        log.info("Manual re-seed complete.");
-        return getSeedStatus();
     }
 
     public SeedStatus getSeedStatus() {
