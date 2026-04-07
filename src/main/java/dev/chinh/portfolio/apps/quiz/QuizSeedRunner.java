@@ -2,8 +2,6 @@ package dev.chinh.portfolio.apps.quiz;
 
 import dev.chinh.portfolio.apps.quiz.service.QuestionBankService;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.annotation.PostConstruct;
 
@@ -21,7 +19,6 @@ public class QuizSeedRunner {
     }
 
     @PostConstruct
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void seed() {
         questionBankService.seedIfEmpty();
     }
