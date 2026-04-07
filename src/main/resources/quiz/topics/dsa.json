@@ -130,6 +130,369 @@
       ],
       "correctKey": "b",
       "explanation": "The LIS problem: given an array, find the longest subsequence (not necessarily contiguous) where elements are in increasing order. The O(n²) DP solution computes dp[i] = 1 + max(dp[j]) for all j < i where arr[j] < arr[i]. The overall LIS is max(dp[i]). The O(n log n) solution uses binary search with a tails array — for each element, find the first index ≥ itself in tails and replace (or append), maintaining a sorted list of minimal ending values. Option A describes maximum subarray sum (Kadane), not LIS. Option C is false. Option D is wrong (greedy fails for LIS — consider [3, 1, 2] where greedy picks 3 first, missing 1, 2)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the primary difference between a singly linked list and a doubly linked list?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A singly linked list stores only a next pointer per node; a doubly linked list stores both next and prev pointers, enabling O(1) backward traversal and O(1) deletion given a node reference" },
+        { "id": "b", "text": "A singly linked list has O(n) search; a doubly linked list has O(1) search due to bidirectional pointers" },
+        { "id": "c", "text": "A doubly linked list uses less memory per node because it stores only one pointer instead of two" },
+        { "id": "d", "text": "A singly linked list cannot implement a stack; a doubly linked list can" }
+      ],
+      "correctKey": "a",
+      "explanation": "Singly linked list: each node has .next pointer only → O(1) insertion at known position, O(n) search, O(n) deletion (requires finding previous node). Doubly linked list: each node has .next and .prev → enables O(1) backward traversal, O(1) deletion given a node reference (no need to find previous), and makes it ideal for LRU caches and browser back/forward navigation. Option B is false (both have O(n) search). Option C reverses the memory trade-off. Option D is false."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of linear search on an unsorted array of n elements in the worst case?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — the first element is checked immediately" },
+        { "id": "b", "text": "O(log n) — the search space is halved each comparison" },
+        { "id": "c", "text": "O(n) — every element may need to be checked before finding or concluding the target is absent" },
+        { "id": "d", "text": "O(n²) — nested loops are required to compare every pair" }
+      ],
+      "correctKey": "c",
+      "explanation": "Linear search examines each element sequentially until either the target is found or the end of the array is reached. In the worst case (target absent or at the last position), all n elements are checked → O(n). Option A is the best case. Option B is binary search (requires sorted array). Option D describes comparison sorts, not search."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of searching in a max-heap?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — the max element is always at the root" },
+        { "id": "b", "text": "O(log n) — the heap property allows binary search on the array representation" },
+        { "id": "c", "text": "O(n) — a max-heap has no ordering that enables efficient search; all elements must be checked in the worst case" },
+        { "id": "d", "text": "O(n log n) — heap sort is required to extract elements in sorted order" }
+      ],
+      "correctKey": "c",
+      "explanation": "A max-heap guarantees that the parent is ≥ its children, but it does NOT guarantee any ordering between left and right subtrees. This means you cannot search efficiently — the heap property only tells you the maximum is at the root. To find a value, you must scan the array, giving O(n) worst-case search. The heap property only guarantees O(log n) extract-max (pop root, heapify), not O(log n) search. Option A is correct for finding the maximum only. Option B misapplies the heap property. Option D describes sorting, not searching."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which sorting algorithm has O(n²) worst-case time complexity? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Bubble sort" },
+        { "id": "b", "text": "Selection sort" },
+        { "id": "c", "text": "Insertion sort" },
+        { "id": "d", "text": "Merge sort" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Bubble sort (O(n²) worst/avg), Selection sort (O(n²) regardless of input order — always scans for min), and Insertion sort (O(n²) worst case — array in reverse sorted order) all have O(n²) worst-case complexity. Merge sort has O(n log n) worst-case guaranteed. Quick sort degrades to O(n²) in the worst case (unbalanced partitions). Selection sort is always O(n²) with no best-case improvement, making it the least adaptive of the three O(n²) sorts."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which operations on a queue data structure are O(1)? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Enqueue at the rear (with tail pointer)" },
+        { "id": "b", "text": "Dequeue from the front (with head pointer)" },
+        { "id": "c", "text": "Peek at the front element" },
+        { "id": "d", "text": "Searching for a value by index" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Enqueue (push to rear with tail pointer) is O(1). Dequeue (pop from front with head pointer) is O(1). Peek (examine front without removing) is O(1). Searching by index requires traversal → O(n). In array-backed queues without a tail pointer, enqueue would be O(1) but you'd need head pointer for O(1) dequeue. With a circular buffer using both head and tail pointers, both enqueue and dequeue are O(1)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "A recursion tree for Fibonacci F(n) has exponential size. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The naive Fibonacci recursion tree has approximately φ^n nodes (where φ ≈ 1.618, the golden ratio), which is exponential. This is because F(n) calls F(n-1) and F(n-2), and the same subproblems (like F(3)) are recomputed exponentially many times. This exponential redundancy is the motivation for dynamic programming — memoization or tabulation reduces it to O(n) by computing each value once."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "The space complexity of an iterative algorithm is always better than its recursive counterpart. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Not always — it depends on the algorithm. The iterative version of Fibonacci uses O(1) space, but the recursive version with memoization uses O(n) space (memo table). However, the recursive version without memoization uses O(n) call stack depth but O(1) space for the memo table, which is different from O(n) stack. The statement is too broad — recursive depth vs iterative counters don't always favor one over the other."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "A binary tree with 3 levels can have at most how many nodes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "6 nodes — 2 × 3 = 6" },
+        { "id": "b", "text": "7 nodes — levels 0, 1, 2 (root to 2 edges) fully filled: 1 + 2 + 4 = 7" },
+        { "id": "c", "text": "8 nodes — 2³ = 8" },
+        { "id": "d", "text": "15 nodes — 2⁴ - 1 = 15" }
+      ],
+      "correctKey": "b",
+      "explanation": "With 3 levels (level 0 = root, level 1, level 2), the height is 2 edges (root to deepest leaf). Maximum nodes = 2^(h+1) - 1 = 2^3 - 1 = 7. Level 0: 2⁰=1, Level 1: 2¹=2, Level 2: 2²=4 → total 7. Option C (8) would be 4 levels. Option D (15) would be 4 levels of edges (5 levels of nodes)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the correct order of average time complexities from fastest to slowest?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) → O(log n) → O(n) → O(n log n) → O(n²)" },
+        { "id": "b", "text": "O(1) → O(n) → O(log n) → O(n²) → O(n log n)" },
+        { "id": "c", "text": "O(log n) → O(1) → O(n) → O(n²) → O(n log n)" },
+        { "id": "d", "text": "O(n) → O(1) → O(log n) → O(n log n) → O(n²)" }
+      ],
+      "correctKey": "a",
+      "explanation": "O(1) < O(log n) < O(n) < O(n log n) < O(n²) for growing n. O(log n) is faster than O(n) but slower than O(1). O(n log n) is faster than O(n²) but slower than O(n). This ordering is used to compare algorithm efficiency: hash table lookup (O(1)) < binary search (O(log n)) < linear search (O(n)) < merge sort (O(n log n)) < bubble sort (O(n²))."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following algorithm?\n\narr = [5, 3, 8, 1, 2]\narr.sort()\nprint(arr)",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "The sort() method (Python's Timsort) sorts the array in ascending order in-place. Result: [1, 2, 3, 5, 8]. Timsort is a hybrid stable sorting algorithm derived from merge sort and insertion sort, running in O(n log n) average case and O(n) best case (already sorted). Option A is descending sort (arr.sort(reverse=True)). Option C is wrong sorting behavior. Option D is an intermediate state."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "A B-tree of order m can have at most m children per node and m-1 keys. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "B-tree order m (or minimum degree t) defines the branching factor: maximum children = m, maximum keys = m-1. Minimum children = ceil(m/2) except root. B-trees are used in databases and file systems because their wide, shallow structure minimizes disk I/O — reading a node with m children may retrieve multiple keys in one disk access. The 'order' convention varies: some texts define order as maximum degree, others as minimum degree; the key property is that B-trees maintain balance with fan-out proportional to block size."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key difference between BFS and DFS in terms of data structure used?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "BFS uses a stack (LIFO) and explores the deepest node first; DFS uses a queue (FIFO) and explores level by level" },
+        { "id": "b", "text": "BFS uses a queue (FIFO) and explores nodes level by level; DFS uses a stack (LIFO) or recursion and explores depth-first" },
+        { "id": "c", "text": "BFS and DFS both use a queue; only the traversal order differs" },
+        { "id": "d", "text": "BFS and DFS both use a stack; only the traversal order differs" }
+      ],
+      "correctKey": "b",
+      "explanation": "BFS (Breadth-First Search) uses a queue — enqueue neighbors, dequeue and explore, giving FIFO (level-by-level) order. DFS (Depth-First Search) uses a stack (explicit or call stack via recursion) — push neighbors, pop and explore, giving LIFO (depth-first) order. Both visit each vertex once → O(V+E) time. BFS finds shortest paths in unweighted graphs; DFS is used for topological sort, cycle detection, and finding connected components."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the time complexity of merge sort, and what recurrence relation describes it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n log n); T(n) = T(n-1) + O(n) — insertion sort style" },
+        { "id": "b", "text": "O(n log n); T(n) = 2T(n/2) + O(n) — divides array in half, sorts each half, merges in linear time" },
+        { "id": "c", "text": "O(n²); T(n) = 2T(n/2) + O(n²) — partitioning is quadratic" },
+        { "id": "d", "text": "O(n); T(n) = T(n/2) + O(1) — binary search style" }
+      ],
+      "correctKey": "b",
+      "explanation": "Merge sort: divide array into two halves (free operation), recursively sort each half, merge them (linear scan of both halves). Recurrence: T(n) = 2T(n/2) + O(n). By Master theorem (case 2): a=2, b=2, d=1 → n^(log_b a) = n → T(n) = Θ(n log n). This is the textbook Master theorem example. Option A is insertion sort. Option D is binary search. Option C is nonsense."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the recurrence T(n) = T(n-1) + T(n-2) + O(1) and what does it describe?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Binary search — halves the problem each step" },
+        { "id": "b", "text": "Merge sort — divides into two equal halves plus O(n) merge" },
+        { "id": "c", "text": "Naive Fibonacci — each call branches into two, leading to exponential T(n) ≈ φ^n where φ ≈ 1.618" },
+        { "id": "d", "text": "Selection sort — scans for minimum and recurses on the rest" }
+      ],
+      "correctKey": "c",
+      "explanation": "T(n) = T(n-1) + T(n-2) + O(1) describes the naive Fibonacci recursion. Each call makes two recursive calls (n-1 and n-2) plus O(1) work. This recurrence solves to exponential time T(n) ≈ φ^n ≈ 1.618^n because both branches are nearly full-size. The +1 work at each level compounds to give the golden ratio φ as the branching factor. This is why memoization transforms it to O(n) — converting two recursive calls into one table lookup each."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which of the following algorithms are comparison-based sorts? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Quick sort" },
+        { "id": "b", "text": "Merge sort" },
+        { "id": "c", "text": "Counting sort" },
+        { "id": "d", "text": "Heap sort" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Quick sort, merge sort, and heap sort are all comparison-based sorts — they determine relative order by comparing pairs of elements (a[i] < a[j]?). Counting sort is NOT comparison-based; it uses element values as array indices, achieving O(n+k) by exploiting bounded integer ranges. Radix sort is also non-comparison (processes digits/bits). Comparison sorts have a theoretical lower bound of Ω(n log n)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which graph traversal algorithm is best suited for finding the shortest path in an unweighted graph?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "DFS — explores as deep as possible before backtracking, guaranteeing shortest path" },
+        { "id": "b", "text": "BFS — discovers all vertices at distance d before those at distance d+1, giving shortest path by edge count" },
+        { "id": "c", "text": "Dijkstra — required even for unweighted graphs to find shortest path" },
+        { "id": "d", "text": "Topological sort — sorts vertices so that all edges point forward, giving shortest path" }
+      ],
+      "correctKey": "b",
+      "explanation": "In an unweighted graph, BFS guarantees shortest path by number of edges because it explores level by level — all vertices at distance k are discovered before any at distance k+1. When the target is first reached, you've found a shortest path. DFS does not guarantee shortest path (it may find a longer path first). Dijkstra is needed only when edge weights exist and can be negative (use Bellman-Ford). Topological sort finds linear ordering for DAGs, not shortest paths."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ndef find_max(arr):\n    if not arr: return None\n    max_val = arr[0]\n    for val in arr:\n        if val > max_val:\n            max_val = val\n    return max_val\n\nprint(find_max([3, 1, 4, 1, 5, 9, 2, 6]))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "c",
+      "explanation": "Linear scan finds maximum: start with 3, update → 4, update → 5, update → 9 (largest), rest are ≤ 9. Result: 9. This is O(n) time, O(1) space — the standard maximum-finding algorithm. Option A (6) misses the 9. Option B (3) is the first element only. Option D (2) is wrong."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the space complexity of merge sort?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — merge sort can be implemented in-place" },
+        { "id": "b", "text": "O(n) — the merge step requires a temporary array proportional to the subarray being merged" },
+        { "id": "c", "text": "O(log n) — only recursion depth requires logarithmic space" },
+        { "id": "d", "text": "O(n log n) — every level requires a new auxiliary array" }
+      ],
+      "correctKey": "b",
+      "explanation": "Merge sort's merge step needs a temporary array of size proportional to the combined subarray → O(n) space. Recursion depth is O(log n). Total: O(n) auxiliary space (or O(n + log n) = O(n)). Some in-place variants exist but are complex. Quick sort is O(log n) space (recursion stack), making it preferable for memory-constrained environments. Heap sort is O(1) — fully in-place."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which problems does the Union-Find (Disjoint Set Union) data structure solve efficiently? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Detecting whether two elements are in the same connected component" },
+        { "id": "b", "text": "Finding the shortest path in a weighted graph" },
+        { "id": "c", "text": "Detecting cycles in a graph" },
+        { "id": "d", "text": "Merging two sets of elements into one" }
+      ],
+      "correctKey": "a,c,d",
+      "explanation": "Union-Find (Disjoint Set Union) supports two operations: Find (which set does an element belong to?) and Union (merge two sets). It efficiently solves: (1) connected components — are two nodes connected? (Kruskal's MST), (2) cycle detection in undirected graphs (if Find(u) == Find(v) before adding edge u-v, a cycle exists), (3) dynamic connectivity. Union-Find with path compression and union by rank achieves near O(1) amortized per operation (inverse Ackermann α(n)). Shortest path is solved by Dijkstra or Bellman-Ford."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the lower bound Ω(n log n) for comparison sorts based on?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "There are n! possible permutations and each comparison eliminates at most half, requiring Ω(log₂(n!)) ≈ Ω(n log n) comparisons in the worst case" },
+        { "id": "b", "text": "Every comparison sort must examine every element at least once, taking Ω(n) time" },
+        { "id": "c", "text": "The best sorting algorithms use binary search, which has O(log n) complexity, and sorting requires log n searches per element" },
+        { "id": "d", "text": "The Master theorem case 1 proves that T(n) = 2T(n/2) + O(n) has Ω(n log n) lower bound" }
+      ],
+      "correctKey": "a",
+      "explanation": "Comparison sorts model sorting as a binary decision tree: each comparison (a[i] < a[j]?) has 2 outcomes. To distinguish all n! possible permutations, the tree must have ≥ n! leaves. A binary tree with L leaves has height ≥ log₂ L. Minimum height = log₂(n!) ≈ n log₂ n - n log₂ e (Stirling's approximation). Therefore no comparison sort can beat Ω(n log n) in the worst case. This lower bound is tight — merge sort and heap sort achieve Θ(n log n). Non-comparison sorts (counting, radix) can beat this bound under special conditions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A recursive algorithm that calls itself 3 times at each level with problem size n/3, and does O(n) work at each level, has what time complexity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n log 3) — linearithmic with branching factor 3" },
+        { "id": "b", "text": "O(n^(log_3 3)) = O(n) — the exponent cancels the recursion depth" },
+        { "id": "c", "text": "O(n^(log_3 3)) = O(n) — incorrect use of Master theorem" },
+        { "id": "d", "text": "T(n) = 3T(n/3) + O(n) → O(n log n) by Master theorem case 2 (a=b^d)" }
+      ],
+      "correctKey": "d",
+      "explanation": "Master theorem: T(n) = aT(n/b) + O(n^d). Here a=3, b=3, d=1. n^(log_b a) = n^(log_3 3) = n^1 = n. f(n) = Θ(n) = Θ(n^1). Case 2 (f(n) = Θ(n^(log_b a))): T(n) = Θ(n^d log n) = Θ(n log n). The work at each level (O(n)) times the number of levels (log_3 n) = O(n log n). Option A misapplies the branching factor. Option B misidentifies the recurrence. Option C is wrong."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A red-black tree guarantees O(log n) time for search, insert, and delete. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Red-Black trees are self-balancing BSTs with these guarantees: (1) height ≤ 2*log₂(n+1), so the longest root-to-leaf path is at most twice the shortest. (2) All three operations (search, insert, delete) traverse one path from root to leaf → O(log n). Insert and delete involve O(log n) rotations/recoloring at most. Used in C++ STL (map/set), Java TreeMap/TreeSet, and the Linux kernel CFS scheduler. AVL trees have stricter balance (height difference ≤ 1) and thus faster search but slower insert/delete."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A priority queue implemented with a binary heap has O(log n) insert and O(log n) extract-min. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Binary min-heap: insert adds at the end (last level, rightmost position) and bubbles up (O(log n) — height of tree). Extract-min removes root, replaces with last element, bubbles down (O(log n)). Heapify (building a heap from unsorted array) runs in O(n) via the bottom-up Floyd algorithm, which is faster than inserting n elements one by one O(n log n). A max-heap reverses min/max for max priority queue."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ndef bit_count(n):\n    count = 0\n    while n:\n        n &= (n - 1)\n        count += 1\n    return count\n\nprint(bit_count(14))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "c",
+      "explanation": "n &= (n-1) clears the lowest set bit in one operation. 14 in binary = 1110. Iteration 1: n=1110 & 1101=1100 (bits left: 3), iteration 2: n=1100 & 1011=1000 (bits left: 2), iteration 3: n=1000 & 0111=0000 (bits left: 1). Total: 3 set bits. This is Brian Kernighan's algorithm for counting set bits — each iteration removes one set bit, so the loop runs exactly once per set bit → O(number of set bits). Option A is 1110=14. Option B is 1000=8. Option D is wrong."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the time complexity of the Bellman-Ford algorithm for shortest paths from a single source in a graph with V vertices and E edges?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(V + E) — single-pass BFS-style relaxation" },
+        { "id": "b", "text": "O(V log V + E log V) — Dijkstra with a binary heap" },
+        { "id": "c", "text": "O(V×E) — relaxes all edges V-1 times; detects negative weight cycles on V-th pass" },
+        { "id": "d", "text": "O(V³) — all-pairs shortest path, computed for each source" }
+      ],
+      "correctKey": "c",
+      "explanation": "Bellman-Ford: relax all edges V-1 times. Each relaxation pass scans all E edges → O(V×E). After V-1 passes, if any edge can still be relaxed, a negative weight cycle exists (detectable in O(E)). This is slower than Dijkstra O(V log V + E) for non-negative weights, but Bellman-Ford handles negative weights and detects negative cycles. Optimizations: if a pass makes no changes, exit early. Option A is BFS. Option B is Dijkstra with heap. Option D is Floyd-Warshall."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the Floyd-Warshall algorithm and what is its time and space complexity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Floyd-Warshall finds shortest paths from one source to all vertices; O(V³) time, O(V²) space" },
+        { "id": "b", "text": "Floyd-Warshall finds all-pairs shortest paths using dynamic programming on intermediate vertices; O(V³) time, O(V²) space" },
+        { "id": "c", "text": "Floyd-Warshall is equivalent to running Dijkstra V times; O(V×E log V) time" },
+        { "id": "d", "text": "Floyd-Warshall finds minimum spanning trees; O(V³) time, O(V²) space" }
+      ],
+      "correctKey": "b",
+      "explanation": "Floyd-Warshall DP: dp[k][i][j] = shortest path from i to j using only vertices {1..k} as intermediate. Transition: dp[k][i][j] = min(dp[k-1][i][j], dp[k-1][i][k] + dp[k-1][k][j]). Space-optimized to 2D matrix (V×V). Time: O(V³) — triple nested loop. Works with negative weights (no negative cycles) and finds all-pairs shortest paths simultaneously. For sparse graphs, running Dijkstra V times (O(V×E log V)) is faster. For dense graphs (E ≈ V²), Floyd-Warshall is competitive. Option A is wrong (not single-source). Option C is wrong. Option D is wrong (MST uses Prim/Kruskal)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is A* search, and what is its optimality condition?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A* is a graph traversal algorithm equivalent to BFS with additional pruning; it is always optimal" },
+        { "id": "b", "text": "A* uses f(n) = g(n) + h(n) where g(n) is cost from start and h(n) is heuristic estimate to goal; it finds the optimal path if the heuristic is admissible (never overestimates) and consistent (satisfies triangle inequality)" },
+        { "id": "c", "text": "A* is a greedy algorithm that always picks the node with smallest h(n); it finds shortest path in O(V log V)" },
+        { "id": "d", "text": "A* is equivalent to Dijkstra with a heuristic equal to 0; it always runs faster than Dijkstra" }
+      ],
+      "correctKey": "b",
+      "explanation": "A* combines path cost g(n) (like Dijkstra) and heuristic h(n) (like greedy best-first): f(n) = g(n) + h(n). The priority queue orders by f(n). Optimality: if h(n) is admissible (never overestimates true cost to goal) AND consistent (h(n) satisfies h(n) ≤ cost(n→n') + h(n') for all edges), A* returns the optimal path. If h(n)=0 for all nodes, A* reduces to Dijkstra. If h(n) = exact distance to goal, A* finds the goal without exploring anything else. The more accurate h(n), the fewer nodes A* expands."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following DP problems exhibit optimal substructure AND overlapping subproblems? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Fibonacci sequence" },
+        { "id": "b", "text": "Longest Common Subsequence (LCS)" },
+        { "id": "c", "text": "Computing n!" },
+        { "id": "d", "text": "0/1 Knapsack" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Fibonacci: F(n) = F(n-1) + F(n-2) — same subproblems recur exponentially many times in naive recursion. LCS: optimal solution uses optimal solutions of prefixes — subproblems overlap in the DP table (dp[i][j] depends on dp[i-1][j-1], dp[i-1][j], dp[i][j-1]). 0/1 Knapsack: optimal solution for capacity w using items 1..n uses optimal solutions for subcapabilities (optimal substructure + overlapping subproblems table). n! has optimal substructure but no overlapping subproblems — each subproblem is computed exactly once, making memoization irrelevant."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is bit manipulation used for, and what is the result of 0b1101 & 0b1011?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Bit manipulation manipulates individual bits for speed; 1101 & 1011 = 0b1001 (9)" },
+        { "id": "b", "text": "Bit manipulation manipulates individual bits for speed; 1101 & 1011 = 0b1001 (9)" },
+        { "id": "c", "text": "Bit manipulation is a sorting technique; 1101 & 1011 = 0b1101" },
+        { "id": "d", "text": "Bit manipulation only works on floating-point numbers; 1101 & 1011 is undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "AND: bitwise AND. 1101 & 1011:\n  1101\n& 1011\n= 1001\n0b1001 = 9. Bitwise operations (AND, OR, XOR, NOT, shifts) are used for flags, masks, subset enumeration, optimized arithmetic (n & (n-1) clears lowest bit), and set operations. XOR trick: a ^ a = 0, a ^ 0 = a. Shifts: << doubles, >> halves (unsigned). These are O(1) per operation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef power_of_two(n):\n    return n > 0 and (n & (n - 1)) == 0\n\nprint(power_of_two(8), power_of_two(6), power_of_two(0))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "c",
+      "explanation": "n & (n-1) clears the lowest set bit. For a power of two (8=0b1000), n-1=7=0b0111 → 0b1000 & 0b0111 = 0. For 6=0b0110, n-1=5=0b0101 → 0b0110 & 0b0101 = 0b0100 ≠ 0. So power_of_two(8)=True, power_of_two(6)=False. power_of_two(0): n>0 is False → short-circuit returns False. Result: True, False, False. This is the classic bit trick for checking powers of two."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the rod cutting problem, and how does dynamic programming solve it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A rod of length n must be cut into pieces of fixed lengths; greedy always picks the longest piece fitting — O(n) time" },
+        { "id": "b", "text": "Given prices p[i] for length i, find max revenue by cutting a rod of length n into pieces; dp[i] = max(dp[i], p[j] + dp[i-j]) for all cut lengths j, giving O(n²) time" },
+        { "id": "c", "text": "A rod must be cut without wasting any material; exact cover algorithms solve it in O(2^n)" },
+        { "id": "d", "text": "Rod cutting is equivalent to the activity selection problem; greedy by shortest cut length is optimal" }
+      ],
+      "correctKey": "b",
+      "explanation": "Rod cutting: given prices p[1..n] for pieces of length 1..n, maximize revenue by cutting. Let revenue[i] = max revenue for length i. For each i, try all possible first cuts j (0 to i): revenue[i] = max(p[j] + revenue[i-j]). dp[0] = 0. This is O(n²) time, O(n) space. Equivalent to 0/1 knapsack (each cut can be taken at most once, lengths/values). Without DP, this is exponential (2^(n-1) possible cut combinations). The classic example: length 4 with prices p[1]=1,p[2]=5,p[3]=6,p[4]=9 → optimal: cut into 2+2 for revenue 10."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The time complexity of the A* algorithm with an admissible heuristic is O(b^d) where b is branching factor and d is solution depth. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "With an admissible (never overestimates) heuristic, A* is optimally efficient — it expands the minimum possible number of nodes to guarantee finding the optimal solution. In the worst case, A* expands O(b^d) nodes where b is the branching factor and d is the solution depth. Without heuristics (b=branching factor, purely exhaustive), all V nodes are visited. With a perfect heuristic, A* expands only the nodes on the optimal path. In practice, heuristic quality determines how much search is pruned. This exponential bound is why A* is not feasible for very deep search spaces without strong heuristics."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The divide-and-conquer technique always produces O(n log n) algorithms. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Divide-and-conquer (D&C) splits a problem into subproblems, solves them recursively, and combines results. The time complexity depends on how the subproblems divide and the combine cost. Merge sort: T(n) = 2T(n/2) + O(n) → O(n log n). Binary search: T(n) = T(n/2) + O(1) → O(log n). Strassen's matrix multiplication: T(n) = 7T(n/2) + O(n²) → O(n^(log₂7) ≈ O(n^2.807). Karatsuba multiplication: T(n) = 3T(n/2) + O(n) → O(n^(log₂3) ≈ O(n^1.585). The 'combine' cost determines the exponent, not D&C itself."
     }
   ]
 }

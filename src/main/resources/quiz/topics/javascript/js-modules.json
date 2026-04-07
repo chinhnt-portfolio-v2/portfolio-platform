@@ -1,0 +1,248 @@
+{
+  "topicSlug": "js-modules",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `import` and `require` in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "import is ES6 module syntax (static, hoisted, runs at parse time); require is CommonJS syntax (dynamic, can be conditional, runs at execution time. import/export are the web/browser standard" },
+        { "id": "b", "text": "import and require are interchangeable — they compile to the same JavaScript code" },
+        { "id": "c", "text": "require is faster than import because it runs at execution time rather than parse time" },
+        { "id": "d", "text": "import only works in Node.js; require only works in browsers" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 import/export (ESM) is static — the structure is analyzed at parse/compile time, enabling tree shaking, dead code elimination, and static analysis. CommonJS require() is dynamic — it can be called conditionally (if statements), in loops, etc. import must be at the top level of a module (no conditionals); it is hoisted. Node.js supports both (ESM with 'type': 'module' in package.json or .mjs extension; CommonJS is the default). Browsers support ESM natively with <script type='module'>."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `export default` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Exports a single value as the default export of a module — imported with `import name from 'module'` (without braces) and any name can be used at the import site" },
+        { "id": "b", "text": "Exports a value that must be imported with the exact same name as the export" },
+        { "id": "c", "text": "Exports a value that can only be imported using named import syntax: import { default }" },
+        { "id": "d", "text": "export default is deprecated and replaced by the `export const default` syntax" }
+      ],
+      "correctKey": "a",
+      "explanation": "A module can have ONE default export. At the import site: `import MyName from 'module'` binds the default export to MyName. You can name it anything — `import foo from 'module'` also works. A module can combine a default export with named exports. Note: `import { default as alias } from 'module'` imports the default export using named import syntax. Barrel files (re-exporting) often use default exports to simplify API surfaces."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `export { name, name2 }` (named exports) do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Exports specified bindings by name — imported with `import { name, name2 } from 'module'` (exact names in braces), or aliased with `import { name as alias }`" },
+        { "id": "b", "text": "Exports all properties of the module object as a single named export" },
+        { "id": "c", "text": "Exports a function called name and a variable called name2" },
+        { "id": "d", "text": "Named exports must be imported with a default import alongside them" }
+      ],
+      "correctKey": "a",
+      "explanation": "Named exports export specific bindings (variables, functions, classes) from a module. They are imported with the exact name in braces: `import { add, multiply } from './math'`. You can rename on import: `import { add as sum }`. You can import all named exports as an object: `import * as math from './math'` — then use math.add(). A module can have multiple named exports and optionally one default export."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a barrel file in the context of JavaScript modules?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A single file (often named index.js) that re-exports multiple modules from a directory, providing a single import point that aggregates the module's public API" },
+        { "id": "b", "text": "A file that bundles all dependencies into a single output for distribution" },
+        { "id": "c", "text": "A configuration file that specifies which modules should be included in the final bundle" },
+        { "id": "d", "text": "A module that exports a default value and nothing else" }
+      ],
+      "correctKey": "a",
+      "explanation": "A barrel file aggregates exports from multiple sub-modules into one convenient import path. Example: `export { Button } from './Button'; export { Card } from './Card'; export { Modal } from './Modal';`. Consumers import from the barrel: `import { Button, Card } from './components'` instead of three separate paths. Benefits: clean public API, easy to add/remove exports. Downsides: barrel files that re-export can complicate tree shaking — bundlers may not eliminate dead code from barrel-routed exports as efficiently."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is tree shaking in the context of JavaScript module bundlers?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A bundler's dead code elimination technique that removes unused exports from the final bundle — only possible because ES6 modules have statically analyzable import/export syntax" },
+        { "id": "b", "text": "A technique that sorts module files alphabetically to optimize loading order" },
+        { "id": "c", "text": "A process that converts CommonJS require() calls into ES6 import statements" },
+        { "id": "d", "text": "A security feature that prevents malicious modules from being included in the bundle" }
+      ],
+      "correctKey": "a",
+      "explanation": "Tree shaking removes unused code from the bundle. Bundlers like Rollup, Webpack, and esbuild use ES6 module static analysis — because import/export are statically parseable, the bundler can determine which exports are actually used by the application. Side-effect-free modules can be safely eliminated entirely. CommonJS (require) can't be statically analyzed this way reliably. To maximize tree shaking: use ES6 modules, export individual named exports (not objects), mark modules with 'sideEffects: false' in package.json, and avoid importing entire libraries."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "ES6 modules are always loaded and executed asynchronously when used in a browser via <script type='module'>.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "ES6 modules are deferred (not async) — they load in parallel with other resources, execute in document order (respecting dependencies), and run after the HTML is parsed but before DOMContentLoaded. The key distinction: async scripts (type='module') run immediately upon download, in any order. Deferred scripts execute in document order after HTML parsing. Regular <script> (no type) is blocking — it halts HTML parsing. type='module' (deferred + ESM) doesn't block HTML parsing but executes in order."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\n// math.js\nexport const PI = 3.14;\nexport const E = 2.71;\n\n// main.js\nimport { PI, E as EULER } from './math.js';\nconsole.log(PI, EULER);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "3.14 2.71" },
+        { "id": "b", "text": "3.14 2.71 3.14 (PI printed twice)" },
+        { "id": "c", "text": "3.14, 2.71 (as a string)" },
+        { "id": "d", "text": "ReferenceError: cannot import const" }
+      ],
+      "correctKey": "a",
+      "explanation": "Named imports use exact names in braces. `export const PI = 3.14` is imported as `{ PI }`. The `E as EULER` syntax renames on import — E becomes EULER locally. Both values are logged: 3.14 and 2.71. Note: named imports are live bindings — if the exporting module reassigns PI at runtime, the importing module sees the updated value. This is because imports are live bindings to the export, not copies."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Dynamic import() is a function that returns a Promise and loads a module on demand.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "import() (not to be confused with static import) is a function that returns Promise<module namespace>. It's used for: lazy loading routes/components (React.lazy, Vue Router), conditional loading, reducing initial bundle size. Example: `import('./math.js').then(module => console.log(module.add(1, 2)))`. Can also be used with await in async functions: `const { add } = await import('./math.js')`. Unlike static imports, import() is evaluated at runtime and can be called conditionally."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What happens when two modules import each other (circular dependency) with ES6 modules?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JavaScript executes both modules' code in dependency order, but where a circular import is used before the exporting variable is initialized, it returns undefined — the live binding is resolved once the exporting module finishes executing" },
+        { "id": "b", "text": "Circular dependencies cause an immediate ReferenceError and crash the program" },
+        { "id": "c", "text": "Node.js silently ignores circular dependencies in ES6 modules and returns an empty module" },
+        { "id": "d", "text": "Circular dependencies are automatically resolved by hoisting all module exports to the top" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 modules handle circulars via live bindings: when module A imports from B, A gets a binding to B's exported value. If B hasn't finished initializing yet, the binding is initially undefined. Once B finishes, the binding gets its real value. This means circular dependencies work — with caveats: accessing imported values before they're initialized gives undefined. CommonJS avoids this by having module.exports as a mutable object shared at require time. The fix for circular ESM: use lazy imports (import()), restructure modules, or use a mediator/third module."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is sideEffects: false in package.json, and how does it affect bundling?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A field telling bundlers that a package's exports have no side effects when imported — enabling aggressive tree shaking where any unused exports can be safely eliminated even if the module has top-level code" },
+        { "id": "b", "text": "A flag that prevents the package from being loaded at all during the build process" },
+        { "id": "c", "text": "A configuration that forces all exports from this package to be included in the bundle regardless of usage" },
+        { "id": "d", "text": "A declaration that the package can only be imported as a CommonJS module" }
+      ],
+      "correctKey": "a",
+      "explanation": "sideEffects: false in package.json signals that importing from this package has no side effects — any exported code that is not used by the consumer can be safely eliminated. This is critical for tree shaking: bundlers (Webpack, Rollup) can drop unused exports. CSS imports and polyfills (which have side effects) should NOT use sideEffects: false. The opposite is sideEffects: true or omitting the field (meaning 'this package has side effects, don't drop exports'). Libraries like Lodash-es use this correctly."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\n// a.js\nexport let count = 0;\nexport function increment() { count++; }\n\n// b.js\nimport { count, increment } from './a.js';\nconsole.log(count);  // line X\nincrement();\nconsole.log(count);  // line Y",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "0, 1" },
+        { "id": "b", "text": "0, 0" },
+        { "id": "c", "text": "1, 2" },
+        { "id": "d", "text": "undefined, undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 module imports are live bindings to the original export — not copies. When increment() modifies count in a.js, the import in b.js reflects that change immediately. Line X logs 0 (initial state). After increment() is called (from a.js), count is 1. Line Y logs 1. This is different from CommonJS where require() returns a copy of the exported values. If a.js did `count = 5` (reassignment, not mutation), the binding would break and the import would no longer reflect changes — only mutations to the exported binding are live."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between re-exporting with `export { x } from './module'` and `import { x } from './module'; export { x }`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Re-export (export from) forwards an export without making it available in the current module's scope — the importing module gets the binding from the original source. Named import+export creates a local binding that shadows the original" },
+        { "id": "b", "text": "Both syntaxes are identical — they produce the same module semantics" },
+        { "id": "c", "text": "Re-export creates a copy of the value; import+export creates a live binding" },
+        { "id": "d", "text": "import+export can only be used with default exports; re-export can only be used with named exports" }
+      ],
+      "correctKey": "a",
+      "explanation": "`export { x } from './module'` (re-export) is a shorthand that does NOT add x to the current module's lexical scope — x is only available to consumers of the current module. `import { x }; export { x }` imports x into the current module's scope, creating a local binding that mirrors the original. The practical difference: re-export cannot be used in the current module (e.g., you can't call x() in the same file), while import+export makes x available locally as well as re-exported. Both create live bindings to the original source."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "CommonJS module.exports and exports are the same object at runtime.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "In CommonJS, module.exports is the real exports object. exports is a reference to module.exports (`exports = module.exports`). They start as the same object. Setting properties on either (`exports.foo`) works because both reference the same object. But reassigning exports (`exports = { foo }`) breaks the reference — module.exports is unchanged, and the reassigned exports variable is no longer connected. If you need to replace the entire export object in CommonJS, use `module.exports = { ... }`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the main difference in how Node.js resolves module paths for bare imports (e.g., `import 'lodash'`) vs relative imports (e.g., `import './utils'`)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Bare imports are resolved by checking node_modules directories (with symlink traversal and package.json 'main'/'exports' fields); relative imports are resolved relative to the current file's directory" },
+        { "id": "b", "text": "Bare imports are resolved relative to the current working directory; relative imports are resolved by checking node_modules" },
+        { "id": "c", "text": "Both use the exact same resolution algorithm — only the import syntax differs" },
+        { "id": "d", "text": "Relative imports cannot resolve to directories and require explicit file extensions" }
+      ],
+      "correctKey": "a",
+      "explanation": "Bare specifiers ('lodash', '@org/package') are resolved via Node.js module resolution: starting from the importing file, it walks up directory trees checking for node_modules folders, checking package.json 'exports' (ESM priority), 'main' (CJS), and index.js. The 'exports' field in package.json can specify conditional exports for ESM vs CJS. Relative imports ('./utils', './utils.js') resolve relative to the current file's directory, with extensions (.js, .mjs, .json) typically required for ESM."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of the `exports` field in package.json for modern JavaScript packages?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It defines the public API surface of a package, allowing package authors to specify different entry points for different environments (ESM vs CJS) and hide internal modules — consumers using the package only see what is exported" },
+        { "id": "b", "text": "It exports all files in the package directory as individual modules for fine-grained imports" },
+        { "id": "c", "text": "It specifies which files should be included in the npm package tarball" },
+        { "id": "d", "text": "It defines the Node.js version requirements for the package" }
+      ],
+      "correctKey": "a",
+      "explanation": "The 'exports' field (ES2019+, Node.js 12.20+) is the modern way to define package entry points. It supersedes 'main' and allows conditional exports: `{ 'exports': { '.': './dist/index.js', './feature': './dist/feature.js' } }`. You can specify conditions for different environments: `{ 'import': './esm.js', 'require': './cjs.js' }` — bundlers and Node.js pick the appropriate file. Importantly, exports restricts which subpaths are accessible (anything not listed is inaccessible), providing encapsulation of internal modules."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Module-level variables in an ES6 module are truly private — they cannot be accessed from outside the module at all.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "ES6 modules have their own top-level scope — module-level variables are not accessible from outside the module (unlike scripts where top-level var creates global variables). Only exported bindings are accessible to other modules. This is the fundamental encapsulation mechanism for ESM. If you need truly private module-level state (that persists across imports), declare it without export. Each consumer import gets the same live binding — modifying a module-level exported object affects all consumers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between a bundler's code splitting and dynamic import() for lazy loading?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dynamic import() creates a separate chunk at build time (by the bundler) and loads it at runtime on demand; bundlers like Webpack also support magic comments for prefetch/preload — both reduce initial bundle size but dynamic import gives explicit runtime control" },
+        { "id": "b", "text": "Code splitting requires a build-time configuration; dynamic import() fetches modules from the server at runtime without any build-time preparation" },
+        { "id": "c", "text": "Dynamic import() always results in a separate network request for each module; code splitting combines modules into a single file" },
+        { "id": "d", "text": "Code splitting only works with ES6 modules; dynamic import() only works with CommonJS" }
+      ],
+      "correctKey": "a",
+      "explanation": "Both use dynamic import() syntax, but the bundler transforms it into a code-split chunk (separate file in the output bundle). At runtime, when the dynamic import() Promise fires, the browser fetches the chunk (if not cached). webpack() magic comments (`import(/* webpackChunkName: 'name' */ './module')`) and Vite (native ESM) handle chunks differently. Use webpackPrefetch for link rel='prefetch', webpackPreload for link rel='preload' (priority). React.lazy() and Vue defineAsyncComponent use dynamic import() internally for route-level code splitting."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\n// counter.js\nlet count = 0;\nexport function getCount() { return count; }\nexport function setCount(n) { count = n; }\n\n// main.js\nimport { getCount, setCount } from './counter.js';\nsetCount(5);\nimport { getCount as gc } from './counter.js';\nconsole.log(gc());",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "5" },
+        { "id": "b", "text": "0" },
+        { "id": "c", "text": "undefined" },
+        { "id": "d", "text": "5, 5" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 modules are singletons — the module is evaluated only once. When counter.js is first imported, it executes, creating the count variable and exports. All subsequent imports get live bindings to the same module instance. The second import statement (with alias) doesn't re-evaluate counter.js — it just creates a new binding (gc) to the existing export. setCount(5) modifies the shared count. gc() (called after setCount) returns 5. The module-level count persists across the entire application lifetime."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the 'dual package' problem in npm packages, and how does it arise?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A package that ships both CommonJS and ESM versions (often via 'main' and 'module'/'exports' fields) causes two copies of the package to be loaded — one as CJS (require), one as ESM (import) — leading to two separate module instances, breaking singleton behavior (e.g., module-level state is duplicated)" },
+        { "id": "b", "text": "A package that exports two different APIs: one for Node.js and one for browsers, causing runtime compatibility issues" },
+        { "id": "c", "text": "A package that imports itself (circular dependency) causing stack overflow during resolution" },
+        { "id": "d", "text": "A package that uses both ES6 and CommonJS exports, causing TypeScript type definitions to be incorrectly resolved" }
+      ],
+      "correctKey": "a",
+      "explanation": "The dual package problem: a package with both CJS and ESM entry points is loaded via require() (CJS, single instance) and via import (ESM, separate instance). The two instances are distinct objects in memory — module-level state is not shared between them. Solutions: (1) use 'exports' field with conditional exports to point both require and import to the same ESM file, (2) write the package in a way that's compatible with both (CJS and ESM), (3) use a wrapper that re-exports from a single ESM source, or (4) publish as pure ESM (breaking CJS consumers). The exports field with both 'import' and 'require' pointing to the same file is the modern fix."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "import.meta is a portable, per-module object in ES2020+ that exposes context-specific metadata about the current module, including its URL.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "import.meta is a host-agnostic object that provides information about the current module. The most widely supported property is import.meta.url — the absolute URL of the module file (in browsers: full URL; in Node.js: file:// URL). Use cases: resolving relative asset paths at runtime (e.g., import.meta.url + '/../assets/img.png'), getting the module's directory (new URL('.', import.meta.url)), and bundler-specific metadata (webpack's import.meta.webpack). It's not available in CommonJS. Some bundlers add custom properties to import.meta (e.g., import.meta.env in Vite)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the key security distinction between <script src='bundle.js'> and <script type='module' src='module.js'> regarding CORS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Regular <script> loads files from any origin without CORS restrictions; <script type='module'> loads cross-origin files only if the server sends proper CORS headers (Access-Control-Allow-Origin), preventing data theft via script injection" },
+        { "id": "b", "text": "Both <script> and <script type='module'> have identical CORS requirements" },
+        { "id": "c", "text": "<script type='module'> can load files from any origin but cannot access any module exports from cross-origin sources" },
+        { "id": "d", "text": "Regular <script> requires CORS headers; <script type='module'> does not" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 modules enforce CORS — the browser requires the server to send Access-Control-Allow-Origin headers for cross-origin module imports. This is a security feature: regular scripts can be loaded from any origin without CORS, but modules can't exfiltrate data because the cross-origin response is blocked unless CORS headers are present. This prevents attacks where a malicious page tries to import a script from your API endpoint (expecting JSON) and read the data. This is one reason ESM improves security over classic scripts."
+    }
+  ]
+}

@@ -1,0 +1,253 @@
+{
+  "topicSlug": "react-perf",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does React.memo do and when should you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.memo memoizes a component so it skips re-rendering when its props are shallowly equal — use it on expensive child components that re-render often due to parent updates" },
+        { "id": "b", "text": "React.memo caches the component's rendered output as HTML" },
+        { "id": "c", "text": "React.memo replaces useMemo for caching expensive computations" },
+        { "id": "d", "text": "React.memo automatically prevents re-renders of all child components globally" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.memo is a higher-order component that memoizes a component's rendering based on prop changes. It performs a shallow comparison of props — if they are equal, React skips the render. Use it on components that: (1) render often, (2) are expensive, and (3) receive props from a frequently-changing parent. Don't over-apply it — React.memo has a small cost (prop comparison), and many components are cheap to render."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `useMemo` do and when should you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useMemo memoizes a computed value, only recomputing when dependencies change — use it for expensive calculations that shouldn't run on every render" },
+        { "id": "b", "text": "useMemo stores the result of an API call for reuse across components" },
+        { "id": "c", "text": "useMemo prevents a component from re-rendering when its props change" },
+        { "id": "d", "text": "useMemo caches a function reference and only re-creates it when dependencies change" }
+      ],
+      "correctKey": "a",
+      "explanation": "useMemo memoizes the RESULT of a computation: `const sorted = useMemo(() => expensiveSort(items), [items])`. The expensive sort only runs when `items` changes. Don't use useMemo for trivial computations — the memoization overhead (storing the value, checking deps) costs more than the saved computation. The idiomatic threshold: use for calculations that take >1ms or run in a hot path."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `useCallback` do and when should you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useCallback returns a memoized function reference that only changes when its dependencies change — use it when passing callbacks as props to React.memo-wrapped children to prevent unnecessary re-renders" },
+        { "id": "b", "text": "useCallback prevents a function from being called too frequently (debouncing)" },
+        { "id": "c", "text": "useCallback caches the result of a function call" },
+        { "id": "d", "text": "useCallback makes a function run only on the server side" }
+      ],
+      "correctKey": "a",
+      "explanation": "useCallback(fn, deps) is equivalent to useMemo(() => fn, deps). The memoized function reference means the prop reference passed to a child component is stable across renders, making React.memo effective. Without useCallback, a new `() => handleX(id)` arrow function created on each render defeats React.memo's shallow comparison. However, useCallback is only meaningful when the function is passed to a memoized child or used as a useEffect dependency."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "React.memo, useMemo, and useCallback all improve performance by default and should be applied everywhere.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "All three have overhead: React.memo does a shallow prop comparison on every render; useMemo stores a value and compares dependencies; useCallback stores a function reference. For cheap computations and non-performance-critical paths, this overhead exceeds the benefit. The React team's guidance: don't prematurely optimize. Profile first (with React DevTools Profiler), then apply these tools to components that are genuinely slow or re-render too often."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `React.Profiler` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Profiler measures how often a component renders and the cost of rendering — helping identify components that render too frequently or are expensive" },
+        { "id": "b", "text": "Profiler is a browser DevTools panel that measures JavaScript execution time" },
+        { "id": "c", "text": "Profiler prevents components from re-rendering during development" },
+        { "id": "d", "text": "Profiler is a production-only tool for monitoring app performance" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.Profiler is a DevTools component: `<Profiler id=\"App\" onRender={onRenderCallback}><App /></Profiler>`. The `onRender` callback receives render counts, durations, and which props changed. This is the primary tool for identifying where to optimize — don't guess, measure. Profiler can be added in development and production builds (with overhead)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is code splitting in React and how is it achieved?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Code splitting divides the JavaScript bundle into smaller chunks that are loaded on demand — achieved with React.lazy + Suspense or dynamic import() — reducing initial load time and Time to Interactive" },
+        { "id": "b", "text": "Code splitting separates CSS from JavaScript in the build output" },
+        { "id": "c", "text": "Code splitting is a server-side technique that pre-renders components before sending HTML to the client" },
+        { "id": "d", "text": "Code splitting is only available in React Native, not in web React" }
+      ],
+      "correctKey": "a",
+      "explanation": "Code splitting creates separate JavaScript chunks (via Webpack/Vite/Rollup dynamic import) that load when needed. `<React.Suspense fallback={<Spinner />}><React.lazy(() => import('./Dashboard')) /></React.Suspense>` renders Dashboard's chunk only when the component first renders. Route-level splitting is the most common pattern — each route gets its own chunk, loaded on navigation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is bundle size optimization in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Reducing the amount of JavaScript shipped to the browser — achieved via code splitting, tree shaking, removing unused dependencies, and analyzing bundle composition with source-map-explorer or webpack-bundle-analyzer" },
+        { "id": "b", "text": "Compressing React components using gzip in the browser" },
+        { "id": "c", "text": "Moving all JavaScript to a CDN without any code changes" },
+        { "id": "d", "text": "Reducing the number of CSS classes used by components" }
+      ],
+      "correctKey": "a",
+      "explanation": "Bundle size optimization keeps your initial load fast. Techniques: (1) dynamic imports for route-level splitting, (2) replacing large libraries with smaller alternatives (e.g., date-fns instead of moment.js), (3) tree shaking via ES modules, (4) analyzing the bundle with webpack-bundle-analyzer to spot large dependencies. A smaller bundle means faster parse, compile, and execution — directly impacting Core Web Vitals."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `useCallback` and `useMemo`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useCallback memoizes a function reference (stable identity); useMemo memoizes a computed value — structurally useCallback(fn, deps) === useMemo(() => fn, deps), but they serve different semantic purposes" },
+        { "id": "b", "text": "useMemo is faster than useCallback because it doesn't store a function" },
+        { "id": "c", "text": "useCallback works with arrays; useMemo works with functions" },
+        { "id": "d", "text": "useCallback is deprecated in React 18" }
+      ],
+      "correctKey": "a",
+      "explanation": "Both are memoization utilities — useCallback is specifically for functions where stable reference identity matters (props to memoized children, useEffect dependencies). useMemo is for computed values. They are structurally identical. Using the right one communicates intent: useCallback says 'I need this function reference to be stable', useMemo says 'I need this value to not be recomputed unnecessarily'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this component?\n\nfunction Parent() {\n  const [count, setCount] = useState(0);\n\n  const handleClick = useCallback(() => {\n    console.log('Clicked:', count);\n  }, [count]);\n\n  return (\n    <div>\n      <MemoizedButton onClick={handleClick} />\n      <button onClick={() => setCount(c => c + 1)}>{count}</button>\n    </div>\n  );\n}\n\nconst MemoizedButton = React.memo(function Button({ onClick }: { onClick: () => void }) {\n  console.log('Button rendered');\n  return <button onClick={onClick}>Click me</button>;\n});",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Button re-renders whenever count changes, because useCallback's dependency is count — changing count creates a new handleClick reference, which React.memo sees as different" },
+        { "id": "b", "text": "Button never re-renders after the first render" },
+        { "id": "c", "text": "Button re-renders on every click regardless of count" },
+        { "id": "d", "text": "A TypeScript error because useCallback and React.memo cannot be used together" }
+      ],
+      "correctKey": "a",
+      "explanation": "The dependency `[count]` means `handleClick` is recreated whenever `count` changes. Since the function reference changes, React.memo's shallow comparison sees a different `onClick` prop and re-renders the Button. To make the Button truly stable, remove `count` from the dependency array (if it's not needed) or use the functional update pattern inside the callback to avoid the dependency."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the main difference between React.memo's default comparison and a custom comparison function?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "By default React.memo uses shallow comparison (Object.is) on all props; a custom areEqual function lets you define deep or domain-specific comparison logic to prevent re-renders when shallow comparison would incorrectly treat props as different" },
+        { "id": "b", "text": "Custom comparison functions are faster than shallow comparison" },
+        { "id": "c", "text": "Custom comparison replaces shallow comparison for all components globally" },
+        { "id": "d", "text": "React.memo always uses deep comparison by default" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.memo(Component, (prevProps, nextProps) => boolean) accepts a second argument — a custom comparison function returning true to skip re-render. This is useful when you have domain-specific equality (e.g., two arrays with the same items should be treated as equal). However, custom comparisons must be fast — a slow comparison negates the optimization. In most cases, useMemo/useCallback to stabilize references is simpler than custom comparison functions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What causes re-renders in React and what are the primary tools to prevent unnecessary ones?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Parent re-renders (use React.memo on children), state changes in the same component (colocate state), and context value changes (split or memoize context) — primary tools: React.memo, useMemo, useCallback, useTransition, state colocation" },
+        { "id": "b", "text": "CSS class changes are the main cause of re-renders" },
+        { "id": "c", "text": "Only prop changes cause re-renders — state changes don't" },
+        { "id": "d", "text": "Re-renders can only be prevented by removing all state from components" }
+      ],
+      "correctKey": "a",
+      "explanation": "The three main causes: (1) Parent re-renders cascade to children — fix with React.memo. (2) Local state changes cause the component to re-render — consider colocation (moving state lower). (3) Context value changes broadcast to all consumers — fix by splitting contexts or memoizing values. useTransition wraps urgent updates to deprioritize less urgent ones."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `React.lazy` do that regular imports cannot?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.lazy dynamically imports a component and returns it — the module is not loaded until the component is first rendered, enabling code splitting without changing the module's exports" },
+        { "id": "b", "text": "React.lazy preloads all components before the app starts" },
+        { "id": "c", "text": "React.lazy removes TypeScript errors from large component files" },
+        { "id": "d", "text": "React.lazy is a syntax replacement for import() that works at runtime" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.lazy takes a function that calls `import()` — a dynamic import that returns a Promise. Webpack sees this and creates a separate chunk. The module is fetched when the component renders for the first time. Importantly, the component itself doesn't need to change — you just wrap the import with React.lazy. `const Dashboard = React.lazy(() => import('./Dashboard'))`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When you see a component re-rendering unnecessarily with React.memo, the most likely cause is that a prop (function or object) is a new reference on each render.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "React.memo compares props by reference (shallow comparison). An inline function `onClick={() => handle(id)}` created in the parent is a new function object every render. Shallow comparison sees it as 'different' from the previous render's function, so the memoized component re-renders. The fix is useCallback in the parent to stabilize the reference."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this code?\n\nfunction App() {\n  return (\n    <React.Suspense fallback={<div>Loading...</div>}>\n      <React.lazy(() => import('./HeavyPage')).then(m => m.default)}\n    </React.Suspense>\n  );\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "A TypeScript/React error — React.lazy expects a function returning a Promise that resolves to a module with a default export, not a .then chain" },
+        { "id": "b", "text": "The component loads correctly by resolving the promise returned by import()" },
+        { "id": "c", "text": "The component renders the default export after a 1-second delay" },
+        { "id": "d", "text": "An infinite loading spinner because .then is not allowed in React.lazy" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.lazy accepts a function returning a Promise from dynamic import(). The Promise must resolve to a module with a default export (or a named export accessed via `.default`). The `.then()` chain breaks the expected contract — it should be `() => import('./HeavyPage')` without the `.then()`. If the module uses a named export, use `() => import('./HeavyPage').then(m => m.NamedExport)` is valid syntax in some configs, but idiomatic React.lazy uses the simpler form."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the relationship between `React.Profiler` and browser DevTools performance tab?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.Profiler measures React-specific rendering (component render counts, durations, why components rendered) — browser DevTools measures JavaScript call stack and native DOM operations; use both together for complete performance analysis" },
+        { "id": "b", "text": "React.Profiler replaces the browser DevTools performance tab" },
+        { "id": "c", "text": "Browser DevTools is only for CSS performance; React Profiler handles JavaScript" },
+        { "id": "d", "text": "React.Profiler can only be used in production builds" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.Profiler gives component-level insights that browser DevTools can't: which components rendered, why (props, state, context changes), and render durations. Browser DevTools flame charts show JavaScript call stacks. Use Profiler to find the 'what' (which component is slow), then DevTools to find the 'why' (which function is slow). Combining both gives complete picture."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a memory leak in React hooks and how does it commonly occur?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A memory leak occurs when a component registers subscriptions, timers, or event listeners in useEffect but fails to clean them up on unmount — causing the callback to hold references to unmounted components and preventing garbage collection" },
+        { "id": "b", "text": "Memory leaks only occur in class components, not in function components with hooks" },
+        { "id": "c", "text": "Memory leaks are caused by React's Virtual DOM implementation" },
+        { "id": "d", "text": "Memory leaks are impossible in React because the framework manages memory automatically" }
+      ],
+      "correctKey": "a",
+      "explanation": "The classic leak: `useEffect(() => { const id = setInterval(fn, 1000); }, [])` with no cleanup — the interval keeps running after unmount, referencing the old component. Fix: `return () => clearInterval(id)`. Similarly, stale fetch callbacks (not using AbortController) and uncancelled event listeners leak memory. In development, React Strict Mode double-invokes effects specifically to surface these bugs."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the impact of React 18's automatic batching on performance?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Automatic batching reduces the number of re-renders by grouping multiple state updates (from setTimeout, promises, event handlers) into a single render — improving performance without any code changes" },
+        { "id": "b", "text": "Automatic batching increases re-renders because it processes more updates" },
+        { "id": "c", "text": "Automatic batching only works in development mode" },
+        { "id": "d", "text": "Automatic batching removes the need for useMemo and React.memo" }
+      ],
+      "correctKey": "a",
+      "explanation": "Before React 18, updates in setTimeout or native event callbacks caused multiple re-renders. React 18's automatic batching groups all updates into a single render, regardless of where they originate. This is a transparent performance improvement — no code changes needed. It complements the concurrent features but works even without them."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does `useTransition` help with performance in React 18 concurrent mode?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useTransition marks a state update as non-urgent (a transition), allowing React to keep the UI responsive — the browser can still process urgent updates (typing, clicking) while the transition renders in the background" },
+        { "id": "b", "text": "useTransition makes the component render faster by skipping animations" },
+        { "id": "c", "text": "useTransition is a replacement for useState that batches updates automatically" },
+        { "id": "d", "text": "useTransition disables re-rendering entirely for the marked component" }
+      ],
+      "correctKey": "a",
+      "explanation": "useTransition wraps a state update in a transition, giving React permission to interrupt it if a higher-priority update arrives. `const [isPending, startTransition] = useTransition()` — startTransition(() => setQuery(input)) marks the query update as non-urgent. Typing (high priority) can interrupt the filtering (low priority), keeping the input responsive. This is React 18 concurrent rendering's scheduling in action."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between `useTransition` and `useDeferredValue`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useTransition wraps a state update call to mark it as non-urgent; useDeferredValue accepts a value and produces a deferred version that updates at lower priority — both serve similar goals (keeping UI responsive) but at different levels (state setter vs. value propagation" },
+        { "id": "b", "text": "useDeferredValue is faster than useTransition" },
+        { "id": "c", "text": "They are identical — different names for the same React 18 API" },
+        { "id": "d", "text": "useDeferredValue works only with useState; useTransition works with any hook" }
+      ],
+      "correctKey": "a",
+      "explanation": "useTransition: you own the state setter — mark your update as a transition. useDeferredValue: you own the value — get a deferred version of it. useDeferredValue is useful when the value comes from a context or prop, not directly from a setter you control. useTransition gives you more control over which specific update to deprioritize. Both prevent expensive renders from blocking user input."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this Profiler onRender callback log for a single render?\n\n<React.Profiler id=\"List\" onRender={(id, phase, actualDuration, baseDuration, startTime, commitTime, interactions) => {\n  console.log('Duration:', actualDuration, 'Base:', baseDuration, 'Phase:', phase);\n}}>\n  <List items={largeList} />\n</React.Profiler>",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "actualDuration (time spent rendering), baseDuration (estimated time without memoization), and phase ('mount' or 'update') — actualDuration > baseDuration means memoization helped; if actualDuration is close to baseDuration, the component rendered fully" },
+        { "id": "b", "text": "The browser's frame rate during the render" },
+        { "id": "c", "text": "The memory usage of the List component" },
+        { "id": "d", "text": "The number of DOM nodes created by List" }
+      ],
+      "correctKey": "a",
+      "explanation": "The onRender callback is the core of React.Profiler. actualDuration is how long this render took; baseDuration is how long it would take without optimization (React.memo, etc.). If actualDuration < baseDuration, memoization helped. Phase tells you whether this was a mount (first render) or update (re-render). The interactions set contains the set of React 'trace' interactions that triggered this render (if tracing is configured)."
+    }
+  ]
+}

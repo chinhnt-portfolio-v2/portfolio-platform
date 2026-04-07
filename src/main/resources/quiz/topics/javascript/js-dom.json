@@ -1,0 +1,241 @@
+{
+  "topicSlug": "js-dom",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `document.getElementById()` return if no element with the given ID exists?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "null" },
+        { "id": "b", "text": "undefined" },
+        { "id": "c", "text": "An empty HTMLCollection" },
+        { "id": "d", "text": "An empty array" }
+      ],
+      "correctKey": "a",
+      "explanation": "getElementById() returns null when no matching element is found — not undefined, not an empty collection. This is different from querySelector() which also returns null. You should always check for null before using the result. Note: IDs must be unique in the document; if duplicates exist, getElementById returns the first one in document order (invalid HTML)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between querySelector() and querySelectorAll()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "querySelector() returns the first matching element (or null); querySelectorAll() returns a static NodeList of all matching elements" },
+        { "id": "b", "text": "querySelector() returns all matching elements; querySelectorAll() returns the first match" },
+        { "id": "c", "text": "querySelector() only works with CSS class selectors; querySelectorAll() works with any CSS selector" },
+        { "id": "d", "text": "Both return the same thing — they are interchangeable aliases" }
+      ],
+      "correctKey": "a",
+      "explanation": "querySelector() returns the first Element within the document that matches the selector (or null). querySelectorAll() returns a static NodeList of all Elements that match. The NodeList from querySelectorAll() is not live — it doesn't update when the DOM changes (unlike getElementsByClassName() which returns a live HTMLCollection). querySelectorAll() returns an empty NodeList (not null) when no matches are found."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between HTMLCollection and NodeList?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "HTMLCollection is a live, array-like collection of Elements (supports .namedItem() for name/id); NodeList is a collection of Nodes (can contain text nodes, comments) and querySelectorAll() returns a static one" },
+        { "id": "b", "text": "HTMLCollection and NodeList are identical — the names are interchangeable" },
+        { "id": "c", "text": "NodeList is live; HTMLCollection is static" },
+        { "id": "d", "text": "HTMLCollection can contain text nodes; NodeList can only contain Elements" }
+      ],
+      "correctKey": "a",
+      "explanation": "Key differences: HTMLCollection is always live, only contains Element nodes, and supports .namedItem() for accessing by name/id. NodeList can contain any node type (Element, text, comment). querySelectorAll() returns a static NodeList; getElementsByClassName() returns a live HTMLCollection. Both have .length and .item(), but only NodeList has .forEach() in older environments (HTMLCollection needs Array.from/conversion). Always prefer querySelector/querySelectorAll for consistency."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `element.addEventListener('click', handler)` do when called multiple times with the same handler?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The handler is registered each time — it fires multiple times per click unless { once: true } option or removeEventListener is used" },
+        { "id": "b", "text": "Only the first registration takes effect — subsequent calls are ignored" },
+        { "id": "c", "text": "The browser throws a DuplicateListener error" },
+        { "id": "d", "text": "The handler automatically debounces — it only fires once regardless of how many times it was registered" }
+      ],
+      "correctKey": "a",
+      "explanation": "Each addEventListener() call registers a new listener — the same handler function can be added multiple times and will fire multiple times. To prevent this: use a flag variable, use AbortController with signal, or call removeEventListener() after the first registration. Using `{ once: true }` in the options object auto-removes the listener after the first invocation. This is a common source of bugs when event handlers are added inside render functions without cleanup."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `element.textContent` return compared to `element.innerHTML`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "textContent returns all text inside an element (including text in child elements) but ignores HTML tags; innerHTML returns all HTML markup as a string" },
+        { "id": "b", "text": "textContent and innerHTML are interchangeable — both return the same content" },
+        { "id": "c", "text": "innerHTML returns only text content, ignoring HTML tags; textContent returns HTML markup" },
+        { "id": "d", "text": "textContent is read-only; innerHTML can both read and write" }
+      ],
+      "correctKey": "a",
+      "explanation": "textContent gets/sets the text content of a node and all its descendants — it's fast and safe (no parsing, no XSS risk). innerHTML gets/sets the HTML markup inside an element — it parses HTML, which has performance cost and XSS risk if setting with unsanitized user input. For text-only updates, prefer textContent over innerHTML for both security and performance. innerText (different from textContent) is CSS-aware and returns visible text."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Event bubbling is when an event propagates from the target element UP to its ancestor elements in the DOM tree.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "In event bubbling, after an event fires on the target element, it 'bubbles up' through ancestors — triggering handlers on parent, then grandparent, etc., up to document. This is the default behavior for most events in the DOM. Event capturing (the opposite) goes from root down to target. Both are phases of event propagation. Use event.stopPropagation() to stop bubbling, or event.stopImmediatePropagation() to stop all other handlers on the same element."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\n<div id=\"parent\">\n  <button id=\"child\">Click</button>\n</div>\n<script>\ndocument.getElementById('parent').addEventListener('click', () => console.log('parent'));\ndocument.getElementById('child').addEventListener('click', () => console.log('child'));\n</script>",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "child, parent (bubbling — child fires first, then parent)" },
+        { "id": "b", "text": "parent, child (capturing — parent fires first, then child)" },
+        { "id": "c", "text": "child only (stopPropagation() called implicitly)" },
+        { "id": "d", "text": "parent, child (bubbling — parent fires first, then child)" }
+      ],
+      "correctKey": "a",
+      "explanation": "By default, events use the bubbling phase — they fire from the target up to ancestors. When the button is clicked, its click handler fires first (child), then the event bubbles up to the parent (parent). If you used the capturing phase (addEventListener with { capture: true } or on the capturing phase), the order would reverse: parent fires first, then child. The third option is wrong — stopPropagation is not called implicitly."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "CSS animations and transitions can trigger both reflow and repaint, but reading layout properties like offsetWidth always triggers a reflow.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Reading layout properties (offsetWidth, offsetHeight, getBoundingClientRect(), etc.) forces the browser to calculate layout — triggering a forced synchronous layout (reflow). Writing to style properties (like element.style.left) triggers a repaint, and may trigger a reflow. The performance cost: repeatedly reading then writing layout properties causes layout thrashing. The fix: batch all reads together, then all writes together (read-write separation pattern). CSS animations/transitions themselves avoid layout thrashing because they run in the compositor thread."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is event delegation and why is it useful?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Attaching a single event listener to a parent element to handle events from all children — leveraging bubbling so one handler manages many children, reducing memory use and handling dynamically added elements automatically" },
+        { "id": "b", "text": "Delegating event handling to the browser's built-in event manager for better performance" },
+        { "id": "c", "text": "Separating event listeners into separate files loaded in priority order" },
+        { "id": "d", "text": "Using the capture phase instead of the bubble phase to handle events" }
+      ],
+      "correctKey": "a",
+      "explanation": "Event delegation: attach one listener to a parent (e.g., <ul>) and use event.target to determine which child (e.g., <li>) was clicked. Benefits: (1) fewer listeners (memory/CPU savings), (2) handles dynamically added children without re-attaching listeners, (3) simpler code for lists/grids. Pattern: `parent.addEventListener('click', e => { if (e.target.matches('.item')) handleClick(e.target); })`. Works for any event that bubbles (click, keydown, touchstart, etc.)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a reflow (layout) in the browser rendering pipeline?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The browser recalculates the geometry and position of all elements affected by DOM or style changes — triggered by reading layout properties or modifying layout-affecting CSS properties" },
+        { "id": "b", "text": "The browser removes an element from the rendering tree and re-inserts it at a new position" },
+        { "id": "c", "text": "A CSS property that temporarily hides an element during a JavaScript transition" },
+        { "id": "d", "text": "A technique for lazily loading images when they scroll into view" }
+      ],
+      "correctKey": "a",
+      "explanation": "Reflow (also called layout or relayout) is the process of calculating the positions and geometries of elements in the document. It is expensive — the browser must traverse the render tree and compute geometry for affected elements. Reflows are triggered by: changing layout-affecting CSS (width, height, margin, display), reading layout properties (offsetWidth, scrollTop), adding/removing DOM nodes, and changing font or text. Repaint follows reflow and redraws the pixels. Both are performance bottlenecks — minimize them."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between event.target and event.currentTarget?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "event.target is the actual element that fired the event (may be a child); event.currentTarget is the element the listener is attached to (always the same as `this` in the handler)" },
+        { "id": "b", "text": "event.target is the parent element; event.currentTarget is the child element that was clicked" },
+        { "id": "c", "text": "Both refer to the same element in all cases — they are aliases" },
+        { "id": "d", "text": "event.currentTarget only exists in the capturing phase; event.target only exists in the bubble phase" }
+      ],
+      "correctKey": "a",
+      "explanation": "event.target is the originating element — the deepest element that actually received the event (the one clicked). event.currentTarget is the element the handler is registered on. In a delegated handler on a <ul> listening for clicks on <li> children, target is the specific <li> clicked; currentTarget is the <ul>. currentTarget === this (in a regular function handler). Using event delegation, you check target to determine which child was interacted with."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `event.preventDefault()` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cancels the browser's default action for the event (e.g., following a link, submitting a form, checking a checkbox) without stopping event propagation" },
+        { "id": "b", "text": "Prevents the event from bubbling up to ancestor elements" },
+        { "id": "c", "text": "Removes the event listener from the element after the first trigger" },
+        { "id": "d", "text": "Prevents all event listeners on the page from firing" }
+      ],
+      "correctKey": "a",
+      "explanation": "preventDefault() cancels the default browser action associated with the event. Examples: <a> link not navigating, <form> not submitting, <checkbox> not checking, <input type='submit'> not submitting, contextmenu event showing the browser menu. It does NOT stop propagation (bubbling/capturing continues). return false from an event handler is NOT equivalent — in addEventListener, it does nothing. In jQuery, it calls preventDefault() + stopPropagation()."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\ndocument.body.innerHTML = '<div id=\"outer\"><div id=\"inner\"></div></div>';\ndocument.getElementById('inner').addEventListener('click', e => {\n  console.log('inner');\n  e.stopPropagation();\n});\ndocument.getElementById('outer').addEventListener('click', () => console.log('outer'));\ndocument.getElementById('inner').click();",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "inner only" },
+        { "id": "b", "text": "inner, outer" },
+        { "id": "c", "text": "outer only" },
+        { "id": "d", "text": "inner, inner, outer" }
+      ],
+      "correctKey": "a",
+      "explanation": "The programmatic .click() call fires a synthetic click event on inner. Without stopPropagation(), the event would bubble up to outer, logging 'outer'. stopPropagation() prevents the event from propagating beyond the target — it stops bubbling and capturing at that point. After stopPropagation(), only handlers on the target (and in the capture phase of ancestors) fire. Note: stopPropagation doesn't prevent other click handlers on the same element from firing — use stopImmediatePropagation() for that."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the `once` option in addEventListener do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Automatically removes the event listener after it fires once — equivalent to calling removeEventListener inside the handler after the first invocation" },
+        { "id": "b", "text": "Ensures the event only fires once per user interaction, regardless of how many listeners are attached" },
+        { "id": "c", "text": "Debounces the event handler to only fire once even if the event is dispatched multiple times in quick succession" },
+        { "id": "d", "text": "Makes the event listener passive, improving scroll performance" }
+      ],
+      "correctKey": "a",
+      "explanation": "{ once: true } in addEventListener options auto-removes the listener after its first invocation. This is cleaner than manually calling removeEventListener inside the handler, and safer (no race conditions). It's equivalent to: `el.addEventListener('click', fn); el.addEventListener('click', fn, { once: true });` — wait, that's redundant. Actually the correct pattern is: `el.addEventListener('click', fn, { once: true })` — fn is removed after first fire. This is useful for one-time interactions like CTAs."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "DOM manipulation methods like createElement(), appendChild(), and removeChild() are synchronous and execute immediately in the main thread.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "All DOM APIs run synchronously on the main thread. This means each DOM operation (appendChild, remove, style change) can trigger reflow/repaint synchronously, blocking rendering and user interactions. For large DOM operations, consider: DocumentFragment (batches multiple insertions), requestAnimationFrame for scheduling, or Web Workers for off-main-thread computation. Virtual DOM libraries (React) batch DOM updates into a single reconciliation pass to minimize main-thread blocking."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When using a passive event listener (addEventListener with { passive: true }), can event.preventDefault() stop the default action?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "No — passive listeners indicate the handler will not call preventDefault(), allowing the browser to optimize scroll performance without waiting; calling preventDefault() in a passive listener has no effect" },
+        { "id": "b", "text": "Yes — passive only affects scroll performance, not the ability to prevent default actions" },
+        { "id": "c", "text": "It throws a PassiveEventListener exception if preventDefault() is called" },
+        { "id": "d", "text": "Passive listeners cannot be used with touch events at all" }
+      ],
+      "correctKey": "a",
+      "explanation": "Passive listeners tell the browser that the handler will not call preventDefault(). This allows the browser to start scrolling immediately without waiting for the handler to finish, significantly improving scroll performance (especially on mobile). If you use passive: true and call preventDefault() inside the handler, it's silently ignored — the browser already committed to the default action. Use passive: true for scroll/touch handlers where you don't need to preventDefault. Chrome warns in the console if a non-passive touch listener calls preventDefault."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the rendering pipeline order in a modern browser?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JavaScript → Style → Layout → Paint → Composite — changes trigger the pipeline from the earliest affected stage; some triggers (like transform/opacity) skip to Composite" },
+        { "id": "b", "text": "JavaScript → Paint → Layout → Composite → Style" },
+        { "id": "c", "text": "Style → JavaScript → Layout → Paint → Composite" },
+        { "id": "d", "text": "Layout happens after paint, so changing geometry never requires a repaint" }
+      ],
+      "correctKey": "a",
+      "explanation": "Modern browser rendering pipeline: (1) JavaScript runs (may modify DOM or CSS), (2) Style calculation (CSS selectors matched), (3) Layout (geometry calculated — expensive), (4) Paint (pixels filled — expensive), (5) Composite (layers assembled and drawn). Each step depends on the previous. An ideal optimization is to only change properties that trigger Composite (transform, opacity) — they don't affect Layout or Paint and can run on the compositor thread (off the main thread). Properties triggering Layout or Paint are more expensive."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nconst observer = new MutationObserver(() => console.log('mutated'));\nconst el = document.createElement('div');\nobserver.observe(el, { childList: true });\nel.appendChild(document.createElement('span'));\nel.textContent = 'hello';\nconsole.log('sync');\nobserver.disconnect();",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "sync" },
+        { "id": "b", "text": "mutated, mutated, sync" },
+        { "id": "c", "text": "mutated, sync" },
+        { "id": "d", "text": "sync, mutated, mutated" }
+      ],
+      "correctKey": "a",
+      "explanation": "MutationObserver callbacks are asynchronous — they are delivered as microtasks (similar to Promises). The observer is watching el for childList changes. When .appendChild() and .textContent = 'hello' are called, they queue mutations, but the callback hasn't fired yet (sync code continues). console.log('sync') runs synchronously first. At the end, disconnect() is called BEFORE the callback has a chance to run, which clears the pending mutation record queue. The queued mutations are discarded — nothing is logged. This is the key: disconnect() clears pending notifications."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the `composed` option in Shadow DOM event retargeting, and when is it relevant?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "composed: true means the event crosses the shadow boundary and is retargeted to appear as if it originated from the host element — relevant when embedding web components and the host app needs to handle component-internal events" },
+        { "id": "b", "text": "composed: true makes events propagate through the light DOM instead of the shadow DOM" },
+        { "id": "c", "text": "composed controls whether event listeners are called in the capture or bubble phase inside shadow DOM" },
+        { "id": "d", "text": "composed is a CSS property that applies styles across the shadow boundary" }
+      ],
+      "correctKey": "a",
+      "explanation": "Shadow DOM events are retargeted so that from outside a shadow tree, events from within appear to come from the host element (to avoid leaking implementation details). The composed flag controls which events cross the shadow boundary. UI events like click, focus, input, and submit are composed: true by default — they escape the shadow DOM. Events with composed: false (like shadow DOM mutation events) do not cross. When building web components, understanding composed helps you decide whether custom events should escape the shadow boundary."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "IntersectionObserver API allows you to asynchronously observe changes in the intersection (overlap) of a target element with an ancestor element or the viewport.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "IntersectionObserver is a performant API for detecting when an element enters or leaves the viewport (or an ancestor). Unlike scroll event listeners (which fire synchronously on the main thread), IntersectionObserver runs off the main thread and notifies via a callback. Use cases: lazy loading images, infinite scroll, detecting ad visibility, animating elements on scroll. The callback receives entries with .isIntersecting, .intersectionRatio, .boundingClientRect, and .target. Disconnect with .disconnect()."
+    }
+  ]
+}

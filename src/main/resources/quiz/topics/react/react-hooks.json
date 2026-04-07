@@ -1,0 +1,247 @@
+{
+  "topicSlug": "react-hooks",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does useState return?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A single state value" },
+        { "id": "b", "text": "A tuple of [stateValue, stateSetter]" },
+        { "id": "c", "text": "An object with `value` and `setValue` properties" },
+        { "id": "d", "text": "A ref object with a `.current` property" }
+      ],
+      "correctKey": "b",
+      "explanation": "useState returns a tuple (array of 2 elements): `[currentState, setStateFunction]`. The idiomatic pattern is `const [count, setCount] = useState(0)`. The setter can accept a new value or a functional update `setCount(prev => prev + 1)`. Options A, C, and D describe other state/value patterns but not what useState returns."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the correct way to initialize useState for a value that may be undefined?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "const [user, setUser] = useState<User>(undefined)" },
+        { "id": "b", "text": "const [user, setUser] = useState<User | undefined>(undefined)" },
+        { "id": "c", "text": "const [user, setUser] = useState({} as User)" },
+        { "id": "d", "text": "const [user, setUser] = useState<User>()" }
+      ],
+      "correctKey": "b",
+      "explanation": "Option B correctly expresses the union type: the state can be a User or undefined. Option A infers `undefined` as the type (not `User | undefined`), losing the User type. Option C forces an empty object as the initial value, which is misleading — the user isn't actually an empty User at start. Option D's syntax is invalid — useState requires an initial value argument."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "When does useEffect with an empty dependency array `[]` run?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "On every render of the component" },
+        { "id": "b", "text": "Only once after the component mounts (initial render)" },
+        { "id": "c", "text": "Never during the component's lifetime" },
+        { "id": "d", "text": "Only when a dependency in the array changes" }
+      ],
+      "correctKey": "b",
+      "explanation": "An empty dependency array `[]` tells React: 'this effect has no dependencies, so don't re-run it'. React treats this as 'run once after mount'. This is the standard pattern for effects that set up browser-side resources (event listeners, timers, subscriptions) that need cleanup. Without any array, the effect runs after every render. With a non-empty array, it runs when those deps change."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a common bug when using useEffect with no dependency array at all?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The effect will run only in development mode, not in production" },
+        { "id": "b", "text": "The effect runs after every render, which can cause stale closure problems, infinite loops, or performance issues" },
+        { "id": "c", "text": "TypeScript will report a type error because useEffect requires a dependency array" },
+        { "id": "d", "text": "The effect will be garbage collected immediately and never execute" }
+      ],
+      "correctKey": "b",
+      "explanation": "Calling `useEffect(() => { ... })` with no dependency array makes the effect run after every render — including potentially infinite loops if the effect sets state. This is a common source of performance bugs and stale closures (where an effect captures a stale variable from a previous render). The correct approach is to always specify an array: `[]` for mount-only, or `[deps]` for when-it-changes behavior."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does useRef return?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A state value that triggers re-renders when changed" },
+        { "id": "b", "text": "A mutable ref object with a `.current` property that persists across renders without causing re-renders" },
+        { "id": "c", "text": "A callback function that is called after each render" },
+        { "id": "d", "text": "A ref object that automatically attaches to a DOM element on mount" }
+      ],
+      "correctKey": "b",
+      "explanation": "useRef returns a ref object with a mutable `.current` property. Updating `.current` does NOT cause a re-render — this is what makes it suitable for storing mutable values that persist across renders (timers, previous values, DOM element references). The returned object is stable across renders. Option D describes the `ref` callback pattern, not what useRef returns."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "useEffect always runs before the browser paints the screen.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "By default, useEffect runs after the browser has painted — React defers it until after the paint is committed. This is why effects that visually update the DOM (e.g., toggling a class) use the flush sync pattern or layout effects if synchronous painting is required. To run before paint, use useLayoutEffect instead, which runs synchronously after all DOM mutations but before paint."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does useMemo do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It memoizes a component so it only re-renders when its props change" },
+        { "id": "b", "text": "It memoizes the result of a computation, only recomputing when dependencies change" },
+        { "id": "c", "text": "It prevents a function from being recreated on every render" },
+        { "id": "d", "text": "It caches an API response for the lifetime of the component" }
+      ],
+      "correctKey": "b",
+      "explanation": "useMemo memoizes the RESULT of an expensive computation — `const memoizedValue = useMemo(() => computeExpensive(a, b), [a, b])`. The function inside is only re-executed when `a` or `b` changes. Option A describes React.memo (component memoization). Option C describes useCallback (function reference memoization). Option D describes caching, which useMemo provides, but only within a given component instance and dependency set."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between useCallback and useMemo?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useCallback memoizes a function reference; useMemo memoizes an computed value — they are equivalent since useMemo(() => fn, deps) === useCallback(fn, deps)" },
+        { "id": "b", "text": "useCallback is for preventing re-renders; useMemo is for preventing expensive re-computations" },
+        { "id": "c", "text": "Both A and B are correct" },
+        { "id": "d", "text": "useCallback is deprecated in React 18; useMemo should be used instead" }
+      ],
+      "correctKey": "c",
+      "explanation": "The two are structurally equivalent (`useCallback(fn, deps)` is `useMemo(() => fn, deps)`), but serve different intent: useCallback keeps a stable function reference (for props or deps), while useMemo caches a computed value. Option D is false — useCallback is not deprecated. Choosing which to use is about clarity of intent in your codebase."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this component?\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n\n  useEffect(() => {\n    const id = setInterval(() => {\n      setCount(c => c + 1);\n    }, 1000);\n    return () => clearInterval(id);\n  }, []);\n\n  return <div>{count}</div>;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "A counter that increments every second, starting from 0" },
+        { "id": "b", "text": "A counter that increments only once and then stops" },
+        { "id": "c", "text": "A component that crashes because setInterval cannot be used in useEffect" },
+        { "id": "d", "text": "A counter that increments extremely fast due to missing cleanup" }
+      ],
+      "correctKey": "a",
+      "explanation": "The empty dependency array `[]` ensures the interval is set up once on mount, and the cleanup function clears it on unmount — preventing memory leaks. Using the functional update `c => c + 1` inside setInterval ensures the count always reflects the latest value (avoids the stale closure problem). The result is a clean, incrementing counter every second."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the 'stale closure' problem in useEffect?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "When a closure captures a variable from a previous render and uses its outdated value instead of the current one" },
+        { "id": "b", "text": "When the useEffect callback is called before the component renders" },
+        { "id": "c", "text": "When useEffect runs twice in React 18 Strict Mode" },
+        { "id": "d", "text": "When a prop changes but the component doesn't re-render" }
+      ],
+      "correctKey": "a",
+      "explanation": "A stale closure occurs when a function 'closes over' a variable from its creation scope, but that variable's value has changed since the closure was created. In useEffect, omitting a variable from the dependency array means the effect will always use the variable's value from the first render. Example: `useEffect(() => { setInterval(() => setCount(count), 1000) }, [])` uses count=0 forever — the fix is `[count]` or the functional update pattern `setCount(c => c + 1)`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When should you use useLayoutEffect instead of useEffect?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Whenever you need to read or write the DOM synchronously before the browser paints" },
+        { "id": "b", "text": "Whenever the effect is slow and should not block the UI" },
+        { "id": "c", "text": "Whenever the effect depends on the component's rendered output" },
+        { "id": "d", "text": "Whenever you need the effect to run in the background while the user interacts with the page" }
+      ],
+      "correctKey": "a",
+      "explanation": "useLayoutEffect runs synchronously after DOM mutations but before the browser paints — useful for reading and writing to the DOM imperatively (e.g., measuring a DOM element, focusing an input). This prevents visual flicker. However, it blocks painting and can hurt performance if overused. In most cases, useEffect is sufficient and preferred. If you see TypeScript warnings about `useLayoutEffect` in React 18, you may need to add a `// eslint-disable` or use the `useId` + `useEffect` pattern."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does useContext accept and what does it return?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It accepts a Context object and returns the current context value for that context" },
+        { "id": "b", "text": "It accepts a Provider component and returns the value passed to that Provider" },
+        { "id": "c", "text": "It accepts a default value and returns it if no Provider is found" },
+        { "id": "d", "text": "It creates a new Context and returns a Provider-Value pair" }
+      ],
+      "correctKey": "a",
+      "explanation": "useContext accepts a Context object (created by `React.createContext`) and returns the current context value. The value comes from the nearest matching `<Context.Provider>` above in the tree. If there is no Provider, it returns the `defaultValue` passed to createContext. Option B confuses the Consumer (useContext) with the Provider (JSX component). Option D describes `createContext` itself."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key rule that ALL React hooks must follow?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hooks must be called inside conditional statements to ensure they only run when needed" },
+        { "id": "b", "text": "Hooks must be called at the top level of a React function component or custom hook — never inside conditions, loops, or nested functions" },
+        { "id": "c", "text": "Hooks must be called after the first render of the component" },
+        { "id": "d", "text": "Hooks must be declared as async functions" }
+      ],
+      "correctKey": "b",
+      "explanation": "React relies on call order to maintain hook state. If hooks are called conditionally (inside an if/else) or inside loops, the call order changes between renders, causing state to be mismatched between different hooks. This is the 'Rules of Hooks'. React enforces this at runtime and ESLint's `react-hooks/rules-of-hooks` enforces it statically. Custom hooks that contain hooks must also follow this rule."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a custom hook in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A function that starts with 'use' and can call other hooks — used to extract and share stateful logic between components" },
+        { "id": "b", "text": "A hook that is built into React and can be customized via options" },
+        { "id": "c", "text": "A higher-order component that wraps a functional component" },
+        { "id": "d", "text": "A TypeScript utility type for extending React hook types" }
+      ],
+      "correctKey": "a",
+      "explanation": "Custom hooks are JavaScript functions whose name starts with 'use' that call other hooks. They enable logic reuse across components without the prop-drilling or HOC complexity of older patterns. Examples: `useLocalStorage`, `useDebounce`, `useFetch`. Each component using a custom hook gets its own isolated state — the hook doesn't share state across components, it just shares the logic pattern."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "useRef and useState both store values that persist across renders. The key difference is that updating useRef's .current does NOT trigger a re-render.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "This is the fundamental distinction: useState triggers a re-render when the value changes; useRef does not. Use useRef when you need to store a value that changes but should not cause the component to re-render (timers, previous values, mutable objects). Use useState when state changes should be reflected in the UI."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this code?\n\nfunction Watcher() {\n  const [value, setValue] = useState('');\n  const prevValue = useRef('');\n\n  useEffect(() => {\n    prevValue.current = value;\n  });\n\n  return (\n    <div>\n      <input value={value} onChange={e => setValue(e.target.value)} />\n      <p>Current: {value} | Previous: {prevValue.current}</p>\n    </div>\n  );\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Displays the current input value and the previous value — updating after each keystroke" },
+        { "id": "b", "text": "Only shows the current value; the previous value is always empty because useEffect runs after render" },
+        { "id": "c", "text": "Causes an infinite loop because useEffect sets state inside the component" },
+        { "id": "d", "text": "TypeScript error because prevValue is not typed correctly" }
+      ],
+      "correctKey": "a",
+      "explanation": "This is a classic 'previous value' pattern with useRef. The useEffect with no dependency array runs after every render, storing the current `value` into `prevValue.current`. Since `prevValue` is a ref, setting `.current` does not trigger a re-render. After each keystroke (new render), the effect from the PREVIOUS render updates `prevValue.current` to the previous value, giving you 'previous' vs 'current' in the display."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of the useId hook in React 18?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "To generate unique IDs for form elements that are stable across server renders and hydration" },
+        { "id": "b", "text": "To replace the uuid library for generating random identifiers" },
+        { "id": "c", "text": "To create a unique key for list items without needing a data ID" },
+        { "id": "d", "text": "To generate session IDs that persist across page reloads" }
+      ],
+      "correctKey": "a",
+      "explanation": "useId generates a unique ID string that is stable across the server (SSR) and client (hydration). This solves the problem of using `Math.random()` or incrementing counters — which produce different values on server vs client, causing hydration mismatches. Each component instance gets a unique ID, prefixed by the tree's context to avoid collisions. Note: do NOT use useId for list keys — use stable data IDs instead."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of useDeferredValue in React 18 concurrent mode?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "To defer a state update to a lower priority so the UI remains responsive during expensive re-renders" },
+        { "id": "b", "text": "To delay rendering of a component by a fixed number of milliseconds" },
+        { "id": "c", "text": "To postpone fetching data until a user stops interacting with an input" },
+        { "id": "d", "text": "To cache a value for a specified period before it becomes stale" }
+      ],
+      "correctKey": "a",
+      "explanation": "useDeferredValue accepts a value and returns a deferred (lower-priority) version of it. When React is busy rendering something urgent (e.g., user typing), it can defer the deferred-value's update to run later, keeping the UI responsive. This is useful for search inputs where the list filtering is expensive — the search input stays responsive while the filtered list renders in the background. It is distinct from useTransition (which marks updates) and debouncing (which delays at a fixed rate)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "React 18's Strict Mode causes effects to mount, unmount, and remount intentionally. This means effects with cleanup functions that don't properly clear resources will leak memory permanently.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Strict Mode's double-invocation (mount → unmount → mount) is specifically designed to surface cleanup bugs — if your effect leaks on the first unmount, the second mount will re-acquire the resource, and the cleanup runs again on the next unmount. Properly implemented cleanup (clearing timers, removing event listeners, aborting fetch requests with AbortController) handles this pattern correctly. The purpose is to make bugs visible during development, not to introduce permanent leaks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You have a custom hook `useToggle(initialValue)` that returns `[value, toggle]`. What does this implement?\n\nfunction useToggle(initialValue = false): [boolean, () => void] {\n  const [value, setValue] = useState(initialValue);\n  const toggle = useCallback(() => setValue(v => !v), []);\n  return [value, toggle];\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "A memoized toggle hook that returns a stable toggle function — useful for passing to memoized child components" },
+        { "id": "b", "text": "A toggle hook that uses useCallback unnecessarily since the function reference doesn't need to be stable" },
+        { "id": "c", "text": "A hook that will cause infinite re-renders because toggle is called inside setValue" },
+        { "id": "d", "text": "A toggle hook that can only be used once per component" }
+      ],
+      "correctKey": "a",
+      "explanation": "This is a correctly implemented custom hook. The functional update `setValue(v => !v)` avoids stale closure issues. useCallback wraps toggle to give it a stable reference across renders — this is meaningful when `toggle` is passed as a prop to a React.memo-wrapped child, preventing unnecessary re-renders. Without that child, the useCallback is optional optimization. This is a standard pattern for shareable boolean state logic."
+    }
+  ]
+}

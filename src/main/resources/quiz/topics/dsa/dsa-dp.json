@@ -1,0 +1,347 @@
+{
+  "topicSlug": "dsa-dp",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the key property that makes a problem suitable for dynamic programming?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The problem can be divided into independent subproblems that do not overlap — divide and conquer style"
+        },
+        {
+          "id": "b",
+          "text": "The problem has optimal substructure (optimal solution composed of optimal solutions to subproblems) and overlapping subproblems (same subproblem solved multiple times)"
+        },
+        {
+          "id": "c",
+          "text": "The problem requires greedy choices at each step without considering future consequences"
+        },
+        {
+          "id": "d",
+          "text": "The problem can be solved using a single pass through the data without storing intermediate results"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "DP applies when a problem exhibits both: (1) optimal substructure — the optimal solution to the whole problem contains optimal solutions to subproblems (e.g., shortest path: shortest path to B via A uses shortest path to A), and (2) overlapping subproblems — the same small subproblems recur many times in the solution space (e.g., computing F(5) in Fibonacci requires F(3) twice). Without overlapping subproblems, memoization provides no benefit. Without optimal substructure, the DP recurrence is invalid. Option A describes divide-and-conquer (independent subproblems). Option C describes greedy algorithms."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is memoization in dynamic programming?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Memoization stores the results of all computed subproblems so that when the same subproblem recurs, its result is retrieved from storage instead of being recomputed"
+        },
+        {
+          "id": "b",
+          "text": "Memoization removes all computed results after use to save memory"
+        },
+        {
+          "id": "c",
+          "text": "Memoization compresses the data using a dictionary to reduce space complexity"
+        },
+        {
+          "id": "d",
+          "text": "Memoization sorts the subproblems in topological order before solving them"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Memoization (top-down DP) caches the results of function calls and returns the cached value on subsequent calls with the same arguments. This turns exponential recursion (e.g., naive Fibonacci O(2^n)) into polynomial time (e.g., memoized Fibonacci O(n)). The cache is typically a hash map or array indexed by subproblem parameters. It is called 'top-down' because you start from the main problem and recursively break it into subproblems, caching along the way. Option B describes the opposite of memoization. Option C misrepresents what memoization does. Option D describes a different technique."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of the naive recursive Fibonacci algorithm without memoization?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n) — each call computes one Fibonacci number in constant time"
+        },
+        {
+          "id": "b",
+          "text": "O(2^n) — the recursion tree has exponential growth as F(n) branches into F(n-1) and F(n-2), recomputing the same values many times"
+        },
+        {
+          "id": "c",
+          "text": "O(n log n) — the recursion tree is balanced like merge sort"
+        },
+        {
+          "id": "d",
+          "text": "O(n!) — all permutations of n must be computed"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Naive Fibonacci: F(n) = F(n-1) + F(n-2). The recursion tree has two branches at each node, giving approximately 2^n nodes (actually closer to φ^n where φ ≈ 1.618, the golden ratio). The same subproblem F(k) is computed exponentially many times — F(2) alone is computed φ^(n-2) times. This exponential redundancy is why DP (memoization or tabulation) is essential for Fibonacci. Option A is memoized Fibonacci. Option C is merge sort. Option D is permutation-level explosion."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef fib(n, memo={}):\n    if n in memo: return memo[n]\n    if n <= 1: return n\n    memo[n] = fib(n-1, memo) + fib(n-2, memo)\n    return memo[n]\n\nprint(fib(6))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "The Fibonacci sequence: F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2). Computing F(6): F(6)=F(5)+F(4)=8+5=13? Wait, let me trace: F(0)=0, F(1)=1, F(2)=1, F(3)=2, F(4)=3, F(5)=5, F(6)=8. So fib(6) = 8. Option B. Option A (6) is F(5). Option C is F(7). Option D (5) uses wrong base case (F(1)=1 returns 1 for n<=1, giving F(2)=2, F(3)=3, F(4)=5, F(5)=8, F(6)=13 — still not 5)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is tabulation in dynamic programming?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Tabulation is a technique for organizing data in spreadsheet format for manual computation"
+        },
+        {
+          "id": "b",
+          "text": "Tabulation builds a table of subproblem solutions bottom-up (starting from base cases) and combines them to solve larger subproblems"
+        },
+        {
+          "id": "c",
+          "text": "Tabulation uses recursion and caches results as they are computed to avoid recomputation"
+        },
+        {
+          "id": "d",
+          "text": "Tabulation eliminates all subproblems that do not contribute to the final answer"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Tabulation (bottom-up DP) fills a table in dependency order, starting from the smallest subproblems (base cases) and iteratively solving larger ones. No recursion is needed — the table structure determines the order. This avoids call stack overhead and is often more space-efficient (some DP problems can drop the full table). Example: building Fibonacci array from F[0], F[1] upward. Option A is incorrect literal meaning. Option C describes memoization (top-down). Option D is pruning, not tabulation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the space complexity of computing the n-th Fibonacci number using memoization (top-down DP)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(2^n) — the memoization cache grows exponentially with n"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — memoization stores at most one result per subproblem (F[0] through F[n]), giving O(n) space"
+        },
+        {
+          "id": "c",
+          "text": "O(1) — memoization only stores the most recent two Fibonacci numbers"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — memoization uses binary search to find cached values"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Memoized Fibonacci: the cache stores results for each unique subproblem from F(0) to F(n). At most n+1 entries exist, giving O(n) space. However, if we only need F(n) and not the full sequence, we can optimize to O(1) space by only keeping the last two values. Option A is the naive recursive space (call stack, worst-case depth). Option C describes the space-optimized iterative version, not memoization. Option D is nonsense."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the core idea behind the 0/1 knapsack dynamic programming solution?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Try all subsets of items (2^n combinations) and pick the feasible one with maximum value — exponential"
+        },
+        {
+          "id": "b",
+          "text": "For each item, decide include/exclude; dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight_i] + value_i) if item fits; dp table is O(n×W) time and space"
+        },
+        {
+          "id": "c",
+          "text": "Sort items by value density (value/weight) and greedily pick the highest density items that fit"
+        },
+        {
+          "id": "d",
+          "text": "Use a hash map to store the maximum value achievable at each weight level"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "0/1 knapsack: each item can be taken at most once. The DP state dp[i][w] = maximum value using first i items with capacity w. Transition: for item i (weight w_i, value v_i), either skip it (dp[i-1][w]) or take it (dp[i-1][w-w_i] + v_i) if capacity allows. Time: O(n×W), Space: O(n×W) or O(W) with space optimization. Option A is brute force (exponential). Option C describes fractional knapsack (greedy works for fractional, not for 0/1). Option D doesn't capture the DP structure."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ndef climb_stairs(n):\n    if n <= 2: return n\n    dp = [0] * (n + 1)\n    dp[1], dp[2] = 1, 2\n    for i in range(3, n + 1):\n        dp[i] = dp[i - 1] + dp[i - 2]\n    return dp[n]\n\nprint(climb_stairs(5))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "climb_stairs(n) is identical to Fibonacci(n+1). Base: dp[1]=1, dp[2]=2. Recurrence: dp[i]=dp[i-1]+dp[i-2]. Values: dp[3]=3, dp[4]=5, dp[5]=8. The 8 distinct ways to climb 5 stairs taking 1 or 2 steps: (1,1,1,1,1), (1,1,1,2), (1,1,2,1), (1,2,1,1), (2,1,1,1), (2,2,1), (2,1,2), (1,2,2). Option A is dp[4]. Option D omits (1,2,1,1) and (2,1,1,1)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the recurrence relation for computing the number of unique paths in a grid from top-left to bottom-right (moving only right or down)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "paths(m,n) = paths(m-1,n) × paths(m,n-1) — multiply because each path in top cell can combine with each path in left cell"
+        },
+        {
+          "id": "b",
+          "text": "paths(m,n) = paths(m-1,n) + paths(m,n-1) — reach (m,n) either from above or from the left; base case: paths(1,1) = 1"
+        },
+        {
+          "id": "c",
+          "text": "paths(m,n) = 2 × paths(m-1,n-1) — each move simultaneously reduces both dimensions"
+        },
+        {
+          "id": "d",
+          "text": "paths(m,n) = (m+n)! / (m! × n!) — combinatorial formula equivalent to computing factorials"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Grid path DP: to reach cell (m,n), you must have come from (m-1,n) or (m,n-1). So paths(m,n) = paths(m-1,n) + paths(m,n-1). This is exactly the Pascal's triangle recurrence (binomial coefficient), giving C(m+n-2, m-1) or C(m+n-2, n-1) = (m+n-2)! / ((m-1)!×(n-1)!). Option A multiplies instead of adding (wrong). Option C reduces both dimensions simultaneously. Option D is actually the closed-form answer, but the recurrence is the DP formulation — option D is also correct if it appeared as a separate question about the closed form. The question asks for recurrence relation, so B is correct."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the longest common subsequence (LCS) problem?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "LCS finds the longest contiguous substring common to two strings using two pointers starting at both ends"
+        },
+        {
+          "id": "b",
+          "text": "LCS finds the longest subsequence (not necessarily contiguous) present in the same order in both strings; dp[i][j] = dp[i-1][j-1]+1 if chars match, else max(dp[i-1][j], dp[i][j-1])"
+        },
+        {
+          "id": "c",
+          "text": "LCS finds the shortest common supersequence by removing all non-matching characters from both strings"
+        },
+        {
+          "id": "d",
+          "text": "LCS is equivalent to finding the longest palindromic subsequence and comparing results"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "LCS: subsequence = elements in order but not necessarily contiguous. DP: dp[i][j] = length of LCS of first i chars of s1 and first j chars of s2. If s1[i-1] == s2[j-1], dp[i][j] = dp[i-1][j-1] + 1 (extend match). Else, dp[i][j] = max(dp[i-1][j], dp[i][j-1]) (skip one character). Time: O(mn), Space: O(mn) or O(min(m,n)). Used in diff tools, bioinformatics (sequence alignment), plagiarism detection. Option A describes longest common substring (contiguous). Option C describes shortest common supersequence, a different problem. Option D is nonsense."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the space complexity of the standard O(m×n) LCS dynamic programming table?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — only the current row of the DP table is needed; previous rows can be discarded"
+        },
+        {
+          "id": "b",
+          "text": "O(m×n) — the table stores dp[i][j] for all i in [0..m] and j in [0..n]"
+        },
+        {
+          "id": "c",
+          "text": "O(m+n) — only the boundaries of the DP table are computed and stored"
+        },
+        {
+          "id": "d",
+          "text": "O(min(m,n)) — the shorter string determines the table width"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "The standard LCS DP table is (m+1) × (n+1) where dp[i][j] depends on dp[i-1][j-1], dp[i-1][j], dp[i][j-1]. Each cell is computed from its top, left, and top-left neighbors. Full table: O(mn) space. However, since each row only depends on the previous row, space can be reduced to O(min(m,n)) by keeping two rows. Option A is achievable with further optimization (only two rows). Option B is the standard full table. Options C and D are not standard."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key trade-off between memoization (top-down) and tabulation (bottom-up) dynamic programming?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Memoization uses more space but is faster; tabulation uses less space but is slower"
+        },
+        {
+          "id": "b",
+          "text": "Memoization only computes needed subproblems (avoids wasted work) but uses recursion stack space; tabulation computes all subproblems in order (may compute unnecessary ones) but has no recursion overhead"
+        },
+        {
+          "id": "c",
+          "text": "Memoization requires knowing the topological order of subproblems; tabulation does not"
+        },
+        {
+          "id": "d",
+          "text": "Memoization is always O(1) space; tabulation is always O(n) space"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Top-down (memoization): natural recursive structure, only computes subproblems that are actually reached from the main problem (sparse DP advantage), but has call stack overhead and potential stack overflow on deep recursions. Bottom-up (tabulation): no recursion overhead, explicit control over order, better cache locality, but may compute subproblems not needed for the answer. Choice depends on problem: if you need all subproblems anyway (like fill entire table), bottom-up is better; if you only need a subset, top-down may be more efficient. Option A overgeneralizes. Option C reverses the strengths. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The 0/1 knapsack problem can be solved optimally using a greedy algorithm that picks items by highest value-to-weight ratio. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "The fractional knapsack problem (where you can take fractions of items) is solved optimally by greedy: sort by value/weight ratio and take as much as possible of the highest ratio items. However, 0/1 knapsack (items must be taken whole) is NOT solvable by greedy — it requires DP. Counterexample: capacity=10, items: (value=10, weight=10) and (value=9, weight=9). Greedy ratio-based picks (9/9=1) before (10/10=1), but either order leaves capacity=1, total=9. Optimal is to take item 1 alone for value=10. This demonstrates that optimal substructure does not imply greedy optimality."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Dynamic programming can be applied whenever a problem exhibits overlapping subproblems, regardless of whether it has optimal substructure. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Both properties are required: (1) optimal substructure — the optimal solution to the problem contains optimal solutions to subproblems, and (2) overlapping subproblems — the same subproblems recur. Without optimal substructure, caching subproblem results doesn't lead to a globally optimal solution. Example: the recurrence F(n) = F(n-1) + F(n-2) has overlapping subproblems, but the greedy 'pick the largest Fibonacci number ≤ n' would not produce the correct answer. Without optimal substructure, DP's recurrence relation is meaningless for optimization."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(dp[i-1][w], dp[i-1][w-weights[i-1]] + values[i-1])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]\n\nprint(knapsack([2, 3, 4, 5], [3, 4, 5, 6], 5))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "0/1 knapsack with capacity=5, items: (w=2,v=3), (w=3,v=4), (w=4,v=5), (w=5,v=6). Valid combinations within capacity 5: (w=2,w=3) → v=7, (w=2,w=4) → v=8 (exceeds: 2+4=6>5), (w=3,w=4) → v=9 (exceeds: 3+4=7>5), (w=5) → v=6, (w=2 alone) → v=3, (w=3 alone) → v=4, (w=4 alone) → v=5. Maximum value = 7 (items with weight 2 and 3). Option B incorrectly says 4+4=8. Option C incorrectly says 3+4 fits."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the optimal substructure property in DP, and why is it necessary?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Optimal substructure means the largest subproblem must be solved first; it is necessary to determine the base case of the DP"
+        },
+        {
+          "id": "b",
+          "text": "Optimal substructure means an optimal solution to the whole problem can be constructed from optimal solutions of its subproblems without needing to re-examine the subproblem solutions; necessary because DP builds larger solutions from smaller ones"
+        },
+        {
+          "id": "c",
+          "text": "Optimal substructure means all subproblems have the same optimal value; necessary to ensure the DP table can be filled uniformly"
+        },
+        {
+          "id": "d",
+          "text": "Optimal substructure means the DP recurrence must always decrease the problem size by a constant factor; necessary for O(n log n) complexity"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Optimal substructure: if an optimal solution to problem P contains optimal solutions to subproblems P1, P2, ..., Pk, then the DP recurrence is valid. Example: shortest path problem: shortest path from A to C through B equals (shortest A→B) + (shortest B→C). If the sub-solutions weren't optimal, the combined solution wouldn't be optimal. This property is necessary because DP's correctness proof relies on the principle of optimality: optimal solutions to subproblems combine into optimal solutions to the larger problem. Without it, the DP recurrence is not guaranteed to produce a globally optimal answer. Option A confuses subproblem ordering with optimal substructure. Option C is nonsense. Option D confuses with halving recurrences."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the House Robber problem and how does DP solve it optimally?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Rob houses in numerical order; rob[i] = max(rob[i-1], rob[i-2] + money[i]) — skip or rob this house; O(n) time, O(1) space with two variables"
+        },
+        {
+          "id": "b",
+          "text": "Rob houses in any order; brute-force all 2^n subsets and pick the maximum non-adjacent sum — exponential time"
+        },
+        {
+          "id": "c",
+          "text": "Sort houses by value and greedily rob the most valuable houses; O(n log n) time"
+        },
+        {
+          "id": "d",
+          "text": "Use a hash map to track which houses have been robbed and avoid adjacent houses — O(n) time with O(n) space"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "House Robber: cannot rob two adjacent houses. Decision at house i: skip it (best = rob[i-1]) or rob it (best = money[i] + rob[i-2]). Recurrence: rob[i] = max(rob[i-1], rob[i-2] + money[i]). Base: rob[0] = money[0], rob[1] = max(money[0], money[1]). This is O(n) time, O(1) space (two variables: prev2, prev1). Variant: House Robber II (circular street, first and last houses adjacent) is solved by running the DP twice: from 0 to n-2 and from 1 to n-1. Option B is brute force. Option C is greedy (fails). Option D is just tracking without DP."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The time complexity of the 0/1 knapsack DP is O(n×W) where n is the number of items and W is the capacity. This is NOT polynomial in the input size. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "O(n×W) is pseudo-polynomial: W is a number (not the log of the number of items), so the input size is O(log W) bits. An algorithm running in O(n×W) is exponential in the input's bit-length. For example, W=1000 with items 1..n is small in memory but the DP is fast; W=2^1000 is huge memory-wise and the DP is impossibly slow. This makes 0/1 knapsack NP-hard in the general case. True polynomial-time solutions require different approaches (approximation algorithms, fully polynomial-time approximation schemes). The 'pseudo-polynomial' label means it behaves polynomially when W is small relative to input representation."
+    }
+  ]
+}

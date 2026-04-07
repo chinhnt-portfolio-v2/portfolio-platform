@@ -54,6 +54,84 @@
       "explanation": "Standard HTTP status ranges: 1xx (Informational: request received, continuing), 2xx (Success: action received and accepted), 3xx (Redirection: further action needed), 4xx (Client Error: bad syntax or impossible request), 5xx (Server Error: server failed to fulfill valid request). Common codes to know: 200 OK, 201 Created, 204 No Content, 301/302 Redirect, 304 Not Modified, 400 Bad Request, 401 Unauthorized, 403 Forbidden, 404 Not Found, 429 Too Many Requests, 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable. Option B reverses 1xx/2xx meanings. Option C is inaccurate. Option D miscategorizes 4xx/5xx."
     },
     {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a reverse proxy, and how does it differ from a forward proxy?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A reverse proxy and forward proxy are identical — both sit between clients and the internet" },
+        { "id": "b", "text": "A forward proxy represents clients to the internet (client-side privacy); a reverse proxy represents backend servers to the internet (server-side aggregation, TLS termination, caching, load balancing)" },
+        { "id": "c", "text": "A reverse proxy is used only for caching static images; a forward proxy handles all traffic types" },
+        { "id": "d", "text": "A forward proxy routes traffic within a data center; a reverse proxy routes traffic between data centers" }
+      ],
+      "correctKey": "b",
+      "explanation": "A forward proxy (e.g., corporate proxy, VPN) acts on behalf of clients — hiding their identity from servers, bypassing content filters, enabling cache sharing. A reverse proxy (e.g., Nginx, HAProxy, Cloudflare) acts on behalf of backend servers — terminating TLS, aggregating multiple backend services, providing load balancing, caching, and static file serving. Users interact with the reverse proxy without knowing about the backend architecture. Nginx as a reverse proxy for a microservice cluster is a common example. Option A is false. Option C is too narrow. Option D is incorrect."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the primary difference between a SQL (relational) database and a NoSQL database in terms of schema?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SQL databases require no schema; NoSQL databases enforce a strict schema on write" },
+        { "id": "b", "text": "SQL databases enforce a fixed schema at write time (schema-on-write) — data must conform to table definitions; NoSQL databases typically use schema-on-read — structure is interpreted at read time and can vary per document" },
+        { "id": "c", "text": "Both SQL and NoSQL databases use schema-on-write; the difference is only query language" },
+        { "id": "d", "text": "NoSQL databases have no concept of schema — they store data without any structural definition" }
+      ],
+      "correctKey": "b",
+      "explanation": "Schema-on-write (SQL): the database enforces that data conforms to table definitions when written — invalid data is rejected. Schema-on-read (NoSQL/document): data is stored without enforced structure; the application interprets the structure when reading. Schema-on-read enables flexible data models (e.g., storing different attributes per document), which is useful when the data model evolves rapidly or differs across entities. Schema-on-write provides stronger data integrity guarantees at the cost of flexibility. Option A is incorrect. Option C is false. Option D overstates — NoSQL stores data with structure, just without enforcing it at write time."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the main purpose of a message queue in a distributed system?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "To permanently store all messages forever so they can be replayed at any time" },
+        { "id": "b", "text": "To decouple producers from consumers by temporarily holding messages — producers send messages and return immediately; consumers retrieve messages at their own pace, enabling asynchronous processing and fault tolerance" },
+        { "id": "c", "text": "To route messages directly from producers to the correct consumer using real-time connection management" },
+        { "id": "d", "text": "To provide a backup storage mechanism when a database is temporarily unavailable" }
+      ],
+      "correctKey": "b",
+      "explanation": "A message queue decouples producers (senders) from consumers (receivers) in both time and space. Producers publish messages and return immediately — they don't wait for consumers to process. Consumers pull messages at their own pace. This enables: asynchronous processing, load leveling (absorb traffic spikes), fault tolerance (messages persist if consumers are down), and independent scaling of producers and consumers. Queues are temporary stores (messages are deleted after successful processing). They are not permanent archives (that's an event store). Option A overstates persistence. Option C describes direct routing, not queuing. Option D is not the primary purpose."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does API versioning mean, and why is it important in REST API design?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "API versioning means incrementing the API's major version number every time a bug is fixed" },
+        { "id": "b", "text": "API versioning is the practice of maintaining backward compatibility across different versions of an API contract — allowing clients on old versions to continue working while new versions introduce breaking changes; common formats: URL path (/v1/users), header (Accept: application/vnd.api+json; version=1), or query string" },
+        { "id": "c", "text": "API versioning is only necessary when switching from REST to GraphQL" },
+        { "id": "d", "text": "API versioning is a security mechanism that prevents unauthorized clients from accessing the API" }
+      ],
+      "correctKey": "b",
+      "explanation": "API versioning manages breaking changes (renamed fields, changed response structure, removed endpoints) without disrupting existing clients. Clients explicitly opt into a version. Breaking changes are introduced in a new version; old versions remain supported for a deprecation window. URL path versioning (/v1/) is the most explicit and widely used (Stripe, Twilio, GitHub). Header versioning is more REST-idiomatic (Content-Type negotiation). Query string versioning (?version=2) is simple but pollutes URLs. Versioning in the path is the most common and visible approach for public APIs. Option A is false. Option C is false. Option D describes authentication, not versioning."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which caching strategy writes data to the cache synchronously at the same time as writing to the database?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Write-back (write-behind) — writes to cache immediately and flushes to database asynchronously" },
+        { "id": "b", "text": "Write-through — both the cache and the database are updated synchronously in the same operation; both must succeed before the write is acknowledged" },
+        { "id": "c", "text": "Cache-aside (lazy loading) — data is written only to the database; the cache is populated on the next read" },
+        { "id": "d", "text": "Read-through — the cache reads from the database and populates itself before returning data" }
+      ],
+      "correctKey": "b",
+      "explanation": "Write-through updates both cache and database synchronously and atomically. The write is acknowledged only after both succeed. Cache always holds consistent, up-to-date data. Slower than write-behind (two I/O operations) but eliminates the risk of stale data and crash-loss scenarios. Write-behind (A) is faster but risks losing data if the process crashes between the cache write and the DB write. Cache-aside (C) only writes to the DB, not the cache. Read-through (D) is a read strategy, not a write strategy. The question asks for a write caching strategy that writes to both synchronously."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between horizontal scaling and vertical scaling?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Horizontal scaling adds more machines to a pool; vertical scaling adds more CPU, RAM, and storage to a single existing machine" },
+        { "id": "b", "text": "Both terms describe the same thing — they are synonyms used interchangeably in cloud documentation" },
+        { "id": "c", "text": "Vertical scaling is unlimited; horizontal scaling is limited by the physical capacity of a single machine" },
+        { "id": "d", "text": "Horizontal scaling is faster because it doesn't require copying data between machines" }
+      ],
+      "correctKey": "a",
+      "explanation": "Horizontal scaling (scaling out) adds more machines to a pool, distributing load across nodes. Vertical scaling (scaling up) upgrades a single machine with more resources. Horizontal is preferred for fault tolerance and near-unlimited scale but requires stateless design and introduces distributed systems complexity (consistency, network partitions). Vertical scaling is simpler but hits a hardware ceiling and creates a single point of failure. Option B is false. Option C reverses the constraints. Option D is not necessarily true — scaling out involves distributing work, not just copying data."
+    },
+    {
       "levelTag": "MIDDLE",
       "questionText": "What does the CAP theorem state, and which two properties can a distributed system guarantee at any given moment?",
       "questionType": "MULTIPLE_CHOICE",
@@ -93,20 +171,33 @@
       "explanation": "Sharding (horizontal partitioning) splits rows of a logical table across N physical database servers (shards). A shard key (e.g., user_id, date, region) determines which shard owns each row. Good shard keys distribute load evenly — a poor key (e.g., country code) can create hotspots on one shard. Cross-shard queries (joins, aggregations) are expensive and often require scatter-gather or denormalization. Option B describes vertical partitioning (splitting columns). Option C describes read replicas. Option D's statement about requiring the shard key is generally true but the statement format mixes it with cross-shard query cost — the correct answer highlights the key properties cleanly."
     },
     {
-      "levelTag": "SENIOR",
-      "questionText": "What is the Raft consensus algorithm and what problem does it solve?",
+      "levelTag": "MIDDLE",
+      "questionText": "What are the key differences between REST and GraphQL APIs, and in which scenarios is GraphQL superior?",
       "questionType": "MULTIPLE_CHOICE",
       "options": [
-        { "id": "a", "text": "Raft is a leader election and log replication algorithm that achieves consensus in a distributed system; a leader receives writes, replicates to followers, and confirms after a majority acknowledges" },
-        { "id": "b", "text": "Raft is a gossip protocol that propagates state changes across nodes using eventual consistency without a leader" },
-        { "id": "c", "text": "Raft guarantees linearizability for all reads without a leader, similar to read-your-writes consistency" },
-        { "id": "d", "text": "Raft is a two-phase commit protocol variant used for distributed transactions within a single database cluster" }
+        { "id": "a", "text": "GraphQL is always faster than REST because it uses a binary protocol; REST uses JSON which is slow" },
+        { "id": "b", "text": "REST uses multiple endpoints with fixed response shapes; GraphQL uses a single endpoint with a query language that lets clients specify exactly which fields they need — superior for mobile clients, third-party consumers, and complex UI data requirements where clients need different subsets of the same entity" },
+        { "id": "c", "text": "GraphQL replaces REST entirely for all API use cases; REST is legacy technology" },
+        { "id": "d", "text": "REST and GraphQL are both SQL-like query languages with minor syntactic differences" }
       ],
-      "correctKey": "a",
-      "explanation": "Raft (designed to be more understandable than Paxos) solves distributed consensus: electing a leader, replicating log entries from the leader to followers, and ensuring safety despite node failures. Writes go through the leader; the leader replicates entries to a majority of followers before committing. Reads can be served by the leader. Raft requires majority (quorum) for committing — 3-node cluster tolerates 1 failure, 5-node tolerates 2. Option B describes gossip protocols (e.g., Cassandra, SWIM), not Raft. Option C describes linearizability without a leader (not Raft). Option D confuses Raft with 2PC (2-phase commit, used for distributed transactions across databases)."
+      "correctKey": "b",
+      "explanation": "REST: multiple endpoints (/users, /orders, /products); the server decides the response shape. GraphQL: single endpoint; clients write queries specifying exactly which fields and nested relationships they need. GraphQL advantages: (1) eliminates over-fetching/under-fetching — clients get exactly what they need, (2) single endpoint simplifies consumer integration, (3) strong typing enables developer tooling and introspection. GraphQL disadvantages: complexity, potential N+1 query problems (requires DataLoader pattern), caching is harder. Best for: complex client-driven data requirements, mobile APIs, aggregating multiple services. Not ideal for: simple CRUD APIs, public APIs where you want server-controlled response shapes. Option A is false. Option C is false. Option D is false."
     },
     {
-      "levelTag": "SENIOR",
+      "levelTag": "MIDDLE",
+      "questionText": "What is the main benefit of using gRPC over REST for internal microservice communication?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "gRPC uses HTTP/2 with binary Protobuf serialization, providing smaller payloads, multiplexing, and bidirectional streaming — faster and more efficient than REST JSON over HTTP/1.1 for high-volume internal calls" },
+        { "id": "b", "text": "gRPC is language-agnostic in the same way REST is; the main difference is the API naming convention" },
+        { "id": "c", "text": "gRPC uses UDP for transport which is faster than TCP used by REST" },
+        { "id": "d", "text": "gRPC automatically handles service discovery and load balancing without any configuration" }
+      ],
+      "correctKey": "a",
+      "explanation": "gRPC (Google Remote Procedure Calls) uses HTTP/2 for transport (multiplexing, header compression) and Protocol Buffers (binary serialization — smaller, faster to parse than JSON). Key advantages: (1) binary serialization is ~5-10x faster than JSON parsing, (2) strongly typed .proto contracts enable code generation for many languages, (3) bidirectional streaming — clients and servers can stream data simultaneously, (4) HTTP/2 multiplexing eliminates head-of-line blocking. Best for: internal service-to-service calls where performance matters, streaming use cases (chat, real-time data). Not ideal for: external public APIs where browser compatibility and simplicity matter more (REST/GraphQL are better). Option B is false. Option C is false (gRPC uses HTTP/2 over TCP). Option D requires separate tooling."
+    },
+    {
+      "levelTag": "MIDDLE",
       "questionText": "What is consistent hashing and what problem does it solve in distributed systems?",
       "questionType": "MULTIPLE_CHOICE",
       "options": [
@@ -119,7 +210,7 @@
       "explanation": "In standard modulo hashing (hash(key) % N servers), adding or removing a server remaps almost all keys — causing a cache/shard miss storm. Consistent hashing maps both servers and keys onto a circular hash space (ring); a key is owned by the nearest server clockwise on the ring. When a server is added or removed, only adjacent keys on the ring are remapped (O(1/n) fraction). Virtual nodes (replicas) further distribute load more evenly across physical nodes. Used in DynamoDB, Cassandra, Memcached, Redis Cluster. Option B describes linearizability, not consistent hashing. Option C is misleading. Option D describes weighted round-robin."
     },
     {
-      "levelTag": "SENIOR",
+      "levelTag": "MIDDLE",
       "questionText": "What is event sourcing and how does it compare to traditional CRUD (state-based) persistence?",
       "questionType": "MULTIPLE_CHOICE",
       "options": [
@@ -129,7 +220,322 @@
         { "id": "d", "text": "Event sourcing requires CQRS — you cannot use event sourcing without also implementing command query responsibility segregation" }
       ],
       "correctKey": "a",
-      "explanation": "Instead of storing current state (UPDATE row SET balance = 100), event sourcing stores every domain event (AccountOpened, Deposit(50), Withdrawal(10), BalanceInquired...) in an append-only log. Current state is computed by replaying the event log — making the audit trail complete and immutable. Benefits: full history, temporal queries ('what was my balance on Jan 1?'), event replay for debugging, and easy integration with event-driven microservices. Challenges: event schema evolution (upcasting), eventual consistency, and snapshot strategies for long-lived aggregates. Option B is false. Option C is false. Option D is false — CQRS and event sourcing are complementary but independently optional patterns."
+      "explanation": "Instead of storing current state (UPDATE row SET balance = 100), event sourcing stores every domain event (AccountOpened, Deposit(50), Withdrawal(10)...) in an append-only log. Current state is computed by replaying the event log. Benefits: full history, temporal queries ('what was my balance on Jan 1?'), event replay for debugging, and easy integration with event-driven microservices. Challenges: event schema evolution (upcasting), eventual consistency, and snapshot strategies for long-lived aggregates. Option B is false. Option C is false. Option D is false — CQRS and event sourcing are complementary but independently optional patterns."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between CQRS (Command Query Responsibility Segregation) and the standard layered architecture?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CQRS separates the data models for read and write operations: a single data model handles both commands (writes) and queries (reads) in standard architecture; CQRS uses dedicated read models optimized for query patterns and write models optimized for command validation" },
+        { "id": "b", "text": "CQRS is a message queuing pattern; it has no relationship to how data models are designed" },
+        { "id": "c", "text": "CQRS requires two separate databases — one for commands and one for queries — connected via database-level replication" },
+        { "id": "d", "text": "CQRS is only applicable to microservices and cannot be used in monolithic applications" }
+      ],
+      "correctKey": "a",
+      "explanation": "Standard layered architecture uses the same data model for both reads and writes (e.g., a User entity for both creating users and listing them). CQRS separates these: Command model handles writes (business logic, validation), Query model handles reads (optimized for specific query patterns, possibly a different schema or even a different database). CQRS enables read and write optimization independently, supports event sourcing naturally, and allows different teams to work on read vs. write side. Often combined with event sourcing. Complexity cost is high — only use CQRS when read/write patterns are significantly different. Option B is false. Option C overstates (can be in-memory read models). Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is PACELC, and how does it extend the CAP theorem?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PACELC states that during a partition, you choose between Consistency and Availability (same as CAP); when there is no partition, you choose between Latency and Consistency — stronger consistency requires synchronous replication with higher write latency" },
+        { "id": "b", "text": "PACELC replaces CAP entirely and states that all three properties (Consistency, Availability, Latency) can always be maximized simultaneously" },
+        { "id": "c", "text": "PACELC is only relevant for single-node databases with no network topology" },
+        { "id": "d", "text": "PACELC describes a trade-off between Partition tolerance and Eventual consistency — latency is not a factor" }
+      ],
+      "correctKey": "a",
+      "explanation": "PACELC (Brewer, 2012) adds Latency as a first-class dimension: even without a partition, you face a Latency vs. Consistency trade-off. A system that synchronously replicates writes to all replicas for strong consistency incurs higher write latency. DynamoDB: PB (write latency vs. availability), PC/EC (consistency vs. latency). Cassandra: PA/E (availability vs. consistency) + EL (latency vs. consistency). CAP doesn't capture latency; PACELC does. This is critical for geo-distributed systems where cross-region write latency is a key design decision. Option B is false. Option C is false. Option D mischaracterizes PACELC."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the primary role of DNS (Domain Name System) in web architecture, and what are the main DNS record types relevant to system design?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "DNS translates human-readable domain names to IP addresses; relevant record types include A (IPv4 address), AAAA (IPv6 address), CNAME (alias to another domain), and MX (mail server) — which are used to route traffic to application servers, CDNs, and email systems" },
+        { "id": "b", "text": "DNS is a load balancer that routes HTTP traffic to the least-loaded server based on real-time CPU usage" },
+        { "id": "c", "text": "DNS is only used during the initial domain registration process and is not relevant after a site is deployed" },
+        { "id": "d", "text": "DNS records are static and never change after they are first set — they cannot be updated without taking the site offline" }
+      ],
+      "correctKey": "a",
+      "explanation": "DNS is the global phonebook of the internet — resolving domain names to IP addresses. A record maps a domain to an IPv4 address. AAAA maps to IPv6. CNAME creates an alias (e.g., www.example.com → example.com or cdn.example.com → cdn.cloudflare.com). MX records route email. TTL (Time To Live) determines how long DNS responses are cached before re-resolution. Low TTLs enable rapid failover and blue-green deployments; high TTLs reduce query load. DNS is hierarchical (root → TLD → authoritative nameserver) and uses caching extensively. Option B confuses DNS with Anycast and load balancing. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between TLS 1.2 and TLS 1.3 in terms of handshake speed and security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "TLS 1.3 reduces the handshake from 2 round trips to 1 by eliminating insecure cipher suites, removing SHA-1, and requiring forward secrecy — making it both faster and more secure than TLS 1.2" },
+        { "id": "b", "text": "TLS 1.2 and TLS 1.3 are functionally identical; TLS 1.3 is just a newer version number" },
+        { "id": "c", "text": "TLS 1.3 is slower because it uses stronger encryption algorithms that require more computation" },
+        { "id": "d", "text": "TLS 1.3 removes all cipher suites and cannot be used with any existing server software" }
+      ],
+      "correctKey": "a",
+      "explanation": "TLS 1.3 (RFC 8446) improves over TLS 1.2: (1) 1-RTT handshake (vs 2-RTT in TLS 1.2) — 0-RTT resumption mode for returning clients, (2) removes insecure features: SHA-1, 3DES, CBC ciphers, export ciphers, static RSA/ Diffie-Hellman key exchange, (3) mandates forward secrecy — compromising a long-term key cannot decrypt past sessions, (4) cleaner protocol design. TLS 1.2 is still widely deployed but TLS 1.3 should be preferred where supported — both performance (fewer round trips) and security (fewer attack surfaces) advantages. Option B is false. Option C is false (handshake is faster even though algorithms are strong). Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between a service mesh and an API gateway in microservices architecture?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A service mesh and an API gateway are the same thing with different names — both handle all internal and external traffic" },
+        { "id": "b", "text": "An API gateway is the single entry point for external client traffic (North-South traffic); a service mesh handles service-to-service (East-West) traffic within the cluster via sidecar proxies — they address different traffic directions and are complementary, not interchangeable" },
+        { "id": "c", "text": "A service mesh replaces the API gateway entirely by routing all external and internal traffic" },
+        { "id": "d", "text": "An API gateway uses sidecar proxies; a service mesh does not use proxies" }
+      ],
+      "correctKey": "b",
+      "explanation": "North-South (external client → cluster): API gateway (Kong, AWS API Gateway, Envoy as gateway) handles auth, rate limiting, routing, TLS termination at the perimeter. East-West (service-to-service within cluster): service mesh (Istio, Linkerd) uses sidecar proxies (Envoy) to handle mTLS, retries, circuit breaking, traffic splitting between services without application changes. They are complementary layers: the gateway sits at the cluster boundary, the mesh operates inside. Option A is false. Option C overstates — mesh handles internal traffic; gateway handles external. Option D reverses: gateway is a standalone component; mesh uses sidecar proxies."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: DNS uses UDP by default for lookups, which means DNS responses are not reliable and cannot be trusted.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "DNS primarily uses UDP on port 53 for lookups (fast, low overhead). However, DNS responses include a transaction ID for matching queries to responses, and resolvers implement retry logic and caching to handle reliability. For large responses exceeding UDP packet size, TCP is used (truncated flag in UDP response signals this). DNSSEC adds cryptographic verification of DNS responses to prevent spoofing. The lack of built-in reliability in UDP is addressed by resolver retry behavior and the caching layer (recursive resolvers cache TTL-based responses). DNS is designed to be resilient and reliable despite using UDP as its primary protocol."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: A system can be both CP (consistent and partition-tolerant) and AP (available and partition-tolerant) at the same time by using different databases for different operations.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "The CAP theorem applies per-data-record or per-operation, not per-system. A system can support both CP and AP operations for different data types (e.g., Cassandra using quorum for CP operations and 'any' read for AP operations) — but for a given read, you cannot simultaneously guarantee both strong consistency and availability during a partition. The 'choice' (CP or AP) is made at the operation level, and the system must commit to one per-operation contract. Some modern databases offer tunable consistency (Cassandra, DynamoDB) but each specific consistency level is still a CP or AP choice. You cannot be simultaneously CP and AP for the same data at the same time."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: REST APIs must always use JSON as their response format.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "REST does not mandate JSON. REST (Representational State Transfer) is an architectural style based on resources and HTTP verbs — it does not prescribe a serialization format. While JSON is the most common format for REST APIs (due to its universal browser support and readability), REST can use any format: XML (application/xml), Protocol Buffers (application/x-protobuf), MessagePack (application/msgpack), or even HTML (application/xhtml+xml) for browser-based clients. The Content-Type header declares the format. The key REST constraints are: client-server, stateless, cacheable, layered system, uniform interface. Format is an implementation detail."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: Rate limiting and API throttling are the same concept implemented differently at the network layer vs. application layer.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Rate limiting enforces a maximum number of requests per time window (e.g., 1000 requests/minute per API key) — typically returning HTTP 429 Too Many Requests when exceeded. Throttling (in the traditional sense) slows down responses to abusive clients without rejecting them — returning deferred responses. In some API gateway contexts, 'throttling' refers to enforced rate limits, but technically they are different: rate limiting is a hard quota enforcement, throttling is deferred processing. Both can be implemented at network layer (Nginx limit_req), application layer, or API gateway. The distinction matters for UX: rate limiting is an abrupt stop; throttling is a slow-down."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the Raft consensus algorithm and what problem does it solve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Raft is a leader election and log replication algorithm that achieves consensus in a distributed system; a leader receives writes, replicates to followers, and confirms after a majority acknowledges" },
+        { "id": "b", "text": "Raft is a gossip protocol that propagates state changes across nodes using eventual consistency without a leader" },
+        { "id": "c", "text": "Raft guarantees linearizability for all reads without a leader, similar to read-your-writes consistency" },
+        { "id": "d", "text": "Raft is a two-phase commit protocol variant used for distributed transactions within a single database cluster" }
+      ],
+      "correctKey": "a",
+      "explanation": "Raft solves distributed consensus: electing a leader, replicating log entries from the leader to followers, and ensuring safety despite node failures. Writes go through the leader; the leader replicates entries to a majority of followers before committing. Reads can be served by the leader. Raft requires majority (quorum) for committing — 3-node cluster tolerates 1 failure, 5-node tolerates 2. Option B describes gossip protocols (e.g., Cassandra, SWIM), not Raft. Option C describes linearizability without a leader (not Raft). Option D confuses Raft with 2PC."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which properties of DNS make it vulnerable to DNS spoofing (cache poisoning), and what modern DNS security mechanism mitigates this?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "DNS is vulnerable because it uses UDP without authentication; the mitigation is switching all DNS lookups to TCP" },
+        { "id": "b", "text": "DNS spoofing exploits the lack of authentication in DNS responses (no cryptographic verification); DNSSEC (DNS Security Extensions) adds digital signatures to DNS records — resolvers verify the signature using public keys anchored at the root zone — ensuring responses are authentic and not tampered with" },
+        { "id": "c", "text": "DNS cache poisoning is caused by large response sizes; the mitigation is to limit DNS response sizes to under 512 bytes" },
+        { "id": "d", "text": "DNSSEC is deployed universally and all domain registrars support it by default" }
+      ],
+      "correctKey": "b",
+      "explanation": "DNS spoofing (cache poisoning): an attacker floods a recursive resolver with forged DNS responses before the legitimate response arrives, poisoning the cache with incorrect IP mappings (redirecting to malicious sites). Classic defense: random source ports + random transaction IDs made prediction harder but are not cryptographically strong. DNSSEC (RFC 4033) adds: (1) digital signatures (RRSIG) over DNS record sets, (2) chain of trust from root zone down, (3) DS records for delegated zones. Resolvers verify signatures before caching. DNSSEC adoption is incomplete (not universally deployed), and it does not encrypt DNS queries (that's DoT/DoH). Option A is incomplete. Option C is incorrect. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between the Paxos and Raft consensus algorithms, and why was Raft created?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Paxos and Raft are functionally identical; Raft was created to use a different programming language" },
+        { "id": "b", "text": "Paxos is the foundational distributed consensus algorithm (Lamport, 1998) with two phases (prepare, accept) that is proven correct but notoriously difficult to understand and implement; Raft was designed with the explicit goal of understandability — it separates leader election, log replication, and safety into distinct, comprehensible components while providing equivalent safety guarantees" },
+        { "id": "c", "text": "Raft is faster than Paxos because it uses fewer network round trips per consensus decision" },
+        { "id": "d", "text": "Paxos requires a majority quorum; Raft tolerates more failures by not requiring quorum" }
+      ],
+      "correctKey": "b",
+      "explanation": "Paxos (Single-Decree Paxos, Multi-Paxos) is proven correct but has a reputation for being extremely difficult to understand and implement correctly — Lamport's original paper is famously opaque. Raft (Ongaro & Ousterhout, 2014) was designed with understandability as the primary goal: clear separation of subproblems (leader election, log replication, safety, membership changes), strong leader assumption, and fewer corner cases. Both provide safety (liveness not guaranteed). In practice, Raft is more widely implemented in open-source systems (etcd, CockroachDB, TiKV). Multi-Paxos can be more efficient for high-throughput writes (using a stable leader). Option A is false. Option C is not the primary motivation. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A social media platform needs to store user timelines for 500 million users. Reads (loading a user's feed) happen 100x more frequently than writes (new posts appearing in feeds). The system must tolerate data center failures. What caching architecture best addresses this?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Store all timelines in a single Redis cluster with a 24-hour TTL; on new post, push to all followers' cached timelines" },
+        { "id": "b", "text": "Use fan-out-on-read: cache each post individually; when a user loads their timeline, fetch and merge recent posts from the people they follow; this avoids write amplification from pushing to millions of followers for celebrity accounts" },
+        { "id": "c", "text": "Store timelines in a distributed SQL database with read replicas; use consistent hashing to distribute reads across replicas" },
+        { "id": "d", "text": "Fan-out-on-write (push model) works for all social media use cases because it ensures timelines are always pre-computed" }
+      ],
+      "correctKey": "b",
+      "explanation": "Twitter/Facebook-style timelines use fan-out-on-read (pull model) to handle the 'celebrity problem': pushing a post to a million follower timelines causes massive write amplification. Fan-out-on-read: post is cached individually by post_id; on timeline load, the system fetches recent posts from followed users (from cache) and merges/sorts. Celebrity accounts (high follower count) are handled specially — their posts may be cached at a higher tier. Hybrid: fan-out-on-write for normal users, fan-out-on-read for high-follower accounts. Option A misdescribes a push model. Option C is not the primary solution for social media timelines (joins are expensive). Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between database replication lag and eventual consistency, and how do you monitor and mitigate replication lag in a production MySQL primary-replica setup?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Replication lag and eventual consistency are the same concept measured differently; they are both caused by the same hardware limitation" },
+        { "id": "b", "text": "Replication lag is the time delay between a write being committed on the primary and being applied on a replica; eventual consistency means replicas may serve stale reads; monitoring: show slave status (Seconds_Behind_Master), pt-heartbeat; mitigation: use semi-synchronous replication, configure replica with adequate hardware, use read-after-write routing (read from primary for recent writes)" },
+        { "id": "c", "text": "Replication lag only affects write performance, not read performance; eventual consistency only affects reads" },
+        { "id": "d", "text": "Replication lag cannot be monitored in MySQL — it requires a separate monitoring system" }
+      ],
+      "correctKey": "b",
+      "explanation": "Replication lag: delay in applying changes from primary to replica (in MySQL async replication). If lagging, reads from replicas return stale data — an instance of eventual consistency. Monitoring: SHOW SLAVE STATUS shows Seconds_Behind_Master (though it's approximate), pt-heartbeat provides more accurate lag measurement, Percona Monitoring and Management (PMM) provides graphs. Mitigation strategies: (1) semi-synchronous replication (primary waits for at least one replica to acknowledge before committing), (2) ensure replica has equivalent hardware (disk I/O is often the bottleneck), (3) shard writes across primaries, (4) for critical read-after-write, route reads to primary. Option A conflates the terms incorrectly. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Your system uses Kafka for event streaming. A topic has 12 partitions and 4 consumers in a consumer group. How many consumers can process messages concurrently, and what happens to the remaining consumers?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "All 4 consumers can process messages simultaneously — Kafka distributes messages across all consumers in the group" },
+        { "id": "b", "text": "At most 4 consumers process messages concurrently (one per assigned partition); with 12 partitions, each of the 4 consumers is assigned 3 partitions; the remaining consumers (if any) sit idle waiting for a partition to become available when another consumer leaves" },
+        { "id": "c", "text": "Kafka uses a round-robin assignment to all 12 consumers — if only 4 exist, Kafka creates 8 virtual consumers to fill the gap" },
+        { "id": "d", "text": "The topic must have at least as many partitions as consumers for any messages to be consumed" }
+      ],
+      "correctKey": "b",
+      "explanation": "Kafka partitions are the unit of parallelism for a consumer group. Each partition can only be assigned to one consumer at a time. With 12 partitions and 4 consumers: each consumer gets 3 partitions (Kafka distributes evenly). A consumer with no assigned partitions sits idle — it cannot process messages until another consumer in the group leaves or the partition count increases. This is why partition count should be >= expected maximum consumer count. If you want more parallelism, increase partition count (up to the broker limit and throughput capacity). Consumer count > partition count wastes consumers. Option A is false. Option C is false. Option D is backwards (messages still flow, just less parallelism)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the 'split-brain' problem in distributed systems, and what quorum-based strategies prevent it in consensus systems?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Split-brain occurs when two nodes in a cluster both believe they are the primary and accept conflicting writes; quorum-based prevention requires that writes be acknowledged by a majority (>50%) of nodes — if a minority partition loses quorum, it stops accepting writes, preventing conflicting writes" },
+        { "id": "b", "text": "Split-brain is caused by network latency and can be eliminated by adding more CPU cores to each node" },
+        { "id": "c", "text": "Split-brain only affects MySQL databases; NoSQL databases are immune because they use eventual consistency" },
+        { "id": "d", "text": "Quorum requires unanimous agreement from all nodes before any write is accepted" }
+      ],
+      "correctKey": "a",
+      "explanation": "Split-brain: a network partition divides a cluster into two groups, each believing the other is dead and both trying to act as primary — accepting conflicting writes. This results in diverged data states (two 'brains' with different data). Quorum-based prevention: require that any write be acknowledged by a majority (more than half) of nodes. With a majority quorum, at most one partition group can have a quorum — the other group refuses writes, preventing divergence. Example: 5-node cluster tolerates 2-node failure (3-node quorum required). If 3+ nodes can communicate, they form a quorum and continue; 2-node partition cannot accept writes. This is how Raft, Paxos, and Cassandra's quorum writes prevent split-brain. Option B is unrelated. Option C is false. Option D overstates."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Your company needs to migrate a legacy monolithic application to microservices incrementally. What migration strategy would you use and why?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Rewrite the entire monolith from scratch in microservices — this is faster than incremental migration because you don't carry legacy debt" },
+        { "id": "b", "text": "Use the strangler fig pattern: place an API gateway in front of the monolith; incrementally extract functionality into microservices and route traffic through the gateway; new or migrated features go to microservices, remaining features stay in the monolith — until the monolith is eventually 'strangled' and decommissioned" },
+        { "id": "c", "text": "Deploy the monolith and microservices side by side with no integration — let them evolve independently until the monolith naturally dies" },
+        { "id": "d", "text": "Migrate by database: extract the database schema first, then migrate services one by one from the monolith to microservices" }
+      ],
+      "correctKey": "b",
+      "explanation": "The strangler fig pattern (Martin Fowler) is the recommended approach for monolith-to-microservices migration. An API gateway (or reverse proxy) intercepts all traffic. Migrated functionality is implemented in a microservice and registered with the gateway; traffic is routed to the microservice instead of the monolith. Over time, more functionality migrates until the monolith is a small stub (or zero). Benefits: low-risk incremental migration, real production traffic testing of new service, ability to rollback, delivering value throughout the migration. A full rewrite (A) is the 'big rewrite' anti-pattern — famously fails because it takes too long, delivers no value during the process, and may never finish. Option C creates integration chaos. Option D (database-first) is valid but must be coordinated with strangler fig."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following are true about the OAuth 2.0 Authorization Code flow with PKCE? Select all that apply.",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "PKCE adds a cryptographically random code_verifier and its SHA-256 hash (code_challenge) to the authorization request" },
+        { "id": "b", "text": "PKCE prevents authorization code interception attacks where an attacker substitutes their own code during the redirect" },
+        { "id": "c", "text": "PKCE allows the authorization server to skip token validation when the code is exchanged" },
+        { "id": "d", "text": "PKCE is required for public clients (SPAs, mobile apps) and is now recommended for all OAuth client types" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "PKCE (RFC 7636) adds a code_verifier (random string, 43-128 chars) and its SHA-256 hash (code_challenge) to the authorization request. When the authorization code is exchanged, the client must present the original code_verifier. Without it, an attacker intercepting the redirect URL can exchange the authorization code for tokens. The code_verifier makes this impossible without access to the client's secret. PKCE is required for all OAuth clients in OAuth 2.1 (not just public ones). Option C is false — PKCE adds validation, not skips it. The authorization server MUST validate the code_verifier against the stored code_challenge."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following are valid strategies for preventing cache stampede (thundering herd)? Select all that apply.",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Cache locks (mutex): only one request fetches from the database on a cache miss, others wait for the lock to release and then read from the cache" },
+        { "id": "b", "text": "Probabilistic early expiration: proactively refresh the cache before the TTL expires, based on the probability that the cached value will be needed" },
+        { "id": "c", "text": "Increasing the TTL to 24 hours eliminates cache stampede because the cache rarely expires" },
+        { "id": "d", "text": "Stale-while-revalidate: serve the stale value while refreshing the cache in the background" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Cache stampede (thundering herd) occurs when a popular cache entry expires and many concurrent requests all miss simultaneously, overwhelming the backend. Solutions: (a) Cache locks (Redis SETNX or semaphore) — one request fetches from DB, others wait and read from the populated cache. (b) Probabilistic early expiration — proactively refresh before TTL expires using a probabilistic formula to avoid synchronized expiration. (d) Stale-while-revalidate — HTTP Cache-Control pattern: serve stale data immediately while a background refresh populates the cache. Option C (long TTL) actually worsens the problem — longer TTL means more requests accumulate before expiry, creating a bigger thundering herd when it expires."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following are characteristics of gRPC that make it suitable for internal microservice communication? Select all that apply.",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Uses Protocol Buffers (binary serialization) for smaller, faster-encoded messages compared to JSON" },
+        { "id": "b", "text": "Supports bidirectional streaming — both client and server can stream data simultaneously over a single TCP connection" },
+        { "id": "c", "text": "Has a built-in service discovery mechanism that automatically finds and load balances across service instances" },
+        { "id": "d", "text": "Uses HTTP/2 for multiplexing multiple requests over a single connection, eliminating head-of-line blocking" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "gRPC advantages for internal microservice communication: (a) Protocol Buffers (binary Protobuf) provide compact, fast serialization — much faster than JSON parsing. (b) Bidirectional streaming — clients and servers can stream data simultaneously (useful for chat, real-time data feeds, streaming from sensors). (d) HTTP/2 multiplexing enables multiple concurrent streams over a single TCP connection, eliminating HTTP/1.1's head-of-line blocking. Option C is false — gRPC does NOT have built-in service discovery; it requires external tooling (Envoy, Consul, Kubernetes DNS). Service discovery is the responsibility of the infrastructure, not the RPC framework."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Your distributed system needs to handle 1 million concurrent WebSocket connections across multiple servers. What architectural considerations are most critical? Select all that apply.",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Stateless application design — WebSocket servers must not store per-connection state locally; all shared state must live in Redis or a message broker for cross-server fan-out" },
+        { "id": "b", "text": "Horizontal scaling with a load balancer that supports WebSocket connection routing and sticky sessions for message delivery" },
+        { "id": "c", "text": "A pub/sub message broker (Redis pub/sub, NATS, Kafka) to enable cross-server message fan-out when one server needs to send a message to a client connected to a different server" },
+        { "id": "d", "text": "WebSocket connections can be scaled out indefinitely with no upper limit by simply adding more servers" }
+      ],
+      "correctKey": "a,c",
+      "explanation": "Scaling WebSocket connections requires: (a) Stateless design — WebSocket servers are stateful (long-lived connections) but must externalize application state; per-connection in-memory state (e.g., user's active session data) must not exist locally, or cross-server routing fails. (c) Pub/sub broker for fan-out — when Server A needs to send a message to User X connected to Server B, Server A publishes to the broker and Server B delivers. Redis pub/sub, NATS, or Kafka can serve this role. Option B (sticky sessions) is counterproductive for WebSocket scaling — it fights the goal of horizontal scaling. Option D is false — each server has OS-level limits (file descriptors, memory per connection); scaling is bounded by these."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which statements about distributed tracing with W3C TraceContext are correct? Select all that apply.",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "The traceparent header carries the trace ID (globally unique per request), parent span ID (of the calling service), and trace flags (sampling decision)" },
+        { "id": "b", "text": "If any service in the call chain fails to propagate the traceparent header, the entire trace breaks at that point — downstream spans appear as disconnected or are lost" },
+        { "id": "c", "text": "W3C TraceContext eliminates the need for any application code changes because it operates at the network layer independently of application code" },
+        { "id": "d", "text": "Distributed tracing requires that all services use the same programming language to ensure consistent trace ID generation" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "W3C TraceContext (traceparent header): format 'version-traceId-parentId-flags'. (a) The traceparent carries the trace ID (unique request identifier), parent span ID (the span that called this service), and flags (sampling). Correct. (b) If a service strips or fails to propagate headers, the downstream appears as a separate trace or is lost. The trace breaks at the non-propagating service. This is why auto-instrumentation (OpenTelemetry agents) is important. Option C is false — while service mesh sidecars handle propagation transparently for HTTP/gRPC, application-level code (database calls, message queue publishing) requires instrumentation. Option D is false — W3C TraceContext is language-agnostic; OpenTelemetry SDKs exist in all major languages."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which properties make an API gateway more suitable than a service mesh for external client traffic management? Select all that apply.",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "API gateways provide protocol translation (HTTP → gRPC, WebSocket) and API composition (GraphQL Federation, REST aggregation) for external clients" },
+        { "id": "b", "text": "API gateways provide client-facing rate limiting, authentication (JWT validation, OAuth token introspection), and billing/throttling based on API keys" },
+        { "id": "c", "text": "API gateways are deployed as sidecar proxies alongside each microservice pod inside the cluster" },
+        { "id": "d", "text": "Service meshes are equally capable as API gateways for managing external traffic since they also sit at the cluster boundary" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "API gateways excel at North-South (external client → cluster) concerns: (a) protocol translation (external clients may use REST/HTTP, internal services may use gRPC), API composition (aggregating multiple backend calls into a single client response), (b) client-facing auth and rate limiting (API key validation, JWT verification, OAuth introspection at the edge), billing, and client-specific throttling. Option C is false — API gateways are typically deployed as standalone services or ingress controllers, not sidecars (service mesh uses sidecars). Option D is false — service meshes are primarily designed for East-West (internal) traffic; a gateway sits at the boundary with features optimized for external clients."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is load shedding, and how does it differ from load balancing in a system under extreme load?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Load shedding and load balancing are the same thing — both distribute traffic across servers equally" },
+        { "id": "b", "text": "Load shedding selectively rejects low-priority requests under extreme load to protect critical service functionality — e.g., reject analytics API requests but accept payment requests; load balancing distributes load across available servers without selective rejection" },
+        { "id": "c", "text": "Load balancing is the aggressive approach (rejects requests) and load shedding is the conservative approach (distributes load)" },
+        { "id": "d", "text": "Load shedding only applies to batch processing systems and has no relevance to real-time APIs" }
+      ],
+      "correctKey": "b",
+      "explanation": "Load shedding (also called load shedding or priority-aware rejection): when a system is at or beyond capacity, selectively rejecting non-critical requests to preserve resources for critical ones. Example: under DDoS or flash crowd, reject unauthenticated requests, background jobs, and analytics endpoints while accepting payment and authentication requests. This is graceful degradation at the request level. Load balancing (A) distributes load across servers without selective rejection — it assumes all requests should be served if possible. Load shedding is a last resort when load balancing, auto-scaling, and circuit breaking have been exhausted. Option C reverses the definitions. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is graceful degradation, and how does it differ from a circuit breaker?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Graceful degradation and circuit breaker are the same pattern with different names" },
+        { "id": "b", "text": "Graceful degradation is the system-level capability to maintain partial functionality when a component fails — e.g., a product catalog service that goes down still serves cached data and disables review ratings; circuit breaker is the per-call pattern that prevents cascading failures by failing fast when a dependency is unhealthy" },
+        { "id": "c", "text": "Circuit breaker is the system-level pattern; graceful degradation is the per-call pattern" },
+        { "id": "d", "text": "Graceful degradation requires that all components in the system fail simultaneously for it to activate" }
+      ],
+      "correctKey": "b",
+      "explanation": "Graceful degradation: when a component (service, database, feature) fails, the system as a whole continues operating at reduced functionality — not failing completely. Examples: serving stale cache when the database is down, disabling non-essential features (recommendations) during high load, falling back to cached search results when the search service is down. Circuit breaker: a per-call pattern that monitors the health of a specific dependency and fails fast (returns fallback) when the failure rate exceeds a threshold — preventing resource exhaustion. Circuit breaker is a mechanism that enables graceful degradation; graceful degradation is the desired property. Option A is false. Option C reverses the mapping. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: A Kafka topic with a retention period of 7 days and a compaction policy enabled simultaneously will retain messages for at least 7 days before compaction takes effect.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Log compaction and log retention are different cleanup policies in Kafka: (1) Log retention (log.retention.ms/hours) deletes segments older than the retention window. (2) Log compaction (cleanup.policy=compact) retains only the latest value for each key — it does not delete old messages based on time; it retains at least one message per key indefinitely. You cannot enable both simultaneously as primary cleanup policies — the policies are mutually exclusive per topic. You can configure a topic with both retention and compaction by setting cleanup.policy=compact,delete — but compaction takes effect immediately (not after 7 days), and retention applies to segments, not individual messages. For event sourcing, log compaction alone is typically used."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: The Raft consensus algorithm guarantees liveness (the system will always make progress) in addition to safety (no conflicting leaders can be elected).",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Raft guarantees safety (no two nodes can both believe they are the legitimate leader in the same term) but does NOT guarantee liveness. In network partition scenarios, if a minority of nodes cannot reach a quorum, they will not make progress — the cluster is temporarily unavailable for writes. This is a fundamental trade-off in consensus algorithms (FLP impossibility): in an asynchronous system with possible network failures, no consensus algorithm can guarantee both safety AND liveness simultaneously. Raft chooses safety — if the network ispartitioned, it stops accepting writes rather than risking split-brain. This is correct behavior for a CP system. Liveness is only guaranteed when a majority partition exists and the leader is reachable."
     }
   ]
 }

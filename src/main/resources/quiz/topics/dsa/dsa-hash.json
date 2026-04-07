@@ -1,0 +1,329 @@
+{
+  "topicSlug": "dsa-hash",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the average time complexity of searching for a key in a hash table?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — hash function computes the bucket index directly, allowing constant-time access"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — the hash table must scan all buckets to find the key"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — hash tables are implemented as balanced binary search trees"
+        },
+        {
+          "id": "d",
+          "text": "O(n²) — hash collisions cause quadratic probing"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Hash tables provide O(1) average-case lookup: hash(key) → bucket index in O(1), then search within the bucket (O(1) average if load factor is managed). The hash function itself is O(1) for fixed-size keys. The average case assumes a good hash function (uniform distribution) and controlled load factor (no excessive collisions). The worst case (all keys hash to the same bucket) degrades to O(n), but good implementations mitigate this. Option B describes linear search. Option C describes BSTs. Option D is a worst-case collision handling scenario, not the average."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a hash collision?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A collision occurs when two different keys produce the same hash value and must map to the same bucket"
+        },
+        {
+          "id": "b",
+          "text": "A collision occurs when the hash table is full and cannot store any more elements"
+        },
+        {
+          "id": "c",
+          "text": "A collision occurs when the hash function produces a value outside the valid bucket range"
+        },
+        {
+          "id": "d",
+          "text": "A collision occurs when two threads simultaneously access the hash table"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "A hash collision is when hash(k1) == hash(k2) for two distinct keys k1 ≠ k2. Since hash functions map arbitrary key spaces to a finite range of bucket indices, collisions are mathematically inevitable (pigeonhole principle). The two main resolution strategies: chaining (linked list/tree at each bucket, O(n/k) average where k=buckets) and open addressing (probe nearby slots: linear probing, quadratic probing, double hashing). Option B describes capacity exhaustion, not a collision. Option C describes an out-of-range hash output (bug, not a normal collision). Option D describes a concurrency issue."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a hash table's load factor?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The maximum value that can be stored in the hash table before an error occurs"
+        },
+        {
+          "id": "b",
+          "text": "The ratio n/m where n is the number of stored elements and m is the number of buckets; controls when the table is resized to maintain O(1) performance"
+        },
+        {
+          "id": "c",
+          "text": "The ratio of hash computation time to bucket lookup time"
+        },
+        {
+          "id": "d",
+          "text": "The number of bits used by the hash function's output"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Load factor α = n/m: number of elements divided by number of buckets. It measures how full the table is. High load factor → more collisions → chaining gets longer → search degrades toward O(n). Standard resizing policy: when α exceeds threshold (e.g., 0.75), grow the table (double buckets), rehash all keys (O(n)), which resets α and restores O(1) amortized. The amortized cost per operation: O(1) with occasional O(n) resize. Option A is nonsense. Option C misdefines the term. Option D describes hash output bit length, not load factor."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following code?\n\nmap = {}\nmap['a'] = 1\nmap['b'] = 2\nmap['a'] = 3   # update existing key\nmap['c'] = 4\nprint(len(map))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Hash maps store unique keys: map['a'] = 1 creates entry (a,1). map['b'] = 2 creates entry (b,2). map['a'] = 3 updates the existing key 'a', changing its value to 3 — no new entry created. map['c'] = 4 creates entry (c,4). Final entries: {a:3, b:2, c:4} → 3 key-value pairs. len(map) = 3. Option B is wrong (map['a'] = 3 is an update, not a removal). Option C is wrong (hash maps don't create duplicate entries). Option D is wrong."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between a hash map (hash table) and a hash set?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A hash set stores key-value pairs with O(1) lookup by key; a hash map stores only keys with O(1) membership testing"
+        },
+        {
+          "id": "b",
+          "text": "A hash set stores only keys with O(1) membership testing (contains); a hash map stores key-value pairs with O(1) lookup by key"
+        },
+        {
+          "id": "c",
+          "text": "A hash set uses chaining for collisions; a hash map uses open addressing"
+        },
+        {
+          "id": "d",
+          "text": "A hash set is a sorted data structure; a hash map is an unsorted data structure"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Hash set: stores unique keys, supports add, remove, contains (membership test) in O(1) average. Conceptually equivalent to a hash map with ignored values. Hash map: stores (key, value) pairs, supports O(1) lookup by key. Used for caching (key=query, value=result), deduplication (store seen items in set), counting frequencies (map[element]++). Option A reverses the definitions. Option C is not necessarily true — both can use either strategy. Option D is not a fundamental difference."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the worst-case time complexity of hash table operations with a good hash function and proper resizing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — hash tables are guaranteed O(1) in all cases"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — worst case occurs when all keys produce the same hash value (or all probe to the same slot), causing O(n) search within one bucket"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — hash tables use a balanced tree internally when the load factor exceeds a threshold"
+        },
+        {
+          "id": "d",
+          "text": "O(n log n) — hash tables require sorting when collisions occur"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Worst-case O(n) occurs when the hash function produces collisions that route all keys to the same bucket or probe sequence. This can be triggered by adversarial input designed to hash to the same value (hash flooding attack). Mitigations: universal hashing (random hash function per table), tree-based buckets (Java's HashMap switches to red-black tree when a chain exceeds 8 elements), and consistent rebalancing. Option A overclaims — hash tables don't have guaranteed O(1) worst case. Option C describes what some implementations do (treeify buckets), not the inherent complexity. Option D is false."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a hash function's ideal property for hash table performance?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A perfect hash function maps each distinct key to a unique bucket index with no collisions"
+        },
+        {
+          "id": "b",
+          "text": "A uniform hash function distributes keys evenly across all buckets, minimizing collisions and ensuring O(1) average lookup"
+        },
+        {
+          "id": "c",
+          "text": "A fast hash function computes in O(1) time regardless of key size"
+        },
+        {
+          "id": "d",
+          "text": "A deterministic hash function always produces the same output for the same input"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "The ideal hash function distributes keys uniformly across buckets — each bucket receives approximately n/m elements on average. This gives O(1) average search time (chaining: O(α) = O(n/m), open addressing: constant probing). A perfect hash function is a special case of uniform hashing where no collisions occur at all (only possible when the key set is static and known in advance). Option A is a perfect hash function (very rare, static sets only). Option C is desirable but not the primary performance property. Option D is a basic requirement for any hash function, not the ideal performance property."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\nfrom collections import Counter\n\nwords = ['apple', 'banana', 'apple', 'cherry', 'banana', 'apple']\ncounter = Counter(words)\nprint(counter['apple'], counter['banana'], counter.get('grape', 0))\nprint(counter.most_common(2))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Counter (frequency map) on ['apple',3×, 'banana',2×, 'cherry',1×]: counter['apple']=3, counter['banana']=2, counter.get('grape',0)=0. counter.most_common(2) returns the top 2 by frequency: [('apple',3), ('banana',2)]. Tie-breaking is arbitrary (insertion order or hash order). Option A is correct on counts but misses the most_common output. Option C overstates the explanation. Option D is wrong (banana is more frequent than cherry)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is linear probing in open addressing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Linear probing uses a second hash function to find an alternative bucket when a collision occurs"
+        },
+        {
+          "id": "b",
+          "text": "Linear probing searches sequentially through adjacent buckets (h+1, h+2, ...) until an empty slot is found; simple but causes primary clustering"
+        },
+        {
+          "id": "c",
+          "text": "Linear probing only works with hash sets, not hash maps"
+        },
+        {
+          "id": "d",
+          "text": "Linear probing stores the original hash value along with each key to enable fast retrieval"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Open addressing: all elements stored directly in the table array. On collision at bucket h, linear probing checks h+1, h+2, ... (mod table size) until empty slot found. Search follows same probing sequence. Deletion is tricky — can't just remove the element (would break search for elements probing through it) — requires tombstone markers. Primary clustering: long runs of consecutive occupied slots form clusters, causing increasingly long probe sequences. Quadratic probing (h+1², h+2², ...) reduces clustering but can miss empty slots. Double hashing (h + i*hash2(key)) eliminates clustering."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between separate chaining and open addressing for hash collision resolution?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Separate chaining stores all colliding keys in a linked list at each bucket (or tree for many collisions); open addressing stores all elements in a single array and finds alternative slots via probing"
+        },
+        {
+          "id": "b",
+          "text": "Separate chaining uses O(1) additional memory per element; open addressing uses O(n) memory for the table"
+        },
+        {
+          "id": "c",
+          "text": "Open addressing is faster for low load factors; separate chaining is faster for high load factors"
+        },
+        {
+          "id": "d",
+          "text": "Separate chaining requires the hash function output range to match the number of buckets; open addressing requires the range to exceed the number of buckets"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Chaining: each bucket is a container (linked list, tree). Collisions are stored in-bucket. Search: O(α) average where α=n/m. Deletion: easy (remove from list). Memory: proportional to n+m. Open addressing: fixed array of m slots, collisions resolved by probing to next available slot. Search: must probe sequence until key found or empty slot. Deletion: complex (tombstones). Memory: m slots, α ≤ 1 typically. Chaining handles high load factors better; open addressing has better cache locality (contiguous memory). Option B reverses the space trade-offs. Option C is wrong (chaining is better at high load factors). Option D is nonsensical."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ndef two_sum(nums, target):\n    seen = {}\n    for num in nums:\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], num]\n        seen[num] = num\n    return []\n\n\nprint(two_sum([2, 7, 11, 15], 9))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Hash set two-sum on [2,7,11,15] target 9: i=0, num=2, complement=7, seen={} → not in seen → seen={2}; i=1, num=7, complement=2, seen={2} → 2 in seen → return [2, 7]. The algorithm stores values (or indices) in seen and checks for complement. Result: [2, 7]. Option A has wrong format (the algorithm returns values not indices). Option C is wrong (pair is found). Option D is correct but the format is values."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is double hashing and why is it preferred over linear probing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Double hashing applies two hash functions sequentially and uses the second output to replace the first; faster than a single hash function"
+        },
+        {
+          "id": "b",
+          "text": "Double hashing uses a second hash function to compute the probe interval (h(key) + i×h2(key)) on collision, eliminating primary and secondary clustering that plague linear probing"
+        },
+        {
+          "id": "c",
+          "text": "Double hashing uses two buckets per key for redundancy, improving fault tolerance"
+        },
+        {
+          "id": "d",
+          "text": "Double hashing requires two separate hash tables and alternates between them for each operation"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Double hashing: on collision at bucket h, probe sequence is h(key), h(key)+h2(key), h(key)+2×h2(key), ... mod table size, where h2(key) is a secondary hash function that must never be 0. This gives probe sequences that depend on both the primary hash and the key value, preventing clustering (keys with same primary hash still probe differently due to h2). Linear probing causes primary clustering (long chains of consecutive occupied slots). Secondary clustering (keys that collide on first hash also collide on subsequent probes) is avoided by double hashing. Option A misdescribes the mechanism. Option C is unrelated. Option D is not what double hashing means."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When the hash table load factor approaches 1.0, the average search time degrades toward O(n). True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "As load factor α = n/m approaches 1, buckets get fuller. In chaining, average chain length = α. In open addressing, probe sequences get longer (average probes ≈ 1/(1-α)). When α ≈ 1, a single search may probe nearly all slots. Standard practice: resize when α exceeds ~0.75 (Java HashMap) or ~0.66 (Python dict), doubling bucket count, rehashing all elements (O(n) total), resetting α to a safe range. This keeps amortized O(1) per operation."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A hash set and a hash map both use hash functions and handle collisions identically. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "The collision resolution strategy (chaining vs open addressing) is a property of the hash table implementation, not the data structure type. Both hash maps and hash sets can use chaining or open addressing, depending on the implementation. Java's HashMap and HashSet both use separate chaining with red-black tree fallback (buckets become trees when chain length > 8). Python's dict uses open addressing with a custom probing strategy. The choice of collision resolution is independent of whether the table stores keys only or key-value pairs."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Java 8's HashMap switches from linked-list chaining to red-black tree chaining when a bucket's chain exceeds 8 elements. Why?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Red-black trees provide O(1) lookup in buckets with long chains, improving the overall hash map performance from O(n) to O(log n)"
+        },
+        {
+          "id": "b",
+          "text": "Red-black trees provide O(log n) worst-case lookup for buckets with many collisions instead of O(n) linked-list traversal, ensuring no bucket ever degrades to O(n) under hash flooding attacks"
+        },
+        {
+          "id": "c",
+          "text": "Red-black trees use less memory than linked lists when chain length exceeds 8"
+        },
+        {
+          "id": "d",
+          "text": "Red-black trees are faster for short chains because treeify overhead is proportional to chain size"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "In Java 8+, when a chain exceeds 8 elements (with table size ≥ 64), the bucket is converted to a red-black tree (TreeMap). The reason: O(n) worst-case for a long chain (e.g., from hash collision attacks) is unacceptable in security-sensitive contexts. Red-black tree gives O(log n) worst-case per bucket, bounding the damage of adversarial input. Below 8 elements, linked list is faster (lower constant factors, simpler structure). Above 8, tree overhead is worth it. This is the 'timsort for buckets' idea applied to collision resolution. Option A is wrong (O(log n) is not O(1)). Option C is false (tree nodes use more memory). Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is consistent hashing, and what problem does it solve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Consistent hashing maps keys to buckets using a fixed hash function that never changes; it solves the rehashing problem when the table grows"
+        },
+        {
+          "id": "b",
+          "text": "Consistent hashing arranges bucket identifiers on a ring (mod 2³²), mapping each key to the next bucket clockwise; when a bucket is added or removed, only keys near that bucket's position remap, minimizing cache invalidation in distributed systems"
+        },
+        {
+          "id": "c",
+          "text": "Consistent hashing requires all servers to hash to the same bucket range using a shared seed, ensuring identical routing across all nodes"
+        },
+        {
+          "id": "d",
+          "text": "Consistent hashing is a hash function that produces the same output across different programming languages for cross-platform compatibility"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Consistent hashing (Karger et al., 1997) arranges bucket identifiers on a circular hash space. Each key is mapped to the nearest bucket clockwise on the ring. When a bucket is added or removed, only keys between the affected bucket and its neighbors remap — O(k/n) keys remap where k is keys and n is buckets. This is crucial for distributed caches (CDN, DynamoDB, Cassandra) where adding/removing nodes should only affect a fraction of keys. Virtual nodes (replicas) improve load distribution by assigning multiple positions per physical node. Option A describes traditional hashing (which requires rehashing all keys on resize). Option C is wrong. Option D is about cross-platform hash compatibility, not consistent hashing."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef group_anagrams(strs):\n    from collections import defaultdict\n    groups = defaultdict(list)\n    for s in strs:\n        key = tuple(sorted(collections.Counter(s).items()))\n        groups[key].append(s)\n    return list(groups.values())\n\nprint(group_anagrams(['eat', 'tea', 'tan', 'ate', 'nat', 'bat']))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Grouping anagrams: use character frequency as key. 'eat', 'tea', 'ate' all have {e:1,a:1,t:1} → same key. 'tan','nat' both have {t:1,a:1,n:1} → same key. 'bat' has {b:1,a:1,t:1} → unique key. The algorithm sorts each string or uses Counter to create a canonical representation, then groups by that key. Result: three groups of anagrams. Option B has no grouping. Option C and D are wrong groupings."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A good hash function for strings should process each character of the string for uniform distribution. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "String hash functions like polynomial rolling hash compute H(s) = s[0]×B^(n-1) + s[1]×B^(n-2) + ... + s[n-1]×B^0 (mod M). Processing each character ensures the hash depends on all characters and their positions (so 'abc' and 'cab' produce different hashes). Using only the first few characters (or summing without positional weighting) causes collisions: 'ab' and 'ba' would both hash to the same value. The base B (e.g., 31, 33, 37) should be a prime > alphabet size to spread bits. This is why string hashing for substrings (rolling hash) and bloom filters requires per-character computation."
+    }
+  ]
+}

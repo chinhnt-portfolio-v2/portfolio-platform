@@ -1,0 +1,728 @@
+{
+  "topicSlug": "css-grid",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property enables CSS Grid layout on a container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "grid: enable"
+        },
+        {
+          "id": "b",
+          "text": "display: grid"
+        },
+        {
+          "id": "c",
+          "text": "grid-layout: grid"
+        },
+        {
+          "id": "d",
+          "text": "layout: grid"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`display: grid` (or `display: inline-grid`) activates CSS Grid layout. All direct children become grid items automatically. Unlike flexbox (which is one-dimensional), CSS Grid works in two dimensions — rows AND columns simultaneously. This single property transforms a container's direct children into a grid of cells."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `grid-template-columns: 1fr 1fr 1fr` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Creates three rows of equal height"
+        },
+        {
+          "id": "b",
+          "text": "Creates three columns, each taking one-third of the available space"
+        },
+        {
+          "id": "c",
+          "text": "Creates three fixed 1px columns"
+        },
+        {
+          "id": "d",
+          "text": "Creates three grid tracks with 1fr spacing between them"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`fr` (fraction unit) distributes available space proportionally. `1fr 1fr 1fr` divides the container into three equal-width columns — each taking 1/3 of the free space after fixed sizes are accounted for. fr units can be mixed with fixed sizes: `200px 1fr 1fr` creates one fixed 200px column and two equal remaining columns. This is far more flexible than percentages, which can't combine cleanly with fixed sizes."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of `grid-template-rows`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Defines the number and size of columns in the grid"
+        },
+        {
+          "id": "b",
+          "text": "Defines the number and size of rows in the grid"
+        },
+        {
+          "id": "c",
+          "text": "Defines the gap between rows and columns"
+        },
+        {
+          "id": "d",
+          "text": "Defines the alignment of items within their grid cells"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`grid-template-rows` defines the explicit row sizes in a grid. Like `grid-template-columns`, it accepts fixed lengths (px, rem), flexible units (fr), keywords (auto, min-content, max-content), and functions (minmax(), repeat()). Without explicit rows, the grid creates implicit rows automatically to fit all items."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `grid-column: 1 / 3` mean on a grid item?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The item spans 1 column and starts at line 3"
+        },
+        {
+          "id": "b",
+          "text": "The item spans from column line 1 to column line 3 (occupying 2 columns)"
+        },
+        {
+          "id": "c",
+          "text": "The item is placed at row 1, column 3"
+        },
+        {
+          "id": "d",
+          "text": "The item spans all columns starting from line 1 until column 3 from the end"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`grid-column: 1 / 3` is shorthand for `grid-column-start: 1; grid-column-end: 3`. Grid lines are numbered starting at 1. Line 1 is before the first column, line 2 is between columns 1 and 2, line 3 is after the second column. So spanning from line 1 to line 3 occupies 2 column tracks (columns 1 and 2). Alternative syntax: `grid-column: 1 / span 2`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `grid-row: span 2` do on a grid item?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The item spans 2 columns instead of 1"
+        },
+        {
+          "id": "b",
+          "text": "The item spans 2 rows, taking up vertical space equivalent to 2 normal row heights"
+        },
+        {
+          "id": "c",
+          "text": "The item spans from the first grid row to the second-last row"
+        },
+        {
+          "id": "d",
+          "text": "The item repeats itself in 2 grid rows"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`grid-row: span 2` (or `grid-row: span 2`) makes the item occupy 2 row tracks vertically. Combined with `grid-column: span 2`, you can create items that span multiple cells both vertically and horizontally. The `span` keyword is relative — `span 2` means 'stretch for 2 tracks from my starting position'. The auto-placement algorithm respects explicit spans when positioning items."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `repeat(3, 1fr)` and `repeat(3, 200px)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "repeat(3, 1fr) creates flexible columns; repeat(3, 200px) creates fixed 600px total width"
+        },
+        {
+          "id": "b",
+          "text": "repeat(3, 1fr) creates 3 equal flexible columns; repeat(3, 200px) creates 3 fixed 200px columns totaling 600px"
+        },
+        {
+          "id": "c",
+          "text": "They produce identical layouts in all cases"
+        },
+        {
+          "id": "d",
+          "text": "repeat(3, 1fr) only works for rows; repeat(3, 200px) only works for columns"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr` — three equal flexible columns that adapt to container width. `repeat(3, 200px)` creates three fixed 200px columns (total 600px). If the container is wider than 600px, fr columns expand; if smaller, 200px columns stay fixed and may overflow. The repeat() function is simply a compact notation for repeated track definitions — `repeat(4, 1fr)` equals `1fr 1fr 1fr 1fr`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `grid-template-areas` with string values like `\"header header\"` represent?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A list of grid line names"
+        },
+        {
+          "id": "b",
+          "text": "Named template areas where matching area names on items define their placement"
+        },
+        {
+          "id": "c",
+          "text": "The order in which grid items are rendered"
+        },
+        {
+          "id": "d",
+          "text": "A fallback for browsers that don't support CSS Grid"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`grid-template-areas` lets you define a visual map of the grid using named areas. Each string represents a row; each word in a string is a cell in that row. Repeating a name across cells spans that item across those cells. Example: `\"header header\" \"sidebar main\" \"footer footer\"` creates a 3-row layout with a spanning header and footer. Then assign areas with `grid-area: header` on child elements. This is the most readable way to define grid layouts."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `grid-template-columns: auto-fit` do differently from `grid-template-columns: auto-fill`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "auto-fit and auto-fill are identical — the difference is just naming for readability"
+        },
+        {
+          "id": "b",
+          "text": "auto-fill creates as many columns as fit; empty columns retain their space. auto-fit collapses empty columns, allowing existing items to stretch to fill the row"
+        },
+        {
+          "id": "c",
+          "text": "auto-fill stretches items to fill the container; auto-fit creates columns of minimum content size"
+        },
+        {
+          "id": "d",
+          "text": "auto-fit always creates more columns than auto-fill in the same container"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Both create as many columns as fit given the track size. The critical difference when content doesn't fill the row: `auto-fill` leaves empty columns at the end (space is preserved), while `auto-fit` collapses empty columns and stretches remaining items to fill the row. Use `auto-fit` when you want items to expand to fill space. Use `auto-fill` when you want to reserve space for future items or maintain consistent column positions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `minmax(200px, 1fr)` do inside a grid track definition?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Creates columns that are exactly 200px wide, and ignores the 1fr value"
+        },
+        {
+          "id": "b",
+          "text": "Creates columns that are at least 200px but can grow to fill available space when 1fr distributes space"
+        },
+        {
+          "id": "c",
+          "text": "Creates columns that are 200px in fixed grids and 1fr in flexible grids only"
+        },
+        {
+          "id": "d",
+          "text": "Creates columns with a minimum of 200px width and a maximum of 1fr height"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`minmax(200px, 1fr)` defines a track size range: minimum 200px, maximum 1fr. When space is abundant, the column grows to take its share of remaining space (via 1fr). When space is tight, it doesn't shrink below 200px. Common pattern: `repeat(auto-fit, minmax(250px, 1fr))` creates a responsive grid with as many 250px+ columns as fit, all expanding equally. This is the foundation of truly responsive CSS Grid without media queries."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does CSS Grid handle placing more grid items than explicitly defined tracks?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Extra items are hidden and do not render"
+        },
+        {
+          "id": "b",
+          "text": "Extra items overflow the grid and appear outside the container"
+        },
+        {
+          "id": "c",
+          "text": "Extra items are placed in implicit grid rows/columns created automatically to fit all items"
+        },
+        {
+          "id": "d",
+          "text": "The browser throws a layout error and stops rendering items"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "Grid creates implicit tracks automatically for items that don't fit in explicit tracks. Use `grid-auto-rows` and `grid-auto-columns` to control the size of these implicit tracks. Without explicit sizing, implicit rows default to `auto` height (content-sized). For a photo gallery with unknown number of items, grid handles the layout seamlessly — you only define columns; rows are created as needed."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which grid placement property is equivalent to `grid-row: 1 / -1`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "grid-row: 1 / 1 — spans only the first row"
+        },
+        {
+          "id": "b",
+          "text": "grid-row: 1 / span all — spans all rows including future ones"
+        },
+        {
+          "id": "c",
+          "text": "grid-row: 1 / -1 — spans from the first row line to the last row line (the entire grid height)"
+        },
+        {
+          "id": "d",
+          "text": "grid-row: auto — item fills all rows automatically"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "Negative grid line numbers count from the end: -1 is the last line, -2 is the second-to-last, etc. `grid-row: 1 / -1` means 'from the first row line to the last row line', spanning the full height of the grid. This is useful for sidebars that should stretch the full height of the page layout. Similarly, `grid-column: 1 / -1` spans all columns from edge to edge."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `grid-area` on a grid item when used with `grid-template-areas`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It sets the pixel position (x, y) of the item on the grid"
+        },
+        {
+          "id": "b",
+          "text": "It assigns the item to a named area defined in grid-template-areas on the container"
+        },
+        {
+          "id": "c",
+          "text": "It defines the number of rows and columns the item spans"
+        },
+        {
+          "id": "d",
+          "text": "It overrides grid-template-areas entirely and forces manual placement"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`grid-area` on a child assigns it to the named area from the parent's `grid-template-areas`. When a child has `grid-area: sidebar`, it fills all cells with the name 'sidebar' in the template. This declarative mapping is what makes grid-template-areas so readable — you name components, not coordinates. Without grid-template-areas, grid-area can also accept line numbers: `grid-area: 1 / 1 / 3 / 2` (row-start / col-start / row-end / col-end)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `align-self` control in CSS Grid?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Horizontal alignment of an item within its column cell"
+        },
+        {
+          "id": "b",
+          "text": "Vertical alignment of an item within its row track"
+        },
+        {
+          "id": "c",
+          "text": "Alignment of the entire grid within the container (along block axis)"
+        },
+        {
+          "id": "d",
+          "text": "Alignment of the entire grid within the container (along inline axis)"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`align-self` aligns a grid item along the block (column) axis — vertically in horizontal writing mode. This controls how the item sits within its assigned grid area if the area is taller than the item. Just like flexbox: justify-self aligns along the inline (row) axis (horizontally), align-self aligns along the block axis (vertically). The container-level equivalent is `align-items`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `justify-items` and `align-items` in CSS Grid?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "They are identical — both words are synonyms for grid alignment"
+        },
+        {
+          "id": "b",
+          "text": "justify-items aligns items along the inline axis (horizontally in LTR); align-items aligns items along the block axis (vertically)"
+        },
+        {
+          "id": "c",
+          "text": "justify-items only works in flexbox; align-items only works in CSS Grid"
+        },
+        {
+          "id": "d",
+          "text": "justify-items aligns the grid itself within the container; align-items aligns grid items within their cells"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Grid uses the same alignment model as flexbox. `justify-items` aligns items along the inline axis (the row direction, horizontally). `align-items` aligns items along the block axis (the column direction, vertically). Both are container properties that set default alignment for all items. Individual items can override with `justify-self` and `align-self`. The shorthand is `place-items: <align> / <justify>`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the key structural difference between CSS Grid and Flexbox in terms of layout axes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "CSS Grid is one-dimensional (handles rows OR columns); Flexbox is two-dimensional (handles rows AND columns)"
+        },
+        {
+          "id": "b",
+          "text": "CSS Grid is two-dimensional (handles rows AND columns simultaneously); Flexbox is one-dimensional (handles items in a single direction)"
+        },
+        {
+          "id": "c",
+          "text": "Both are two-dimensional; the only difference is that Grid uses explicit tracks while Flexbox uses implicit"
+        },
+        {
+          "id": "d",
+          "text": "Both are one-dimensional; Grid handles columns and Flexbox handles rows by convention"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "This is the fundamental distinction. Flexbox arranges items along a single axis (row OR column) — great for linear components like nav bars, card rows, toolbars. CSS Grid arranges items in two dimensions simultaneously (rows AND columns) — ideal for page-level layouts, galleries, data tables, and anything where items need to align both horizontally and vertically. Use Grid for the overall page structure; use Flexbox for component-level linear arrangements."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `grid-template-columns: subgrid` enable in a nested grid item?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It copies the parent grid's column definitions into the item, aligning it with the parent's grid lines"
+        },
+        {
+          "id": "b",
+          "text": "It allows a nested grid item to inherit the parent grid's row/column lines and participate in the outer grid's alignment, enabling true cross-component alignment"
+        },
+        {
+          "id": "c",
+          "text": "It replaces the item's content with a sub-grid rendered as an SVG pattern"
+        },
+        {
+          "id": "d",
+          "text": "It automatically generates 12 columns inside the grid item regardless of the parent grid"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "subgrid allows a grid item to adopt the parent grid's track definitions for one or both axes, participating in the outer grid's column/row lines. This solves the classic alignment problem: card content in a grid of cards cannot align across cards without subgrid. With subgrid, card header/body/footer can align to the parent grid lines even though they're inside different card components. Browser support reached baseline in 2023 — it is now safe to use."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `grid-column: 1 / span 2` mean when the grid has `grid-template-columns: repeat(3, 1fr)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The item spans from line 1 to line 2, occupying exactly 1 column"
+        },
+        {
+          "id": "b",
+          "text": "The item spans 2 columns starting from line 1, so it occupies lines 1–3 (columns 1 and 2)"
+        },
+        {
+          "id": "c",
+          "text": "The item tries to span 2 columns but is clipped to only 1 because the grid only has 3 columns"
+        },
+        {
+          "id": "d",
+          "text": "The span keyword is only valid for grid-row, not grid-column"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`span 2` means 'stretch across 2 tracks from your starting position'. Starting at line 1, spanning 2 tracks means lines 1→2 (track 1) and 2→3 (track 2). In a 3-column grid, this item occupies columns 1 and 2. `span` is relative placement — the item finds its natural position first, then spans from there. This is cleaner than calculating explicit line numbers and works with auto-placement."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of `dense` packing in CSS Grid's auto-placement algorithm?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It makes grid items smaller to fit more content in the same area"
+        },
+        {
+          "id": "b",
+          "text": "It allows the auto-placement algorithm to fill gaps by placing smaller items into earlier holes, potentially out-of-document-order placement"
+        },
+        {
+          "id": "c",
+          "text": "It increases the pixel density of images inside grid items"
+        },
+        {
+          "id": "d",
+          "text": "It prevents items from spanning multiple rows, keeping the grid compact"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`grid-auto-flow: dense` (or `grid-auto-flow: row dense`) enables dense packing — when an item spans multiple tracks and doesn't fit, the auto-placement algorithm goes back and fills earlier gaps with items that do fit. Warning: dense packing changes visual order away from DOM order, which can break keyboard navigation and screen reader reading order. Only use it for purely visual layouts (image galleries) where reading order doesn't matter."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `grid-template-columns: masonry` enable, and which browsers support it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Masonry creates a two-dimensional grid where items span both rows and columns; supported in all major browsers since 2022"
+        },
+        {
+          "id": "b",
+          "text": "Masonry creates a Pinterest-style layout where items pack upward into the shortest column; currently experimental, behind a flag in Firefox and Chrome"
+        },
+        {
+          "id": "c",
+          "text": "Masonry is a CSS Grid replacement that works identically across all browsers without configuration"
+        },
+        {
+          "id": "d",
+          "text": "Masonry requires JavaScript to calculate column heights; pure CSS masonry is not possible"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS Grid Level 3 introduced `grid-template-columns: masonry` (and `grid-template-rows: masonry`) for true masonry layouts where items pack into the shortest column without gaps. This is different from the standard grid which creates strict rows. As of 2025-2026, Firefox has shipped it behind a flag; Chrome has it in progress. It's NOT yet baseline available. For production, use JS libraries like Masonry.js or CSS columns as a fallback."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In CSS Grid, `grid-gap` (now `gap`) only adds space between grid tracks — it does not add space around the outer edge of the grid.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "gap sets space between grid tracks (between items), not at the outer edges of the container. The outer edge space comes from padding on the container or margins on items. This is intentional: gap makes gutters consistent between items, while edge spacing is a container-level concern. This distinction is important for full-bleed layouts where content spans to container edges."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A grid item can simultaneously span multiple rows AND multiple columns using `grid-row: span 2` and `grid-column: span 2`.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Grid items can span any number of row tracks and any number of column tracks independently. `grid-row: span 2; grid-column: span 3` creates an item occupying 2 rows × 3 columns — a cell that spans across the grid. The shorthand is `grid-area: 1 / 1 / span 2 / span 3` (row-start / col-start / row-span / col-span). This multi-span capability is what distinguishes 2D Grid from 1D Flexbox."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "When using `grid-template-columns: repeat(auto-fit, minmax(250px, 1fr))`, `auto-fit` and `auto-fill` will always produce the same layout when there are exactly enough items to fill the row.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "When items exactly fill the row (no empty tracks exist), auto-fit and auto-fill behave identically — both stretch items to fill the container. The difference only manifests when there are fewer items than would fill the row: auto-fill preserves empty column space; auto-fit collapses empty columns and stretches the filled ones. This is the key decision point between the two keywords."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this CSS produce?\n\n```css\n.grid {\n  display: grid;\n  grid-template-columns: repeat(3, 1fr);\n  grid-template-rows: 100px 200px;\n  gap: 12px;\n}\n/* items: a, b, c, d, e, f */\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "3 columns of equal width. 2 explicit rows: first 100px, second 200px. Items a-f fill row-by-row. Item d overflows (no row for d-f)."
+        },
+        {
+          "id": "b",
+          "text": "3 columns of equal width. First row 100px, second row 200px. Items a-c in row 1, d-f in row 2. Items g+ placed in implicit rows of auto height."
+        },
+        {
+          "id": "c",
+          "text": "The browser ignores grid-template-rows since only 2 rows are defined for 6 items."
+        },
+        {
+          "id": "d",
+          "text": "3 columns and 2 rows — exactly 6 cells for items a-f. Item f is hidden because only 5 cells exist."
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "grid-template-columns: repeat(3, 1fr) creates 3 equal columns. grid-template-rows: 100px 200px creates 2 explicit rows. This gives a 3×2 = 6-cell grid. Items a, b, c fill row 1 (100px). Items d, e, f fill row 2 (200px). Items beyond f (if any) would go into implicit rows — rows the browser auto-creates beyond the explicit grid. These implicit rows default to auto height (content-sized)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the resulting width of each column?\n\n```css\n.grid {\n  display: grid;\n  grid-template-columns: 200px 1fr 2fr;\n  width: 1000px;\n  gap: 0px;\n}\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "Column 1: 200px, Column 2: 267px, Column 3: 533px"
+        },
+        {
+          "id": "b",
+          "text": "Column 1: 200px, Column 2: 300px, Column 3: 500px"
+        },
+        {
+          "id": "c",
+          "text": "Column 1: 200px, Column 2: 266.67px, Column 3: 533.33px"
+        },
+        {
+          "id": "d",
+          "text": "Column 1: 200px, Column 2: 400px, Column 3: 400px"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Total container = 1000px. First column = fixed 200px. Remaining = 800px. Total fr units = 1 + 2 = 3fr. Value of 1fr = 800px / 3 = ~266.67px. Column 2 (1fr) = 266.67px. Column 3 (2fr) = 2 × 266.67px = 533.33px. Option A rounds to whole pixels (267px and 533px) which is typical browser behavior for pixel rendering. The key insight: fr units divide only the remaining space after fixed sizes are subtracted."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `grid-template-columns: repeat(2, 1fr)` create?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Two rows of equal height" },
+        { "id": "b", "text": "Two columns of equal width, each taking half the available space" },
+        { "id": "c", "text": "A grid with 2 tracks, each exactly 1px wide" },
+        { "id": "d", "text": "Two grid items that repeat automatically" }
+      ],
+      "correctKey": "b",
+      "explanation": "repeat(2, 1fr) is shorthand for 1fr 1fr — two equal flexible columns. fr distributes the available space after fixed sizes are subtracted. repeat(3, 1fr 2fr) creates 6 columns alternating 1fr and 2fr. repeat() works for both columns and rows."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default behavior when a grid item is not given an explicit grid placement?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The item is placed in the top-left cell (grid-area: 1/1)" },
+        { "id": "b", "text": "The auto-placement algorithm places the item in the next available empty cell" },
+        { "id": "c", "text": "The item is hidden and does not render" },
+        { "id": "d", "text": "The item spans all columns by default" }
+      ],
+      "correctKey": "b",
+      "explanation": "By default, items use auto-placement — the browser places each item in the next available grid cell, filling rows left-to-right, top-to-bottom. You can control placement order with grid-auto-flow. Auto-placement respects explicit spans: an item with grid-column: span 2 takes two cells."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `gap: 20px 10px` set?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "20px gap between all cells, 10px around container edges" },
+        { "id": "b", "text": "row-gap: 20px and column-gap: 10px — different gaps for rows vs columns" },
+        { "id": "c", "text": "20px horizontal gap and 10px vertical gap in flex containers only" },
+        { "id": "d", "text": "20px padding and 10px margin on all grid items" }
+      ],
+      "correctKey": "b",
+      "explanation": "gap with two values: first is row-gap (vertical), second is column-gap (horizontal). gap: 20px 10px = row-gap: 20px, column-gap: 10px. gap: 20px (single value) = same gap for both axes. gap does not add space at outer edges — only between tracks."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `grid-auto-flow: dense` do that `row` does not?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "dense prevents grid items from spanning multiple rows" },
+        { "id": "b", "text": "dense fills earlier gaps in the grid with smaller items that come later in the DOM, optimizing space usage at the cost of visual order potentially differing from DOM order" },
+        { "id": "c", "text": "dense stretches all items to fill available space equally" },
+        { "id": "d", "text": "dense creates additional implicit rows to fit all content" }
+      ],
+      "correctKey": "b",
+      "explanation": "grid-auto-flow: dense (or row dense) enables dense packing — when an item can't fit in its natural position (due to explicit spans), the algorithm goes back and fills earlier gaps with later items. This creates more compact layouts but can disconnect visual order from DOM order (bad for accessibility/keyboard nav). Only use for purely visual layouts like image galleries."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `grid-column: 1 / -1` mean, and what layout does it create?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The item spans from column line 1 to column line -1, spanning all explicit columns — useful for full-width headers and footers" },
+        { "id": "b", "text": "The item is placed in column 1 only, and -1 is ignored" },
+        { "id": "c", "text": "The item spans all columns in reverse order (right to left)" },
+        { "id": "d", "text": "grid-column: 1 / -1 only works for rows, not columns" }
+      ],
+      "correctKey": "a",
+      "explanation": "Negative grid line numbers count from the end. -1 is the last column line. grid-column: 1 / -1 = 'from first line to last line', spanning the full width of the grid. This is the canonical pattern for a full-bleed header or footer within a grid container: .header { grid-column: 1 / -1; } makes it span all columns."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `min-content` and `max-content` as a grid track size?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "min-content uses the smallest item in the track; max-content uses the largest item" },
+        { "id": "b", "text": "min-content sizes the track to the smallest possible size that fits content without overflowing; max-content sizes to the width of the largest item without wrapping" },
+        { "id": "c", "text": "min-content is identical to 0; max-content is identical to 100%" },
+        { "id": "d", "text": "min-content only applies to rows; max-content only applies to columns" }
+      ],
+      "correctKey": "b",
+      "explanation": "min-content: the track takes the minimum space needed — the smallest item without causing overflow. max-content: the track takes enough space for the largest item to render without wrapping at all. These keywords are useful for intelligent grid sizing that adapts to content: grid-template-columns: minmax(min-content, 1fr) creates columns that are at least as wide as their content but can grow."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `justify-content: space-between` do on a grid container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Distributes items evenly across all columns with equal gaps" },
+        { "id": "b", "text": "Aligns items to the start, with no space at the edges" },
+        { "id": "c", "text": "Distributes remaining space by placing the first item at the start and last item at the end, with equal gaps between remaining items" },
+        { "id": "d", "text": "Stretches all items to fill the entire grid width" }
+      ],
+      "correctKey": "c",
+      "explanation": "justify-content in CSS Grid aligns the entire grid (the grid tracks as a group) along the inline axis (horizontally). space-between places the first track at the start and the last track at the end, distributing remaining space evenly between tracks. Other values: start, end, center, space-around, space-evenly, stretch."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `align-content` do on a grid container with multiple rows?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Aligns grid items individually along the inline axis" },
+        { "id": "b", "text": "Distributes free space along the block axis when grid rows don't fill the container height — values include start, end, center, space-between, space-around, stretch" },
+        { "id": "c", "text": "Aligns all grid items to the center of their respective cells" },
+        { "id": "d", "text": "Changes the size of each grid track" }
+      ],
+      "correctKey": "b",
+      "explanation": "align-content aligns the entire grid tracks group along the block axis (vertically). It only has visible effect when there is free space in the container that isn't filled by grid rows — i.e., when grid rows are smaller than the container. Without align-content, excess space is distributed by align-items (which aligns items within cells)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `grid-template-columns: subgrid` mean when applied to a grid item that spans multiple rows and columns?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "subgrid copies the parent's row definitions but uses its own column definitions" },
+        { "id": "b", "text": "subgrid allows the item to inherit the parent grid's row/column track definitions and participate in the outer grid's alignment — enabling true cross-card/cross-component alignment without hacks" },
+        { "id": "c", "text": "subgrid creates a nested independent grid with its own grid lines" },
+        { "id": "d", "text": "subgrid is a fallback for browsers that don't support CSS Grid" }
+      ],
+      "correctKey": "b",
+      "explanation": "subgrid adopts the parent grid's track lines for the axes it spans. If an item spans 3 rows, grid-template-rows: subgrid makes those 3 rows align with the parent grid's rows. This solves the classic alignment problem in card grids: card headers, bodies, and footers can't align across cards without subgrid. Browser support reached baseline in late 2023 — safe to use with a fallback."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the correct order of grid line numbers in a grid with `grid-template-columns: repeat(3, 1fr)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Lines numbered 0 to 3 (0, 1, 2, 3)" },
+        { "id": "b", "text": "Lines numbered 1 to 4 going left-to-right; -1 to -4 going right-to-left — 4 lines for 3 columns" },
+        { "id": "c", "text": "Lines numbered 0 to 6 (0 to 6 for 3 columns)" },
+        { "id": "d", "text": "Lines only have names when explicitly assigned; without names, line numbers cannot be used" }
+      ],
+      "correctKey": "b",
+      "explanation": "A grid with 3 columns has 4 boundary lines: before column 1 (line 1), between 1-2 (line 2), between 2-3 (line 3), after column 3 (line 4). Lines 1-4 are positive (left-to-right); lines -1 to -4 are the same lines from the other end (-1 = line 4, -4 = line 1). You can name lines with [name] syntax: grid-template-columns: [full-start] 1fr [full-end sidebar-start] 1fr [sidebar-end]."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does `grid-auto-columns: minmax(100px, auto)` control implicit column sizing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Sets all implicit columns to exactly 100px wide, ignoring content" },
+        { "id": "b", "text": "Sets implicit columns (created for overflow items) to be at least 100px, but can grow to fit content — auto means 'size to content'" },
+        { "id": "c", "text": "Only affects explicit grid columns; implicit columns are always auto-sized" },
+        { "id": "d", "text": "grid-auto-columns is not valid — only grid-auto-rows exists" }
+      ],
+      "correctKey": "b",
+      "explanation": "grid-auto-columns controls the width of columns created automatically for items that overflow the explicit column grid. minmax(100px, auto): minimum 100px, maximum 'content-sized' (the track grows to fit its content). This is the standard pattern for responsive grids where you define explicit columns but want implicit overflow columns to have sensible sizing."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the correct way to create named grid lines and use them in placement?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "grid-template-columns: [start] 1fr [middle] 1fr [end]; grid-column: start / end" },
+        { "id": "b", "text": "Grid lines can be named in template definitions using [name] syntax; items reference the name in placement properties: grid-column: main-start / main-end" },
+        { "id": "c", "text": "Named lines must be assigned with grid-line-name property; they cannot be assigned in grid-template-columns" },
+        { "id": "d", "text": "Named lines are only valid in CSS Grid Level 3; Level 2 uses numeric lines only" }
+      ],
+      "correctKey": "b",
+      "explanation": "Name grid lines in the template: grid-template-columns: [col-start] 200px [col-end sidebar-start] 1fr [sidebar-end]. Then place items: grid-column: col-start / col-end. Multiple names can be assigned to the same line: [full-start sidebar-start] 1fr [full-end sidebar-end]. Named lines improve readability and make layout templates self-documenting."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In CSS Grid, items can be explicitly placed using line numbers, named areas, or auto-placement — but they cannot span grid tracks without using grid-column or grid-row span properties.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Items CAN span multiple tracks without using grid-column/grid-row span — you can place them explicitly using line numbers: grid-column: 1 / 3 (from line 1 to line 3 = spanning 2 columns). span is just one way to specify the end position. You can also use grid-area with line numbers: grid-area: 1 / 1 / 3 / 3 (row-start/col-start/row-end/col-end)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "In CSS Grid, `grid-column: span 2` and `grid-column: 1 / span 2` produce identical placement — both span 2 tracks starting from the item's auto-placement position.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "grid-column: span 2 means 'span 2 tracks from the auto-placement position'. grid-column: 1 / span 2 is equivalent — span 2 tracks starting from line 1. Both create a 2-column span. The key is that span is relative to auto-placement unless a start line is explicitly given."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "When using `grid-template-columns: masonry`, items in a CSS masonry layout can span both rows and columns simultaneously.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "CSS masonry layout (grid-template-columns: masonry) only supports one-dimensional packing — items flow into the shortest column and cannot span multiple columns. This is what distinguishes masonry from standard CSS Grid. Spanning multiple rows/columns is standard CSS Grid, not masonry. Masonry is currently experimental (Firefox behind flag, Chrome in progress) and not baseline available."
+    }
+  ]
+}

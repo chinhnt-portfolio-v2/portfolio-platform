@@ -1,0 +1,526 @@
+{
+  "topicSlug": "dsa-arrays",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of accessing an element by index in an array?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — arrays provide constant-time random access via index offset calculation"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — the array must be scanned sequentially to reach the index"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — binary search is used to locate the index"
+        },
+        {
+          "id": "d",
+          "text": "O(n²) — nested index lookups are required"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Arrays store elements in contiguous memory blocks. Computing the address of arr[i] is a single arithmetic operation: base_address + i * element_size. This direct address calculation is O(1), which is why arrays are called 'random access' data structures. The confusion often arises when confusing access (O(1)) with search (O(n) for unsorted, O(log n) for sorted). Option B describes a linked list, not an array."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does it mean for an array to have O(n) insertion time at an arbitrary position?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Elements after the insertion point must be shifted right by one position to make room"
+        },
+        {
+          "id": "b",
+          "text": "The entire array is copied to a new memory location to accommodate the new element"
+        },
+        {
+          "id": "c",
+          "text": "The hash of the key determines the insertion bucket in O(n) time"
+        },
+        {
+          "id": "d",
+          "text": "Insertion is always O(1); O(n) only applies to deletion"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Arrays have fixed contiguous memory. Inserting at index k requires shifting all elements at positions k, k+1, ... n-1 one step to the right before writing the new element. This shifting costs O(n-k) in the worst case (inserting at position 0). This is why array-backed lists (ArrayList) have O(n) insertion at arbitrary positions, while appending to the end is O(1). Option B describes array resizing (a separate operation). Option C describes hash table insertion."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which technique finds the maximum subarray sum in O(n) time?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Divide and conquer — recursively split the array in half and combine results in O(n log n)"
+        },
+        {
+          "id": "b",
+          "text": "Kadane's algorithm — maintain a running sum and reset when the sum goes negative, tracking the global maximum"
+        },
+        {
+          "id": "c",
+          "text": "Bubble sort — repeatedly swap adjacent elements and track the largest sum encountered"
+        },
+        {
+          "id": "d",
+          "text": "Binary search — recursively search the half that could contain the maximum subarray"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Kadane's algorithm scans the array once: for each position i, compute max_ending_here = max(arr[i], max_ending_here + arr[i]). If max_ending_here becomes negative, reset to 0 because any subarray containing that prefix would be worse than starting fresh. The global max_so_far tracks the best answer. This gives O(n) time, O(1) space. Option A describes the O(n log n) divide-and-conquer approach (slower). Options C and D are incorrect — bubble sort doesn't solve max subarray, binary search requires sorted data."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following code?\n\narr = [1, 2, 3, 4, 5]\nresult = []\nfor i in range(len(arr)):\n    result.append(arr[len(arr) - 1 - i])\nprint(result)",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "The loop iterates from i=0 to i=4. At each step it accesses arr[4-i], producing indices 4,3,2,1,0 respectively. This is an in-place reversal algorithm's index-mapping variant. Option A would result from no reversal. Option C is wrong. Option D would require a break statement after one iteration. This pattern demonstrates how array indices can be manipulated to traverse in reverse order without modifying the original."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the space complexity of reversing an array in-place?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n) — a second array of the same size must be allocated"
+        },
+        {
+          "id": "b",
+          "text": "O(1) — only a constant number of temporary variables are needed for swapping"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — recursion depth is proportional to log n"
+        },
+        {
+          "id": "d",
+          "text": "O(n log n) — the algorithm requires a logarithmic amount of auxiliary space"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "In-place reversal uses two pointers (left and right) swapping arr[left] and arr[right] while moving toward the center. Only one temp variable is needed per swap, and at most n/2 swaps occur, but the number of extra variables never exceeds O(1). This is the gold standard for space efficiency — transforming the array without allocating additional proportional storage. Option A describes an out-of-place reversal. Options C and D are not applicable to this linear iterative algorithm."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a sliding window technique used for in array problems?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Sorting an array by repeatedly swapping elements across a fixed-size window"
+        },
+        {
+          "id": "b",
+          "text": "Finding subarrays with particular properties by maintaining a window that expands or shrinks as the right pointer moves, avoiding redundant recomputation"
+        },
+        {
+          "id": "c",
+          "text": "Converting a 1D array into a 2D matrix by grouping elements in fixed-size buckets"
+        },
+        {
+          "id": "d",
+          "text": "Encrypting array elements using a moving key window"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "The sliding window pattern maintains a subarray (window) defined by left and right pointers. As the right pointer slides right, the left pointer may also advance to shrink the window when a condition is violated. This avoids the O(n²) brute force of recomputing sums/counts from scratch for every subarray. Classic problems: longest subarray with sum ≤ k, minimum size subarray sum ≥ target, all anagrams of a pattern. Option A describes bubble sort behavior, not sliding window. Option C and D are unrelated."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In the two-pointer technique on a sorted array, what problem does finding a pair with sum = target solve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Start pointers at both ends; if sum > target, move right pointer left; if sum < target, move left pointer right — O(n) time"
+        },
+        {
+          "id": "b",
+          "text": "Start both pointers at index 0; advance both rightward; check sum each step — O(n²) time"
+        },
+        {
+          "id": "c",
+          "text": "Binary search for each element individually; combine results — O(n log n)"
+        },
+        {
+          "id": "d",
+          "text": "Use a hash set to store complements as you scan — O(n) time but O(n) space"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "On a sorted array, placing pointers at both ends exploits monotonicity: if arr[L] + arr[R] > target, making R smaller is the only way to reduce the sum (moving L would only increase it). If sum < target, L must increase. This converges in at most n steps → O(n) time, O(1) space. Option B describes two pointers moving the same direction (not useful for this problem). Option C is less optimal. Option D describes a hash-set approach, which is also O(n) time but uses O(n) space — the two-pointer method is the space-optimal variant."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following algorithm?\n\narr = [1, 2, 3]\nfor i in range(len(arr)):\n    for j in range(i + 1, len(arr)):\n        print(arr[i], arr[j])",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "c",
+      "explanation": "This prints all pairs (i, j) where i < j: (1,2), (1,3), (2,3). The outer loop runs from i=0 to n-1; the inner loop runs from i+1 to n-1. Total pairs = n(n-1)/2. This pattern is the basis for O(n²) pair-checking algorithms and is often used as the brute-force baseline for comparison. Option A misses (1,3). Option B adds an incorrect pair. Option D has wrong ordering."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "A static array has a fixed size that cannot be changed after allocation. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "A static array (raw array in most languages) is allocated with a fixed size at compile time or declaration — the memory block is contiguous and of predetermined length. In languages like Java and Python, ArrayList/dynamic arrays can grow by reallocating a new larger array and copying elements (amortized O(1) append), but a plain static array cannot change size. Once the array is full, inserting another element requires either rejecting the insertion or using a dynamic data structure."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the average-case time complexity of quick sort?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n log n) — partition divides the array roughly in half at each level, giving log n levels with O(n) work per level"
+        },
+        {
+          "id": "b",
+          "text": "O(n²) — every element must be compared with every other element"
+        },
+        {
+          "id": "c",
+          "text": "O(n) — a single linear pass partitions the entire array"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — quick sort eliminates half the elements with each comparison"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Quick sort's average case depends on the partition dividing near the middle. At each recursive level, the partition costs O(n) and halves the problem size, giving n × log n = O(n log n). The worst case (already sorted array with bad pivot like first element) degrades to O(n²). Using randomized pivot or median-of-three mitigates worst-case risk. Option B is the worst case, not average. Option C underestimates the cost of partitioning at each level. Option D incorrectly applies binary-search logic."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ns = 'hello world'\nleft, right = 0, len(s) - 1\nchars = list(s)\nwhile left < right:\n    if not chars[left].isalnum():\n        left += 1\n        continue\n    if not chars[right].isalnum():\n        right -= 1\n        continue\n    chars[left], chars[right] = chars[right], chars[left]\n    left += 1\n    right -= 1\nprint(''.join(chars))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "The two-pointer approach skips non-alphanumeric characters (spaces, punctuation) without swapping them, then swaps the alphanumeric characters at the two pointers. The pointers converge inward while non-alphanumeric characters remain fixed in their original positions. This is a classic 'valid palindrome' / 'reverse only letters' problem pattern. Option A would result from a plain reverse with no skip logic. Option C is wrong — isalnum() returns False for spaces, triggering a skip, not blocking swaps entirely. Option D describes a different word-block reversal."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the worst-case time complexity of the two-pointer technique for the pair-sum-in-sorted-array problem?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — pointer arithmetic is constant time"
+        },
+        {
+          "id": "b",
+          "text": "O(log n) — binary halving reduces the search space logarithmically"
+        },
+        {
+          "id": "c",
+          "text": "O(n) — each pointer moves at most n steps in total across the entire algorithm"
+        },
+        {
+          "id": "d",
+          "text": "O(n²) — every pair combination must be checked"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "The left pointer moves right at most n times; the right pointer moves left at most n times. They start apart and converge, so combined they make at most n movements (not 2n). At each step, constant-time operations occur. This O(n) total is much better than the O(n²) brute-force of checking all n² pairs. Option A is wrong (the number of steps matters, not individual operations). Option B misapplies binary-search logic. Option D describes naive pair enumeration."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When does Kadane's algorithm produce an incorrect result for maximum subarray sum?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "When all array elements are negative — the algorithm resets the running sum to 0 instead of tracking the largest negative"
+        },
+        {
+          "id": "b",
+          "text": "When the array contains zeros — zeros cause premature termination"
+        },
+        {
+          "id": "c",
+          "text": "Kadane's algorithm always produces the correct result regardless of element values"
+        },
+        {
+          "id": "d",
+          "text": "When the array is empty — the algorithm incorrectly returns 0 instead of raising an error"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "The standard Kadane resets max_ending_here to 0 when it becomes negative. For an all-negative array, this means the answer starts at 0 and never improves, returning 0 instead of the maximum (least negative) element. The fix is to initialize max_ending_here = arr[0] and max_so_far = arr[0], resetting only when max_ending_here < 0 (not resetting to 0, but to arr[i]). Option B is wrong (zeros are handled correctly). Option C is false for the naive variant. Option D is a valid edge case check but not the algorithm's primary failure mode."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the time complexity of checking whether a string is a palindrome using the two-pointer technique?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — only two pointer comparisons are needed regardless of string length"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — each character is visited at most once as pointers converge from both ends"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — the search space halves with each character comparison"
+        },
+        {
+          "id": "d",
+          "text": "O(n²) — characters must be compared in all possible pair combinations"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Two pointers start at opposite ends and move toward each other, comparing characters at each step. Each character is compared at most once (when a pointer reaches it), giving O(n) time. If non-alphanumeric characters are skipped, the algorithm still runs in O(n) since each character is visited at most once. This is a linear pass, not a halving search. Option A is wrong. Option C misapplies halving logic. Option D describes pairwise comparison, not the two-pointer approach."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key difference between a sliding window of fixed size and one of variable size?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Fixed window always expands the right pointer by 1 each iteration; variable window also shrinks the left pointer to maintain a condition"
+        },
+        {
+          "id": "b",
+          "text": "Variable window requires O(n log n) time; fixed window requires O(n)"
+        },
+        {
+          "id": "c",
+          "text": "Fixed window can only be used on sorted arrays; variable window works on any array"
+        },
+        {
+          "id": "d",
+          "text": "Fixed window uses two pointers moving in opposite directions; variable window uses both pointers moving in the same direction"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Fixed-size sliding window: maintain a window of exactly k elements; slide right by dropping the leftmost and adding the new element each step. Variable-size (expand/shrink): maintain a window that satisfies some condition (e.g., sum ≤ k); expand right until condition is violated, then contract from left until valid again, tracking the best answer. The variable-size pattern is needed for problems like 'longest subarray with sum less than k'. Option B is false (both can be O(n)). Option C is false. Option D is wrong — fixed windows can use same-direction pointers too."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The time complexity of reversing a string in-place is O(n) and the space complexity is O(1). True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Reversing in-place traverses n/2 swap pairs (constant work each), giving O(n) time. Only two indices and one temp variable are needed regardless of input size, giving O(1) auxiliary space. The output string is written directly over the input storage."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The two-pointer technique on a sorted array always finds the target pair in O(n) time. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Two-pointer finds a pair if one exists in O(n), but it does not guarantee finding a specific target sum value — it finds *a* pair that sums correctly, not a specific target value. If asked to find a specific pair (e.g., sum = 15), the algorithm still runs in O(n) but may not find a solution if none exists; it won't miss one if it exists. The statement conflates O(n) traversal with guaranteed target discovery."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\narr = [-2, 1, -3, 4, -1, 2, 1, -5, 4]\nmax_ending = arr[0]\nmax_total = arr[0]\nfor i in range(1, len(arr)):\n    max_ending = max(arr[i], max_ending + arr[i])\n    max_total = max(max_total, max_ending)\nprint(max_total)",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Kadane's algorithm on [-2,1,-3,4,-1,2,1,-5,4]: iteration by iteration, max_ending and max_total evolve. The maximum subarray [4,-1,2,1] sums to 6. This is the classic maximum subarray (Kadane's) problem — any subarray containing a prefix with negative sum would reduce the total, so the algorithm correctly restarts from 4. Option B (5) would be [1,-3,4,-1,2,1] which sums to 4, not 5. Option C misses the benefit of extending the subarray. Option D is wrong — it includes too many negatives."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which of the following are valid applications of the two-pointer technique? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Finding a pair with a target sum in a sorted array" },
+        { "id": "b", "text": "Checking if a string is a palindrome" },
+        { "id": "c", "text": "Finding the middle node of a linked list" },
+        { "id": "d", "text": "Sorting an unsorted array in O(n log n)" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Two-pointer works on sorted arrays (pair sum), palindrome checking (converging from both ends), and linked list middle finding (slow + fast pointers). Option D (sorting) requires a comparison-based sort with O(n log n) guarantee — two-pointer alone cannot sort an arbitrary array. The two-pointer is a search/matching technique, not a sorting technique."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a 2D array (matrix), and what is the time complexity of accessing matrix[r][c]?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A 2D array is stored as a jagged array of arrays; access requires O(rows) to find the row, then O(1) for the column — overall O(rows)"
+        },
+        {
+          "id": "b",
+          "text": "A 2D array stores elements in contiguous memory (row-major or column-major); accessing matrix[r][c] is O(1) via address calculation: base + (r * cols + c) * element_size"
+        },
+        {
+          "id": "c",
+          "text": "A 2D array requires a hash map for O(1) access; without it, access is O(n)"
+        },
+        {
+          "id": "d",
+          "text": "A 2D array is stored as a tree; access requires traversing from root to leaf"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "In most languages (C, C++, Python's list-of-lists, Java 2D arrays), a 2D array stores rows contiguously one after another. The address calculation is O(1): element_addr = base + ((r * ncols) + c) * size. Whether row-major (C, Python) or column-major (Fortran, MATLAB) affects the stride pattern but access remains O(1). Jagged arrays (arrays of arrays, e.g., in Java) still give O(1) per dimension access after one pointer dereference. Option A overstates the cost. Options C and D are wrong."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the space complexity of the O(n log n) merge sort algorithm when implemented in-place?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — merge sort can be implemented in-place by swapping elements within the original array"
+        },
+        {
+          "id": "b",
+          "text": "O(log n) — only recursion depth requires logarithmic stack space"
+        },
+        {
+          "id": "c",
+          "text": "O(n) — the merge step requires a temporary array proportional to the subarray size being merged"
+        },
+        {
+          "id": "d",
+          "text": "O(n log n) — the algorithm requires space proportional to the total number of elements across all levels"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "Standard merge sort's merge/combine step needs a temporary array to hold the merged result before writing back. This array is O(n) in size. Recursion depth is O(log n) stack space. Combined: O(n) auxiliary space. Some in-place merge variants exist (rotating elements, O(1) temp but O(n²) time in naive forms), but standard textbooks use O(n) space. Option A is false. Option B ignores the merge buffer. Option D overestimates."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the recurrence relation for quick sort's average case, and what does it resolve to?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "T(n) = T(k) + T(n-k) + O(n), where k ≈ n/2; resolves to O(n log n)"
+        },
+        {
+          "id": "b",
+          "text": "T(n) = 2T(n/2) + O(n); resolves to O(n log n) via Master theorem"
+        },
+        {
+          "id": "c",
+          "text": "T(n) = T(n-1) + O(n); resolves to O(n²)"
+        },
+        {
+          "id": "d",
+          "text": "T(n) = T(n/2) + O(1); resolves to O(log n)"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Quick sort's partition step costs O(n). After partitioning at index k, subproblems of size k and n-k remain. In the average case (random pivot), k is roughly n/2, so the recurrence is T(n) = T(αn) + T((1-α)n) + O(n) with α ≈ 0.5, which solves to O(n log n). Option B's recurrence T(n) = 2T(n/2) + O(n) is merge sort, not quick sort — merge sort always divides perfectly; quick sort's partition is asymmetric in the worst case. Option C is the worst-case quick sort. Option D is binary search."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The average time complexity of quick sort and merge sort are both O(n log n), but quick sort is often faster in practice due to cache performance. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Quick sort operates in-place on contiguous memory regions (partition in-place), which is cache-friendly. Merge sort's divide step jumps between halves and requires O(n) auxiliary space, leading to more cache misses and memory overhead. Despite quick sort's O(n²) worst case, its average O(n log n) performance and superior cache locality often make it faster than merge sort in practice — the basis for languages like Dart and Java using quick sort variants (like introsort) for array sorting."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the prefix sum array technique and what problem does it solve efficiently?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Prefix sum precomputes cumulative sums so that any subarray sum from index i to j can be computed in O(1) as prefix[j] - prefix[i-1], turning O(n) per query into O(1)"
+        },
+        {
+          "id": "b",
+          "text": "Prefix sum sorts the array so that duplicates are grouped together, enabling O(1) frequency queries"
+        },
+        {
+          "id": "c",
+          "text": "Prefix sum compresses the array by storing only differences between consecutive elements, reducing space to O(log n)"
+        },
+        {
+          "id": "d",
+          "text": "Prefix sum is equivalent to binary search and can find elements in O(log n)"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Prefix sum: pref[i] = sum(arr[0..i]). To get sum(i..j): pref[j] - pref[i-1] (or pref[j] if i=0). Building the prefix sum: O(n). Each query: O(1). This turns n queries from O(n) each to O(n + q) total. Applications: range sum queries, constant-time subarray sum after O(n) preprocessing, 2D prefix sums for matrix sub-rectangle queries, difference arrays for range updates (apply delta to range [l,r] in O(1), then convert to final array). Option B is wrong. Option C overstates space reduction. Option D is wrong."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\narr = [[1, 2, 3],\n       [4, 5, 6],\n       [7, 8, 9]]\nrows, cols = len(arr), len(arr[0])\nresult = []\nfor r in range(rows):\n    row_sum = sum(arr[r][c] for c in range(cols))\n    result.append(row_sum)\nprint(result)",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "c",
+      "explanation": "Row sums of a 3×3 matrix: row 0 → 1+2+3=6, row 1 → 4+5+6=15, row 2 → 7+8+9=24. This is computing row-wise sums in O(rows × cols). Option A is column sums. Option B is total sum. Option D is wrong row count."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a dynamic array (ArrayList), and why does its amortized append remain O(1)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A dynamic array doubles its capacity when full, copying O(n) elements; over n operations, the total cost is O(n) so amortized per operation is O(1)"
+        },
+        {
+          "id": "b",
+          "text": "A dynamic array appends in O(1) by adding elements to the end without ever resizing; when full, it allocates a new array of the same size"
+        },
+        {
+          "id": "c",
+          "text": "A dynamic array uses a linked list internally to achieve O(1) append at both ends; amortized O(1) is the result of batch processing"
+        },
+        {
+          "id": "d",
+          "text": "A dynamic array only resizes when the array is completely empty, making all appends O(1)"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Dynamic array (ArrayList, vector): when the internal array is full, it allocates a new array (typically 2× size) and copies all n elements (O(n)). If we grow by factor c (e.g., 2×), the cost of the ith resize is proportional to the previous total size. Geometric series analysis shows total cost over n operations is O(n). Amortized cost per operation = O(n)/n = O(1). The key insight is that most appends are cheap (just write to next slot), and the few expensive copies are 'paid for' by the many cheap appends. Some implementations use 1.5× growth (Java's ArrayList) to trade off memory vs. copy frequency."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef subarray_sum(nums, k):\n    count = 0\n    prefix = 0\n    seen = {0: 1}\n    for num in nums:\n        prefix += num\n        count += seen.get(prefix - k, 0)\n        seen[prefix] = seen.get(prefix, 0) + 1\n    return count\n\nprint(subarray_sum([1, 1, 1], 2))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "This counts subarrays with sum exactly k using the prefix sum + hash map technique. The key insight: if prefix[j] - prefix[i] = k, then subarray (i+1..j) sums to k. Maintain count of each prefix sum seen so far. Iteration: prefix=1 → count+=0, seen={0:1,1:1}; prefix=2 → count+=seen[2-2]=seen[0]=1 (subarray [1]), seen={0:1,1:1,2:1}; prefix=3 → count+=seen[3-2]=seen[1]=1 (subarray [2]), seen={0:1,1:1,2:1,3:1}. Total: 2. These are subarrays ending at indices 1 and 2 (nums[0:2] and nums[1:3])."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the time complexity of rotating a 2D matrix 90 degrees clockwise in place?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n) — only the boundary elements are swapped in one pass"
+        },
+        {
+          "id": "b",
+          "text": "O(n²) — each of the n² elements is visited and moved once (or swapped once per layer)" },
+        {
+          "id": "c",
+          "text": "O(n log n) — the matrix is divided into four quadrants and merged"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — rotation is achieved by reversing the rows and then reversing each row"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "In-place 90° clockwise rotation: transpose the matrix (swap matrix[i][j] with matrix[j][i]), then reverse each row. Each element is visited or swapped exactly once (or a constant number of times). For an n×n matrix, that's O(n²) elements → O(n²) time. There is no sublinear solution because every element must be repositioned. Space: O(1) in-place. Option A underestimates. Option C is wrong. Option D describes the algorithm but mischaracterizes the complexity."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A 2D array and a 1D array both have O(1) random access by index. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Both 1D and 2D arrays store elements in contiguous memory. Address calculation: arr[i] → base + i*size. matrix[r][c] (row-major) → base + (r*ncols + c)*size. Both reduce to a single arithmetic computation — O(1) time. The number of dimensions does not affect random access time. What differs is cache performance: contiguous row-wise access (row-major) is cache-friendly; strided access (column-wise in row-major layout) causes cache misses."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The sliding window maximum problem has an O(n) solution using a monotonic deque. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Sliding window maximum (window size k, array of n): using a monotonic deque of indices in decreasing value order: (1) remove front indices outside current window, (2) remove back indices with values ≤ current element (they'll never be the max), (3) append current index. Each element is pushed and popped at most once → O(n) total. The deque at front always holds the maximum of the current window. Naive O(n×k) approach checks all k elements per window. This pattern is used in real-time signal processing, stock span problems, and traffic flow analysis."
+    }
+  ]
+}

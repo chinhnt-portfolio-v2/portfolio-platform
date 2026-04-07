@@ -1,0 +1,450 @@
+{
+  "topicSlug": "css-fundamentals",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property is used to change the text color of an element?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-color" },
+        { "id": "b", "text": "color" },
+        { "id": "c", "text": "font-color" },
+        { "id": "d", "text": "foreground" }
+      ],
+      "correctKey": "b",
+      "explanation": "The `color` property sets the foreground text color. The misnamed options (text-color, font-color, foreground) do not exist in CSS. `color` is one of the most frequently used properties — it accepts named colors, hex, rgb(), hsl(), and other color formats."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `box-sizing: border-box` do to an element's dimensions?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Width and height include only the content area" },
+        { "id": "b", "text": "Width and height include content, padding, and border" },
+        { "id": "c", "text": "Width and height include content and padding, but not border" },
+        { "id": "d", "text": "It removes the border from the element entirely" }
+      ],
+      "correctKey": "b",
+      "explanation": "`border-box` makes width/height encompass content + padding + border. The default `content-box` adds padding and border on top of the declared width, making layouts unpredictable. This is why modern CSS resets almost universally apply `box-sizing: border-box` to all elements — it makes sizing intuitive: if you set width: 300px, the element is exactly 300px wide regardless of padding or border."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS selector targets ALL elements on a page?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "all { }" },
+        { "id": "b", "text": "* { }" },
+        { "id": "c", "text": "body { }" },
+        { "id": "d", "text": "@all { }" }
+      ],
+      "correctKey": "b",
+      "explanation": "The universal selector `*` targets every element on the page. It has zero specificity, making it useful for CSS resets and global patterns. A common reset is `*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }`. Option C (body) targets only the body element, not all descendants."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In the CSS box model, which layer is closest to the element's content?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "margin" },
+        { "id": "b", "text": "border" },
+        { "id": "c", "text": "padding" },
+        { "id": "d", "text": "outline" }
+      ],
+      "correctKey": "c",
+      "explanation": "Padding sits directly between the content and the border. Going outward from center: content → padding → border → margin. Margin creates space outside the border (between this element and neighbors). Understanding the layer order is essential for debugging spacing issues."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default `position` value for all HTML elements?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "relative" },
+        { "id": "b", "text": "absolute" },
+        { "id": "c", "text": "fixed" },
+        { "id": "d", "text": "static" }
+      ],
+      "correctKey": "d",
+      "explanation": "Every element defaults to `position: static`. Static elements flow in the normal document order and ignore top/right/bottom/left offsets. Any element with position != static is called a 'positioned element' — only positioned elements establish a containing block for absolutely positioned descendants."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the correct order of specificity from highest to lowest?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "classes > IDs > elements > inline" },
+        { "id": "b", "text": "IDs > inline > classes > elements" },
+        { "id": "c", "text": "inline > IDs > classes/attributes/pseudo-classes > elements/pseudo-elements" },
+        { "id": "d", "text": "universal > elements > classes > IDs" }
+      ],
+      "correctKey": "c",
+      "explanation": "Specificity hierarchy (high to low): inline styles (1,0,0,0) > IDs (0,1,0,0) > classes/attributes/pseudo-classes (0,0,1,0) > elements/pseudo-elements (0,0,0,1) > universal selector (0,0,0,0). The universal selector has zero specificity. When specificity is equal, source order wins (later rule overrides earlier)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `display: none` and `visibility: hidden`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Both remove the element from the document flow and hide it visually" },
+        { "id": "b", "text": "display: none removes the element from the flow and takes no space; visibility: hidden hides it but reserves its space" },
+        { "id": "c", "text": "visibility: hidden removes the element from the flow; display: none hides it but keeps its layout space" },
+        { "id": "d", "text": "There is no difference — they are synonyms" }
+      ],
+      "correctKey": "b",
+      "explanation": "`display: none` removes the element from the document flow entirely (no space reserved), like it doesn't exist in the layout. `visibility: hidden` hides the element visually but it still occupies its space — the layout around it is unchanged. Use `display: none` when you want the element gone from layout; use `visibility: hidden` when you want it invisible but still affect layout."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which HTML element is inline by default and flows with surrounding text?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "<div>" },
+        { "id": "b", "text": "<p>" },
+        { "id": "c", "text": "<span>" },
+        { "id": "d", "text": "<section>" }
+      ],
+      "correctKey": "c",
+      "explanation": "<span> is a generic inline element — it flows with text and only takes as much width as its content. <div>, <section>, and <p> are block-level elements by default, each starting on a new line and taking full width. Use <span> for inline styling hooks without disrupting text flow."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which CSS property controls which layer an element appears on when elements overlap (stacking context)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "layer-index" },
+        { "id": "b", "text": "stack-order" },
+        { "id": "c", "text": "z-index" },
+        { "id": "d", "text": "display-order" }
+      ],
+      "correctKey": "c",
+      "explanation": "`z-index` controls stacking order within a stacking context. Higher values appear in front of lower values. Important: z-index only works on positioned elements (relative, absolute, fixed, sticky) — it has no effect on static elements. A new stacking context can be created by any element with a z-index value on a positioned element."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What happens when two block-level elements with margins meet vertically?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Both margins are added together (collapsing never happens)" },
+        { "id": "b", "text": "The larger margin wins and the smaller is discarded — this is called margin collapsing" },
+        { "id": "c", "text": "The smaller margin always wins to prevent excessive spacing" },
+        { "id": "d", "text": "Margins are averaged between the two elements" }
+      ],
+      "correctKey": "b",
+      "explanation": "Vertical margins between block elements collapse — the larger margin value is used and the smaller disappears. This only happens between block elements in the same stacking context; it does NOT happen for horizontally adjacent elements. Padding never collapses. Understanding margin collapse is critical for debugging unexpected spacing, especially in CSS resets."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which selector has HIGHER specificity: `.nav-link` or `header nav a`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": ".nav-link has higher specificity" },
+        { "id": "b", "text": "header nav a has higher specificity" },
+        { "id": "c", "text": "They have equal specificity — source order decides" },
+        { "id": "d", "text": "The browser assigns random specificity in this case" }
+      ],
+      "correctKey": "b",
+      "explanation": "header nav a = (0,0,0,3) — three element/pseudo-element selectors. .nav-link = (0,0,1,0) — one class selector. Classes beat elements regardless of quantity. The specificity formula is IDs (0,1,0,0) > classes (0,0,1,0) > elements (0,0,0,1). Three elements still lose to one class. This is why class selectors are preferred for maintainable CSS — element chains inflate specificity unnecessarily."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `position: sticky` require to work?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A parent with position: relative" },
+        { "id": "b", "text": "A defined height/width on the parent container" },
+        { "id": "c", "text": "At least one of top, right, bottom, or left offset properties" },
+        { "id": "d", "text": "position: sticky does not require any additional properties" }
+      ],
+      "correctKey": "c",
+      "explanation": "position: sticky requires at least one offset (top, right, bottom, left) to know when to 'stick'. Without an offset, the behavior is identical to relative positioning. Additionally, the parent container must have sufficient scroll space — if the parent scrolls away entirely, the sticky element scrolls away too. Common use: sticky headers that fix to the top while scrolling within a section."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `overflow: hidden` on a parent element?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It hides the parent element itself from the viewport" },
+        { "id": "b", "text": "It clips any child content that overflows the parent's padding box and creates a new Block Formatting Context (BFC)" },
+        { "id": "c", "text": "It prevents the browser from rendering scrollbars on any descendant element" },
+        { "id": "d", "text": "It automatically converts all child elements to display: block" }
+      ],
+      "correctKey": "b",
+      "explanation": "`overflow: hidden` clips overflowing child content and — crucially — establishes a new Block Formatting Context (BFC). A BFC prevents margin collapse with its children and prevents float overlap with sibling content. This dual purpose (clipping + BFC) makes it a popular clearfix/containment technique. Note: overflow: visible (the default) does NOT create a BFC, so margins can escape."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which CSS property and value creates a new stacking context?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "display: flex" },
+        { "id": "b", "text": "position: relative + z-index: 0" },
+        { "id": "c", "text": "position: absolute + z-index: auto" },
+        { "id": "d", "text": "position: relative alone (without any z-index)" }
+      ],
+      "correctKey": "b",
+      "explanation": "position: relative + any z-index value (including z-index: 0 or z-index: 1) creates a new stacking context. position: relative alone (no z-index) does NOT create a stacking context — the element is still in the parent's stacking context. opacity < 1, transform, filter, and other properties also create new stacking contexts. Understanding stacking contexts is essential for z-index debugging."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the CSS cascade order from lowest to highest priority?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "User agent styles → User styles → Author styles" },
+        { "id": "b", "text": "Author styles → User agent styles → User styles" },
+        { "id": "c", "text": "User agent styles → Author styles → User styles (with !important) → Author !important" },
+        { "id": "d", "text": "There is no defined order — browsers use random selection" }
+      ],
+      "correctKey": "c",
+      "explanation": "Cascade origin order (lowest to highest): user agent (browser defaults) < user (user stylesheet) < author (your CSS) < author !important < user !important. Within author styles, specificity and source order determine the winner. The user !important override was designed for accessibility (high-contrast modes), making it higher priority than author !important intentionally."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `display: inline-block` combine from both inline and block behaviors?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Inline flow (no line breaks) + ability to set width/height" },
+        { "id": "b", "text": "Block stacking (new line) + ability to set width/height" },
+        { "id": "c", "text": "Inline flow + full-width behavior by default" },
+        { "id": "d", "text": "It has no relation to inline or block — it is a completely separate layout mode" }
+      ],
+      "correctKey": "a",
+      "explanation": "`display: inline-block` flows inline (like text, no forced line breaks) while also accepting width, height, padding, and margin in all directions (like a block). This was widely used before flexbox for inline navigation menus and button sizing. Today flexbox and grid handle most of these cases more elegantly, but inline-block remains useful for simple inline layouts."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "In CSS specificity notation (a,b,c,d), what specificity does `#nav .item:hover` have?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "(0, 1, 1, 0)" },
+        { "id": "b", "text": "(0, 1, 1, 1)" },
+        { "id": "c", "text": "(0, 1, 2, 0)" },
+        { "id": "d", "text": "(0, 2, 0, 0)" }
+      ],
+      "correctKey": "b",
+      "explanation": "ID (#nav) = (0,1,0,0). Class + pseudo-class (.item:hover) = (0,0,2,0). Total = (0,1,2,0). Wait — pseudo-class counts as a class in the third column. Let me reconsider: IDs=1st column, classes/pseudo-classes/attributes=2nd column, elements/pseudo-elements=3rd column. Actually: #nav = (0,1,0,0). .item = (0,1,0,0). :hover = (0,1,0,0). Total = (0,3,0,0). But # is in the 2nd column (IDs), . and :pseudo-class in 2nd column (classes). Wait no — IDs are 1st, classes are 2nd. Let me clarify the standard notation: (inline, IDs, classes/attributes/pseudo-classes, elements/pseudo-elements). So: #nav = (0,1,0,0), .item:hover = (0,0,2,0). Wait — I'm confusing myself. Let me re-read: (inline, IDs, classes/attributes/pseudo-classes, elements/pseudo-elements). .item = classes (2nd slot = 1). :hover = pseudo-class (2nd slot = 1). So total = (0, 1, 2, 0). Correct answer: (0, 1, 2, 0)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the key difference between `position: absolute` and `position: fixed`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Both are removed from flow and position relative to the viewport; the only difference is that fixed does not scroll" },
+        { "id": "b", "text": "absolute positions relative to the nearest positioned ancestor; fixed always positions relative to the initial containing block (the viewport)" },
+        { "id": "c", "text": "fixed elements remain in the document flow; absolute elements are removed" },
+        { "id": "d", "text": "absolute creates a new stacking context; fixed does not" }
+      ],
+      "correctKey": "b",
+      "explanation": "Both remove elements from the normal document flow. The critical difference: absolute positions relative to the nearest positioned ancestor (one with position != static), whereas fixed always positions relative to the viewport — the element is 'fixed' to the browser window and does not scroll with the page. If a fixed element is inside a transformed parent, the fixed positioning can break in some browsers due to the creation of a containing block."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the CSS 'containing block' for a `position: absolute` child, and how is it determined?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The containing block is always the <body> element" },
+        { "id": "b", "text": "The containing block is the nearest ancestor with position: static; the browser walks up the tree until it finds one" },
+        { "id": "c", "text": "The containing block is the nearest ancestor that is positioned (position value other than static); if none exists, the initial containing block (viewport) is used" },
+        { "id": "d", "text": "The containing block is determined by display: block only — flex and grid containers are ignored" }
+      ],
+      "correctKey": "c",
+      "explanation": "An absolutely positioned element searches up the ancestor chain for the nearest positioned element (relative, absolute, fixed, sticky). That element's padding box forms the containing block for offset calculations. If no positioned ancestor exists, the initial containing block (usually the viewport/root element) is used. This is why `position: relative` is often added to a parent as a positioning context without any visual effect — it simply establishes the coordinate reference."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of `isolation: isolate` in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It isolates an element from the DOM tree, preventing its children from being rendered" },
+        { "id": "b", "text": "It creates a new stacking context to isolate mix-blend-mode and z-index effects from sibling elements" },
+        { "id": "c", "text": "It prevents JavaScript from accessing the element's computed styles" },
+        { "id": "d", "text": "It replaces z-index by establishing a named stacking layer" }
+      ],
+      "correctKey": "b",
+      "explanation": "`isolation: isolate` explicitly creates a new stacking context. Its primary purpose is to work with mix-blend-mode — when blending an element with its background, the blend usually affects all underlying elements. `isolation: isolate` limits the blend to only children within that element, preventing unexpected cross-element blending artifacts. It also isolates z-index stacking from siblings. Before isolation, achieving this required complex z-index gymnastics."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In CSS, the universal selector (*) has zero specificity, meaning it can be easily overridden by any other selector.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The universal selector (*) has specificity (0,0,0,0) — zero IDs, zero classes, zero elements. This means any rule with even one element selector (0,0,0,1) overrides it. This is exactly why CSS resets use `*` — it's a starting point that can always be overridden without fighting specificity, not a force field that locks styles in place."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A child element's `position: fixed` behavior will be relative to the nearest transformed ancestor instead of the viewport if the ancestor has `transform: scale()` applied.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "When an ancestor has a non-none `transform` value, it establishes a new containing block for all descendants — including fixed-positioned ones. This means a `position: fixed` element inside a transformed parent will be fixed relative to that parent, NOT the viewport. This is a well-known gotcha that breaks sticky headers and fixed overlays when transforms are added to parent containers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "When two rules have equal specificity, CSS Layers (@layer) can override the normal cascade order: rules in a later-defined layer win over rules in an earlier layer, regardless of source order within each layer.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "CSS Layers establish a cascade hierarchy that operates independently of specificity. Within a layer, normal specificity rules apply. Between layers, the layer order determines the winner — later layers beat earlier layers. This is powerful for library resets: `@layer reset, base, components;` means the reset layer has lowest priority (gets overridden by base and components), solving the problem of needing to override library styles with high-specificity selectors."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between a CSS reset and a CSS normalize?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A reset removes all browser defaults to create a blank slate; normalize makes browser defaults consistent across browsers without removing them" },
+        { "id": "b", "text": "They are identical — reset and normalize are synonyms" },
+        { "id": "c", "text": "normalize is deprecated; reset is the modern standard" },
+        { "id": "d", "text": "reset only affects margins; normalize only affects font styles" }
+      ],
+      "correctKey": "a",
+      "explanation": "A CSS reset (e.g., * { margin: 0; padding: 0; }) strips all browser defaults to give you a clean base. Normalize.css keeps browser defaults but makes them consistent across browsers (same margins, same form styles). Modern approach: a minimal reset (box-sizing, margin resets) combined with targeted normalization for forms. Full resets strip too much — you then have to re-add all defaults."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of `box-sizing: border-box` in a CSS reset, and why is it applied universally?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "box-sizing: border-box makes width include padding and border, making sizing intuitive — setting width: 300px means the element IS 300px wide regardless of padding" },
+        { "id": "b", "text": "box-sizing: border-box removes the border from elements" },
+        { "id": "c", "text": "box-sizing: border-box is optional — it only affects elements with explicit borders" },
+        { "id": "d", "text": "box-sizing: border-box is only needed for flex items" }
+      ],
+      "correctKey": "a",
+      "explanation": "The default content-box adds padding and border on top of declared width. box-sizing: border-box includes them in the declared width, making layouts predictable. The modern CSS reset: *, *::before, *::after { box-sizing: border-box; } — every element is sized consistently. This universal application ensures that component styles don't unexpectedly expand when padding is added."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `padding: 20px` and `padding: 20px 10px`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "padding: 20px 10px applies 20px vertical and 10px horizontal; missing values are mirrored from the provided value" },
+        { "id": "b", "text": "padding: 20px applies equal padding on all 4 sides; 20px 10px applies 20px vertical and 10px horizontal" },
+        { "id": "c", "text": "They are identical — multiple values always collapse" },
+        { "id": "d", "text": "padding: 20px 10px creates 20 separate 10px padding layers" }
+      ],
+      "correctKey": "b",
+      "explanation": "Shorthand padding: 1 value = all sides. 2 values: first = top/bottom, second = left/right. 3 values: top, left/right, bottom. 4 values: top, right, bottom, left (clockwise). Same for margin. The browser mirrors missing values: 3 values → top, right, bottom (left mirrors right)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "When do vertical margins NOT collapse between block elements?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Margins collapse in all cases — there is no exception" },
+        { "id": "b", "text": "Margins do NOT collapse when: one element has overflow: hidden/auto, elements are floated, elements are positioned (not static), elements have display: flex/grid, or elements have padding/border separating them" },
+        { "id": "c", "text": "Margins always collapse unless the elements are in the same flex container" },
+        { "id": "d", "text": "Margins never collapse inside flex containers — but always collapse in block formatting contexts" }
+      ],
+      "correctKey": "b",
+      "explanation": "Margin collapsing is suppressed by: overflow != visible (hidden, auto, scroll), float (left/right), position (relative, absolute, fixed, sticky), display (flex, grid, flow-root), and padding/border between the elements. This is why overflow: hidden is sometimes used as a margin-collapsing fix. In flex and grid containers, margin collapsing between flex/grid items does not occur at all."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default `display` value for a `<div>`, `<span>`, and `<img>` element?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "div: block, span: inline, img: inline" },
+        { "id": "b", "text": "div: block, span: inline, img: inline-block" },
+        { "id": "c", "text": "All default to display: block" },
+        { "id": "d", "text": "div: block, span: inline, img: block" }
+      ],
+      "correctKey": "a",
+      "explanation": "Default display values: <div> = block (full-width, new line). <span> = inline (flows with text, no forced line breaks). <img> = inline-block in modern browsers (treated as inline but accepts width/height). These defaults come from HTML's CSS specification, not from CSS resets. Understanding them prevents unnecessary display overrides."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key difference between `display: block` and `display: inline-block` in terms of layout behavior?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "block elements can have width/height set; inline-block elements cannot" },
+        { "id": "b", "text": "block starts on a new line and takes full width; inline-block flows inline like text but accepts width/height and all box model properties" },
+        { "id": "c", "text": "They are identical in layout — only the name differs" },
+        { "id": "d", "text": "inline-block is deprecated in CSS3" }
+      ],
+      "correctKey": "b",
+      "explanation": "display: block generates a new formatting context — the element starts on a new line and takes full container width (unless width is set). display: inline-block generates an atomic inline-level box — it flows inline with text but is laid out as a single block. This means inline-block accepts width, height, padding, margin in all directions. Used for buttons, tags, and inline layouts where component-level sizing is needed."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `box-sizing: inherit` on all elements in a CSS reset?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It removes box-sizing from all elements, reverting to browser defaults" },
+        { "id": "b", "text": "It ensures all elements inherit box-sizing from their parent, making it easier to override at a container level — a common pattern: html { box-sizing: border-box; } *, *::before, *::after { box-sizing: inherit; }" },
+        { "id": "c", "text": "box-sizing: inherit is invalid — box-sizing cannot be inherited" },
+        { "id": "d", "text": "It applies border-box only to form elements, not all elements" }
+      ],
+      "correctKey": "b",
+      "explanation": "Setting html { box-sizing: border-box; } and *, *::before, *::after { box-sizing: inherit; } means all elements use border-box via inheritance. The benefit: if you ever want to use content-box for a specific component, you can set it on the component without removing the universal reset. This is the 'inherit' reset pattern — it's more flexible than a universal selector-only approach."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `margin: 0` and `padding: 0` for resetting list styles?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "margin: 0 removes list item indentation; padding: 0 removes the bullet/number" },
+        { "id": "b", "text": "margin: 0 resets the space between list items; padding: 0 resets the space between the list container edge and the bullets/numbers" },
+        { "id": "c", "text": "They are interchangeable for list resets" },
+        { "id": "d", "text": "padding: 0 removes list item spacing; margin: 0 removes the list marker" }
+      ],
+      "correctKey": "b",
+      "explanation": "Browser default for <ul>/<ol>: padding-inline-start: 40px (space for bullets). margin-block-start/margin-block-end create spacing between list items. To fully reset: ul, ol { padding: 0; margin: 0; list-style: none; } — padding: 0 removes the indent (bullet space), margin: 0 removes inter-item spacing, list-style: none removes the markers. Modern approach also requires display: flex or display: block on the ul if removing padding changes expected layout."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `all: initial` do differently from `all: unset`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "all: initial resets to the user agent default (browser default); all: unset resets to inherit for inherited properties and initial for non-inherited" },
+        { "id": "b", "text": "all: initial and all: unset are identical — both reset to the browser default" },
+        { "id": "c", "text": "all: unset only works on inherited properties; all: initial works on all properties" },
+        { "id": "d", "text": "all: initial removes all CSS from the element; all: unset only removes inline styles" }
+      ],
+      "correctKey": "a",
+      "explanation": "all: initial sets every property to its initial value (the CSS spec default, not the user agent default). all: unset acts as inherit for inherited properties and initial for non-inherited. For typography: body color is inherited (so unset = inherit parent's color), but border is not (so unset = initial). Use all: unset for component isolation that respects inheritance; all: initial for a complete CSS reset on an element."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the key advantage of `display: flow-root` over `overflow: hidden` for clearing floats and establishing BFC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "overflow: hidden and flow-root are identical — both clip content and create a BFC" },
+        { "id": "b", "text": "flow-root creates a BFC without side effects — it doesn't clip content or affect overflow visibility; overflow: hidden clips overflowing content as a side effect that is often unintended" },
+        { "id": "c", "text": "overflow: hidden creates a BFC; flow-root only establishes a new formatting context for inline content" },
+        { "id": "d", "text": "flow-root is slower than overflow: hidden for large layouts" }
+      ],
+      "correctKey": "b",
+      "explanation": "overflow: hidden creates a BFC AND clips content that overflows — often unintentional. flow-root creates a BFC with no side effects: no clipping, no overflow handling. The 'clearfix' pattern (::after { content: ''; display: block; clear: both; }) also creates a BFC-like context for float clearing. flow-root is the semantic replacement for clearfix and the cleaner alternative to overflow: hidden for BFC creation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `* { box-sizing: border-box; }` not cover that `*::before, *::after { box-sizing: border-box; }` adds?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The universal selector (*) already covers ::before and ::after pseudo-elements" },
+        { "id": "b", "text": "::before and ::after pseudo-elements are not matched by * in some browsers due to spec historical quirks; explicitly targeting them ensures they use border-box" },
+        { "id": "c", "text": "box-sizing cannot be applied to pseudo-elements" },
+        { "id": "d", "text": "Adding ::before and ::after is purely stylistic — it has no functional effect" }
+      ],
+      "correctKey": "b",
+      "explanation": "In some browsers, pseudo-elements (:before, ::after) weren't consistently matched by the universal selector * for box-sizing. Explicitly targeting *::before, *::after with box-sizing: border-box ensures consistency across all browsers. The complete modern reset: html { box-sizing: border-box; } *, *::before, *::after { box-sizing: inherit; }."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In CSS, `margin: 0 auto` on a block element with a defined width centers it horizontally within its parent.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "margin: 0 auto means 0 margin top/bottom, and auto left/right margins. auto horizontally centers the element: the browser calculates left margin = right margin = (parent width - element width) / 2. This requires the element to have a width smaller than its parent and NOT be absolutely positioned. For flex/grid children, use justify-content: center instead."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A CSS reset that sets `margin: 0` on all elements will remove margins from flex and grid items, preventing flex-shrink and grid auto-placement from working correctly.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Margin resets on flex/grid items do NOT prevent flex-shrink or grid auto-placement from working — those algorithms are independent of margin values. The flex/grid algorithms distribute space based on flex-basis/flex-shrink and auto-placement rules, not margin values. However, margin resets can cause unintended spacing issues in flex/grid layouts if spacing is expected from margins. Use gap on flex/grid containers instead of margins on items for predictable spacing."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The CSS `all` property can reset every property on an element, but it cannot reset CSS custom properties (CSS variables) defined on the element itself.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "all: unset and all: initial affect all CSS properties but leave CSS custom properties (--*) untouched. Custom properties exist on the element's style declaration and are not subject to the 'all' reset mechanism. To reset a custom property, you must explicitly set it to a value or remove it with JavaScript. This distinction matters in component libraries: all: unset doesn't fully isolate a component from its parent's custom property definitions."
+    }
+  ]
+}

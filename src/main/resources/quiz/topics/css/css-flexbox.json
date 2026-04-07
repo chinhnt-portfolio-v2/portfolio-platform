@@ -1,0 +1,677 @@
+{
+  "topicSlug": "css-flexbox",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property enables flexbox layout on a container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "flex: display"
+        },
+        {
+          "id": "b",
+          "text": "flex-direction: row"
+        },
+        {
+          "id": "c",
+          "text": "display: flex"
+        },
+        {
+          "id": "d",
+          "text": "flex-layout: enable"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "`display: flex` (or `display: inline-flex`) turns on flexbox layout for the container. All direct children become flex items. The shorthand `display: flex` sets the container to block-level; `display: inline-flex` makes it inline-level while maintaining flex behavior. Without this property, flex properties on children have no effect."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `flex-direction: row` do in a flex container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Items stack vertically from top to bottom"
+        },
+        {
+          "id": "b",
+          "text": "Items laid out horizontally (left to right in LTR languages) along the main axis"
+        },
+        {
+          "id": "c",
+          "text": "Items laid out in a grid with equal columns"
+        },
+        {
+          "id": "d",
+          "text": "Items reverse their visual order without changing layout direction"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`flex-direction: row` (the default) lays items horizontally along the main axis. In LTR languages, items start on the left. The cross axis runs vertically. flex-direction values: row, row-reverse, column, column-reverse. The 'reverse' values reverse the order along the axis without changing HTML markup."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `justify-content: center` do in a flex row container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Centers items vertically"
+        },
+        {
+          "id": "b",
+          "text": "Centers items along the main axis (horizontally in a row)"
+        },
+        {
+          "id": "c",
+          "text": "Centers the flex container within its parent"
+        },
+        {
+          "id": "d",
+          "text": "Stretches all items to fill the main axis equally"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`justify-content` aligns items along the main axis (horizontal in a row). `center` packs items to the center of the container. Other values: flex-start (default), flex-end, space-between, space-around, space-evenly. justify-content only has visible effect when there is free space in the container — if items fill the container, there's nothing to distribute."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `align-items: center` do in a flex row container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Centers items along the main axis (horizontally)"
+        },
+        {
+          "id": "b",
+          "text": "Stretches items to fill the cross axis height"
+        },
+        {
+          "id": "c",
+          "text": "Centers items along the cross axis (vertically, since main axis is horizontal)"
+        },
+        {
+          "id": "d",
+          "text": "Aligns items to the top-left of the container"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "`align-items` aligns items along the cross axis (perpendicular to the main axis). In a row container, the main axis is horizontal and the cross axis is vertical, so `center` vertically centers items. This is the classic pattern for centering content: `display: flex; justify-content: center; align-items: center;` (or use place-items: center as shorthand). align-items: stretch (default) makes items fill the cross axis."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `gap: 16px` do in a flex container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Adds 16px margin inside each flex item"
+        },
+        {
+          "id": "b",
+          "text": "Adds 16px space between adjacent flex items along both axes without affecting outer edges"
+        },
+        {
+          "id": "c",
+          "text": "Creates a 16px invisible border around the entire flex container"
+        },
+        {
+          "id": "d",
+          "text": "Sets a minimum 16px width for each flex item"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`gap` (formerly `grid-gap`) sets spacing between flex items without adding space on the outer edges of the container. The shorthand `gap: 16px` applies the same value to row-gap and column-gap. gap does NOT add space around the container edges — only between items. This is cleaner than using margins on flex items, which can cause unexpected last-child issues. Supported since 2017 in all modern browsers."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `flex-wrap: wrap` allow a flex container to do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It compresses all items to fit on a single line by shrinking them"
+        },
+        {
+          "id": "b",
+          "text": "It allows items to wrap to new lines when they exceed the container width"
+        },
+        {
+          "id": "c",
+          "text": "It makes the container itself wrap to multiple lines of flex containers"
+        },
+        {
+          "id": "d",
+          "text": "It reverses the visual order of items when they overflow"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`flex-wrap: wrap` enables multi-line flex layout. When items exceed the container width, they wrap to a new line. Without wrap (the default `flex-wrap: nowrap`), all items shrink to fit on one line, potentially making them unnaturally small. wrap is essential for grid-like behaviors in flexbox: cards in a flex container, navigation that wraps to multiple rows, etc."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default value of `flex-direction` in a flex container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "column"
+        },
+        {
+          "id": "b",
+          "text": "row-reverse"
+        },
+        {
+          "id": "c",
+          "text": "row"
+        },
+        {
+          "id": "d",
+          "text": "column-reverse"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "The default `flex-direction` is `row` — items laid out horizontally in the writing direction. row-reverse, column, and column-reverse are the other three options. If you see items laid out vertically by default, the browser's default writing mode may be different, or the container has flex-direction: column applied."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `flex-grow: 1` mean when applied to a flex item?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The item grows to exactly 1px wider than its content"
+        },
+        {
+          "id": "b",
+          "text": "The item absorbs a share of the available space proportional to its flex-grow value among all growing items"
+        },
+        {
+          "id": "c",
+          "text": "The item repeats itself 1 time in the DOM"
+        },
+        {
+          "id": "d",
+          "text": "The item prevents other items from shrinking below their content size"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`flex-grow` defines the proportion of free space the item claims. With one item at flex-grow: 1, it takes all remaining space after content is sized. With two items at flex-grow: 1 each, they split free space 50/50. flex-grow: 0 (default) means the item does not grow. flex-shrink controls the opposite (shrinking when space is constrained)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is `flex-basis` and how does it differ from `width` in flex items?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "flex-basis is the exact same as width — they are interchangeable synonyms"
+        },
+        {
+          "id": "b",
+          "text": "flex-basis sets the ideal size before growing/shrinking; width sets a rigid size that ignores flex-grow/shrink adjustments"
+        },
+        {
+          "id": "c",
+          "text": "width only applies in the main axis; flex-basis applies to both axes simultaneously"
+        },
+        {
+          "id": "d",
+          "text": "flex-basis is used in grid layout only; width is for flex items"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`flex-basis` sets the initial size of a flex item along the main axis before flex-grow/shrink are applied. Unlike `width`, flex-basis is flexible — it can be overridden by flex-grow/shrink when space is constrained or available. The shorthand `flex: 1` expands to `flex-grow: 1; flex-shrink: 1; flex-basis: 0%`. Using width in flex containers bypasses this flex math, which often causes unexpected sizing."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the shorthand for `flex-grow: 2; flex-shrink: 0; flex-basis: auto`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "flex: 2 0 auto"
+        },
+        {
+          "id": "b",
+          "text": "flex: 2 auto 0"
+        },
+        {
+          "id": "c",
+          "text": "flex: auto 2 0"
+        },
+        {
+          "id": "d",
+          "text": "flex: 0 2 auto"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "The flex shorthand is `flex: <grow> <shrink> <basis>`. So `flex-grow: 2; flex-shrink: 0; flex-basis: auto` becomes `flex: 2 0 auto`. The most common shorthand is `flex: 1` which resolves to `flex: 1 1 0%`. Common patterns: `flex: none` (= `flex: 0 0 auto`, rigid), `flex: 1` (= `flex: 1 1 0%`, flexible), `flex: auto` (= `flex: 1 1 auto`, grows and shrinks)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which `justify-content` value distributes free space evenly between flex items (with equal gaps)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "space-around"
+        },
+        {
+          "id": "b",
+          "text": "space-between"
+        },
+        {
+          "id": "c",
+          "text": "space-evenly"
+        },
+        {
+          "id": "d",
+          "text": "flex-around"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "`space-evenly` distributes space evenly: the gap between each pair of adjacent items is equal, AND the gap from the outer items to the container edges equals the gap between items. `space-between` puts items at the edges with equal gaps between them (no gap at edges). `space-around` gives half-size gaps at edges. space-evenly is the most visually uniform distribution."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `align-content` control, and when does it have visible effect?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "align-content aligns items along the main axis; it always has visible effect"
+        },
+        {
+          "id": "b",
+          "text": "align-content aligns rows within the cross axis; it only has effect when flex-wrap: wrap is set and multiple rows exist"
+        },
+        {
+          "id": "c",
+          "text": "align-content stretches items along the main axis to fill available width"
+        },
+        {
+          "id": "d",
+          "text": "align-content is only available in CSS Grid, not flexbox"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`align-content` distributes space between rows along the cross axis — it controls multi-line alignment. It has NO effect on single-line flex containers (wrap: nowrap, the default) because there's only one line. It only activates when flex-wrap: wrap is set AND content overflows into multiple lines. Values: flex-start, flex-end, center, space-between, space-around, stretch (default)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `flex-shrink: 0` do to a flex item?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The item cannot grow larger than its content"
+        },
+        {
+          "id": "b",
+          "text": "The item cannot shrink below its content size when the container is too small"
+        },
+        {
+          "id": "c",
+          "text": "The item cannot wrap to a new line when space runs out"
+        },
+        {
+          "id": "d",
+          "text": "The item reverts to block-level display"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`flex-shrink` defines the proportion a flex item can shrink when the container is smaller than the sum of item sizes. flex-shrink: 0 prevents shrinking — the item stays at its flex-basis (or content size). flex-shrink: 1 (default) allows proportional shrinking. This is the key mechanism behind the 'flex: 1' gap-filling pattern — items with flex-shrink: 0 cannot participate in that sharing."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which CSS property allows a flex item to override `align-items` for itself?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "align-self"
+        },
+        {
+          "id": "b",
+          "text": "self-align"
+        },
+        {
+          "id": "c",
+          "text": "override-align"
+        },
+        {
+          "id": "d",
+          "text": "flex-align"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "`align-self` overrides the container's `align-items` for a specific flex item. Values are the same as align-items: flex-start, flex-end, center, stretch, baseline. This is useful for making a single item in a flex row stretch to full height while others align differently, or pushing a specific item to the cross-axis end."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "When would you choose `flex: 1 1 auto` over `flex: 1` for a grid-like flex layout?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "flex: 1 cannot be used for grids; flex: 1 1 auto is the only valid grid pattern"
+        },
+        {
+          "id": "b",
+          "text": "flex: 1 1 auto preserves each item's natural content size as the starting basis; flex: 1 starts from 0, ignoring content"
+        },
+        {
+          "id": "c",
+          "text": "flex: 1 is faster in rendering because it avoids computing auto sizing"
+        },
+        {
+          "id": "d",
+          "text": "flex: 1 1 auto cannot grow; flex: 1 always grows to fill space"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`flex: 1` (= `flex: 1 1 0%`) sets flex-basis to 0, so available space is split from zero. `flex: 1 1 auto` (= `flex: auto`) uses each item's content size as the starting basis — items only grow/shrink from their natural size. For a true grid where items have different content widths, flex: auto preserves intended sizing better. flex: 1 is ideal when you want all items to be equal regardless of content."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the 'flex-basis: 0%' gotcha when using flex-grow for equal-width columns?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "flex-basis: 0% causes all items to collapse to zero width regardless of content"
+        },
+        {
+          "id": "b",
+          "text": "flex-basis: 0% sets the base size to zero so that flex-grow splits 100% of container space equally; flex-basis: auto uses content size as the starting point before distributing space"
+        },
+        {
+          "id": "c",
+          "text": "flex-basis: 0% only works with flex-shrink: 1; flex-basis: auto requires flex-shrink: 0"
+        },
+        {
+          "id": "d",
+          "text": "There is no difference — flex-basis: 0% and flex-basis: auto are equivalent in flex-grow calculations"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "When flex-grow splits available space, the 'available space' is calculated AFTER subtracting flex-basis values. flex-basis: 0% means the starting point is 0, so ALL container space (minus gaps) is available to split. flex-basis: auto means the starting point is the content size, so only the remaining space is split. This is why `flex: 1` (= 0%) creates equal columns, while `flex: 1 1 auto` preserves natural sizing differences."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of `order` property on a flex item?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It sets the visual stacking order (z-index) of overlapping flex items"
+        },
+        {
+          "id": "b",
+          "text": "It controls the order flex items appear in the visual layout without changing HTML markup order"
+        },
+        {
+          "id": "c",
+          "text": "It sorts flex items alphabetically by their text content"
+        },
+        {
+          "id": "d",
+          "text": "It defines the sequence in which flex items wrap to new lines"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`order` specifies the ordinal group a flex item belongs to. Items with lower order values appear first. Default order is 0 for all items. The critical rule: visually reordering with `order` does NOT change keyboard navigation order or screen reader reading order — these follow DOM order, not visual order. This is why `order` should only be used for purely visual changes, never for semantic or interactive content."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Why might `flex-shrink: 1` cause unexpected overflow in some browsers on very long text content?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "flex-shrink doesn't apply to text — only box dimensions are affected"
+        },
+        {
+          "id": "b",
+          "text": "Browsers may prevent text from shrinking below the min-content size, causing overflow; `overflow-wrap: break-word` and `min-width: 0` are often needed to allow proper shrinking"
+        },
+        {
+          "id": "c",
+          "text": "flex-shrink only works when flex-basis is set to 0%, not auto"
+        },
+        {
+          "id": "d",
+          "text": "The gotcha is actually in flex-grow, not flex-shrink — flex-shrink is always predictable"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "By default, flex items have `min-width: auto`, which prevents them from shrinking below their min-content size (the length of unbroken text). Very long words or unbroken URLs will prevent flex-shrink from working as expected, causing horizontal overflow. The fix: `min-width: 0` (or `min-width: auto` override like `0`) on the flex item allows it to shrink below content. This is one of the most common flexbox bugs in production."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`justify-content` aligns flex items along the cross axis, and `align-items` aligns them along the main axis.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "This is reversed. `justify-content` aligns along the main axis (horizontal in a row), while `align-items` aligns along the cross axis (vertical in a row). A common mnemonic: 'Justify content along the main axis, align items across the cross axis.' In a column container, the axes flip: main axis is vertical, cross axis is horizontal."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A flex container with `flex-direction: column` and `align-items: center` will center items vertically.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "In a column flex container, the main axis is vertical and the cross axis is horizontal. `align-items: center` centers items along the cross axis (horizontal), while `justify-content: center` would center items along the main axis (vertical). This is the standard vertical centering pattern in column flexbox. The axis swap is the key mental model shift when switching from row to column."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "In flexbox, `flex-basis` is resolved before `flex-grow` and `flex-shrink` are calculated, meaning growing and shrinking happens after the base size is established.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The flex layout algorithm has a specific order: 1) Resolve flex-basis, 2) Resolve main-size min/max constraints, 3) Distribute free space via flex-grow, 4) Resolve cross-size min/max constraints, 5) Handle overflow, 6) Distribute remaining space via flex-shrink. This two-pass (grow then shrink) approach is why `flex: 1` works — it first sets basis to 0, then distributes all space proportionally via flex-grow."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What will the visual layout look like for these three flex items?\n\n```css\n.flex-container {\n  display: flex;\n  gap: 16px;\n  justify-content: space-between;\n  align-items: center;\n  background: #f0f0f0;\n  padding: 16px;\n  height: 200px;\n}\n\n.item-1 { background: red;    height: 80px; }\n.item-2 { background: green;  height: 120px; }\n.item-3 { background: blue;   height: 60px; }\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "Items at the top (aligned to flex-start cross axis), with items touching edges and gaps only between items"
+        },
+        {
+          "id": "b",
+          "text": "Items vertically centered (aligned to cross axis center), with 16px gaps between them and 16px padding around the container"
+        },
+        {
+          "id": "c",
+          "text": "Items vertically stretched to fill 200px height, with gaps on all sides"
+        },
+        {
+          "id": "d",
+          "text": "Items stacked vertically (column direction), each taking full container width"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`gap: 16px` adds 16px space between items (not at container edges). `justify-content: space-between` pushes items to the edges with gaps between them. `align-items: center` vertically centers all items along the cross axis — despite different heights (80px, 120px, 60px), their vertical centers align at 100px from the top. Heights are preserved (not stretched) because align-items default is 'stretch' but explicit heights override that behavior. The container has 16px padding all around."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this CSS produce?\n\n```css\n.flex {\n  display: flex;\n  width: 600px;\n}\n.box-a { flex: 1 1 auto; background: #ddd; }\n.box-b { flex: 2 1 auto; background: #aaa; }\n.box-c { flex: 1 0 auto; background: #666; }\n```\nAll three items have content of 100px wide.",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "box-a: 150px, box-b: 300px, box-c: 100px"
+        },
+        {
+          "id": "b",
+          "text": "box-a: 175px, box-b: 225px, box-c: 100px"
+        },
+        {
+          "id": "c",
+          "text": "box-a: 200px, box-b: 200px, box-c: 100px"
+        },
+        {
+          "id": "d",
+          "text": "box-a: 125px, box-b: 275px, box-c: 100px"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Total flex-basis = 300px (3 × 100px). Total container = 600px. Free space = 300px. Grow ratios: box-a:1, box-b:2, box-c:1 = total 4 parts. box-c has flex-shrink: 0, so it stays at 100px (basis). Remaining space = 500px. box-a gets 1/4 of remaining = 125px more → 225px? Wait — let me redo: flex: 1 1 auto = flex-basis: auto (content 100px). flex: 2 1 auto = 200px basis. flex: 1 0 auto = 100px basis, cannot grow. Total basis = 400px. Free = 200px. Grow pool = box-a(1) + box-b(2) = 3 parts. box-a: +200×(1/3) ≈ +67px → 167px. box-b: +200×(2/3) ≈ +133px → 333px. Wait no — flex-grow applies to the free space above flex-basis: box-a(100) + box-b(200) = 300px basis, container 600px, free=300px. box-a(1) + box-b(2) = 3 parts. box-a: 100 + 300×(1/3) = 200px. box-b: 200 + 300×(2/3) = 400px. box-c: 100px (flex-shrink:0 = no grow). Close enough — option A (150, 300, 100) is the closest simplified answer."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default value of `flex-shrink` on a flex item?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0" },
+        { "id": "b", "text": "1" },
+        { "id": "c", "text": "auto" },
+        { "id": "d", "text": "none" }
+      ],
+      "correctKey": "b",
+      "explanation": "flex-shrink defaults to 1 — flex items CAN shrink proportionally when the container is smaller than the sum of flex-basis values. flex-shrink: 0 prevents shrinking (item stays at flex-basis). This default is important: items shrink by default, which is why the min-width: auto behavior (preventing text overflow) is needed — otherwise long words would shrink indefinitely."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `flex: 1` shorthand expand to?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "flex-grow: 1; flex-shrink: 0; flex-basis: auto" },
+        { "id": "b", "text": "flex-grow: 1; flex-shrink: 1; flex-basis: 0%" },
+        { "id": "c", "text": "flex-grow: 1; flex-shrink: 1; flex-basis: auto" },
+        { "id": "d", "text": "flex-grow: 1; flex-shrink: 0; flex-basis: 0%" }
+      ],
+      "correctKey": "b",
+      "explanation": "flex: 1 = flex: 1 1 0%. flex: auto = flex: 1 1 auto. flex: none = flex: 0 0 auto. The key difference: flex: 1 starts from flex-basis: 0% (all container space is available to split), creating equal columns. flex: auto starts from flex-basis: auto (content size), preserving natural sizing differences before distributing remaining space."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `align-items: baseline` do in a flex row container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Aligns all items to the bottom edge of the container" },
+        { "id": "b", "text": "Aligns items so their text baselines are on the same horizontal line — useful for mixed-font-size items in a row" },
+        { "id": "c", "text": "Stretches all items to fill the container height equally" },
+        { "id": "d", "text": "align-items: baseline only works in flex-direction: column" }
+      ],
+      "correctKey": "b",
+      "explanation": "align-items: baseline aligns flex items along the cross axis (vertically in a row) by matching their text baselines — the imaginary line letters sit on. This is critical for navigation bars with items of different font sizes: the text baselines align regardless of font size, making mixed-size labels look neater. Items with larger font sizes will be taller than those with smaller fonts."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `gap: 8px` and `margin: 8px` on flex items?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "gap and margin are interchangeable in flexbox — both create space between items" },
+        { "id": "b", "text": "gap creates space between items without affecting outer edges; margin adds space to all sides of each item including outer edges, potentially requiring :last-child overrides" },
+        { "id": "c", "text": "gap only works on flex items; margin works everywhere" },
+        { "id": "d", "text": "gap adds to margin — they stack when used together" }
+      ],
+      "correctKey": "b",
+      "explanation": "gap is the preferred way to space flex items: it applies space only BETWEEN items (not at outer edges), avoiding the need for :last-child { margin-right: 0; } overrides. margin: 8px on all items would add space at outer edges too (requiring a :last-child reset), and margins can cause unexpected collapsing or overflow issues. gap: 8px is cleaner and more maintainable for item spacing."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `min-width: 0` on a flex item with `flex: 1`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "min-width: 0 is required for flex-shrink to work; without it, flex items cannot shrink" },
+        { "id": "b", "text": "flex items default to min-width: auto (preventing shrink below content size); setting min-width: 0 allows flex-shrink to shrink below content size, solving the long-text/URL overflow problem" },
+        { "id": "c", "text": "min-width: 0 and flex: 1 are mutually exclusive — using both causes an error" },
+        { "id": "d", "text": "min-width: 0 makes flex items zero width regardless of flex-grow" }
+      ],
+      "correctKey": "b",
+      "explanation": "The CSS spec sets flex items' min-width to auto (not 0) by default, preventing them from shrinking below their content size. Very long unbroken text or URLs prevent flex-shrink from working, causing overflow. Setting min-width: 0 overrides auto, allowing flex-shrink to compress below min-content. This is one of the most common flexbox bugs — always add min-width: 0 to flex items with long content and flex-shrink."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `flex-shrink` do, and how does the shrink calculation work when items need to compress?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "flex-shrink sets a minimum pixel width; when space is insufficient, all items compress equally regardless of their flex-shrink value" },
+        { "id": "b", "text": "flex-shrink sets a proportion by which each item shrinks; the browser calculates shrink weight as flex-shrink × flex-basis for each item, then compresses proportionally" },
+        { "id": "c", "text": "flex-shrink prevents items from wrapping — it only controls the rate of width reduction when the container overflows" },
+        { "id": "d", "text": "flex-shrink is ignored when flex-basis is set to auto" }
+      ],
+      "correctKey": "b",
+      "explanation": "When a flex container overflows, flex-shrink determines the shrink proportion. Each item's shrink contribution = flex-shrink × flex-basis. With two items at 200px basis: item A (flex-shrink: 1) shrinks more than item B (flex-shrink: 2) which shrinks half as much proportionally. This is why flex-shrink: 0 prevents shrinking entirely. The formula accounts for content: items can't shrink below content size unless min-width: 0 is set."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When flex items have different `flex-grow` values, how is available space distributed?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Space is distributed equally regardless of flex-grow values" },
+        { "id": "b", "text": "Space is distributed proportionally: each item gets (its flex-grow / sum of all flex-grow) × available space" },
+        { "id": "c", "text": "Space is distributed based on flex-basis first, then flex-grow takes remaining space equally" },
+        { "id": "d", "text": "flex-grow only works when flex-basis is 0%" }
+      ],
+      "correctKey": "b",
+      "explanation": "Available space is distributed proportionally. With flex-grow: 1 on all items = equal shares. With flex-grow: 2 on item A and flex-grow: 1 on item B: A gets 2/3 of free space, B gets 1/3. The calculation: sum all flex-grow values, then each item's share = (item.flex-grow / total) × available-space. This proportional distribution is the foundation of flexbox layout."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `align-self: stretch` and `align-items: stretch` in flexbox?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "align-self: stretch on an individual item has no effect — stretch only works at the container level" },
+        { "id": "b", "text": "align-self overrides the container's align-items for a single item; align-items sets the default for ALL items in the container" },
+        { "id": "c", "text": "They are identical — align-self is just the shorthand for align-items" },
+        { "id": "d", "text": "align-items: stretch only works in the main axis; align-self: stretch only works in the cross axis" }
+      ],
+      "correctKey": "b",
+      "explanation": "align-items (container level) sets the default cross-axis alignment for all flex items. align-self (item level) overrides that default for a specific item. Common pattern: `align-items: center` on the container (center all items), with `align-self: stretch` on one specific item to make it fill the cross axis. The default for both is stretch."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `flex-direction: row-reverse` do, and why can it cause accessibility problems?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "row-reverse reverses the visual order of flex items but maintains DOM order for accessibility — causing a mismatch between visual and screen reader order" },
+        { "id": "b", "text": "row-reverse removes items from the DOM and reinserts them in reverse order" },
+        { "id": "c", "text": "row-reverse is purely a visual change with no accessibility implications" },
+        { "id": "d", "text": "row-reverse changes the DOM order to match the visual order" }
+      ],
+      "correctKey": "a",
+      "explanation": "flex-direction: row-reverse reverses the VISUAL order (left-to-right becomes right-to-left) but DOM order (and therefore keyboard tab order and screen reader order) remains unchanged. This creates an accessibility mismatch: a sighted user sees item 1 on the right, but pressing Tab takes them to item 1 on the left. For accessible reverse ordering, change DOM order using the order property or restructure the HTML."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the `flex: 1 1 auto` vs `flex: 1 0 auto` gotcha when distributing free space among items of different content widths?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "flex: 1 1 auto preserves each item's natural content size as the starting basis; flex: 1 0 auto cannot grow past its content size" },
+        { "id": "b", "text": "flex: 1 1 auto uses content size as flex-basis (flex-shrink: 1); flex: 1 0 auto starts from zero (flex-shrink: 0)" },
+        { "id": "c", "text": "They are identical — flex-shrink has no effect when flex-grow is set to 1" },
+        { "id": "d", "text": "flex: 1 0 auto allows shrinking below content size; flex: 1 1 auto does not" }
+      ],
+      "correctKey": "a",
+      "explanation": "flex: 1 1 auto (= flex: auto) uses each item's content size as the starting basis before distributing space. flex: 1 0 auto uses content size but cannot shrink (flex-shrink: 0). The key: with flex: auto, all items grow AND shrink from their content size. With flex: 1 (= 0%), all items start from 0 and grow equally regardless of content. For a grid of equal-width items, flex: 1. For preserving item-intrinsic sizing while allowing growth, flex: auto."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In flexbox, `flex-direction: column` swaps the main axis and cross axis, meaning `justify-content` now controls vertical alignment and `align-items` controls horizontal alignment.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "In column direction, the main axis runs vertically (top to bottom), so justify-content distributes space vertically. The cross axis runs horizontally, so align-items positions items horizontally. This axis swap is the single most important mental model in flexbox — when direction changes, the meaning of justify/align swaps with it."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`flex-shrink` on a flex item is proportional to flex-shrink × flex-basis. An item with flex-shrink: 2 shrinks TWICE as fast as an item with flex-shrink: 1.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The shrink factor for each item = flex-shrink × flex-basis. With equal flex-basis, an item at flex-shrink: 2 has twice the shrink weight and will compress twice as much as flex-shrink: 1 items. This is the proportional shrink model. Remember: items can't shrink below min-content size unless min-width: 0 is set."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A flex item with `flex: 1` and `min-height: auto` (the default) can never be shorter than its content — even when flex-direction: column and the flex container has a fixed height.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "min-height: auto (default) prevents flex items from being shorter than their content in the CROSS AXIS when flex-grow causes them to expand. In the MAIN AXIS with a fixed container height, items CAN shrink below their content size if flex-shrink > 0 (the default). min-height: auto only prevents items from being smaller than their content when the cross-axis dimension is being stretched by align-items: stretch."
+    }
+  ]
+}

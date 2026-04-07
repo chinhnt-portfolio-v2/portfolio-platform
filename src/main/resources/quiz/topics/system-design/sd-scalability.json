@@ -1,0 +1,228 @@
+{
+  "topicSlug": "sd-scalability",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the fundamental difference between vertical scaling (scaling up) and horizontal scaling (scaling out)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Vertical scaling adds more machines to your pool; horizontal scaling adds more CPU, RAM, and storage to a single machine" },
+        { "id": "b", "text": "Vertical scaling adds more CPU, RAM, and disk to an existing machine; horizontal scaling adds more machines to distribute load" },
+        { "id": "c", "text": "Both terms describe the same thing — just different terminology used by cloud vs. on-premise vendors" },
+        { "id": "d", "text": "Horizontal scaling is limited by the physical constraints of a single machine; vertical scaling has no theoretical upper bound" }
+      ],
+      "correctKey": "b",
+      "explanation": "Vertical scaling (scaling up) beefs up a single machine — more CPU cores, RAM, faster disks — improving capacity without changing the architecture. Horizontal scaling (scaling out) adds more machines to the pool, distributing work across nodes. Horizontal is generally preferred for resilience and near-unlimited scale, but requires stateless application design and data partitioning. Vertical scaling hits a hardware ceiling and creates a single point of failure. Option A reverses both terms. Option C is false. Option D reverses the constraints."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A load balancer routes traffic across a pool of application servers. Which algorithm avoids the problem of a single slow server receiving a disproportionate share of requests?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Round-robin — distributes requests equally in rotation regardless of server state" },
+        { "id": "b", "text": "Weighted round-robin — assigns a static weight to each server based on its capacity" },
+        { "id": "c", "text": "Least connections — routes a new request to the server that currently has the fewest active connections" },
+        { "id": "d", "text": "IP hash — maps client IP to a specific server using a hash function for session affinity" }
+      ],
+      "correctKey": "c",
+      "explanation": "Least connections routes to the server with the fewest active requests at the moment, naturally accounting for varying request durations. A server processing slow queries accumulates fewer connections than one processing fast queries, so slow servers naturally receive fewer new requests. Round-robin (A) ignores server load and connection count. Weighted round-robin (B) uses static capacity weights, not real-time load. IP hash (D) is a form of sticky session, not a load-based algorithm."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Your system experiences a sudden traffic spike and some servers are overwhelmed while others sit idle. Which load balancing algorithm would best handle heterogeneous server capacities in real time?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Random selection — statistically distributes load across all servers regardless of capacity" },
+        { "id": "b", "text": "Weighted least connections — assigns new requests based on both active connection count and a server's configured capacity weight" },
+        { "id": "c", "text": "Sticky sessions — binds each user to one server so their session state is always available" },
+        { "id": "d", "text": "Source IP hash — uses the client IP to deterministically select a server for consistent routing" }
+      ],
+      "correctKey": "b",
+      "explanation": "Weighted least connections extends the least-connections algorithm by factoring in each server's capacity weight (configured based on CPU/RAM). A server with weight=2 receives roughly twice as many connections as weight=1 only when its current active connections divided by weight is lower than competing servers. This dynamically adapts to heterogeneous hardware and varying request complexity. Random (A) ignores capacity. Sticky sessions (C) is about session affinity, not load distribution. IP hash (D) is also about affinity."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Under the CAP theorem, what does a CP (Consistent + Partition-tolerant) system sacrifice during a network partition?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Consistency — the system allows stale reads to remain available during a partition" },
+        { "id": "b", "text": "Availability — the system refuses requests or returns errors during a partition to maintain consistency" },
+        { "id": "c", "text": "Partition tolerance — the system halts completely when a partition is detected" },
+        { "id": "d", "text": "Nothing is sacrificed; CP systems handle partitions without any trade-off" }
+      ],
+      "correctKey": "b",
+      "explanation": "CP systems choose consistency over availability during network partitions. When a partition occurs, the system may shut down non-majority nodes or block writes to prevent diverged states — serving errors or unavailable responses rather than potentially stale data. Classic CP systems: HBase, MongoDB (with replica sets in certain configs), Zookeeper, etcd. AP systems (Cassandra, DynamoDB) choose availability — they serve reads from any node, potentially returning stale data during partitions. Option A describes AP behavior. Option C is misleading — partition tolerance is the property you must keep."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A user logs into a web app and the load balancer routes them to Server A, which stores their session in memory. On the next request, a different load balancing algorithm routes them to Server B — their session is lost. What is the best architectural fix?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Implement sticky sessions using a session cookie so the user always hits the same server" },
+        { "id": "b", "text": "Store session data in a shared distributed cache (e.g., Redis) and make the application stateless; remove server-side session storage entirely" },
+        { "id": "c", "text": "Increase the memory of each server so sessions have more space and are less likely to be evicted" },
+        { "id": "d", "text": "Use a hardware load balancer with built-in session replication across all backend servers" }
+      ],
+      "correctKey": "b",
+      "explanation": "Sticky sessions (A) are a band-aid — they create load imbalance, make server maintenance harder, and don't survive server crashes. The correct fix is externalizing session state to a shared store (Redis, Memcached) so any server can handle any request. This is the foundation of stateless application architecture — the server doesn't care which instance handles a request because all state is in the shared layer. Option C doesn't fix cross-server routing. Option D is expensive and still a band-aid."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "PACELC extends the CAP theorem. In a system with no network partition, what trade-off does PACELC describe?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Even without partitions, you must choose between latency and consistency — stronger consistency means higher latency" },
+        { "id": "b", "text": "PACELC states that without partitions, all three properties (Consistency, Availability, Latency) can be maximized simultaneously" },
+        { "id": "c", "text": "PACELC is only relevant for single-node databases and has no bearing on distributed systems" },
+        { "id": "d", "text": "The trade-off in PACELC is between Partition tolerance and Eventual consistency — latency is not a factor" }
+      ],
+      "correctKey": "a",
+      "explanation": "PACELC (Brewer, 2012) adds Latency as a first-class dimension: even when there is no partition (P), you face a choice between Latency (L) and Consistency (C). A system that synchronously replicates writes to all replicas for strong consistency incurs higher write latency than one that asynchronously replicates. DynamoDB: PB (write latency vs. availability), PC/EC (consistency vs. latency). Cassandra: PA/E (availability vs. consistency) + EL (latency vs. consistency). CAP doesn't capture latency; PACELC does."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A service needs to handle 100,000 concurrent WebSocket connections. Each connection consumes memory and holds a persistent channel to a backend. What architectural approach best addresses this scale?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Deploy a single powerful server with 128+ CPU cores and 512 GB RAM to handle all connections on one machine" },
+        { "id": "b", "text": "Use connection pooling on a single database server to multiplex all 100k connections through a small pool of backend threads" },
+        { "id": "c", "text": "Horizontally scale WebSocket servers behind a load balancer, use a pub/sub message broker for fan-out, and ensure the application is stateless (no session state on WebSocket servers)" },
+        { "id": "d", "text": "Limit the number of concurrent connections per user and reject requests above the threshold" }
+      ],
+      "correctKey": "c",
+      "explanation": "WebSocket long-lived connections are memory-intensive and stateful by nature. Horizontal scaling requires stateless application logic (all shared state in Redis/database), a pub/sub broker (Redis pub/sub, NATS, Kafka) to broadcast messages across nodes, and a load balancer with connection draining or WebSocket-aware routing. Single-server approaches (A, B) hit resource limits and create single points of failure. Rejecting connections (D) is not scaling — it's throttling. Modern solutions use edge-based WebSocket gateways (e.g., Cloudflare Durable Objects, AWS API Gateway WebSocket)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Your e-commerce site gets heavy traffic only on the homepage and product listing pages, but backend order-processing services sit idle most of the time. What architectural pattern solves this mismatch?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Microservices — split every service into a separate deployment unit so they scale independently" },
+        { "id": "b", "text": "Queue-based load leveling — place an asynchronous message queue (e.g., SQS) between the web tier and order-processing tier so each scales to its own pace" },
+        { "id": "c", "text": "Database sharding — partition the database by order date to speed up writes for peak traffic" },
+        { "id": "d", "text": "Horizontal scaling — always deploy 10x more backend servers than web servers to handle peak loads" }
+      ],
+      "correctKey": "b",
+      "explanation": "Queue-based load leveling decouples producers from consumers. The web tier drops orders into a queue as fast as they arrive; the processing tier pulls from the queue at its own pace — naturally absorbing spikes. This is the core of the producer-consumer pattern and is fundamental to event-driven architecture. It also provides back-pressure handling and message durability. Microservices (A) enable independent scaling but don't alone solve producer-consumer mismatch. Sharding (C) is a database strategy. 10x overprovisioning (D) is wasteful and still doesn't handle variance."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does it mean for a service to be 'stateless,' and why does it matter for horizontal scalability?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A stateless service does not use HTTP cookies; all client data is passed in request headers" },
+        { "id": "b", "text": "A stateless service does not store any per-request or per-session data between requests; all state is stored externally in shared storage — enabling any request to be handled by any server instance" },
+        { "id": "c", "text": "A stateless service is one that does not write to disk; it only processes data in memory" },
+        { "id": "d", "text": "Stateless services are faster because they do not maintain any database connections" }
+      ],
+      "correctKey": "b",
+      "explanation": "A stateless service treats each request as independent — no session state, no in-memory per-user data stored between requests. All state lives in external stores (Redis, database, shared storage). This enables horizontal scaling: any instance can handle any request, load balancers can distribute freely, and instances can be added or removed without breaking user sessions. Statelessness is a prerequisite for cloud-native, auto-scaling architectures. Option A confuses cookies with session state. Option C is about in-memory vs. disk. Option D is a mischaracterization."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which consistency model allows stale reads in exchange for lower latency and higher availability?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Linearizability — all nodes agree on the order of operations, requiring synchronous coordination" },
+        { "id": "b", "text": "Causal consistency — operations that are causally related are seen by all nodes in order; unrelated operations may be seen in different orders" },
+        { "id": "c", "text": "Eventual consistency — updates propagate asynchronously; reads may return stale data, but all replicas eventually converge to the same value" },
+        { "id": "d", "text": "Strict consistency — every read sees the most recent write, with no exceptions" }
+      ],
+      "correctKey": "c",
+      "explanation": "Eventual consistency (EC) is an异步 replication model where writes are propagated to replicas in the background. Reads can return stale (out-of-date) results, but the system guarantees convergence once all writes have propagated. This enables low-latency local reads (especially in geo-distributed systems) and high availability during network partitions. DynamoDB, Cassandra, DNS, and many CDN caches use eventual consistency. Linearizability (A) and strict consistency (D) require synchronous coordination and sacrifice latency/availability. Causal consistency (B) is a middle ground between the two."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A global SaaS application stores user profile data in a database in us-east-1. Users in Asia experience 300ms+ latency for profile reads. What is the most effective way to reduce latency for global reads while keeping data reasonably consistent?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Compress all API responses with gzip to reduce transfer time over the transatlantic link" },
+        { "id": "b", "text": "Add read replicas in each geographic region and route read queries to the nearest replica; writes go to the primary — accepting eventual consistency for read replicas" },
+        { "id": "c", "text": "Upgrade the database server's CPU and add SSDs to reduce query execution time locally" },
+        { "id": "d", "text": "Use a content delivery network (CDN) to cache user profile responses at the edge" }
+      ],
+      "correctKey": "b",
+      "explanation": "Geo-distributed read replicas are the standard solution for read-heavy, latency-sensitive workloads. The primary handles writes (single-master replication), while read replicas in each region serve low-latency reads. This sacrifices strong consistency for reads — cross-region reads may be slightly stale (eventual consistency) — which is acceptable for user profiles, dashboards, and most read-heavy use cases. Option A only reduces transfer time, not network latency. Option C doesn't help remote users. Option D works for static assets, not dynamic personalized data."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: In the CAP theorem, a system can simultaneously guarantee all three properties — Consistency, Availability, and Partition Tolerance — when there is no network partition.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "The CAP theorem's strict formulation says you can have at most two of three at any given time. In practice, the 'choice' only matters during a partition. Without a partition, a system can be both consistent and available. However, some strict CAP formulations treat it as a property the system always exhibits — CP systems are always consistent and partition-tolerant but sacrifice availability during partitions, while AP systems are always available and partition-tolerant but sacrifice consistency during partitions. The nuance is that the impossibility result (choosing CA) applies only to the theoretical model, not to partition-free operation in practice."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: A system that uses synchronous (blocking) replication to all replicas will always be more consistent than one that uses asynchronous replication.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Synchronous replication requires all replicas to confirm a write before acknowledging it to the client — guaranteeing that a successful write is visible to subsequent readers from any replica. Asynchronous replication acknowledges the write after it is accepted by the primary only, propagating to replicas in the background — meaning a reader on a replica might not yet see a recently acknowledged write. However, synchronous replication introduces latency (waiting for remote confirmations) and reduces availability if a replica is slow or unreachable. There is a real trade-off: stronger consistency comes at the cost of latency and fault tolerance."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: Sticky sessions (session affinity) are generally considered a best practice for scaling stateful web applications horizontally.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Sticky sessions work around the symptom (lost in-memory session) rather than fixing the root cause (server-side session state). They create uneven load distribution (some servers accumulate more sessions), make it impossible to gracefully take a server offline, and do not survive server crashes. The industry best practice is to externalize session state to a shared distributed store (Redis, Memcached) and build stateless services. Sticky sessions are a legacy workaround, not a design goal."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Your team uses a health-check endpoint on each application server for load balancer routing decisions. Under high load, the health check passes but the server is so overloaded it takes 10+ seconds to respond to real requests. What happens and how do you fix it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The load balancer routes more traffic to the struggling server because its health check is still passing — causing a thundering herd. Fix: implement a passive health check that also monitors error rates or latency from the load balancer's perspective" },
+        { "id": "b", "text": "The load balancer correctly routes traffic away from the slow server because the 10-second response triggers a timeout. No fix needed." },
+        { "id": "c", "text": "The load balancer automatically isolates the server after 3 consecutive slow health-check responses. Fix: reduce the health-check timeout threshold." },
+        { "id": "d", "text": "Active health checks cannot distinguish between a healthy slow server and a failing server. Fix: remove health checks entirely and use round-robin." }
+      ],
+      "correctKey": "a",
+      "explanation": "Active health checks (ping /health endpoint) only verify that the server is reachable and responding — they don't measure actual request capacity. A server can pass a health check while being queued behind hundreds of slow requests. This causes the load balancer to continue sending traffic to an already overwhelmed server (thundering herd or 'misdirected trivia' problem). Fixes: add a /ready endpoint that checks internal load (queue depth, thread pool, memory), configure the load balancer to also do passive health checks (track real request error rates/latency), and set circuit breakers at the load balancer. Option B is wrong (health checks often pass before timeout threshold). Option C requires specific LB config. Option D is dangerous."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Consistent hashing is used to distribute keys across nodes. What problem does it solve compared to naive modulo hashing, and why does adding virtual nodes (vnodes) improve distribution?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Consistent hashing solves the thundering herd problem during traffic spikes; virtual nodes randomize request routing to prevent hotspots" },
+        { "id": "b", "text": "Consistent hashing minimizes key remapping when nodes are added or removed; virtual nodes spread the keyspace owned by each physical node across multiple points on the hash ring, producing a more even load distribution" },
+        { "id": "c", "text": "Virtual nodes solve the CAP theorem trade-off by making every physical node appear as both CP and AP simultaneously" },
+        { "id": "d", "text": "Consistent hashing eliminates the need for a load balancer entirely; virtual nodes act as distributed health-check agents" }
+      ],
+      "correctKey": "b",
+      "explanation": "Naive modulo hashing (hash(key) % N) remaps virtually all keys when a node is added or removed, triggering a cache-miss or shard-remap storm. Consistent hashing maps keys and nodes onto a circular ring — only keys between the failed/added node and its neighbors are remapped. Virtual nodes assign multiple hash positions per physical node, smoothing out load imbalances caused by heterogeneous hardware or non-uniform key distributions. Used in: DynamoDB, Cassandra, Memcached, Redis Cluster. Option A misdescribes consistent hashing. Option C is false. Option D is unrelated."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A system requires read-after-write consistency for user profile updates — a user who updates their profile should always see the new value immediately on the next page load. Which strategy best achieves this for a globally distributed read-heavy system?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use eventual consistency with a 5-second propagation delay; most users won't notice the delay" },
+        { "id": "b", "text": "After a write, route the same user's subsequent reads to the primary (writer) region for a configurable time window; reads from other regions use replicas (session-level consistency)" },
+        { "id": "c", "text": "Disable read replicas globally and direct all traffic through the primary region — consistency is guaranteed by single-region routing" },
+        { "id": "d", "text": "Implement read-your-writes at the database level using synchronous multi-region replication with automatic failover" }
+      ],
+      "correctKey": "b",
+      "explanation": "Read-after-write consistency (also called read-your-writes) ensures a user immediately sees their own writes. The pragmatic global approach is to read from the primary (writer) region for a time window after a write (e.g., 30 seconds or until a sync marker), then fall back to replica reads elsewhere. This is session-level consistency — a middle ground between strong consistency (synchronous global replication, high latency) and eventual consistency (stale reads). Option A fails the read-after-write requirement. Option C sacrifices the performance benefit of geo-distributed replicas. Option D (synchronous multi-region) has extremely high write latency (satellite link delays). The pragmatic correct answer is B."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: Adding a load balancer in front of a microservice cluster always improves both performance and availability compared to not having one.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "A load balancer adds a single point of failure if not configured redundantly (active-passive HA pair). It also introduces a network hop (adding milliseconds of latency) and can become a bottleneck if undersized. For purely in-process communication within a Kubernetes cluster, a service mesh (e.g., Envoy sidecar) or client-side load balancing (Ribbon, Finagle) may be more appropriate than a centralized LB. The load balancer improves availability only when deployed in an HA configuration; it can degrade performance when used unnecessarily for internal service-to-service communication at high request rates."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "An auto-scaling policy triggers when average CPU across instances exceeds 80%. Under a sustained load increase, new instances spin up but the target group reports them unhealthy and they are terminated before taking traffic. What is the root cause likely to be?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The health check endpoint is responding with HTTP 200 but the app is actually crashed — the LB is marking healthy instances as unhealthy" },
+        { "id": "b", "text": "The application requires a JVM warm-up period or dependency initialization (DB connections, caches) that happens after the process starts; the health check passes before the app is truly ready to serve traffic" },
+        { "id": "c", "text": "CPU usage spiked above 80% immediately, causing the auto-scaler to launch too many instances simultaneously, overwhelming the health check system" },
+        { "id": "d", "text": "The load balancer health check timeout is too short and is killing legitimate slow responses; fix: increase the timeout to 60 seconds" }
+      ],
+      "correctKey": "b",
+      "explanation": "This is the 'cold start' or 'warm-up' problem common with JVM-based, Spring Boot, and Node.js applications. The process starts, the HTTP server binds a port (health check passes), but the application is still initializing: establishing DB connection pools, warming caches, loading configuration. If the health check is /health instead of /ready, it passes before the app is truly capable of handling requests — causing the LB to route traffic to an unready instance, which fails, is marked unhealthy, and terminated. Fix: implement a /ready endpoint that checks internal readiness (DB connection, cache connectivity, thread pool state), configure the LB to use /ready as the health check, and add a startup delay or pre-warming strategy."
+    }
+  ]
+}

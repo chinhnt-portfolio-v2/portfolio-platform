@@ -1,0 +1,422 @@
+{
+  "topicSlug": "spring-mvc",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which annotation binds an entire class to a URL path prefix in Spring MVC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@GetMapping" },
+        { "id": "b", "text": "@RequestMapping" },
+        { "id": "c", "text": "@PathVariable" },
+        { "id": "d", "text": "@RequestParam" }
+      ],
+      "correctKey": "b",
+      "explanation": "@RequestMapping is the class-level annotation that maps a URL path prefix to a controller class. All method-level @GetMapping, @PostMapping, etc. inherit this path prefix. For example, @RequestMapping(\"/api/users\") on the class + @GetMapping(\"/{id}\") on a method resolves to GET /api/users/{id}. @GetMapping is only for method-level HTTP method specificity. @PathVariable extracts URL segments; @RequestParam extracts query parameters."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of @RequestBody in a Spring MVC controller?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It binds a method parameter to a path variable in the URL" },
+        { "id": "b", "text": "It binds the method parameter to an HTTP request body, deserializing it to a Java object using an HttpMessageConverter" },
+        { "id": "c", "text": "It marks the return value to be written directly as the HTTP response body" },
+        { "id": "d", "text": "It extracts a cookie value from the request" }
+      ],
+      "correctKey": "b",
+      "explanation": "@RequestBody tells Spring to read the entire HTTP request body and deserialize it into a Java object (e.g., from JSON or XML) using an HttpMessageConverter. Spring Boot auto-configures Jackson for JSON conversion. If the body cannot be parsed or the Content-Type is unsupported, Spring throws HttpMessageNotReadableException. @ResponseBody (C) does the opposite — it serializes the return value TO the response body. @PathVariable (A) extracts URL segments; @RequestParam (D) extracts query/form parameters."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @ResponseBody do on a controller method?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It renders a Thymeleaf/JSP view template and returns the rendered HTML" },
+        { "id": "b", "text": "It serializes the method's return value directly into the HTTP response body using an HttpMessageConverter" },
+        { "id": "c", "text": "It sets the HTTP status code on the response" },
+        { "id": "d", "text": "It redirects the request to another URL" }
+      ],
+      "correctKey": "b",
+      "explanation": "@ResponseBody on a method (or @RestController on the class) tells Spring to bypass view resolution and instead serialize the return value directly into the response body. For a POJO return, Jackson serializes it to JSON by default. The response Content-Type is inferred from the HttpMessageConverter selected. In @RestController (which combines @Controller + @ResponseBody), every method is implicitly @ResponseBody. Without it, Spring looks for a view template."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which HTTP method is semantically correct for creating a new resource in a REST API?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PUT" },
+        { "id": "b", "text": "PATCH" },
+        { "id": "c", "text": "POST" },
+        { "id": "d", "text": "DELETE" }
+      ],
+      "correctKey": "c",
+      "explanation": "POST is the standard method for creating a new resource. The server determines the new resource's URI (typically returned in the Location header of the response with status 201 Created). PUT is idempotent and used for full replacement (client specifies the URI). PATCH is for partial updates. DELETE removes resources. Mixing PUT with POST for creates is common in practice but violates the semantic standard."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between @RequestParam and @PathVariable?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@RequestParam extracts query string parameters; @PathVariable extracts URL path segments" },
+        { "id": "b", "text": "@PathVariable extracts query string parameters; @RequestParam extracts URL path segments" },
+        { "id": "c", "text": "Both extract query parameters but have different naming conventions" },
+        { "id": "d", "text": "@PathVariable is for headers; @RequestParam is for the request body" }
+      ],
+      "correctKey": "a",
+      "explanation": "@RequestParam extracts query string parameters (e.g., ?name=John&age=30) from the URL. @PathVariable extracts templated path segments (e.g., /users/{id} where {id} is the variable). Using GET /users?id=1 gives ?id=1 (query param). Using GET /users/1 gives /users/{id} (path variable). Both are required by default unless marked @RequestParam(required=false) or @PathVariable with a defaultValue."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @RestController provide that @Controller does not?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@RestController adds @RequestMapping automatically to all methods" },
+        { "id": "b", "text": "@RestController combines @Controller and @ResponseBody — every method returns a serialized response body, not a view name" },
+        { "id": "c", "text": "@RestController enables CORS support that @Controller lacks" },
+        { "id": "d", "text": "@RestController is for asynchronous endpoints; @Controller is for synchronous" }
+      ],
+      "correctKey": "b",
+      "explanation": "@RestController is a composed annotation that combines @Controller and @ResponseBody. In a @Controller, method return values are treated as view names (logical String) unless the method is also annotated @ResponseBody. In @RestController, every method's return value is automatically serialized to the response body. This eliminates the need to annotate every method individually with @ResponseBody for REST APIs. Both @Controller and @RestController are processed by the DispatcherServlet in the same way."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default HTTP status code returned by a Spring MVC controller when a @GetMapping method succeeds?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "201 Created" },
+        { "id": "b", "text": "204 No Content" },
+        { "id": "c", "text": "200 OK" },
+        { "id": "d", "text": "302 Found (redirect)" }
+      ],
+      "correctKey": "c",
+      "explanation": "200 OK is the default status for successful @GetMapping requests that return a non-null body. 201 Created is used for resource creation (POST resulting in a new resource). 204 No Content is used when the method returns void or null with no body expected. 302 (redirect) requires an explicit redirect: either returning 'redirect:/url' from a @Controller or using RedirectAttributes."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of @ModelAttribute on a method parameter?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It serializes the parameter to JSON in the response body" },
+        { "id": "b", "text": "It binds query/form parameters to a command object and adds it to the model for rendering in a view" },
+        { "id": "c", "text": "It extracts a path variable from the URL template" },
+        { "id": "d", "text": "It marks a method as a handler for pre-processing model data before each request" }
+      ],
+      "correctKey": "b",
+      "explanation": "When placed on a method parameter, @ModelAttribute binds request parameters (query, form, or request body form data) to a POJO command object and adds it to the implicit model. Spring also uses the parameter class name (lowercased) as the attribute name in the model, making it accessible in the view (e.g., Thymeleaf: ${userForm}). This is the classic Spring MVC form-binding pattern. Note: @ModelAttribute on a method (not parameter) is a different annotation — it runs before every handler method to populate the model."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What happens when a Spring MVC @GetMapping method returns a POJO without @ResponseBody or @RestController?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Spring serializes the POJO to JSON using Jackson" },
+        { "id": "b", "text": "Spring throws HttpMediaTypeNotAcceptableException because no suitable HttpMessageConverter is found" },
+        { "id": "c", "text": "Spring wraps the POJO in a ModelAndView with the class name as the view name" },
+        { "id": "d", "text": "Spring returns an empty response with 200 OK" }
+      ],
+      "correctKey": "c",
+      "explanation": "Without @ResponseBody, Spring treats the return value as a logical view name. For a POJO return, Spring uses the class name (e.g., 'User' → view name 'user' → looks for 'user.jsp' or 'user.html') unless you configure a ContentNegotiatingViewResolver. In practice, returning raw POJOs from @Controller methods without @ResponseBody almost always causes a 406 Not Acceptable because no view resolver handles arbitrary objects. Always use @ResponseBody or @RestController when returning data objects."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does Spring determine which HttpMessageConverter to use for @RequestBody deserialization?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Spring uses the first converter registered in the converters list, regardless of Content-Type" },
+        { "id": "b", "text": "Spring matches based on the request's Content-Type header and the target Java type, iterating through registered converters until one supports both" },
+        { "id": "c", "text": "Spring always uses Jackson for JSON regardless of Content-Type" },
+        { "id": "d", "text": "Spring uses the Accept header only and ignores Content-Type for @RequestBody" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring's RequestResponseBodyMethodProcessor (used for @RequestBody/@ResponseBody) selects the HttpMessageConverter by iterating registered converters and checking canRead()/canWrite() for the given media type and Java class. The Content-Type header determines which converter reads the body; the Accept header (plus the target type) determines which converter writes the response. Spring Boot auto-registers converters for JSON (Jackson), XML (Jaxb2), and plain text, ordered by specificity. Custom converters can be added by implementing HttpMessageConverter and registering via WebMvcConfigurer."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of the HttpMessageConverter interface in Spring MVC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It converts HTTP status codes to application-specific error codes" },
+        { "id": "b", "text": "It converts between Java objects and HTTP request/response bodies (e.g., POJO ↔ JSON, POJO ↔ XML)" },
+        { "id": "c", "text": "It converts servlet request parameters to method argument types" },
+        { "id": "d", "text": "It converts file uploads to multipart form data objects" }
+      ],
+      "correctKey": "b",
+      "explanation": "HttpMessageConverter is the bridge between the HTTP world (bytes, streams, headers) and the Java world (objects). For @RequestBody, it reads the HTTP body (bytes) and deserializes to a Java object. For @ResponseBody, it serializes a Java object to bytes in the response body. Spring ships with converters for JSON (Jackson), XML (Jaxb2, Jackson), plain text, and binary formats. Custom converters (e.g., Protocol Buffers, CSV) can be registered via WebMvcConfigurer's extenders method or by implementing HttpMessageConverter directly."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the role of the DispatcherServlet in Spring MVC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "DispatcherServlet compiles JSP templates into servlets" },
+        { "id": "b", "text": "DispatcherServlet acts as the front controller — it receives all HTTP requests, delegates to appropriate handler mappers, invokes the correct controller method, and renders the view or body via a ViewResolver or HttpMessageConverter" },
+        { "id": "c", "text": "DispatcherServlet manages database connections for JPA entities" },
+        { "id": "d", "text": "DispatcherServlet handles WebSocket handshake upgrades" }
+      ],
+      "correctKey": "b",
+      "explanation": "DispatcherServlet is the single entry point for all HTTP requests in Spring MVC (front controller pattern). Its request lifecycle: (1) HandlerMapping finds the matching controller method (e.g., RequestMappingHandlerMapping). (2) HandlerAdapter invokes the method, resolving arguments (@RequestBody, @PathVariable, etc.). (3) Return value is processed — either by a ViewResolver (for view names) or by RequestResponseBodyMethodProcessor (for @ResponseBody). (4) Exception handling via HandlerExceptionResolver. (5) Response rendered. In Spring Boot, DispatcherServlet is auto-registered via servlet container initialization."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How can you validate request body data in a Spring MVC controller using Bean Validation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Add @NotNull, @Size, etc. to entity fields and annotate the @RequestBody parameter with @Valid — Spring throws MethodArgumentNotValidException on failure" },
+        { "id": "b", "text": "Use @RequestBody without @Valid and manually call a Validator instance inside the method" },
+        { "id": "c", "text": "Validation is automatic for all @RequestBody parameters without any annotation" },
+        { "id": "d", "text": "Use @Validated on the @RequestBody parameter to enable validation" }
+      ],
+      "correctKey": "a",
+      "explanation": "To validate a @RequestBody, annotate the parameter with @Valid — this triggers JSR-380 (Bean Validation 2.0) constraints like @NotNull, @Size, @Email, @Min, @Max, etc. on the bound POJO. If validation fails, Spring throws MethodArgumentNotValidException (or its RESTequivalent) before the controller method body executes. @Validated (D) on a parameter is not valid — @Validated goes on the class or method to enable method-level validation (e.g., cross-parameter constraints). Without @Valid, Spring binds the body but skips constraint checking."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between forwarding and redirecting in Spring MVC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Forwarding happens server-side (same request, same URL); redirecting sends a 302 to the browser which issues a new GET request to a different URL" },
+        { "id": "b", "text": "Both return 200 OK with the same response body" },
+        { "id": "c", "text": "Redirecting happens server-side; forwarding sends a 302 to the browser" },
+        { "id": "d", "text": "There is no difference — they are synonyms in Spring MVC" }
+      ],
+      "correctKey": "a",
+      "explanation": "Forward: the server internally transfers the request to another handler — the browser URL stays the same, it is the same HTTP request, and flash attributes (redirect attributes) are NOT available. Redirect: the server sends HTTP 302/303 with a Location header — the browser makes a completely new GET request, the URL changes, and flash attributes survive one redirect (stored in session). In @Controller, return 'forward:/path' for forwarding and 'redirect:/path' for redirecting. Flash attributes require RedirectAttributes.addFlashAttribute()."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does @RequestMapping(consumes = MediaType.APPLICATION_JSON_VALUE) enforce?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It sets the Content-Type header of the response to JSON" },
+        { "id": "b", "text": "It restricts the method to only accept requests whose Content-Type header is JSON — non-matching requests return 415 Unsupported Media Type" },
+        { "id": "c", "text": "It enables GZIP compression for JSON responses" },
+        { "id": "d", "text": "It is equivalent to @ResponseBody for JSON responses" }
+      ],
+      "correctKey": "b",
+      "explanation": "The `consumes` attribute of @RequestMapping filters incoming requests by their Content-Type header. If a client sends Content-Type: text/plain, Spring returns 415 Unsupported Media Type. This is a content negotiation mechanism. The counterpart is `produces`, which matches against the Accept header to determine the response format. Both are optional and compound with path/method constraints. In practice, `consumes` is less common because most clients default to JSON, but it is useful for enforcing strict API contracts."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "In Spring MVC, model attributes added in a @Controller method are available in the subsequent view via the model/map keys.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Attributes added to the Model, ModelMap, or @ModelAttribute parameters in a controller are stored in the request and forwarded to the view (Thymeleaf, JSP, etc.) where they are accessible as variables (e.g., ${user} in Thymeleaf). These are request-scoped and not visible across different HTTP requests. For flash scope (surviving a redirect), use RedirectAttributes.addFlashAttribute()."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A @RestController method returning void will always result in an HTTP 204 No Content response.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Returning void from a @RestController method does NOT guarantee 204 No Content. If the method writes to the response OutputStream/Writer directly (response.getOutputStream().write(...)), the status defaults to 200 unless explicitly set via response.setStatus(). If nothing is written, the servlet container typically sends 200 with an empty body. To get 204, you must explicitly return ResponseEntity.noContent().build() — this gives you explicit control over status and headers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between HandlerAdapter and HandlerMapping in Spring MVC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "HandlerMapping finds which controller method handles a request; HandlerAdapter invokes the method using the correct parameter resolution strategy" },
+        { "id": "b", "text": "HandlerAdapter maps URLs to controllers; HandlerMapping invokes the method" },
+        { "id": "c", "text": "They are interchangeable — both map URLs and invoke methods" },
+        { "id": "d", "text": "HandlerMapping is used only for WebSocket endpoints; HandlerAdapter for REST controllers" }
+      ],
+      "correctKey": "a",
+      "explanation": "HandlerMapping (e.g., RequestMappingHandlerMapping) uses URL path, HTTP method, and other conditions to find the correct handler method. HandlerAdapter (e.g., RequestMappingHandlerAdapter) knows HOW to invoke that handler — it resolves @RequestBody, @PathVariable, @ModelAttribute arguments, invokes the method, and processes the return value. This adapter pattern allows Spring to support diverse handler types beyond annotated controllers (e.g., servlet classes, functional endpoints via RouterFunction in WebFlux). Custom HandlerAdapters are rare but useful for integrating non-standard handler patterns."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does Spring resolve @RequestAttribute and @SessionAttribute in a controller method?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@RequestAttribute reads from the servlet request attributes set by a filter; @SessionAttribute reads from the HTTP session — both require the attribute to exist or throw an exception" },
+        { "id": "b", "text": "Both annotations read from the model/map passed to view templates" },
+        { "id": "c", "text": "@RequestAttribute is for path variables; @SessionAttribute is for query parameters" },
+        { "id": "d", "text": "@RequestAttribute reads from application.properties; @SessionAttribute reads from database-backed sessions" }
+      ],
+      "correctKey": "a",
+      "explanation": "@RequestAttribute reads attributes set on the servlet request (e.g., by a filter or interceptor before the controller is invoked). @SessionAttribute reads from the HTTP session. Both support optional retrieval via required=false. Use @SessionAttributes on the controller class to store model attributes in session temporarily. These annotations are powerful for sharing data between filters/interceptors and controllers without tightly coupling to the servlet API directly. They complement @RequestParam and @PathVariable, which extract from the HTTP request rather than pre-set attributes."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of ResponseEntity in a Spring MVC REST controller?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ResponseEntity is a generic wrapper that lets you control the HTTP status code, headers, and body — giving full control over the servlet response" },
+        { "id": "b", "text": "ResponseEntity is an annotation that replaces @ResponseBody for file downloads" },
+        { "id": "c", "text": "ResponseEntity automatically validates the response body using Bean Validation" },
+        { "id": "d", "text": "ResponseEntity is required for all @RestController methods in Spring 6.x" }
+      ],
+      "correctKey": "a",
+      "explanation": "ResponseEntity<T> is a generic type that encapsulates the full HTTP response: status code (HttpStatus), headers (HttpHeaders), and body (T). It gives you programmatic control over every aspect of the response — for example: return ResponseEntity.ok(user) for 200, ResponseEntity.notFound().build() for 404, ResponseEntity.status(HttpStatus.FORBIDDEN).body(error) for 403 with a body. It implements HttpEntity, which is what @ResponseBody ultimately wraps. For methods where you only need status control, returning the object directly (@ResponseBody style) is simpler. Use ResponseEntity when you need headers or non-standard status codes."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of @GetMapping as a specialized form of @RequestMapping?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@GetMapping is a shorthand for @RequestMapping with method = RequestMethod.GET — it improves readability and reduces boilerplate" },
+        { "id": "b", "text": "@GetMapping enables caching of HTTP responses for GET requests" },
+        { "id": "c", "text": "@GetMapping is required for all REST API endpoints in Spring Boot 3.x" },
+        { "id": "d", "text": "@GetMapping automatically serializes the response to JSON without @ResponseBody" }
+      ],
+      "correctKey": "a",
+      "explanation": "@GetMapping is a composed annotation that combines @RequestMapping(method = HttpMethod.GET) with additional attributes specific to GET requests. The full family includes @PostMapping (POST), @PutMapping (PUT), @PatchMapping (PATCH), @DeleteMapping (DELETE), @RequestMapping (all methods). Using @GetMapping is preferred over @RequestMapping(method = RequestMethod.GET) because it is more readable and self-documenting. Spring Boot 3.x prefers the composed annotations. All HTTP method annotations support the same attributes as @RequestMapping (path, params, headers, consumes, produces)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What are flash attributes in Spring MVC and when should you use them?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Flash attributes are stored in the session and survive exactly one redirect — used to pass data between a POST handler and the subsequent GET handler (e.g., success messages after form submission)" },
+        { "id": "b", "text": "Flash attributes are HTTP headers that control browser caching behavior" },
+        { "id": "c", "text": "Flash attributes are stored in cookies and persist until explicitly cleared" },
+        { "id": "d", "text": "Flash attributes are only available in @RestController methods" }
+      ],
+      "correctKey": "a",
+      "explanation": "Flash attributes survive one HTTP redirect by being stored temporarily in the session (server-side). After the redirect, they are removed from the session automatically. Use case: POST /orders → creates order → redirect to GET /orders/123. The order ID needs to survive the redirect — use RedirectAttributes.addFlashAttribute(\"orderId\", 123). The redirected GET handler accesses it via ${orderId} in the view. Flash attributes solve the 'double submit' problem and allow passing data across redirects. For multiple redirects, use session attributes (@SessionAttributes) instead."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between an HTTP filter (javax.servlet.Filter) and a Spring MVC HandlerInterceptor?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Filters operate at the servlet level (before DispatcherServlet); Interceptors operate inside DispatcherServlet (after handler mapping) — filters can wrap request/response, intercept all requests including static resources, and participate in filter chains outside Spring MVC" },
+        { "id": "b", "text": "HandlerInterceptor runs before DispatcherServlet; Filter runs after" },
+        { "id": "c", "text": "Filters can only be used for security; Interceptors are for logging only" },
+        { "id": "d", "text": "Filters are Spring MVC-specific; Interceptors are part of the servlet API" }
+      ],
+      "correctKey": "a",
+      "explanation": "Filters (javax.servlet.Filter) are servlet API constructs that wrap the HttpServletRequest/Response and run before DispatcherServlet. They can: modify request/response, decide to pass or block, wrap the response with GZIP compression, handle CORS headers, authenticate before Spring MVC. HandlerInterceptor (Spring MVC) runs inside DispatcherServlet, has access to the HandlerExecutionChain and ModelAndView. Methods: preHandle (before handler), postHandle (after handler, before view), afterCompletion (after complete). Filters can do more (they are lower-level) but Interceptors have direct access to Spring MVC constructs (model, view, exception). For Spring Security, CORS, and compression: use Filter. For MVC-specific pre/post processing: use Interceptor."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is content negotiation in Spring MVC and how do you configure it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Content negotiation determines the response format (JSON, XML, HTML) based on the Accept header or URL extension — Spring MVC uses ContentNegotiatingViewResolver or RequestMappingHandlerMapping with produces/consumes attributes" },
+        { "id": "b", "text": "Content negotiation compresses the response body before sending it to the client" },
+        { "id": "c", "text": "Content negotiation only works for @RestController, not @Controller" },
+        { "id": "d", "text": "Content negotiation is automatically enabled by Spring Boot but only supports JSON" }
+      ],
+      "correctKey": "a",
+      "explanation": "Content negotiation lets a client request a specific response format. Spring MVC uses two strategies: (1) Accept header: client sends Accept: application/json → Spring tries to produce JSON. (2) URL extension/path suffix: /users/1.json → returns JSON. Configure via WebMvcConfigurer: add media type mappings (json→application/json, xml→application/xml). For @RestController, returning a POJO with @ResponseBody automatically uses content negotiation — Spring picks the best HttpMessageConverter (Jackson for JSON, JacksonXml for XML). Set produces = MediaType.APPLICATION_JSON_VALUE on @GetMapping to restrict the output format."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of @ControllerAdvice in Spring MVC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@ControllerAdvice is a global exception handler — a class annotated with @ControllerAdvice automatically applies its @ExceptionHandler methods to ALL controllers, providing centralized error handling across the application" },
+        { "id": "b", "text": "@ControllerAdvice automatically encrypts all controller response bodies" },
+        { "id": "c", "text": "@ControllerAdvice is a replacement for @RestController that enables AOP" },
+        { "id": "d", "text": "@ControllerAdvice validates all @RequestBody parameters automatically before they reach the controller" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ControllerAdvice (Spring 3.2+) is a composed annotation that makes a @Component class apply to all @Controller/@RestController methods globally. Use it for: (1) Global exception handling — @ExceptionHandler methods handle specific exception types across all controllers. (2) Global @ModelAttribute binding — @ModelAttribute methods run before every handler. (3) @InitBinder — configure WebDataBinder for all controllers. @RestControllerAdvice is the equivalent for @RestController (combines @ControllerAdvice + @ResponseBody). Use @ControllerAdvice for view-based apps; @RestControllerAdvice for REST APIs."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between @ExceptionHandler in a controller and @ExceptionHandler in a @ControllerAdvice?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A @ExceptionHandler method in a @ControllerAdvice applies to ALL controllers globally; an @ExceptionHandler inside a specific controller only applies to that controller's methods" },
+        { "id": "b", "text": "Both are identical — the @ExceptionHandler annotation works the same way regardless of where it is placed" },
+        { "id": "c", "text": "@ExceptionHandler in a controller handles only runtime exceptions; @ControllerAdvice handles only checked exceptions" },
+        { "id": "d", "text": "@ExceptionHandler in a @ControllerAdvice cannot access the HttpServletRequest" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ExceptionHandler in a controller handles exceptions thrown by that controller's handler methods only. @ExceptionHandler in a @ControllerAdvice applies globally to ALL controllers in the application. The global handler takes precedence over the local one — if a @ControllerAdvice handles an exception, the local @ExceptionHandler in the controller is ignored. Use @ControllerAdvice for centralized error handling (returning consistent JSON error responses across all endpoints). Use local @ExceptionHandler for controller-specific exception handling (e.g., a controller that needs a very specific error response)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the @RequestMapping(headers = \"X-Custom-Header\") attribute enforce?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It sets the X-Custom-Header on every response returned by the method" },
+        { "id": "b", "text": "It restricts the request to only match if the X-Custom-Header is present in the request — useful for matching specific API versions or content types at the header level" },
+        { "id": "c", "text": "It encrypts the X-Custom-Header value before processing the request" },
+        { "id": "d", "text": "It requires the header to be present in the response headers, not the request" }
+      ],
+      "correctKey": "b",
+      "explanation": "The headers attribute on @RequestMapping adds a request header matching condition. The request is only dispatched to the handler if the specified header is present (headers = \"X-Custom-Header\") or has a specific value (headers = \"Content-Type=application/json\"). This is a form of content negotiation at the header level. Use cases: routing requests to different handler methods based on API version headers (X-API-Version), or content type requirements. Note: the header condition is about the REQUEST header, not the response."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does Spring MVC handle file uploads?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Enable multipart support via spring.servlet.multipart.enabled=true, configure MultipartResolver bean, and use @RequestParam(\"file\") MultipartFile in the controller method to receive the uploaded file" },
+        { "id": "b", "text": "File uploads require a custom filter that extends OncePerRequestFilter" },
+        { "id": "c", "text": "File uploads are only supported in @RestController, not @Controller" },
+        { "id": "d", "text": "Spring MVC automatically handles file uploads without any configuration" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot auto-configures a StandardServletMultipartResolver when spring.servlet.multipart.enabled=true (default). Controller receives files via @RequestParam(\"file\") MultipartFile file. MultipartFile provides: getOriginalFilename(), getBytes(), getInputStream(), transferTo(File dest). For multiple files: @RequestParam(\"files\") MultipartFile[] files. Set max file size via spring.servlet.multipart.max-file-size and spring.servlet.multipart.max-request-size. For large file uploads, configure timeouts to prevent hanging connections."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of @ModelAttribute on a method in Spring MVC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@ModelAttribute on a method runs before every @RequestMapping handler method in the same controller (or globally if in @ControllerAdvice) — populating the model with shared data used across multiple handler methods" },
+        { "id": "b", "text": "@ModelAttribute on a method creates a new HTTP session for storing form data" },
+        { "id": "c", "text": "@ModelAttribute on a method converts the response body to a model object" },
+        { "id": "d", "text": "@ModelAttribute on a method is only valid in @RestController classes" }
+      ],
+      "correctKey": "a",
+      "explanation": "When @ModelAttribute is on a method (not a parameter), the method runs before every @RequestMapping method in the same controller (or all controllers if in @ControllerAdvice). Use it to: populate common model attributes used across multiple views (e.g., a list of countries for a dropdown), set default values for command objects, or compute derived values. The method's return value is added to the model (unless the method returns void and uses Model.addAttribute() directly). This is the complement to @ExceptionHandler — both use the same @ControllerAdvice mechanism for global applicability."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between HandlerExceptionResolver and @ExceptionHandler in Spring MVC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "HandlerExceptionResolver is the low-level SPI interface for resolving exceptions to HTTP responses; @ExceptionHandler is the annotation-based approach that internally uses HandlerExceptionResolver — @ExceptionHandler is preferred for application code, HandlerExceptionResolver for framework-level customization" },
+        { "id": "b", "text": "HandlerExceptionResolver handles only runtime exceptions; @ExceptionHandler handles only checked exceptions" },
+        { "id": "c", "text": "@ExceptionHandler replaces HandlerExceptionResolver in Spring Boot 3.x" },
+        { "id": "d", "text": "HandlerExceptionResolver can only be configured via XML; @ExceptionHandler is annotation-based" }
+      ],
+      "correctKey": "a",
+      "explanation": "HandlerExceptionResolver is the contract/interface: resolveException(HttpServletRequest, HttpServletResponse, handler, ex) → returns ModelAndView or null. Spring MVC has several built-in implementations: DefaultHandlerExceptionResolver, ExceptionHandlerExceptionResolver (@ExceptionHandler annotation), ResponseStatusExceptionResolver (@ResponseStatus), SimpleMappingExceptionResolver (XML). @ExceptionHandler methods are adapted by ExceptionHandlerExceptionResolver into the HandlerExceptionResolver chain. For application code, @ExceptionHandler is cleaner. For global behavior, @ControllerAdvice. For framework customization (e.g., mapping exceptions to specific HTTP status), implement HandlerExceptionResolver directly."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of the ResponseBodyAdvice interface in Spring MVC?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ResponseBodyAdvice allows global interception of @ResponseBody return values BEFORE they are written — useful for adding common fields to all responses (e.g., timestamps, request IDs), transforming the response body, or applying custom serialization" },
+        { "id": "b", "text": "ResponseBodyAdvice compresses the response body before writing it to the output stream" },
+        { "id": "c", "text": "ResponseBodyAdvice is a deprecated interface replaced by @ControllerAdvice in Spring Boot 3.x" },
+        { "id": "d", "text": "ResponseBodyAdvice encrypts the response body for all @ResponseBody endpoints" }
+      ],
+      "correctKey": "a",
+      "explanation": "ResponseBodyAdvice<T> is implemented by a @ControllerAdvice bean. Method: beforeBodyWrite(T body, ...) runs before the HttpMessageConverter writes the response — you can modify the body, wrap it in a common envelope, add headers, or change the type. Common use cases: wrap all API responses in { data: ..., metadata: {...} }, add a request ID header to every response, or apply custom serialization for specific types. Implement supports() to restrict to specific types/controllers. This is the correct hook for cross-cutting response transformation — don't modify each controller method individually."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between redirect and forward in Spring MVC in terms of URL and request attributes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Redirect sends a 302 to the browser, causing a new GET request (URL changes, new request scope); forward transfers internally on the server (URL stays, same request scope) — redirect loses forward request attributes unless using flash attributes" },
+        { "id": "b", "text": "Both redirect and forward result in the same HTTP status code being returned to the browser" },
+        { "id": "c", "text": "Forward preserves the original request method (e.g., POST stays POST); redirect always changes to GET" },
+        { "id": "d", "text": "Redirect is faster than forward because it uses a shorter code path" }
+      ],
+      "correctKey": "a",
+      "explanation": "Redirect (return 'redirect:/path'): server sends HTTP 302 with Location header → browser makes a new GET request → new request scope, URL changes to the redirected URL. Forward (return 'forward:/path'): server internally transfers the request to another handler within the same request → same request scope, URL stays unchanged in the browser. Forward is server-side only (no round trip). Redirect causes a page navigation. Use redirect for POST-redirect-GET pattern (prevents double submit). Use forward for internal request delegation without browser awareness."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the WebBindingInitializer interface in Spring MVC and when would you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "WebBindingInitializer configures the WebDataBinder used for request parameter binding across all controllers globally — you can register custom PropertyEditors, Formatters, and validators for consistent data binding behavior" },
+        { "id": "b", "text": "WebBindingInitializer is used to initialize WebSocket connections in Spring MVC" },
+        { "id": "c", "text": "WebBindingInitializer is deprecated in Spring Boot 3.x — use @InitBinder on every controller instead" },
+        { "id": "d", "text": "WebBindingInitializer automatically validates @RequestBody parameters" }
+      ],
+      "correctKey": "a",
+      "explanation": "WebBindingInitializer is an interface you implement and register as a Spring bean to configure the WebDataBinder used for every @ModelAttribute parameter binding across all controllers. Use it to: register custom PropertyEditors for type conversion (e.g., String → LocalDate), register global Validators, set binding-related defaults. Implement initBinder(WebDataBinder binder) to configure the binder once, globally. Alternatively, use @InitBinder on individual controllers for per-controller customization. @ControllerAdvice methods annotated with @InitBinder are also supported for global per-binder configuration."
+    }
+  ]
+}

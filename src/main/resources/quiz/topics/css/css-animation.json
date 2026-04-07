@@ -1,0 +1,690 @@
+{
+  "topicSlug": "css-animation",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property creates a smooth transition between two states when a property value changes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "animation"
+        },
+        {
+          "id": "b",
+          "text": "keyframes"
+        },
+        {
+          "id": "c",
+          "text": "transition"
+        },
+        {
+          "id": "d",
+          "text": "transform"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "The `transition` property animates the interpolation of CSS property values between states (e.g., hover to non-hover). It requires a trigger (like :hover or a class toggle) to start. The shorthand is `transition: property duration timing-function delay`. animation and @keyframes are for multi-step sequences; transform changes geometry but doesn't animate without transition or animation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `transition: all 0.3s ease` do when applied to a button?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Transitions only the color property over 0.3 seconds with ease timing"
+        },
+        {
+          "id": "b",
+          "text": "Transitions all animatable CSS properties over 0.3s with ease timing when any property changes"
+        },
+        {
+          "id": "c",
+          "text": "Transitions all properties but ignores timing function — only duration applies"
+        },
+        {
+          "id": "d",
+          "text": "Loops the button animation continuously every 0.3 seconds"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`transition: all 0.3s ease` applies ease timing to every animatable property for 0.3 seconds when any property changes. While convenient, `transition: all` is a performance anti-pattern — it triggers transitions on layout properties like width and height, which cause expensive repaints. Best practice: list specific properties: `transition: color 0.3s ease, transform 0.3s ease`. This lets the browser optimize transitions for properties that don't trigger layout."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property can rotate an element 45 degrees without affecting document flow?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "rotate: 45deg"
+        },
+        {
+          "id": "b",
+          "text": "transform: rotate(45deg)"
+        },
+        {
+          "id": "c",
+          "text": "animation: rotate(45deg)"
+        },
+        {
+          "id": "d",
+          "text": "animation: spin 45deg"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "The `transform` property applies 2D/3D geometric transformations without affecting document flow. `transform: rotate(45deg)` rotates an element visually but it takes no space in the layout — neighboring elements act as if the element hasn't moved. Common transforms: rotate(), scale(), translate(x, y), skew(). transform is GPU-accelerated (compositor-only), making it much more performant than animating position with top/left."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of `@keyframes` in CSS animations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It defines the trigger event (like :hover) that starts an animation"
+        },
+        {
+          "id": "b",
+          "text": "It defines intermediate states (steps) of an animation over its duration"
+        },
+        {
+          "id": "c",
+          "text": "It sets the animation speed curve (ease, linear, etc.)"
+        },
+        {
+          "id": "d",
+          "text": "It pauses an active animation"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "@keyframes defines the animation's intermediate steps by specifying property values at defined percentages of the animation's progress (0% to 100%). An element then references the keyframe name via `animation-name`. Example: `@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }` — then `animation: fadeIn 1s ease`. Without @keyframes, there's no animation sequence — only instant state changes."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `animation-fill-mode: forwards` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Forwards the animation event to JavaScript event handlers"
+        },
+        {
+          "id": "b",
+          "text": "Retains the styles from the last keyframe after the animation ends"
+        },
+        {
+          "id": "c",
+          "text": "Restarts the animation from the beginning when it completes"
+        },
+        {
+          "id": "d",
+          "text": "Forwards the animation to the next sibling element"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Without fill-mode, animations reset to the pre-animation state when they end. `forwards` keeps the final keyframe's styles after the animation completes — useful for entrance animations that should stay in their end state. Other modes: `backwards` applies 0% styles before animation starts; `both` applies both. `fill-mode: forwards` is essential for one-shot animations like entrance effects."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS timing function creates an animation that starts slowly, accelerates in the middle, then decelerates at the end?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "linear"
+        },
+        {
+          "id": "b",
+          "text": "ease"
+        },
+        {
+          "id": "c",
+          "text": "steps(5)"
+        },
+        {
+          "id": "d",
+          "text": "step-end"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "ease uses a built-in bezier curve that starts slowly, accelerates through the middle, and decelerates at the end — a natural, pleasing motion. linear has constant speed throughout — mechanically unnatural. steps(N) creates a stepped/jarring motion with N discrete jumps. For UI animations, ease or custom cubic-bezier() produces the most natural feel. Never use linear for moving elements — it looks robotic."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `opacity: 0` do, and what is its advantage over `visibility: hidden` for hiding elements?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "opacity: 0 hides the element and removes it from the accessibility tree"
+        },
+        {
+          "id": "b",
+          "text": "opacity: 0 hides the element visually but keeps it in the layout (space preserved); it can be transitioned smoothly unlike visibility: hidden"
+        },
+        {
+          "id": "c",
+          "text": "opacity: 0 and visibility: hidden are functionally identical — opacity is just the older syntax"
+        },
+        {
+          "id": "d",
+          "text": "opacity: 0 prevents the browser from rendering the element entirely, saving memory"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "opacity: 0 makes an element fully transparent but it remains in the document flow (space is preserved) and can receive events (unless pointer-events: none is also set). The critical advantage: opacity CAN be animated with transition/animation (smooth fade), while visibility: hidden cannot. For fade-in/out effects: `transition: opacity 0.3s ease, visibility 0.3s ease` with a synchronized visibility toggle (show at opacity: 1, visibility: visible)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `animation-iteration-count: infinite` and `animation-play-state: paused`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Both make the animation stop — they are identical in effect"
+        },
+        {
+          "id": "b",
+          "text": "iteration-count: infinite repeats the animation forever; animation-play-state: paused pauses it at its current position and can be resumed"
+        },
+        {
+          "id": "c",
+          "text": "animation-play-state: paused removes the element from the layout; iteration-count: infinite keeps it"
+        },
+        {
+          "id": "d",
+          "text": "iteration-count: infinite only works with @keyframes; animation-play-state works with transitions"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`animation-iteration-count` specifies how many times the animation runs (number or infinite). `animation-play-state` controls whether the animation is playing or paused. Pausing is useful for hover-triggered animations: `animation-play-state: paused` by default, `:hover .el { animation-play-state: running; }` starts the animation on hover. Paused animations retain their current state; they don't snap back or reset."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which CSS properties are GPU-accelerated (compositor-only) and safe to animate without triggering layout or paint?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "width, height, margin, padding"
+        },
+        {
+          "id": "b",
+          "text": "background-color, border-color, box-shadow"
+        },
+        {
+          "id": "c",
+          "text": "transform and opacity — only these two properties can be promoted to the GPU compositor layer without triggering layout or paint"
+        },
+        {
+          "id": "d",
+          "text": "All CSS properties can be GPU-accelerated with the correct will-change hint"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "Only `transform` and `opacity` are compositor-only properties — animating them does not trigger layout (reflow) or paint. The browser promotes elements using these properties to a GPU layer, enabling 60fps+ animations. Animating width, height, margin triggers layout; animating background-color triggers paint. This is why virtually all performant CSS animation advice reduces to: 'animate transform and opacity'. Any other property animated in a performance-critical path will cause jank."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the correct usage of `will-change` for a performance-critical animation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Apply will-change to all animated elements before any animation begins and keep it forever for instant performance"
+        },
+        {
+          "id": "b",
+          "text": "Apply will-change shortly before the animation starts, then remove it (or set to 'auto') after the animation completes to avoid GPU memory waste"
+        },
+        {
+          "id": "c",
+          "text": "will-change only works with @keyframes animations, not with transitions"
+        },
+        {
+          "id": "d",
+          "text": "will-change is a vendor prefix for transform — always use transform instead"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "will-change hints to the browser to prepare for upcoming changes, promoting the element to its own compositor layer. The correct pattern: apply it shortly before animation begins (e.g., on hover), then remove it after. Keeping it permanently wastes GPU memory on elements that aren't animating. The allowed values: scroll-position, contents, transform, opacity. Using it too broadly (e.g., will-change: all) defeats the purpose entirely."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `animation-direction: alternate`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It plays the animation in reverse order on every iteration"
+        },
+        {
+          "id": "b",
+          "text": "It reverses the animation direction on each iteration, creating a natural back-and-forth effect without needing to define reverse keyframes"
+        },
+        {
+          "id": "c",
+          "text": "It changes the animation from a timeline-based sequence to a frame-based sequence"
+        },
+        {
+          "id": "d",
+          "text": "It alternates between two different @keyframes sequences"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`animation-direction: alternate` plays the animation forward on odd iterations and backward on even iterations, creating a smooth back-and-forth (ping-pong) effect. This is essential for pulsing, breathing, or swinging animations without defining separate reverse keyframes. Combined with `animation-iteration-count: infinite`, it creates continuous oscillation. `reverse` plays every iteration in reverse. `alternate-reverse` starts backward then alternates."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `animation-delay: -1.5s` mean, and when is a negative delay useful?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Negative delay causes an error — animation delays cannot be negative"
+        },
+        {
+          "id": "b",
+          "text": "A negative delay starts the animation 1.5 seconds into its timeline, effectively skipping the first 1.5 seconds — useful for staggered animations in a group"
+        },
+        {
+          "id": "c",
+          "text": "Negative delay plays the animation backwards from the start"
+        },
+        {
+          "id": "d",
+          "text": "Negative delay only applies to infinite animations, not one-shot animations"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Negative animation-delay starts the animation partway through. `animation-delay: -1.5s` means 'start 1.5 seconds into the animation', as if 1.5 seconds have already elapsed. This is the standard technique for staggered animations: set the same animation duration on all items, then give each item a progressively more negative delay (e.g., -0s, -0.1s, -0.2s) to offset their start times without a large positive delay that would leave some items invisible initially."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Why is `transform: translateX()` preferred over animating `left` / `right` for horizontal movement?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "transform is visually more accurate because it uses subpixel rendering"
+        },
+        {
+          "id": "b",
+          "text": "left/right trigger layout recalculation on every frame (expensive); transform operates on the compositor layer without layout, enabling 60fps animations"
+        },
+        {
+          "id": "c",
+          "text": "left/right only work with position: absolute; transform works with all position values"
+        },
+        {
+          "id": "d",
+          "text": "There is no performance difference — both use the GPU"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Animating `left` or `right` changes the element's layout position, triggering layout (reflow) recalculation on every frame — extremely expensive. `transform: translateX()` operates entirely on the compositor thread (GPU), bypassing layout and paint. This is why every CSS animation guide says: 'animate transform and opacity only'. The practical limit: animating left/right on a single element might work; doing it for 50 items at 60fps will cause visible jank."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the FLIP animation technique, and how does it leverage CSS transforms for performance?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "FLIP means First, Last, Invert, Play — it measures element positions before/after a DOM change, calculates the delta, and uses transform to animate the change, bypassing layout recalculation"
+        },
+        {
+          "id": "b",
+          "text": "FLIP is a vendor prefix for animation-fill-mode: forwards used in CSS Grid transitions"
+        },
+        {
+          "id": "c",
+          "text": "FLIP converts CSS animations to Web Animations API (WAAPI) for better performance"
+        },
+        {
+          "id": "d",
+          "text": "FLIP is a CSS property that automatically optimizes all animations on the page"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "FLIP (First, Last, Invert, Play) by Paul Lewis: (1) Record the First position of an element, (2) Apply the Last/终 state, (3) Calculate the delta between positions, (4) Invert using `transform`, (5) Play the animation by removing the transform. This trick makes imperceptible DOM changes (like reordering list items) appear as smooth animations without triggering layout during the animation itself. Libraries like React Flip Toolkit automate this pattern."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between `cubic-bezier(0.25, 0.1, 0.25, 1)` and `ease`, and why does it matter for animation curves?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "They are identical — cubic-bezier and ease are interchangeable names for the same timing function"
+        },
+        {
+          "id": "b",
+          "text": "ease is equivalent to cubic-bezier(0.25, 0.1, 0.25, 1) — both describe the same built-in curve; cubic-bezier allows custom curves not available as keywords"
+        },
+        {
+          "id": "c",
+          "text": "ease is faster than cubic-bezier because it uses hardware-optimized curves"
+        },
+        {
+          "id": "d",
+          "text": "cubic-bezier only works in transitions; ease only works in @keyframes"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "ease IS a predefined cubic-bezier curve — specifically `cubic-bezier(0.25, 0.1, 0.25, 1)`. All CSS timing functions (ease, ease-in, ease-out, ease-in-out, linear) are aliases for specific cubic-bezier values. Custom cubic-bezier() lets you define any custom timing curve, including ones not available as keywords (e.g., spring-like overshoot effects with values > 1 like `cubic-bezier(0.68, -0.55, 0.265, 1.55)`). cubic-bezier(1, 0, 0, 1) is the same as linear."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does the Web Animations API (WAAPI) differ from CSS @keyframes and transition for complex animations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "WAAPI is a JavaScript API that exposes CSS @keyframes and transitions to JavaScript — it provides playback control (pause, reverse, speed) that CSS alone cannot provide"
+        },
+        {
+          "id": "b",
+          "text": "WAAPI is a CSS-only specification that replaces @keyframes with more performant JavaScript-generated animations"
+        },
+        {
+          "id": "c",
+          "text": "WAAPI runs animations on the CPU, making it faster than CSS animations which run on the GPU"
+        },
+        {
+          "id": "d",
+          "text": "WAAPI and CSS animations are equivalent — WAAPI is just a JavaScript wrapper with no additional capabilities"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "WAAPI provides the same performance as CSS animations (runs on the compositor thread) but adds JavaScript control: pause, play, reverse, change playback rate, bind to scroll position (scroll-linked animations), and listen to finish events. It's the missing piece between declarative CSS (simple, no JS) and imperative JS animation (powerful but verbose). For scroll-linked animations (progress indicators, parallax), WAAPI's `element.animate()` with `ScrollTimeline` is far cleaner than Intersection Observer hacks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the 'compositor layer explosion' problem with `will-change`, and how do you avoid it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Using will-change: all creates a separate GPU layer for every animated element, consuming excessive GPU memory — avoid by specifying only the properties that will actually change: will-change: transform, opacity"
+        },
+        {
+          "id": "b",
+          "text": "will-change causes the browser to create too many CSS @keyframes rules, crashing the parser — avoid by limiting will-change to one element per page"
+        },
+        {
+          "id": "c",
+          "text": "Compositor layer explosion is a myth — will-change has no performance cost"
+        },
+        {
+          "id": "d",
+          "text": "The problem only occurs on mobile devices; desktop browsers handle will-change optimally without configuration"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Each GPU layer consumes video memory. Overusing `will-change: all` (or applying it to too many elements) creates hundreds of compositor layers, exhausting GPU memory and degrading performance — the opposite of the intended effect. The rule: apply will-change selectively, only to elements that are actively animating, and only for the specific properties being animated. For most animations, `will-change: transform, opacity` is sufficient. Remove it after animation ends."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a scroll-linked animation, and how does CSS `animation-timeline: scroll()` enable it without JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Scroll-linked animations are JavaScript-only — CSS cannot bind animations to scroll position"
+        },
+        {
+          "id": "b",
+          "text": "animation-timeline: scroll() binds animation progress directly to scroll position — as you scroll, the animation progresses. No JavaScript required, runs on the compositor thread"
+        },
+        {
+          "id": "c",
+          "text": "scroll() enables smooth scrolling; animation-timeline controls animation direction during scroll"
+        },
+        {
+          "id": "d",
+          "text": "animation-timeline: scroll() is deprecated in favor of the Web Animations API ScrollTimeline"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Scroll-linked animations progress based on scroll position — common examples: progress bars, parallax effects, reveal-on-scroll. The new CSS `animation-timeline: scroll()` (CSS Scrollbars spec) ties animation progress to scroll, driven entirely by the compositor. Combined with `animation-timeline: view()` for element-in-viewport progress, this replaces complex Intersection Observer + transform animations with pure CSS. Browser support is growing — Chrome shipped it, Firefox has partial support."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "The CSS `transition` property can animate changes to any CSS property — including `display: none` to `display: block`.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "transition cannot animate discrete properties like display, visibility (with values other than visible), or float. These properties have no in-between state to interpolate. To fade in an element that toggles display:none, use opacity + visibility: 0→1 for opacity, hidden→visible for visibility. Combined: `transition: opacity 0.3s, visibility 0.3s;` — toggle both simultaneously. The element stays in the DOM (display:block) but invisible."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Animating `transform` is GPU-accelerated because it operates on the compositor layer without triggering layout or paint, while animating `background-color` requires the browser to repaint every frame.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The browser promotes elements being transformed (and with opacity changes) to their own GPU layer. Compositor-only properties are handled entirely on the GPU — no CPU involvement, no layout recalculation, no pixel repainting. background-color changes, by contrast, require the browser to repaint the element on every frame of the animation. This is why 60fps animation of background-color on a large area causes visible stutter on mid-range devices."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The Web Animations API (WAAPI) `element.animate()` method runs animations on the main thread, making it slower than CSS @keyframes animations which run on the compositor thread.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "WAAPI animations are NOT on the main thread by default. Like CSS animations, WAAPI runs on the compositor thread when animating only compositor-promoted properties (transform, opacity). The advantage of WAAPI over pure CSS is the JavaScript API for playback control (pause, reverse, change speed, bind to scroll), not raw performance. When animating layout-triggering properties, both WAAPI and CSS cause main-thread jank equally."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What will happen when you hover over `.box`?\n\n```css\n.box {\n  width: 100px;\n  height: 100px;\n  background: #f00;\n  transition: width 0.3s ease, background-color 0.3s ease;\n}\n.box:hover {\n  width: 200px;\n  background: #00f;\n}\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "The box grows to 200px wide over 0.3s AND changes to blue simultaneously"
+        },
+        {
+          "id": "b",
+          "text": "Only the width animates — background-color is not in the transition list"
+        },
+        {
+          "id": "c",
+          "text": "The browser throws an error because width and background-color cannot be transitioned simultaneously"
+        },
+        {
+          "id": "d",
+          "text": "Both animate but at different speeds — width uses ease, background-color uses the default linear"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Both width and background-color are in the transition list with 0.3s ease. When hovered, both properties animate simultaneously (in parallel) over 0.3 seconds. The box smoothly expands from 100px to 200px AND smoothly transitions from red to blue. The transition shorthand applies the same duration and timing function to each listed property — both run in sync. If background-color were omitted from the list, it would change instantly (no transition) while width still animates."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this CSS animation produce?\n\n```css\n@keyframes slide {\n  0%   { transform: translateX(0);    opacity: 0; }\n  50%  { transform: translateX(50px); opacity: 1; }\n  100% { transform: translateX(0);    opacity: 0; }\n}\n.box {\n  animation: slide 2s ease-in-out infinite;\n  animation-fill-mode: backwards;\n}\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "A box that slides from left to right and fades in and out, oscillating forever — at the start (before animation runs), it shows opacity: 0 because animation-fill-mode: backwards applies the 0% keyframe"
+        },
+        {
+          "id": "b",
+          "text": "A box that slides right once and stops, visible at all times"
+        },
+        {
+          "id": "c",
+          "text": "A box that vibrates rapidly in place (opacity flickering) because fill-mode: backwards conflicts with infinite"
+        },
+        {
+          "id": "d",
+          "text": "The animation runs once because animation-fill-mode overrides infinite"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "The animation is: 0% (translateX:0, opacity:0) → 50% (translateX:50px, opacity:1) → 100% (translateX:0, opacity:0) over 2s, ease-in-out, infinite (repeating). animation-fill-mode: backwards applies the 0% styles BEFORE the animation starts (while waiting in the queue). Since 0% has opacity:0, the box is invisible before it starts. The animation loops forever: the box slides right while fading in, then back to start while fading out — a continuous oscillating entrance/exit effect."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property is the shorthand that combines `animation-name`, `animation-duration`, `animation-timing-function`, and `animation-delay`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "transition" },
+        { "id": "b", "text": "animation" },
+        { "id": "c", "text": "keyframe-animation" },
+        { "id": "d", "text": "animate" }
+      ],
+      "correctKey": "b",
+      "explanation": "animation is the shorthand property. Order: animation: <name> <duration> <timing-function> <delay> <iteration-count> <direction> <fill-mode> <play-state>. Example: animation: fadeIn 0.5s ease-in 0s infinite alternate forwards. Missing values take their defaults: duration defaults to 0s, delay to 0s, iteration-count to 1."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the minimum number of keyframe stops required for a valid @keyframes animation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "3 — from, middle, and to" },
+        { "id": "b", "text": "2 — 0% (or from) and 100% (or to)" },
+        { "id": "c", "text": "1 — the browser auto-generates the missing keyframe" },
+        { "id": "d", "text": "0 — @keyframes can be empty and the element uses its default styles" }
+      ],
+      "correctKey": "b",
+      "explanation": "A valid keyframe needs at least 2 stops: 0% and 100% (or the from/to equivalents). @keyframes fade { from { opacity: 0; } to { opacity: 1; } } is the minimum. You can omit 0% or 100% — the browser infers the missing start/end from the element's current styles. More than 2 stops creates intermediate steps."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `animation-iteration-count: 2` mean?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The animation runs at double normal speed" },
+        { "id": "b", "text": "The animation plays twice then stops at the final keyframe" },
+        { "id": "c", "text": "The animation has 2 keyframe stops" },
+        { "id": "d", "text": "The animation runs for 2 seconds regardless of duration" }
+      ],
+      "correctKey": "b",
+      "explanation": "animation-iteration-count specifies how many times the animation repeats. 2 = play once, then again. 1 = play once (default). 0 = don't play at all. 2.5 = play 2.5 times (stops halfway through the third iteration). infinite = loop forever. The iteration count is separate from duration — an animation with duration: 1s and iteration-count: 2 runs for 2 seconds total."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `animation-play-state: paused` do to an animation that is currently running?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Stops the animation and resets the element to its pre-animation state" },
+        { "id": "b", "text": "Pauses the animation at its current position — when resumed, it continues from where it paused" },
+        { "id": "c", "text": "Permanently disables the animation — it cannot be resumed" },
+        { "id": "d", "text": "Pauses only the timing, not the visual state — the element appears frozen but time is still counting" }
+      ],
+      "correctKey": "b",
+      "explanation": "animation-play-state: paused freezes the animation at its current frame. The element retains its current animated styles — it doesn't reset. When play-state returns to running, it resumes from the paused position. This is the mechanism for hover-triggered animations: set paused by default, :hover { animation-play-state: running; } to start on hover."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the correct syntax for `@keyframes` when using percentage stops, and how does it differ from `from/to`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "from/to and percentages are identical — from = 0%, to = 100%; percentages allow intermediate stops that from/to cannot express" },
+        { "id": "b", "text": "from/to can only be used for 2-stop animations; percentage stops allow any number of intermediate steps (10%, 25%, 75%, etc.)" },
+        { "id": "c", "text": "from/to is deprecated in CSS3 — percentages are the only valid syntax" },
+        { "id": "d", "text": "from/to only works in transitions; percentages only work in @keyframes" }
+      ],
+      "correctKey": "a",
+      "explanation": "from = 0%, to = 100%. They are syntactic sugar for single-stop endpoints. Percentages allow multiple intermediate steps: @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } } — the 0%,100% repetition avoids writing the same block twice. You can mix from/to and percentages within the same @keyframes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `animation-direction: reverse` do, and how does it differ from `alternate-reverse`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "reverse and alternate-reverse are identical — both play the animation backwards every time" },
+        { "id": "b", "text": "reverse plays the animation backwards on every iteration (every iteration goes from 100% to 0%); alternate-reverse starts backwards but alternates — first iteration backwards, second forwards, third backwards, etc." },
+        { "id": "c", "text": "reverse starts from 0% going to 100%; alternate-reverse starts from 100% going to 0%" },
+        { "id": "d", "text": "alternate-reverse only works with animation-iteration-count: infinite" }
+      ],
+      "correctKey": "b",
+      "explanation": "animation-direction values: normal (forwards), reverse (backwards on every iteration), alternate (forwards then backwards, alternating), alternate-reverse (backwards then forwards, alternating). With iteration-count: infinite, alternate and alternate-reverse create smooth ping-pong effects without defining separate keyframes. The direction property only changes the playback direction — keyframe percentages remain 0% = start, 100% = end."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Why is `animation-fill-mode: both` often the most practical default for entrance animations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "both only works with infinite animations" },
+        { "id": "b", "text": "both applies 0% styles before animation starts AND 100% styles after it ends — eliminating the flash of pre-animation state and the snap-back to original state" },
+        { "id": "c", "text": "both is faster than forwards because it uses GPU optimization" },
+        { "id": "d", "text": "both is identical to backwards — the two names are synonyms" }
+      ],
+      "correctKey": "b",
+      "explanation": "animation-fill-mode: both is the practical choice for one-shot animations: before the animation starts, the 0% styles apply (so the element is in the starting state even before the animation begins), and after it ends, the 100% styles apply (so the final state is retained). This prevents: (1) a visible flash of the element in its original state before animation starts, and (2) an instant snap-back to the pre-animation state when it ends."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `animation: 0.5s ease 0.1s` and `animation: 0.5s 0.1s ease`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "They are identical — duration, delay, and timing-function order doesn't matter in the animation shorthand" },
+        { "id": "b", "text": "In the animation shorthand, the first time value is duration and the second is delay — order matters: animation: <duration> <delay> <timing-function>" },
+        { "id": "c", "text": "The first is invalid because delay must come before duration" },
+        { "id": "d", "text": "animation shorthand only accepts duration — timing-function must be set separately" }
+      ],
+      "correctKey": "b",
+      "explanation": "animation shorthand order: <duration> <delay> <timing-function> <...>. If two time values appear without a timing-function keyword between them, the browser interprets the first as duration and the second as delay. So animation: 0.5s ease 0.1s = 0.5s duration, ease timing, 0.1s delay. animation: 0.5s 0.1s ease = 0.5s duration, 0.1s delay, ease timing. The order in the shorthand is strict."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `animation-timeline: scroll()` mean, and which browsers support it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "animation-timeline: scroll() creates smooth scrolling behavior — all scroll events animate smoothly" },
+        { "id": "b", "text": "animation-timeline: scroll() binds animation progress to the scroll position of a scrollable element — as the user scrolls, the animation progresses proportionally" },
+        { "id": "c", "text": "scroll() is only available in Chrome; Firefox and Safari do not support it" },
+        { "id": "d", "text": "animation-timeline is deprecated — scroll-driven animations are now handled by the Web Animations API" }
+      ],
+      "correctKey": "b",
+      "explanation": "animation-timeline: scroll() (CSS Scroll Animations) binds animation progress to scroll position. As the user scrolls down a page, the animation progresses. This is the CSS-native way to create scroll-linked animations (progress bars, reveal-on-scroll, parallax) without JavaScript. Chrome shipped it in 2024; Firefox has partial support. Use with @keyframes that animate compositor-only properties (transform, opacity) for 60fps."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does the Web Animations API (WAAPI) `ScrollTimeline` differ from CSS `animation-timeline: scroll()` for scroll-linked animations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "WAAPI ScrollTimeline only works on desktop browsers; CSS scroll() only works on mobile" },
+        { "id": "b", "text": "CSS animation-timeline: scroll() is declarative (no JS), scoped to CSS, limited to the element it's on; WAAPI ScrollTimeline is imperative (JS), offers more control (custom scroll sources, direction, range), and can be applied to any animation" },
+        { "id": "c", "text": "They are functionally identical — ScrollTimeline is just the JavaScript API wrapper for CSS scroll()" },
+        { "id": "d", "text": "WAAPI ScrollTimeline uses the main thread; CSS scroll() uses the compositor thread, making CSS faster" }
+      ],
+      "correctKey": "b",
+      "explanation": "WAAPI ScrollTimeline (new in Scroll Animations Level 2) extends CSS scroll-linked animations: it allows custom scroll sources (any scrollable element, not just the viewport), scroll direction control, and more complex progress ranges. CSS animation-timeline: scroll() is the declarative alternative — simpler but less flexible. The practical choice: use CSS scroll() for simple effects, WAAPI ScrollTimeline for complex scroll-driven interactions."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the correct way to cancel or remove a running CSS animation with JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Set animation-name to an empty string or a non-existent keyframe name" },
+        { "id": "b", "text": "Use the Web Animations API: element.getAnimations().forEach(a => a.cancel()), or remove the animation property from the element's computed styles via JavaScript" },
+        { "id": "c", "text": "CSS animations cannot be cancelled — once started they must run to completion" },
+        { "id": "d", "text": "Set animation-duration: 0s to freeze the current frame instantly" }
+      ],
+      "correctKey": "b",
+      "explanation": "The Web Animations API provides full animation control: element.getAnimations() returns all running animations. Call .cancel() to immediately stop an animation (removes its effect). Call .pause() to freeze it at current position. Call .reverse() or .play() to control direction. WAAPI's cancel() is the proper way to programmatically stop a CSS animation — setting animation-name to '' or duration to 0s are CSS-only workarounds."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "A CSS animation with `animation-fill-mode: forwards` will retain its final keyframe styles even after the animation ends and the element is no longer in the DOM.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "animation styles are tied to the element's lifecycle. When an element is removed from the DOM, its computed styles (including animation-fill-mode effects) are gone — the element no longer exists. For persistent state changes triggered by animation, use JavaScript to add a class when the animationend event fires. The animationend event fires when the animation completes, allowing you to apply permanent styles via a class."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Setting `animation-duration: 0s` on a running animation immediately freezes it at its current frame without triggering layout recalculation.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Setting animation-duration: 0s (or removing the animation property) effectively freezes the animation at its current computed state. This is a useful CSS-only technique for pausing animations without animation-play-state. It doesn't trigger layout because the element's current transform/opacity state is preserved. To truly 'freeze' the visual frame, also set animation-play-state: paused."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A WAAPI animation using element.animate() with a ScrollTimeline, running on the compositor thread (transform/opacity only), is not throttled by the browser's reduced-motion preference.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "The prefers-reduced-motion media query applies to both CSS @keyframes animations AND WAAPI animations. When the user has prefers-reduced-motion: reduce set, browsers pause or cancel all animations (CSS and WAAPI) that signal motion. For proper accessibility, always respect this preference: check it in CSS (@media (prefers-reduced-motion: reduce) { animation: none; }) and in JavaScript (check matchMedia before starting WAAPI animations)."
+    }
+  ]
+}

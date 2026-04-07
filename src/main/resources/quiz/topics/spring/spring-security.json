@@ -1,0 +1,416 @@
+{
+  "topicSlug": "spring-security",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default behavior of Spring Security for unauthenticated requests to a protected resource?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Returns 200 OK with an empty body" },
+        { "id": "b", "text": "Redirects to the login page (/login by default) for browser clients or returns 401 Unauthorized for REST API clients" },
+        { "id": "c", "text": "Throws AccessDeniedException caught by a global exception handler" },
+        { "id": "d", "text": "Returns 403 Forbidden immediately without any challenge" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring Security's default entry point behavior depends on the authentication mechanism: for form login (browser clients), it redirects to /login. For REST APIs using Basic or Bearer authentication, it returns 401 Unauthorized with a WWW-Authenticate header. The actual response depends on the AuthenticationEntryPoint configured — by default it uses SavedRequestAwareAuthenticationEntryPoint (redirects) or Http403ForbiddenEntryPoint (for stateless APIs). Once authenticated but lacking authorization, AccessDeniedException is thrown, returning 403."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @EnableWebSecurity do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Enables web security for the entire application and is required in every Spring Boot application" },
+        { "id": "b", "text": "Activates Spring Security's web security configuration — it imports WebSecurityConfiguration and enables security filters, authentication mechanisms, and the security filter chain" },
+        { "id": "c", "text": "Disables CSRF protection for the application" },
+        { "id": "d", "text": "Automatically applies JWT authentication to all endpoints" }
+      ],
+      "correctKey": "b",
+      "explanation": "@EnableWebSecurity (or its Spring Boot auto-configured counterpart via springSecurityFilterChain bean) activates the Spring Security filter chain for web requests. It imports the core security configuration, registers the SecurityFilterChain beans, and enables security HTTP headers (XSS protection, content-type sniffing, etc.). In Spring Boot, simply having spring-boot-starter-security on the classpath auto-configures security — @EnableWebSecurity is only needed when customizing beyond auto-config defaults. It does NOT disable CSRF (option C) — that requires explicit configuration."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of the SecurityFilterChain in Spring Security 5+?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It defines a list of servlet filters that are applied to every HTTP request in a specific order, each handling authentication, authorization, CSRF, CORS, and other security concerns" },
+        { "id": "b", "text": "It maps URL patterns to roles in application.properties" },
+        { "id": "c", "text": "It encrypts HTTP request and response bodies using AES-256" },
+        { "id": "d", "text": "It manages WebSocket connection security for real-time events" }
+      ],
+      "correctKey": "a",
+      "explanation": "SecurityFilterChain is a list (ordered by @Order) of javax.servlet.Filter instances that Spring Security uses to intercept and process HTTP requests. Each filter in the chain handles a specific concern: ChannelProcessingFilter (HTTP/HTTPS), SecurityContextPersistenceFilter (loads security context), UsernamePasswordAuthenticationFilter (form login), BasicAuthenticationFilter (HTTP Basic), BearerTokenAuthenticationFilter (JWT/OAuth2), AuthorizationFilter (access control), etc. Understanding filter order is critical: authentication filters must run before authorization filters. Spring Security 5+ uses bean-based configuration via SecurityFilterChain rather than the legacy XML namespace."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default CSRF protection behavior in Spring Security for a stateless REST API?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CSRF is disabled by default in Spring Security 6.x" },
+        { "id": "b", "text": "CSRF is enabled by default and stateful browser apps (form login, sessions) require it; stateless REST APIs using Bearer tokens should disable it by configuring csrf().disable()" },
+        { "id": "c", "text": "CSRF protection requires a Spring Security XML configuration to be enabled" },
+        { "id": "d", "text": "CSRF tokens are automatically sent as HTTP headers for REST APIs" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSRF is enabled by default in Spring Security because it protects browser-based sessions from cross-site request forgery. For stateless REST APIs using Bearer tokens (JWT) or API keys, CSRF attacks are not relevant (the browser doesn't automatically send the token in cross-site requests), so it should be disabled: http.csrf(csrf -> csrf.disable()). For stateful browser apps with session-based authentication, CSRF must stay enabled — use Angular-style CSRF tokens via CookieCsrfTokenRepository or the X-CSRF-TOKEN header pattern. Disabling CSRF without understanding the threat model is a security risk."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @PreAuthorize do in Spring Security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It marks a class as secure so only authenticated users can access it" },
+        { "id": "b", "text": "It evaluates a Spring Expression Language (SpEL) expression before method invocation — if the expression evaluates to false, AccessDeniedException is thrown" },
+        { "id": "c", "text": "It encrypts method parameters before they are processed" },
+        { "id": "d", "text": "It requires a valid JWT token to be present in the request header" }
+      ],
+      "correctKey": "b",
+      "explanation": "@PreAuthorize (requires @EnableMethodSecurity to activate) evaluates a SpEL expression before the method body runs. Examples: @PreAuthorize(\"hasRole('ADMIN')\") restricts to users with ROLE_ADMIN. @PreAuthorize(\"hasPermission(#order, 'READ')\") integrates with Spring ACL for domain-object security. @PreAuthorize(\"#user.id == authentication.principal.id\") enforces ownership. @PostAuthorize runs AFTER method execution (useful for filtering return values). Without @EnableMethodSecurity, @PreAuthorize has no effect. @Secured is the older, simpler annotation without SpEL support."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of CORS configuration in Spring Security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It encrypts cookies during cross-origin requests" },
+        { "id": "b", "text": "It controls which origins are allowed to make cross-origin requests to your API — without it, browsers block cross-origin requests due to the Same-Origin Policy" },
+        { "id": "c", "text": "It enables JWT token generation for third-party services" },
+        { "id": "d", "text": "It redirects cross-origin requests to an approved API gateway" }
+      ],
+      "correctKey": "b",
+      "explanation": "CORS (Cross-Origin Resource Sharing) is a browser security mechanism that restricts cross-origin HTTP requests. Without proper CORS configuration, a frontend at https://example.com cannot call https://api.example.com unless the server explicitly allows it via CORS headers (Access-Control-Allow-Origin). In Spring Security, you must configure CORS both in the servlet filter (corsConfigurationSource bean) AND in SecurityFilterChain via corsConfigurationSource(). The CORS filter must run BEFORE the Spring Security filter chain so preflight (OPTIONS) requests are handled correctly. Spring's CorsConfiguration + UrlBasedCorsConfigurationSource is the standard approach."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between authentication and authorization?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Authentication verifies WHO you are (identity); authorization verifies WHAT you are allowed to do (permissions)" },
+        { "id": "b", "text": "Authentication verifies WHAT you are allowed to do; authorization verifies WHO you are" },
+        { "id": "c", "text": "Authentication and authorization are the same concept in Spring Security" },
+        { "id": "d", "text": "Authorization happens at login; authentication happens on every request" }
+      ],
+      "correctKey": "a",
+      "explanation": "Authentication is the process of proving identity — 'Are you who you claim to be?' (username/password, JWT, OAuth2 token). Authorization is the process of checking permissions — 'Are you allowed to do this?' (roles, permissions, ACLs). In Spring Security: AuthenticationManager handles authentication. Access decisions (authorization) are handled by AccessDecisionManager/Voter or the newer authorization manager API. A user can be authenticated (identity confirmed) but not authorized (lacks permission) — returning 403 in that case."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does a UserDetailsService do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It handles HTTP session management and session fixation protection" },
+        { "id": "b", "text": "It loads user-specific data (username, password, authorities) from a data source to be used by the AuthenticationManager during authentication" },
+        { "id": "c", "text": "It generates JWT access tokens after successful authentication" },
+        { "id": "d", "text": "It encrypts user passwords before storing them in the database" }
+      ],
+      "correctKey": "b",
+      "explanation": "UserDetailsService is the core interface for loading user data during authentication. It has a single method: loadUserByUsername(String username) → UserDetails. Spring calls this during DaoAuthenticationProvider's authentication flow. Implement it to read from a database (via JdbcDaoImpl or custom), LDAP, or any other source. The returned UserDetails contains the username, encrypted password (for comparison), and GrantedAuthority collection (roles). It does NOT generate JWTs (C) — that's done by a JWT utility service. It does NOT encrypt passwords itself (D) — use a PasswordEncoder."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the correct filter order for a stateless JWT API using Spring Security 6?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CsrfFilter → JwtAuthenticationFilter → AuthorizationFilter" },
+        { "id": "b", "text": "SecurityContextPersistenceFilter → BearerTokenAuthenticationFilter → AuthorizationFilter" },
+        { "id": "c", "text": "SessionAuthenticationStrategy → JwtAuthenticationFilter → UsernamePasswordAuthenticationFilter" },
+        { "id": "d", "text": "CorsFilter → JwtAuthenticationFilter → AuthorizationFilter" }
+      ],
+      "correctKey": "b",
+      "explanation": "For stateless JWT bearer token APIs: SecurityContextPersistenceFilter runs first (clears the security context at the end of each request), then BearerTokenAuthenticationFilter extracts the JWT from the Authorization: Bearer <token> header and authenticates the user into the SecurityContext, then AuthorizationFilter (formerly FilterSecurityInterceptor) checks access rules using the authenticated context. CsrfFilter is disabled for stateless APIs (option A is wrong because CSRF should be off). UsernamePasswordAuthenticationFilter (C) is for form login, not JWT. The exact chain depends on what you configure, but BearerTokenAuthenticationFilter is the standard Spring Security 5+ filter for JWT."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the PasswordEncoder interface do, and which implementation should be used for new applications?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PasswordEncoder hashes passwords before sending them over the network" },
+        { "id": "b", "text": "PasswordEncoder encodes passwords for storage and verifies submitted passwords against stored hashes — BCryptPasswordEncoder (adaptive, cost factor) is the recommended implementation for new applications" },
+        { "id": "c", "text": "PasswordEncoder encrypts passwords using RSA for storage in the database" },
+        { "id": "d", "text": "PasswordEncoder generates random passwords for new user accounts" }
+      ],
+      "correctKey": "b",
+      "explanation": "PasswordEncoder has two methods: encode(rawPassword) for storing, and matches(rawPassword, encodedPassword) for verification. BCryptPasswordEncoder is the recommended default: it uses the BCrypt hashing algorithm with a configurable cost factor (strength), making it resistant to rainbow table and brute force attacks. Argon2PasswordEncoder is even stronger but less widely supported. Never use MD5 or SHA-1 for passwords — they are fast hashes, not designed for passwords, making them vulnerable to GPU-accelerated cracking. DelegatingPasswordEncoder supports multiple encoding schemes simultaneously for migration from legacy hashes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between hasRole('ADMIN') and hasAuthority('ROLE_ADMIN') in Spring Security expressions?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "hasRole prefixes the argument with ROLE_ automatically; hasAuthority does not — both check the same GrantedAuthority collection" },
+        { "id": "b", "text": "hasAuthority checks exact authority strings; hasRole automatically prepends 'ROLE_' prefix to the argument before checking — so hasRole('ADMIN') checks for hasAuthority('ROLE_ADMIN')" },
+        { "id": "c", "text": "hasRole is for HTTP paths; hasAuthority is for method-level security" },
+        { "id": "d", "text": "There is no functional difference — they are interchangeable" }
+      ],
+      "correctKey": "b",
+      "explanation": "hasRole('ADMIN') expands to hasAuthority('ROLE_ADMIN') — Spring Security automatically adds the 'ROLE_' prefix. hasAuthority('ROLE_ADMIN') checks the authority string as-is. This matters because Spring Security's default RoleHierarchyVoter and the built-in role checks all expect the 'ROLE_' prefix. If your authorities already include the 'ROLE_' prefix (from UserDetailsService or JWT claims), use hasAuthority(). If you're working with role names without prefix, use hasRole(). Mixing them incorrectly causes silent authorization failures — always check what prefix your authorities actually have."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does SessionCreationPolicy.STATELESS affect Spring Security's behavior?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It requires a valid JWT token on every request but still creates HTTP sessions for session fixation protection" },
+        { "id": "b", "text": "It completely prevents Spring Security from creating or using HTTP sessions — no session cookie is set, SecurityContext is stored only in the request (ThreadLocal), and session-based attacks are impossible" },
+        { "id": "c", "text": "It forces form-based login to use JWT tokens instead of sessions" },
+        { "id": "d", "text": "It is the same as SessionCreationPolicy.IF_REQUIRED for REST APIs" }
+      ],
+      "correctKey": "b",
+      "explanation": "STATELESS means Spring Security will never create an HttpSession: no session cookie is sent, SessionManagementFilter doesn't store anything, and SecurityContext is held only in the ThreadLocal for the current request. The authenticated principal must come from a stateless token (JWT, API key) extracted by an authentication filter. This is the correct policy for pure REST/JWT APIs. The trade-off: you cannot use @SessionAttributes, session-scoped beans, or any server-side session features. The default (IF_REQUIRED) creates a session only when needed. ALWAYS forces a session creation. NEVER never creates a session."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of @EnableMethodSecurity in Spring Security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It enables HTTP security for all web endpoints" },
+        { "id": "b", "text": "It activates @PreAuthorize, @PostAuthorize, @Secured, and @RolesAllowed annotations on @Service and @Controller methods — allowing method-level access control expressions" },
+        { "id": "c", "text": "It enables JWT token generation for method calls" },
+        { "id": "d", "text": "It automatically encrypts all method parameters and return values" }
+      ],
+      "correctKey": "b",
+      "explanation": "@EnableMethodSecurity switches on method-level security annotations. Without it, @PreAuthorize, @Secured, @RolesAllowed have no effect. When enabled, Spring registers MethodSecurityInterceptor which wraps method invocations and evaluates SpEL expressions. It also registers a AOP-based Aspect that intercepts annotated methods. Key point: @EnableMethodSecurity is opt-in — in Spring Boot with spring-boot-starter-security, HTTP security is auto-configured, but method security is NOT enabled by default. Multiple @PreAuthorize expressions can be combined with AND/OR: @PreAuthorize(\"hasRole('ADMIN') or #userId == authentication.principal.id\")."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between CSRF protection and CORS protection in Spring Security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CSRF and CORS are the same thing — both are handled by the browser automatically" },
+        { "id": "b", "text": "CSRF protects against cross-site requests that trick a logged-in user into performing unintended actions; CORS controls which origins can access your API resources from browser scripts" },
+        { "id": "c", "text": "CSRF is a server-side concern only; CORS is purely a client-side concern" },
+        { "id": "d", "text": "CSRF requires the server to validate Origin headers; CORS requires the server to validate CSRF tokens" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSRF (Cross-Site Request Forgery): an attacker tricks a logged-in user's browser into sending a request to your site using the user's session cookie. Countermeasures: CSRF tokens (Synchronizer Token Pattern) or SameSite cookies. CORS (Cross-Origin Resource Sharing): the Same-Origin Policy blocks browser JavaScript from reading responses from different origins — CORS headers from the server explicitly allow cross-origin access. The Origin header (CORS) is NOT validated by CSRF filters (it can be spoofed from non-browser clients). Both must be configured independently: CSRF via http.csrf(), CORS via CorsConfigurationSource."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does SecurityContextHolder.getContext().getAuthentication() return in a controller after successful authentication?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Returns the HTTP request object containing authentication headers" },
+        { "id": "b", "text": "Returns an Authentication object containing the principal (e.g., UserDetails), credentials (usually null post-auth), and GrantedAuthority collection" },
+        { "id": "c", "text": "Returns null for all authenticated requests" },
+        { "id": "d", "text": "Returns the raw JWT token string" }
+      ],
+      "correctKey": "b",
+      "explanation": "After authentication, the Authentication object is stored in SecurityContext (backed by ThreadLocal via SecurityContextHolder). It contains three key items: principal (typically UserDetails or a JWT Claims object), credentials (the secret/password — nulled after authentication for security), and authorities (Collection<? extends GrantedAuthority> — roles/permissions). Access it in a controller: Authentication auth = SecurityContextHolder.getContext().getAuthentication(); String username = auth.getName(); Collection<? extends GrantedAuthority> roles = auth.getAuthorities(). In Spring Security 6, prefer injecting Authentication as a @AuthenticationPrincipal Principal parameter in controllers for cleaner code."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "In a JWT stateless API, the JWT token itself serves as the CSRF token because it is not automatically sent by the browser in cross-site requests.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "CSRF attacks exploit the browser's automatic cookie inclusion — the attacker's page sends the victim's session cookie. For stateless JWT APIs, the token is sent via Authorization: Bearer header, which browsers do NOT include in cross-site requests (unlike cookies). This is why disabling CSRF is safe for JWT APIs. However, if you use cookie-based session IDs with JWT stored in cookies, CSRF protection is again necessary. Always evaluate your authentication mechanism, not just the token format."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Session fixation attacks are a concern only for stateful session-based authentication, not for stateless JWT-based APIs.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Session fixation: an attacker fixes a user's session ID before login, then uses that same ID post-login to hijack the authenticated session. In stateless JWT APIs, there is no server-side session — the JWT contains all necessary claims and is cryptographically signed. An attacker cannot 'fix' a JWT because they don't have the signing key. Session fixation protection (SessionManagementFilter with session fixation strategies) is irrelevant for purely stateless APIs using SessionCreationPolicy.STATELESS. However, if you mix sessions with JWT (e.g., refresh tokens stored in sessions), session fixation becomes relevant again."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does Spring Security's OAuth2 Resource Server validate a JWT access token?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It decrypts the JWT using a shared secret key stored in application.properties" },
+        { "id": "b", "text": "It validates the JWT signature using the issuer's public keys (from the JWKS endpoint), verifies issuer, audience, expiration, and optionally checks scope/claim authorities — all without a database lookup" },
+        { "id": "c", "text": "It calls the authorization server's /introspect endpoint for every request to validate the token" },
+        { "id": "d", "text": "It validates the JWT against the Spring Security database of issued tokens" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring Security's JwtAuthenticationDecoder fetches public keys from the authorization server's JWKS endpoint (jwk-set-uri) and uses them to verify the JWT signature (asymmetric RS256 or symmetric HS256). It then validates claims: issuer (iss), audience (aud), expiration (exp), not-before (nbf), issued-at (iat). Authorities (scopes/roles) are extracted from the 'scope' or 'authorities' claim and mapped to GrantedAuthorities. This is stateless validation — no database call, no network call to the authorization server (after initial JWKS fetch with caching). For opaque tokens, the introspect endpoint approach is used instead."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between AccessDeniedException and AuthenticationException in Spring Security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "AccessDeniedException is thrown when a user is authenticated but lacks required authority; AuthenticationException is thrown when no valid authentication credentials are present" },
+        { "id": "b", "text": "Both exceptions are thrown at the same point in the security filter chain" },
+        { "id": "c", "text": "AuthenticationException is caught by the AuthorizationFilter; AccessDeniedException is caught by the AuthenticationEntryPoint" },
+        { "id": "d", "text": "AccessDeniedException is for CSRF failures; AuthenticationException is for CORS failures" }
+      ],
+      "correctKey": "a",
+      "explanation": "AuthenticationException: thrown when authentication fails (no credentials, invalid credentials, disabled account, locked account). The AuthenticationEntryPoint handles the response — typically returning 401 with a WWW-Authenticate header or redirecting to login. AccessDeniedException: thrown when a user IS authenticated but lacks the required authority/role for the requested resource. The AccessDeniedHandler handles the response — typically 403 Forbidden. Understanding this distinction is critical for customizing security error responses: handle 401 (unauthenticated) vs 403 (authenticated but unauthorized) separately in your AuthenticationEntryPoint and AccessDeniedHandler."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does a Customizer<AuthorizeHttpRequestsSpec> allow in Spring Security 6's lambda DSL?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It allows functional composition of security rules using lambda expressions — requestMatchers(),permitAll(),authenticated(),hasRole() — replacing the older XML and method-chaining DSLs" },
+        { "id": "b", "text": "It enables customization of the AuthenticationManagerBuilder via lambdas" },
+        { "id": "c", "text": "It replaces the need for a SecurityFilterChain bean entirely" },
+        { "id": "d", "text": "It allows injection of custom authentication filters into the security chain" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Security 6 introduced the lambda DSL for a more functional, composable configuration style. Instead of method-chaining: .authorizeHttpRequests().requestMatchers(\"/public/**\").permitAll().anyRequest().authenticated(), you use: .authorizeHttpRequests(auth -> auth.requestMatchers(\"/public/**\").permitAll().anyRequest().authenticated()). Customizer<AuthorizeHttpRequestsSpec> is the functional interface that enables this lambda-based configuration. Benefits: clearer intent, better IDE support (autocomplete), easier composition of multiple security configurations, and safer refactoring. The older method-chaining DSL is deprecated in Spring Security 6.x."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of the AuthenticationManager in Spring Security's architecture?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "AuthenticationManager is responsible for storing authenticated users in the HTTP session" },
+        { "id": "b", "text": "AuthenticationManager.authenticate(Authentication) attempts to authenticate a given Authentication object — returning a fully populated Authentication (with authorities) on success or throwing AuthenticationException on failure" },
+        { "id": "c", "text": "AuthenticationManager generates and signs JWT access tokens" },
+        { "id": "d", "text": "AuthenticationManager is the servlet filter that intercepts all HTTP requests" }
+      ],
+      "correctKey": "b",
+      "explanation": "AuthenticationManager is the core interface for authentication in Spring Security. Its authenticate(Authentication) method either: (1) returns a fully authenticated Authentication with GrantedAuthorities (if credentials are valid), or (2) throws AuthenticationException (if invalid), or (3) returns null (if it cannot make a decision — e.g., multiple providers, needs more information). The default implementation is ProviderManager, which delegates to a chain of AuthenticationProviders. AuthenticationManager is used by authentication filters (UsernamePasswordAuthenticationFilter, JwtAuthenticationFilter) to process authentication requests. In Spring Security 6, it is often exposed as a bean via AuthenticationManagerBuilder for customization."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Why is it important to null out credentials in the SecurityContext after successful authentication?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "After successful authentication, Spring Security's authentication filters set credentials to null in the Authentication object stored in SecurityContext. This prevents accidental exposure of the password or secret in logs, error traces, or thread dumps. The Authentication object is stored in ThreadLocal and may be accessed by multiple components during the request lifecycle. If the raw password remained in memory and an error occurred, stack traces or audit logs might expose it. Nulling credentials is a defense-in-depth practice that reduces the attack surface of credential leakage."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of the AuthenticationEntryPoint in Spring Security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It handles logout requests and invalidates sessions" },
+        { "id": "b", "text": "It responds to unauthenticated requests — determining how to challenge the client (e.g., redirect to /login for browsers, return 401 with WWW-Authenticate header for REST APIs)" },
+        { "id": "c", "text": "It encrypts authentication credentials before they are stored in the database" },
+        { "id": "d", "text": "It extracts the JWT token from the Authorization header" }
+      ],
+      "correctKey": "b",
+      "explanation": "AuthenticationEntryPoint is invoked when an unauthenticated user attempts to access a protected resource. Its commence() method determines the response — typically redirect to login page (formLogin) or 401 Unauthorized with WWW-Authenticate header (Basic/Bearer). Customizing it lets you control how your API responds to unauthenticated requests: for REST APIs, you want JSON error responses, not HTML redirects. Implement custom AuthenticationEntryPoint to return { \"error\": \"Unauthorized\", \"message\": \"Full authentication is required\" } with appropriate content type."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between CSRF protection and CORS protection in Spring Security?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "CSRF protects against cross-site requests that trick a logged-in user into performing unintended actions via the browser's automatic cookie inclusion; CORS controls which origins can access your API from browser scripts" },
+        { "id": "b", "text": "CSRF is a browser-based attack that exploits authenticated sessions; CORS is a browser policy that restricts cross-origin HTTP requests initiated by JavaScript" },
+        { "id": "c", "text": "CSRF requires server-side token validation; CORS requires server-side header validation (Access-Control-Allow-Origin) but the Origin header can be spoofed by non-browser clients" },
+        { "id": "d", "text": "Both are the same mechanism — Spring Security handles them identically" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "CSRF (Cross-Site Request Forgery) and CORS (Cross-Origin Resource Sharing) address different threats. CSRF: attacker tricks a victim's browser into sending a request to your site using the victim's session cookie — mitigated by CSRF tokens or SameSite cookies. CORS: browser's Same-Origin Policy blocks cross-origin reads — server must explicitly whitelist origins via Access-Control-Allow-Origin headers. The two must be configured independently: CSRF via http.csrf(), CORS via CorsConfigurationSource in the security filter chain and a CorsFilter before the security filter."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of the AccessDeniedHandler in Spring Security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It handles requests where the user has been authenticated but lacks the required role or authority — by default returns 403 Forbidden or redirects to an access-denied page" },
+        { "id": "b", "text": "It handles logout requests and revokes the user's session" },
+        { "id": "c", "text": "It handles requests from IP addresses that are blacklisted by the security configuration" },
+        { "id": "d", "text": "It handles requests that exceed the rate limit for authenticated users" }
+      ],
+      "correctKey": "a",
+      "explanation": "AccessDeniedHandler is invoked when an authenticated user is denied access to a resource (hasRole/hasAuthority fails). It is NOT the same as AuthenticationEntryPoint which handles UNAUTHENTICATED requests. For REST APIs, customize AccessDeniedHandler to return JSON: { \"error\": \"Forbidden\", \"message\": \"You do not have permission to access this resource\" } with 403 status. For web apps, redirect to an access-denied page or show an HTML error. Both can be configured via exceptionHandling() in the SecurityFilterChain lambda DSL."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does SessionManagementFilter do in Spring Security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It manages HTTP session creation, session fixation protection, concurrent session control, and session invalidation on logout" },
+        { "id": "b", "text": "It creates a new session for every authenticated user request" },
+        { "id": "c", "text": "It stores the user's authentication token in the HTTP session" },
+        { "id": "d", "text": "It encrypts session data stored on the server-side session store" }
+      ],
+      "correctKey": "a",
+      "explanation": "SessionManagementFilter (in the security filter chain) handles session-related security concerns: (1) Session fixation protection — if a session ID exists before login, Spring invalidates it and creates a new one post-login (preventing attacks where an attacker fixes the session ID before the victim logs in). (2) Concurrent session control — maximumSessions() limits how many simultaneous sessions a user can have. (3) Session invalidation on logout. Configure via sessionManagement() in the SecurityFilterChain DSL. With SessionCreationPolicy.STATELESS, this filter is effectively a no-op because no sessions are created."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does the Lambda DSL (authorizationManager) in Spring Security 6 differ from the deprecated method-chaining DSL?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The lambda DSL is purely cosmetic — both DSLs produce identical security behavior" },
+        { "id": "b", "text": "The lambda DSL provides better composability and cleaner request matching logic — each authorization rule is a lambda that receives the HttpServletRequest, making it easier to read and compose; the method-chaining DSL is deprecated in Spring Security 6.x" },
+        { "id": "c", "text": "The lambda DSL supports SpEL expressions; the method-chaining DSL does not" },
+        { "id": "d", "text": "The lambda DSL automatically enables @PreAuthorize annotations; the method-chaining DSL does not" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring Security 6 introduced the lambda DSL as the recommended configuration style. Example: .authorizeHttpRequests(auth -> auth.requestMatchers(\"/public/**\").permitAll().anyRequest().authenticated()) vs the deprecated: .authorizeHttpRequests().requestMatchers(\"/public/**\").permitAll().anyRequest().authenticated(). The lambda style is more composable — you can extract rules into variables and reuse them. It also provides better IDE autocomplete and reduces the risk of misconfiguring the DSL (earlier method calls don't 'stick' after method chaining). The older method-chaining DSL is deprecated but still functional in Spring Security 6.x."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does method security @EnableMethodSecurity enable beyond @EnableWebSecurity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It enables HTTP basic authentication for all controller methods" },
+        { "id": "b", "text": "It enables @PreAuthorize, @PostAuthorize, @Secured, and @RolesAllowed annotations on service and controller methods, registering a MethodSecurityInterceptor with SpEL expression evaluation" },
+        { "id": "c", "text": "It automatically encrypts all method parameters before they reach the controller" },
+        { "id": "d", "text": "It enables OAuth2 JWT token validation for all service layer calls" }
+      ],
+      "correctKey": "b",
+      "explanation": "@EnableWebSecurity enables HTTP security (URL-based access control, filters, etc.). @EnableMethodSecurity activates method-level security annotations on beans. Without it, @PreAuthorize(\"hasRole('ADMIN')\") is silently ignored. When enabled, Spring wraps annotated methods in a security interceptor that evaluates SpEL expressions. It also registers @Secured and @RolesAllowed support. Spring Boot auto-enables HTTP security with spring-boot-starter-security, but method security is ALWAYS opt-in — you must explicitly add @EnableMethodSecurity."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between the default AuthenticationEntryPoint (redirect to /login) and a custom JSON-based entry point for a REST API?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The default entry point redirects all requests to /login; a custom entry point returns 401 with JSON { \"error\": \"Unauthorized\" } for REST APIs" },
+        { "id": "b", "text": "Custom entry points are only needed for OAuth2; the default works for all REST API styles" },
+        { "id": "c", "text": "A custom entry point is unnecessary — Spring Security automatically detects REST vs browser clients" },
+        { "id": "d", "text": "The default entry point returns 403 for REST clients; the custom one returns 401" }
+      ],
+      "correctKey": "a",
+      "explanation": "For REST APIs, the default form-login entry point (redirect to /login) is wrong — it returns an HTML redirect when the client expects JSON. Customize AuthenticationEntryPoint in exceptionHandling(): .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, authException) -> { response.setStatus(401); response.setContentType(\"application/json\"); response.getWriter().write(\"{\\\"error\\\":\\\"Unauthorized\\\"}\"); })). Similarly, customize AccessDeniedHandler for 403 responses. This ensures the API contract is consistent: 401 for unauthenticated, 403 for unauthorized, all in JSON format."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a security filter chain and how is its order determined in Spring Security 6?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A SecurityFilterChain is a list of servlet filters applied to HTTP requests; in Spring Security 6, multiple chains can coexist with order determined by @Order or @Conditional — the first matching chain handles the request" },
+        { "id": "b", "text": "There can only be one SecurityFilterChain in Spring Security 6 — multiple chains are not supported" },
+        { "id": "c", "text": "SecurityFilterChain order is determined alphabetically by bean name" },
+        { "id": "d", "text": "SecurityFilterChain filters are always applied in the order they are declared in the code" }
+      ],
+      "correctKey": "a",
+      "explanation": "In Spring Security 6, you can define multiple SecurityFilterChain beans. Spring Security sorts them by @Order (or bean name if no @Order). Each chain can be conditional (e.g., only apply to certain URL patterns via requestMatcher). The FIRST chain whose requestMatcher matches the incoming request handles it. A common pattern: chain 0 (@Order(0)) with requestMatcher(\"/actuator/health\") → permitAll, chain 1 (@Order(1)) → authenticated(). This enables a public health endpoint without authentication while protecting the rest of the app."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between WebSecurityConfigurerAdapter (deprecated) and the modern bean-based SecurityFilterChain configuration?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "WebSecurityConfigurerAdapter was the Spring 5 XML-equivalent approach using @EnableWebSecurity; the modern approach uses @Bean SecurityFilterChain for more explicit, composable, and lambda-friendly configuration" },
+        { "id": "b", "text": "WebSecurityConfigurerAdapter used method-chaining DSL; the modern approach uses Spring Security 6 lambda DSL exclusively" },
+        { "id": "c", "text": "There is no functional difference — both produce identical security filter chains" },
+        { "id": "d", "text": "WebSecurityConfigurerAdapter supported OAuth2; the modern approach does not" }
+      ],
+      "correctKey": "a",
+      "explanation": "WebSecurityConfigurerAdapter (Spring Security 4/5) was an abstract class you extended to customize security. It had a configure(HttpSecurity) method with a DSL-like API. In Spring Security 6, it is deprecated and removed from auto-configuration. The modern approach: define @Bean SecurityFilterChain and @Bean PasswordEncoder, AuthenticationManager directly in a @Configuration class. Benefits: simpler (no abstract class needed), more explicit, supports lambda DSL, easier to compose multiple configurations, and works better with conditional beans."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does Spring Security's OAuth2 client support differ from its resource server support?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "OAuth2 client acts as an OAuth2 consumer — it redirects users to an authorization server, handles the callback, stores tokens, and manages the user's login session; resource server validates tokens presented by API clients — it does not initiate OAuth2 flows" },
+        { "id": "b", "text": "OAuth2 client and resource server are identical — the naming is purely stylistic" },
+        { "id": "c", "text": "Resource server is for mobile clients; OAuth2 client is for browser-based SPAs" },
+        { "id": "d", "text": "OAuth2 client supports JWT only; resource server supports opaque tokens only" }
+      ],
+      "correctKey": "a",
+      "explanation": "OAuth2 Client: your application acts as a client of an OAuth2 provider (e.g., Google Login). It registers with the provider, redirects users there, handles the callback, and stores the resulting access/refresh tokens in the session or DB. Spring Boot's spring-boot-starter-oauth2-client enables this. OAuth2 Resource Server: your API is a resource server that accepts and validates bearer tokens from clients. It does not initiate OAuth2 flows — it only verifies tokens using JWKS or introspect endpoints. spring-boot-starter-oauth2-resource-server enables this. A typical app can be both: client (login with Google) + resource server (your API validates JWTs)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What are the security implications of storing JWT tokens in localStorage vs HttpOnly cookies?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "localStorage is accessible to JavaScript — vulnerable to XSS attacks that steal tokens; HttpOnly cookies are inaccessible to JavaScript, immune to XSS token theft, but vulnerable to CSRF attacks unless paired with SameSite and CSRF tokens" },
+        { "id": "b", "text": "HttpOnly cookies are less secure because servers can read them; localStorage is more secure because it is encrypted" },
+        { "id": "c", "text": "localStorage is recommended for SPAs because it is encrypted by the browser automatically" },
+        { "id": "d", "text": "Both storage mechanisms have equivalent security properties" }
+      ],
+      "correctKey": "a",
+      "explanation": "Storing JWT in localStorage (via JS): convenient for SPAs, but any XSS vulnerability on the page allows an attacker to read and exfiltrate the token. HttpOnly cookie: JavaScript cannot access it, so XSS cannot steal it — but the cookie is automatically sent with every request (CSRF risk). Best practice: HttpOnly + Secure + SameSite=Strict/Lax cookies for the access token, with a CSRF token if using cookie-based sessions. Alternatively, use short-lived access tokens in memory (not stored) with silent refresh via refresh tokens in HttpOnly cookies. This minimizes both XSS and CSRF exposure."
+    }
+  ]
+}

@@ -1,0 +1,241 @@
+{
+  "topicSlug": "js-fundamentals",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which keyword declares a block-scoped variable that cannot be reassigned after initialization?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "var" },
+        { "id": "b", "text": "let" },
+        { "id": "c", "text": "const" },
+        { "id": "d", "text": "static" }
+      ],
+      "correctKey": "c",
+      "explanation": "const declares a block-scoped binding that must be initialized at declaration and cannot be reassigned. Note: for objects/arrays declared with const, the binding is fixed but the contents are still mutable. let (B) is block-scoped but reassignable. var (A) has function scope, not block scope. static (D) is a class keyword, not a variable declaration keyword."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `typeof null` return in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "'null'" },
+        { "id": "b", "text": "'undefined'" },
+        { "id": "c", "text": "'object'" },
+        { "id": "d", "text": "'void'" }
+      ],
+      "correctKey": "c",
+      "explanation": "typeof null returns 'object' — this is a legacy bug in JavaScript that dates back to the first version and was never fixed for backward compatibility. null represents an intentional absence of value, not an object, but typeof treats it as one. This is a famous quirk: `typeof null === 'object'`. The null check is typically done with `value === null` or `!value && value !== 0`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which of these is a primitive data type in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Array" },
+        { "id": "b", "text": "Function" },
+        { "id": "c", "text": "Symbol" },
+        { "id": "d", "text": "Date" }
+      ],
+      "correctKey": "c",
+      "explanation": "JavaScript has 7 primitive types: string, number, bigint, boolean, undefined, symbol, and null. Symbol is a primitive — each Symbol() call creates a unique, immutable value used as object property keys. Arrays (A), Functions (B), and Dates (D) are all objects (reference types), not primitives."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nconsole.log(1 + '2');\nconsole.log(1 - '2');",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "'12' and -1" },
+        { "id": "b", "text": "12 and -1" },
+        { "id": "c", "text": "'12' and 1" },
+        { "id": "d", "text": "12 and 1" }
+      ],
+      "correctKey": "a",
+      "explanation": "JavaScript performs type coercion. For `+`, if either operand is a string, the other is coerced to a string and concatenation occurs: 1 + '2' = '12'. For `-`, JavaScript coerces both to numbers (ToNumber): 1 - '2' = 1 - 2 = -1. The + operator is overloaded between string concatenation and numeric addition, making it context-sensitive to operand types."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the result of `Boolean('0')`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "false" },
+        { "id": "b", "text": "true" },
+        { "id": "c", "text": "undefined" },
+        { "id": "d", "text": "null" }
+      ],
+      "correctKey": "b",
+      "explanation": "The string '0' (a non-empty string) is truthy, so Boolean('0') returns true. Only these values are falsy: false, 0, -0, 0n, '' (empty string), null, undefined, NaN, and document.all. The string '0' is not the number 0 — it's a string containing the character '0', which is truthy. This catches many developers off guard in conditional checks."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which operator uses short-circuit evaluation and returns the last evaluated value when all operands are truthy?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "&& (logical AND)" },
+        { "id": "b", "text": "|| (logical OR)" },
+        { "id": "c", "text": "?? (nullish coalescing)" },
+        { "id": "d", "text": "?. (optional chaining)" }
+      ],
+      "correctKey": "b",
+      "explanation": "The || operator short-circuits: if the left operand is truthy, it returns that value without evaluating the right. If the left is falsy, it returns the right operand. This means `a || b` returns a when truthy (even if a is a falsy value like 0 or '' — unless you want those preserved, which is what ?? is for). && short-circuits by returning the left value when falsy, or the right when both are truthy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the spread operator (`...`) do when used with an array like `[...arr1, ...arr2]`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Creates a deep copy of both arrays and merges them into a new array" },
+        { "id": "b", "text": "Extracts elements from both arrays and places them as comma-separated values in a new array literal" },
+        { "id": "c", "text": "Mutates arr1 by appending arr2's elements to it" },
+        { "id": "d", "text": "Creates a reference to both arrays under a single variable name" }
+      ],
+      "correctKey": "b",
+      "explanation": "The spread operator expands (unpacks) an iterable into individual elements. `[...arr1, ...arr2]` creates a new array literal containing all elements of arr1 followed by all elements of arr2. It only does a shallow copy — nested objects/arrays are still referenced, not cloned. It does NOT mutate the originals (C), does not do deep copy (A), and does not create a reference (D)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "JavaScript has 6 primitive data types.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "JavaScript has 7 primitive types: string, number, bigint, boolean, undefined, symbol, and null. Many developers forget bigint (added in ES2020) and null (which is technically a primitive but typeof returns 'object'). The total count is 7, not 6."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nlet a = [1, 2, 3];\nlet b = a;\nb.push(4);\nconsole.log(a.length);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "3" },
+        { "id": "b", "text": "4" },
+        { "id": "c", "text": "undefined" },
+        { "id": "d", "text": "ReferenceError" }
+      ],
+      "correctKey": "b",
+      "explanation": "Arrays are reference types in JavaScript. `let b = a` does NOT create a copy — both a and b point to the same array object in memory. Calling b.push(4) mutates the shared array. Checking a.length shows 4. To create a copy, use `[...a]` (spread), `a.slice()`, or `Array.from(a)`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nconsole.log(0 == false);\nconsole.log('' == false);\nconsole.log([] == false);\nconsole.log([1] == true);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true, true, true, true" },
+        { "id": "b", "text": "true, true, true, false" },
+        { "id": "c", "text": "true, true, false, true" },
+        { "id": "d", "text": "true, false, true, false" }
+      ],
+      "correctKey": "a",
+      "explanation": "Using == (loose equality) with false triggers type coercion. 0 == false: ToNumber(false) = 0, so 0 == 0 = true. '' == false: ToNumber(false) = 0, ToNumber('') = 0, so 0 == 0 = true. [] == false: [] coerces to '' then 0; false coerces to 0; 0 == 0 = true. [1] == true: [1] coerces to '1' then 1; true coerces to 1; 1 == 1 = true. All four are true — this is exactly why === should always be preferred."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `Object.freeze()` actually prevent?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Only prevents adding or deleting properties; existing property values can still be changed" },
+        { "id": "b", "text": "Prevents all modifications to the object: adding, deleting, and changing properties at any depth" },
+        { "id": "c", "text": "Prevents adding, deleting, and changing own properties — but nested objects are still mutable" },
+        { "id": "d", "text": "Prevents the object from being garbage collected and marks it as immutable" }
+      ],
+      "correctKey": "c",
+      "explanation": "Object.freeze() is shallow — it prevents modifications to the object's own properties (add/delete/change) but nested objects (arrays or object properties) are still mutable unless they too are frozen. `Object.isFrozen()` checks the freeze status. For deep freezing, you need a recursive freeze utility. Option A describes Object.seal() behavior. Option B overstates the depth. Option D is incorrect."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nconst obj = { a: 1 };\nconst arr = [obj, obj, obj];\narr[0].b = 2;\nconsole.log(arr[1].b);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "undefined" },
+        { "id": "b", "text": "1" },
+        { "id": "c", "text": "2" },
+        { "id": "d", "text": "ReferenceError: Cannot add property b to const object" }
+      ],
+      "correctKey": "c",
+      "explanation": "Arrays hold references to objects, not copies. All three elements in arr reference the same `obj` object. Adding property `b` to `arr[0]` mutates the shared object. Since `arr[1]` points to that same object, `arr[1].b` is 2. The const on obj only prevents reassigning obj to a different reference — it does not prevent mutation of the object's properties."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `undefined == null` evaluate to?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "false — they are different types" },
+        { "id": "b", "text": "true — JavaScript treats them as equivalent in loose equality" },
+        { "id": "c", "text": "undefined — the comparison short-circuits" },
+        { "id": "d", "text": "null — null is promoted to undefined's type" }
+      ],
+      "correctKey": "b",
+      "explanation": "In loose equality (==), undefined and null are considered equal. This is one of the few cases where == behaves predictably: `undefined == null` is true. However, `===` distinguishes them: `undefined === null` is false (different types). This is why `value == null` checks for both null and undefined conveniently. Note: no other value equals null under ==."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which method creates a new array with the results of calling a function on every element?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Array.prototype.filter()" },
+        { "id": "b", "text": "Array.prototype.reduce()" },
+        { "id": "c", "text": "Array.prototype.map()" },
+        { "id": "d", "text": "Array.prototype.forEach()" }
+      ],
+      "correctKey": "c",
+      "explanation": "Array.prototype.map() calls a callback function on each element and returns a new array (same length) with the transformed values. filter() (A) returns a new array with only elements that pass a test. reduce() (B) accumulates all elements into a single value. forEach() (D) executes a callback for each element but returns undefined."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "In JavaScript, `null` and `undefined` are interchangeable and behave identically in all contexts.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "While `null == undefined` is true (loose equality), they differ in important ways. null represents an intentional absence of value and must be assigned explicitly. undefined represents an uninitialized or missing value and is the default for uninitialized variables, missing function parameters, and missing object properties. typeof null returns 'object' (a bug), while typeof undefined returns 'undefined'. They are not interchangeable."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nlet x = 10;\nfunction test(y) {\n  y = 5;\n  return y + x;\n}\nconsole.log(test(x));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "5" },
+        { "id": "b", "text": "15" },
+        { "id": "c", "text": "10" },
+        { "id": "d", "text": "NaN" }
+      ],
+      "correctKey": "b",
+      "explanation": "Primitives (numbers) are passed by value in JavaScript. The function receives a copy of x (10), assigns 5 to the local parameter y, then returns y + x. Since x (the outer variable) was not modified (only the local copy y was changed), x is still 10. Return: 5 + 10 = 15. The outer x remains 10."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The `in` operator checks both own properties and prototype chain properties.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The `in` operator returns true if the property exists on the object or its prototype chain. For example, 'toString' in {} returns true because toString is inherited from Object.prototype. If you only want own (not inherited) properties, use Object.hasOwn() (ES2022+) or Object.prototype.hasOwnProperty.call()."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nlet a = { x: 1 };\nlet b = { x: 1 };\nconsole.log(a === b);\nconsole.log(a == b);\nconsole.log(Object.is(a, b));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "false, false, false" },
+        { "id": "b", "text": "false, true, false" },
+        { "id": "c", "text": "true, true, true" },
+        { "id": "d", "text": "false, false, true" }
+      ],
+      "correctKey": "a",
+      "explanation": "Objects are compared by reference, not by value. a and b are two distinct object literals stored at different memory addresses, so all three comparisons return false. Object.is() uses SameValue algorithm (ES6) — unlike ===, it treats NaN as equal to NaN and distinguishes +0 from -0, but it still compares references for objects. For structural equality (same keys/values), use a deep equality library or manual comparison."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which method provides a deep, recursive freeze of an object's own and inherited properties?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Object.freeze() — it freezes all nested objects recursively" },
+        { "id": "b", "text": "Object.seal() — it prevents additions and deletions recursively" },
+        { "id": "c", "text": "None — JavaScript has no built-in deep freeze; a custom recursive function is required" },
+        { "id": "d", "text": "JSON.stringify() combined with JSON.parse() creates a deep frozen copy" }
+      ],
+      "correctKey": "c",
+      "explanation": "Object.freeze() is shallow only. To deeply freeze an object, you must recursively traverse all nested objects and arrays and freeze each one. There's no built-in method. Option D (JSON round-trip) creates a deep copy but NOT a frozen one — the result is a new unfrozen object tree. A typical deep freeze utility checks Object.isFrozen() at each level and recurses."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Using `Object.assign(target, source)` always produces a deep copy of the source object.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Object.assign() only performs a shallow copy — it copies references to nested objects, not the objects themselves. Both the target and source will share references to the same nested objects. For a deep copy, use structuredClone() (built-in, handles circular references), JSON.parse(JSON.stringify()) (loses functions, undefined, Symbols, and circular refs), or a library like Lodash's cloneDeep()."
+    }
+  ]
+}

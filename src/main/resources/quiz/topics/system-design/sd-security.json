@@ -1,0 +1,247 @@
+{
+  "topicSlug": "sd-security",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the fundamental difference between authentication and authorization in the context of API security?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Authentication and authorization are the same thing — both verify the user's identity before granting access" },
+        { "id": "b", "text": "Authentication verifies WHO you are (identity proofing — username/password, OAuth token, SAML assertion); authorization verifies WHAT you are allowed to do (access control — permissions, roles, policies attached to your identity)" },
+        { "id": "c", "text": "Authorization verifies who you are; authentication determines what you can access" },
+        { "id": "d", "text": "Authentication is only relevant for human users; authorization is only relevant for machine-to-machine API calls" }
+      ],
+      "correctKey": "b",
+      "explanation": "Authentication (AuthN) answers: 'Are you who you claim to be?' — proving identity via credentials, tokens, or certificates. Authorization (AuthZ) answers: 'What are you allowed to do?' — enforcing access control rules (RBAC roles, ABAC policies, OAuth scopes). These are distinct concerns that are often confused. A user can be authenticated (logged in) but only authorized to read their own data, not delete other users' data. Option A reverses both definitions. Option C reverses the order. Option D is false — both apply to all principals (human and machine)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a JWT (JSON Web Token), and what are its three main components?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A JWT is an opaque token issued by OAuth2 servers; it contains only a session ID that references server-side session state" },
+        { "id": "b", "text": "A JWT is a self-contained, URL-safe token with three Base64URL-encoded parts separated by dots: Header (algorithm + token type), Payload (claims — user ID, roles, expiry), and Signature (HMAC or RSA signature verifying the payload integrity)" },
+        { "id": "c", "text": "A JWT is encrypted by default — anyone with the token can read the payload but cannot forge a valid token without the secret key" },
+        { "id": "d", "text": "A JWT's payload is stored on the authorization server and only the session ID is transmitted to the client" }
+      ],
+      "correctKey": "b",
+      "explanation": "JWT (RFC 7519) is a compact, URL-safe token format: Header (alg, typ) → Base64URL(Payload) → Base64URL(Signature). The Payload contains claims: registered (iss, sub, aud, exp, nbf, iat, jti), public (defined by app), and private (agreed-upon custom claims). JWTs can be signed (JWS — HMAC or RSA/ECDSA) or encrypted (JWE). Unsigned/plaintext JWTs (alg=none) are a known exploit — always validate the algorithm and reject 'none'. JWTs are stateless (self-contained claims) but revocation requires a blocklist or short expiry. Option A describes an opaque session token. Option C overstates encryption — only JWE is encrypted; JWS is signed but payload is readable."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A JWT token is signed with HS256 (HMAC-SHA256) using a shared secret key. The server stores this secret key in the source code. What security vulnerability does this create, and what is the correct approach?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Storing the secret in source code is secure as long as the repository is private — no vulnerability exists" },
+        { "id": "b", "text": "Storing the secret in source code exposes it in version control history, CI/CD logs, and build artifacts even after removal; anyone with repo access can forge valid tokens — correct approach: use environment variables or a secrets manager (Vault, AWS Secrets Manager) injected at runtime, and rotate keys regularly" },
+        { "id": "c", "text": "HS256 is vulnerable to brute force attacks on the shared secret; use RS256 (asymmetric RSA) which cannot be brute forced" },
+        { "id": "d", "text": "The vulnerability is that JWTs are too small and can be easily intercepted — use larger tokens or encrypt the entire token body" }
+      ],
+      "correctKey": "b",
+      "explanation": "Embedding secrets in source code is a serious security anti-pattern: secrets in git history are there forever (even after removal), CI/CD logs expose them, Docker images contain them, and any developer or contractor with repo access can forge tokens. Best practices: (1) inject secrets at runtime via environment variables or secret injection sidecar (Vault Agent), (2) use asymmetric keys (RS256/ES256) where the server's private key signs tokens and the public key is distributed to validators — the private key never needs to be on every service. Option A is false. Option C (RS256) is a good practice but not the primary fix for embedded secrets. Option D is unrelated."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the OAuth 2.0 Authorization Code flow, and why is it preferred over the Implicit flow for browser-based applications?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The Authorization Code flow uses a 6-digit OTP code sent via SMS; the Implicit flow uses a hardware token — Authorization Code is preferred because OTPs are more secure than hardware tokens" },
+        { "id": "b", "text": "The Authorization Code flow exchanges an authorization code (obtained via browser redirect) for tokens at the backend — tokens never pass through the browser; the Implicit flow passes tokens directly through the URL fragment (visible in browser history, logs, referrer headers) — Authorization Code with PKCE is the secure choice for SPAs and mobile apps" },
+        { "id": "c", "text": "The Implicit flow is more secure than Authorization Code because it avoids an extra network round trip" },
+        { "id": "d", "text": "OAuth 2.0 Authorization Code and Implicit flows are equivalent — the only difference is the token format" }
+      ],
+      "correctKey": "b",
+      "explanation": "The Authorization Code flow: browser → authorization server → redirects back with authorization code → backend exchanges code + client_secret for tokens. Tokens never touch the browser URL or history. The Implicit flow (deprecated by OAuth 2.1): access token returned directly via URL fragment — visible in browser history, referrer headers, server logs, and browser extensions. This makes tokens highly susceptible to theft. Authorization Code + PKCE (Proof Key for Code Exchange) is the modern standard for SPAs (no client_secret needed since PKCE replaces it) and native apps. Option A is false. Option C reverses security. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is PKCE (Proof Key for Code Exchange) and why is it required for public clients (SPAs, mobile apps) in OAuth 2.0?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PKCE is a 6-digit TOTP code that replaces the password during OAuth authentication for public clients" },
+        { "id": "b", "text": "PKCE is a cryptographically random code_verifier (created by the client) and its SHA256 hash (code_challenge) sent during authorization; when the authorization code is exchanged, the client must present the original code_verifier — preventing authorization code interception attacks where an attacker substitutes their own code" },
+        { "id": "c", "text": "PKCE is a fallback mechanism that allows OAuth clients to skip the client_secret verification step when the authorization server is unavailable" },
+        { "id": "d", "text": "PKCE is only needed for confidential clients (backend services); public clients do not need it" }
+      ],
+      "correctKey": "b",
+      "explanation": "PKCE (RFC 7636) addresses authorization code interception attacks (RFC 8252 for OAuth 2.0 for native apps). The attack: an attacker on the same network intercepts the authorization code from the redirect URL and exchanges it for tokens. PKCE prevention: client generates a random code_verifier, hashes it (SHA256) to create code_challenge, sends code_challenge with authorization request. When exchanging the code, the client must present the original code_verifier — an attacker with only the code cannot exchange it without knowing the verifier. PKCE is now required (OAuth 2.1) for ALL OAuth clients, not just public ones. Option A is false. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Your public API is being abused by automated scripts sending thousands of requests per minute. What API security mechanism most directly addresses this abuse?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Rate limiting — limits the number of requests a client can make within a time window (e.g., 100 requests/minute per API key); exceeding clients receive 429 Too Many Requests — this protects against both accidental and malicious abuse" },
+        { "id": "b", "text": "Throttling — the API slows down responses to abusive clients rather than rejecting them" },
+        { "id": "c", "text": "IP allowlisting — block all traffic except from known IP addresses" },
+        { "id": "d", "text": "OAuth 2.0 authentication — requires all API clients to authenticate via OAuth, which inherently prevents abuse" }
+      ],
+      "correctKey": "a",
+      "explanation": "Rate limiting (also called quota management) is the direct mechanism for preventing API abuse. Implemented via: API gateway (Kong, AWS API Gateway), token bucket algorithm (refill rate + burst capacity), sliding window or fixed window counters per API key/client IP. HTTP 429 Too Many Requests is the standard response with Retry-After header. Rate limiting is distinct from: throttling (B) which degrades quality rather than blocking; IP allowlisting (C) which doesn't scale; OAuth (D) which authenticates but doesn't limit request volume. Option A is correct. Rate limiting should be combined with authentication for accountability."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between encryption at rest and encryption in transit?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Encryption at rest protects data stored on disk (databases, files, backups) — using AES-256 at the storage or database layer; encryption in transit protects data moving over the network (TLS) — using TLS 1.2/1.3 to prevent eavesdropping and man-in-the-middle attacks" },
+        { "id": "b", "text": "Encryption at rest and encryption in transit are the same thing — both use TLS to protect data" },
+        { "id": "c", "text": "Encryption in transit is only needed for cross-datacenter replication; data within a single data center does not need encryption in transit" },
+        { "id": "d", "text": "Encryption at rest is sufficient for all security requirements — encryption in transit adds unnecessary latency with no security benefit" }
+      ],
+      "correctKey": "a",
+      "explanation": "Encryption at rest: protects stored data (AES-256 at file system level, volume encryption — AWS EBS, Azure Disk; database transparent data encryption — TDE; application-level field encryption). Required for: compliance (PCI-DSS, HIPAA, GDPR), protection against physical theft of storage, insider threats. Encryption in transit: protects data on the wire (TLS 1.3 preferred; avoid SSLv3/TLS 1.0/1.1). Required for: preventing eavesdropping, man-in-the-middle attacks, data in motion between services (internal mTLS). Both are required for defense-in-depth — encryption at rest protects stored data, encryption in transit protects data being used/processed. Option B is false. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the principle of least privilege in the context of API and microservice security, and why is it important?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Least privilege means giving every user an admin account so they can access everything they might need" },
+        { "id": "b", "text": "Least privilege means every principal (user, service, process) should have only the minimum permissions necessary to perform its task — no more; it limits blast radius when credentials are compromised and reduces the attack surface of the entire system" },
+        { "id": "c", "text": "Least privilege applies only to human users, not to machine-to-machine API calls or service accounts" },
+        { "id": "d", "text": "Least privilege is a compliance requirement for financial services only — it is optional for other industries" }
+      ],
+      "correctKey": "b",
+      "explanation": "Principle of Least Privilege (PoLP): grant minimum necessary permissions. For users: give only the permissions needed for their role (not admin by default). For services: use dedicated service accounts with scoped IAM roles (not root/admin credentials). For APIs: require scopes that match what the client actually needs — not full read/write access. If a microservice's credentials are leaked, least privilege limits what an attacker can do with them. Example: a notification service should only have 'send message' permission, not 'delete all users' permission. Option A is the opposite. Option C is false. Option D is false — PoLP is a universal security principle."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A web application stores user passwords. What is the correct approach to password storage, and why are plain-text or reversible encryption approaches wrong?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Store passwords encrypted with AES-256 — when a user logs in, decrypt the password and compare it to the login attempt" },
+        { "id": "b", "text": "Use a slow, salted key derivation function (Argon2id preferred, bcrypt, scrypt, or PBKDF2 with high work factor) to hash passwords; store only the hash; during login, hash the provided password and compare hashes — this makes brute-force attacks computationally expensive and useless if the database is leaked because the original password cannot be recovered from the hash" },
+        { "id": "c", "text": "Store passwords using MD5 hashing without salt — MD5 is fast and sufficient for password storage" },
+        { "id": "d", "text": "Store passwords in plain text and rely on HTTPS to protect them in transit — the database is trusted" }
+      ],
+      "correctKey": "b",
+      "explanation": "Password hashing: use a dedicated password hashing function (Argon2id > bcrypt > scrypt > PBKDF2) with a unique random salt per user and a high work factor (iterations/cost). Hashing (one-way) means the original cannot be recovered — critical for breach scenarios. Encryption (AES) is reversible — if the key is stolen or the DB is compromised, all passwords are recovered. MD5/SHA1 without salt are fast and vulnerable to rainbow tables and GPU brute force. The salt prevents precomputed rainbow table attacks. The work factor (cost/difficulty) makes brute-force attacks slow — Argon2id specifically resists GPU/ASIC attacks. Option A (encryption) is wrong. Option C (MD5) is wrong. Option D (plaintext) is dangerous."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is mutual TLS (mTLS) and when would you use it for service-to-service communication in a microservices architecture?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "mTLS is TLS where only the server presents a certificate — used for all public HTTPS endpoints" },
+        { "id": "b", "text": "mTLS is bidirectional TLS: both the client and the server present and validate each other's X.509 certificates — used in microservices for service mesh mTLS (Istio, Linkerd) to encrypt and authenticate all service-to-service traffic within the cluster" },
+        { "id": "c", "text": "mTLS requires a centralized PKI (Certificate Authority) infrastructure to issue and rotate certificates; without a CA, mTLS cannot function" },
+        { "id": "d", "text": "mTLS and OAuth 2.0 are interchangeable — either can be used for service-to-service authentication and you should choose one" }
+      ],
+      "correctKey": "b",
+      "explanation": "Mutual TLS (mTLS): both client and server authenticate each other via X.509 certificates. In a service mesh (Istio, Linkerd), mTLS is enforced transparently via sidecar proxies — certificates are provisioned and rotated automatically by the mesh control plane (SPIFFE/SPIRE). mTLS provides: (1) encryption in transit, (2) service identity verification (no unauthorized services can call a service), (3) audit trail of which services communicated. Unlike OAuth (D) which is identity-based (user/service principal), mTLS is transport-layer authentication — it verifies the cryptographic identity of the process/container, not the principal's access rights. Option A describes standard TLS (server-only). Option C is correct (requires CA) but Option B is the best answer. Option D is false — they serve different purposes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of an API key in API security, and what are its limitations compared to OAuth 2.0 tokens?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "API keys provide the same security as OAuth tokens and are preferred for all API authentication scenarios" },
+        { "id": "b", "text": "API keys identify the calling application (which client is making the request) and can enforce rate limits per client; they do not inherently identify the user, carry authorization scopes, or expire automatically — OAuth tokens carry identity, scopes, and are time-limited; use API keys for server-to-server authentication where the client is a known application; use OAuth for user-delegated access" },
+        { "id": "c", "text": "API keys are encrypted JWTs with built-in expiration; they are more secure than OAuth tokens" },
+        { "id": "d", "text": "API keys should be stored in source code alongside the application logic for easy access" }
+      ],
+      "correctKey": "b",
+      "explanation": "API keys identify the project/application (not the user) and are useful for: rate limiting, analytics, and blocking abused keys. Limitations: they don't carry user context (a key represents a project, not a person), they don't encode scopes or permissions, they don't expire automatically (unless you implement rotation), and revoking a key requires regenerating it and updating all clients. OAuth tokens (access tokens, JWTs) carry identity (sub claim), scopes (what the token allows), and have short expiry. API keys are appropriate for server-to-server (M2M) API access where the client is a known application. Option A is false. Option C is false. Option D is a security anti-pattern."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: A JWT with a valid signature from a trusted issuer (iss claim) is sufficient to trust the claims in the payload without additional validation.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Validating only the signature is insufficient. A JWT with a valid signature from a trusted key can still be invalid because: (1) expiry (exp claim) may have passed — always check exp against current time; (2) not-before (nbf) may not yet be valid; (3) audience (aud) may not match your service; (4) issuer (iss) may be trusted but the token was issued for a different client (scope/audience mismatch). Always validate: signature, algorithm (reject alg=none), expiry, not-before, audience, and issuer. A token from a trusted issuer but with wrong audience or expired timestamp can grant unintended access. This is a common JWT security mistake."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: HTTPS (TLS) automatically encrypts all data stored in cookies — if an attacker gains access to the cookie file on the user's device, the cookie data remains protected.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "HTTPS/TLS only encrypts data in transit — data stored in cookies on the filesystem/disk is NOT encrypted by TLS. If an attacker gains access to the device (malware, stolen device, physical access), they can read all cookies from the cookie file. To protect cookies at rest: use the Secure flag (cookie only sent over HTTPS), HttpOnly flag (prevents JavaScript access — mitigates XSS), SameSite=Strict/Lax (CSRF protection), and for highly sensitive data (tokens), encrypt the cookie value at the application layer (encrypt-then-MAC) or store in a server-side session with an opaque session ID in the cookie."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You are designing an API access control system for a SaaS application with multiple tenants. A tenant's admin should only be able to manage users within their own organization. How do you implement fine-grained access control that scales across many tenants and roles?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use a static admin password for each tenant — admins use the same password as their organization's shared credentials" },
+        { "id": "b", "text": "Use RBAC (Role-Based Access Control) with tenant-scoped roles: the user's JWT contains their tenant_id claim and role; the authorization layer checks both that the requested resource's tenant_id matches the user's tenant_id AND that their role grants the required permission — preventing cross-tenant access even if a user has an admin role" },
+        { "id": "c", "text": "Store all tenant data in the same database table without tenant isolation and rely on application-level filtering — this is simpler and equally secure" },
+        { "id": "d", "text": "Use IP-based access control: only allow access from IPs within each tenant's corporate network" }
+      ],
+      "correctKey": "b",
+      "explanation": "Multi-tenant RBAC with tenant scoping: user's JWT carries tenant_id + role claims. On every request, the authorization layer must: (1) verify the resource's tenant_id matches the user's tenant_id (not just their role), (2) verify the role grants the requested permission. Without tenant_id checks, a 'super-admin' role from one tenant could access another tenant's resources — a classic multi-tenant authorization bypass vulnerability. ABAC (Attribute-Based Access Control) extends this with resource attributes (owner, sensitivity level) for more fine-grained policies. Option A (shared password) is insecure and unaccountable. Option C creates cross-tenant data leakage risk. Option D (IP-based) is brittle and spoofable."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "An attacker exploits an SQL injection vulnerability in a user input field to extract the entire user database including password hashes. What security controls would have prevented this, and what post-breach actions are necessary?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SQL injection is prevented by using Web Application Firewall (WAF) rules — no code changes are necessary" },
+        { "id": "b", "text": "Prevention: parameterized queries / prepared statements (never concatenate user input into SQL); input validation (allowlists); least privilege DB user (app can't DROP tables); output encoding for reflected XSS. Post-breach: incident response plan, breach notification (GDPR 72h), password reset force, audit logs, rotate all credentials that may have been exposed, assume passwords are compromised even if hashed — force reset and notify affected users" },
+        { "id": "c", "text": "If passwords are hashed with bcrypt/Argon2id, no further action is needed — hashed passwords cannot be reversed" },
+        { "id": "d", "text": "SQL injection can only be prevented by migrating from SQL databases to NoSQL databases" }
+      ],
+      "correctKey": "b",
+      "explanation": "SQL injection prevention: parameterized queries (the #1 defense — user input is treated as data, not SQL), input validation (whitelisting over blacklisting), least privilege DB accounts (app shouldn't have DDL rights), ORM usage with proper configuration. WAF (A) is a defense layer but not a substitute for secure coding. Post-breach: (1) incident response (contain, eradicate, recover), (2) GDPR breach notification within 72 hours if EU residents affected, (3) force password reset for affected users, (4) rotate all credentials that could have been exposed, (5) notify affected users, (6) perform root cause analysis. Option C is false — even strong hashes can be brute-forced for weak passwords. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Your microservices use OAuth 2.0 Access Tokens to authenticate and authorize requests. The access token has a 1-hour expiry. How do you handle token refresh without disrupting users, and what are the security trade-offs?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Issue a new access token with a 24-hour expiry every time the old token expires — the client must re-authenticate to get the new token" },
+        { "id": "b", "text": "Use a Refresh Token: the authorization server issues a short-lived access token (1 hour) and a long-lived refresh token (e.g., 7 days); when the access token expires, the client silently exchanges the refresh token for a new access token — no user interaction needed; trade-offs: refresh tokens must be stored securely (HttpOnly cookie or secure storage), must be revocable, and a stolen refresh token enables long-term unauthorized access if not detected" },
+        { "id": "c", "text": "Increase the access token expiry to 365 days — this eliminates the need for refresh tokens and is equally secure" },
+        { "id": "d", "text": "Use the same access token indefinitely without expiry — expiry only creates unnecessary complexity" }
+      ],
+      "correctKey": "b",
+      "explanation": "Refresh token flow: client stores a long-lived refresh token (in HttpOnly cookie or secure storage), uses it to silently obtain new access tokens before or after expiry. Benefits: good UX (no re-login), short-lived access tokens limit exposure (stolen token only valid for its lifetime). Security trade-offs: (1) refresh tokens are high-value targets — store in HttpOnly cookies to prevent XSS theft; (2) must be revocable (server maintains a token registry or blocklist); (3) stolen refresh token = long-term access — implement anomaly detection (new device/location = revoke and alert); (4) rotation: rotate refresh token on each use (refresh token rotation) — if an old token is used twice, it indicates theft and all tokens are revoked. Option C (365-day tokens) are dangerous — long-lived tokens are high-value theft targets. Option D is catastrophic."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You need to implement API security for a financial transaction API where sensitive data (account numbers, transaction amounts) must be protected even from internal employees who have database access. What additional security layer is required?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Encryption at rest on the database is sufficient — internal employees can be trusted not to abuse their database access" },
+        { "id": "b", "text": "Use field-level encryption (FLE) or tokenization: sensitive fields are encrypted at the application layer before being sent to the database — the database stores ciphertext only; decryption keys are stored in a separate key management service (KMS) — even DBAs with full table access cannot read sensitive fields without the key" },
+        { "id": "c", "text": "Use RBAC to restrict which employees can access the financial tables — this is sufficient to protect sensitive data" },
+        { "id": "d", "text": "Store all financial data in a separate database that is only accessible via stored procedures — this eliminates the need for application-layer encryption" }
+      ],
+      "correctKey": "b",
+      "explanation": "Defense-in-depth for sensitive data: field-level encryption (FLE) or tokenization. FLE: encrypt sensitive fields (credit card numbers, SSN, account numbers) in the application layer before sending to the database — the database stores ciphertext that is meaningless without the key. The KMS (AWS KMS, HashiCorp Vault) manages keys separately from data. Tokenization: replace sensitive values with non-sensitive tokens (PCI-DSS tokenization model). This protects against: insider threat (DBAs, cloud operators), SQL injection (attacker reads ciphertext, not plaintext), and database backups theft. RBAC (C) helps but doesn't prevent authorized DBAs from reading data. Stored procedures (D) still allow SELECT access to data. Option B is the correct answer."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "An API gateway sits in front of your microservices. A client's API key is compromised (leaked in a public repository). What happens when you revoke the key, and how quickly can you mitigate the risk?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Revoking the key takes effect immediately — all subsequent requests using the revoked key are rejected within seconds by the API gateway" },
+        { "id": "b", "text": "Revocation timing depends on caching: if the gateway caches key validation results, a revoked key may remain valid until the cache expires (minutes to hours); to achieve fast revocation: cache revocation events in Redis/blocklist with short TTL, use a live validation endpoint (not cached), or use short-lived JWTs (minutes) instead of long-lived API keys" },
+        { "id": "c", "text": "API keys cannot be revoked — once issued, they remain valid until their natural expiry date" },
+        { "id": "d", "text": "Revoking the key requires regenerating the entire API gateway configuration and redeploying — this takes hours" }
+      ],
+      "correctKey": "b",
+      "explanation": "API key revocation is not instantaneous by default: if the gateway caches the result of 'is this key valid?' lookups, a revoked key may continue to work until the cache TTL expires. Mitigation strategies: (1) maintain a revocation blocklist (Redis set) checked on every request, with the blocklist updated immediately on revocation; (2) use short TTL for key validation cache (e.g., 60 seconds); (3) for high-security scenarios, validate keys against the authorization server on every request (no cache) or use short-lived JWTs instead of long-lived API keys. Option A overstates immediacy. Option C is false for most implementations. Option D is unnecessarily slow with proper architecture."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: Using HTTPS for all API calls is sufficient to protect against all common API security threats including injection attacks, unauthorized access, and data exposure.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "HTTPS (TLS) only encrypts data in transit — it protects against eavesdropping and man-in-the-middle attacks on the network. It does NOT protect against: SQL injection (malicious input reaches the application), broken authentication (stolen credentials or tokens), broken authorization (IDOR — accessing other users' resources), excessive data exposure (API returns too much data including sensitive fields), rate limiting abuse, XSS (stored scripts served over HTTPS), or insider threats. HTTPS is a necessary but not sufficient security control — it is the transport layer, not the application security layer. Defense-in-depth requires: authentication, authorization, input validation, output encoding, rate limiting, field-level encryption, and security monitoring."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A microservices system uses service account credentials (long-lived API keys) stored as Kubernetes Secrets to authenticate service-to-service calls. These secrets are base64-encoded in etcd. What is the security risk, and what is the correct mitigation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Base64 encoding is encryption — Kubernetes Secrets stored in etcd are secure and no further action is needed" },
+        { "id": "b", "text": "Base64 encoding is not encryption — it provides zero confidentiality. Anyone with access to etcd (cluster admin, cloud provider) can read the secrets. Mitigations: enable Kubernetes encryption at rest (AES-CBC or AES-GCM secret encryption config), use an external secrets manager (HashiCorp Vault, AWS Secrets Manager, Azure Key Vault) with the Kubernetes External Secrets Operator, or use Istio SPIFFE/SPIRE to issue short-lived X.509 certificates instead of long-lived API keys" },
+        { "id": "c", "text": "Store secrets in Kubernetes ConfigMaps instead of Secrets — ConfigMaps are encrypted by default" },
+        { "id": "d", "text": "The risk is minimal — Kubernetes cluster access is already restricted to authorized administrators" }
+      ],
+      "correctKey": "b",
+      "explanation": "Kubernetes Secrets are base64-encoded (not encrypted) by default — they are stored in plaintext in etcd and visible in pod environment variables and logs. Anyone with etcd read access, or who can exec into a pod, can read secret values. Mitigations: (1) enable Kubernetes Secret Encryption at Rest (encrypting etcd data with a KMS-encrypted key — not default), (2) use an External Secrets Operator to sync secrets from Vault/AWS Secrets Manager into Kubernetes Secrets at runtime — the secret value never lives in etcd, (3) use SPIFFE/SPIRE to issue short-lived X.509 certificates for service-to-service mTLS instead of long-lived API keys — certificates are automatically rotated, limiting exposure window. Option A is false. Option C is false (ConfigMaps are not encrypted by default). Option D underestimates the insider threat."
+    }
+  ]
+}

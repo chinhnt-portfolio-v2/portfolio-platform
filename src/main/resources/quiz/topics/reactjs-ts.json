@@ -130,6 +130,542 @@
       ],
       "correctKey": "a",
       "explanation": "Context's Provider broadcasts to all consumers on any value change — even with useMemo on the value, all components reading that Context re-render. Zustand (and TanStack Store) use a subscription model with selectors: only components whose selected slice actually changed will re-render, making it significantly more granular and performant for large applications. Option B is wrong — Zustand holds any state value, async included. Option C reverses the truth. Option D is wrong — Zustand has no Provider; it creates a standalone store via create()."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which statement about JSX is CORRECT?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JSX is valid plain HTML that browsers can parse without a build step" },
+        { "id": "b", "text": "JSX is syntactic sugar that compiles to React.createElement calls at build time" },
+        { "id": "c", "text": "JSX expressions must always be wrapped in a parent element — fragments are not allowed" },
+        { "id": "d", "text": "React components must return exactly one JSX element per render cycle" }
+      ],
+      "correctKey": "b",
+      "explanation": "JSX is a syntax extension that transpiles to React.createElement calls (via Babel/Vite/esbuild) — it is not plain HTML. Option A is false. Option C is wrong — React Fragments (<>...</>) are valid JSX wrappers. Option D misstates it: components can return multiple sibling elements when wrapped in a Fragment or array (with keys)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the primary purpose of the `key` prop in React lists?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Keys give DOM elements a unique CSS identifier for styling purposes" },
+        { "id": "b", "text": "Keys help React identify which items have changed, been added, or removed during reconciliation so it can update only the necessary DOM nodes" },
+        { "id": "c", "text": "Keys are required by the browser for accessibility in list elements" },
+        { "id": "d", "text": "Keys prevent XSS attacks by escaping user-generated content in list items" }
+      ],
+      "correctKey": "b",
+      "explanation": "During reconciliation React uses key to match children in the old tree with children in the new tree. Stable, unique keys (e.g. DB IDs) let React do minimal DOM mutations. Using array index as key is anti-pattern when the list can be reordered or filtered — it causes correct items to be destroyed and recreated. Keys are NOT CSS IDs (A), not an a11y requirement (C), and do not address XSS (D)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which TypeScript utility type makes all properties of a type optional?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Partial<T>" },
+        { "id": "b", "text": "Optional<T>" },
+        { "id": "c", "text": "Maybe<T>" },
+        { "id": "d", "text": "Required<T>" }
+      ],
+      "correctKey": "a",
+      "explanation": "TypeScript's Partial<T> (built-in utility type) constructs a type with all properties of T set to optional (each property becomes ?). Optional<T> and Maybe<T> do not exist in TypeScript. Required<T> does the reverse — it makes all properties required."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "True or False: React components must always be classes — function components are not a valid pattern.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "False. Function components (also called functional components) have been the idiomatic React pattern since React 16.8 added hooks. Class components still exist for backwards compatibility, but modern React codebases primarily use function components. React itself treats both forms identically after compilation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What happens when you pass a JavaScript expression as a child to a JSX element? Example:\n\n<Card>{user.name.toUpperCase()}</Card>",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The expression is evaluated once at render time and its result (a string) is rendered as text content" },
+        { "id": "b", "text": "The expression is serialized to JSON and sent to the server for evaluation" },
+        { "id": "c", "text": "JSX children must only be other JSX elements — JavaScript expressions are rejected by the TypeScript compiler" },
+        { "id": "d", "text": "The expression runs on every mouse interaction over the Card component" }
+      ],
+      "correctKey": "a",
+      "explanation": "JSX children wrapped in {} are evaluated as JavaScript expressions at render time. The result is rendered as text or as a React element depending on its type. Option B describes something like React Server Components (unrelated). Option C is false — JSX supports any JS expression as a child. Option D describes event handlers, not JSX child evaluation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is prop drilling?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A lint rule that prevents passing props with names longer than 10 characters" },
+        { "id": "b", "text": "Passing data through many layers of intermediate components that do not need the data but only act as a pass-through conduit" },
+        { "id": "c", "text": "A performance optimization technique that caches prop values across renders" },
+        { "id": "d", "text": "The process of validating prop types at runtime using PropTypes library" }
+      ],
+      "correctKey": "b",
+      "explanation": "Prop drilling occurs when deeply nested data (e.g. theme, user info) must be passed through multiple component layers that don't use it directly, just to reach the component that does. This makes code fragile and verbose. Solutions include React Context, state management libraries (Zustand, Redux), or component composition (slot pattern)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which TypeScript utility type creates a new type with exactly the keys of T that are assigned to type V?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Pick<T, K>" },
+        { "id": "b", "text": "Record<K, V>" },
+        { "id": "c", "text": "Omit<T, K>" },
+        { "id": "d", "text": "Partial<T>" }
+      ],
+      "correctKey": "a",
+      "explanation": "Pick<T, K> constructs a type by selecting specified keys (K) from T. Record<K, V> creates an object type with keys K mapped to values V — it does not filter existing keys. Omit<T, K> does the opposite of Pick — it removes keys. Partial<T> makes all properties optional."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "True or False: In TypeScript, you can assign a number to a variable typed as string without a type assertion.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "False. TypeScript is structurally typed and enforces type safety at compile time. A number is not assignable to a string — they are different primitive types. You need an explicit type assertion (const s: string = someNumber as unknown as string) or a conversion function (String(s)) to convert between them."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is wrong with this code?\n\nconst Button = (props) => {\n  return <button style={{ color: props.color }}>{props.label}</button>;\n};\nButton.defaultProps = { color: \"#333\", label: \"Click me\" };",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "defaultProps on function components is deprecated — prop defaults should be declared in the function signature using default parameters" },
+        { "id": "b", "text": "Function components cannot receive props as a single object — they must receive individual named arguments" },
+        { "id": "c", "text": "Inline style objects must be strings, not CSS custom properties" },
+        { "id": "d", "text": "defaultProps requires the component to be wrapped in React.forwardRef" }
+      ],
+      "correctKey": "a",
+      "explanation": "Function component defaultProps ARE deprecated as of React 18.3 (though still functional at runtime). The idiomatic pattern is to use default parameter values in the function signature: const Button = ({ color = \"#333\", label = \"Click me\" }: Props) => {}. Option B is wrong — function components receive props as a single object. Option C is wrong — style objects use camelCase CSS properties and numeric or string values. Option D is unrelated."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Select ALL that apply. Which of the following are valid React children types?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Plain strings" },
+        { "id": "b", "text": "Numbers" },
+        { "id": "c", "text": "JSX elements" },
+        { "id": "d", "text": "Functions (render props pattern)" },
+        { "id": "e", "text": "Promises (without awaiting or using Suspense)" }
+      ],
+      "correctKey": "a,b,c,d",
+      "explanation": "Strings (A) and numbers (B) are valid ReactNode types. JSX elements (C) are valid children. Functions passed as children — the 'render prop' pattern — are valid and widely used (e.g. <Container>{children => <div>{children}</div>}</Container>). Promises (E) are NOT valid children by themselves — they must be awaited (in an async Server Component or RSC) or handled via Suspense with a streaming approach."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which of the following causes a re-render of a React component? (Select ALL that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Parent component re-renders" },
+        { "id": "b", "text": "Component's own state changes via setState" },
+        { "id": "c", "text": "Component receives a changed prop value from its parent" },
+        { "id": "d", "text": "Context value it consumes changes" },
+        { "id": "e", "text": "A CSS class is added to the component's root DOM element externally" }
+      ],
+      "correctKey": "a,b,c,d",
+      "explanation": "Re-renders are triggered by: (A) parent re-render (children re-render by default), (B) setState call within the component, (C) prop change (shallow comparison of new vs old prop object), (D) Context value change (Provider broadcasts new value). Option E — external DOM class manipulation does NOT cause React re-render (React does not own that reference). Direct DOM mutations also break React's virtual DOM reconciliation model."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the TypeScript type of a function that returns nothing and accepts no arguments?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "() => void" },
+        { "id": "b", "text": "() => undefined" },
+        { "id": "c", "text": "() => null" },
+        { "id": "d", "text": "Function<void>" }
+      ],
+      "correctKey": "a",
+      "explanation": "The idiomatic TypeScript type for a side-effect-free callback is () => void. () => undefined (B) means the function must return the undefined value explicitly, while void (A) is more permissive — it accepts any function that doesn't use its return value (which is ignored). () => null (C) would require returning null. Function<void> (D) is not valid TypeScript syntax."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the primary difference between useMemo and useCallback?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useMemo memoizes a computed value; useCallback memoizes a function reference — useCallback is equivalent to useMemo(() => fn, deps)" },
+        { "id": "b", "text": "useMemo is for numbers and strings only; useCallback is for objects and arrays" },
+        { "id": "c", "text": "useMemo triggers re-renders when dependencies change; useCallback does not trigger re-renders" },
+        { "id": "d", "text": "useCallback was introduced in React 18; useMemo existed in earlier versions" }
+      ],
+      "correctKey": "a",
+      "explanation": "useMemo(fn, deps) memoizes fn's return value and re-computes only when deps change. useCallback(fn, deps) is syntactic sugar for useMemo(() => fn, deps) — it returns a stable function reference. The distinction is purely about intent: memoize a computation vs memoize a function. Option B is false — useMemo accepts any return type. Option C is wrong — neither triggers re-renders directly; they just avoid recomputation. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of React.memo?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.memo wraps a component to memoize expensive computations inside the component's render body" },
+        { "id": "b", "text": "React.memo creates a higher-order component that prevents re-render if props (shallowly compared) have not changed since the last render" },
+        { "id": "c", "text": "React.memo caches the rendered HTML of a component for the lifetime of the app" },
+        { "id": "d", "text": "React.memo is required to make function components work with the React DevTools profiler" }
+      ],
+      "correctKey": "b",
+      "explanation": "React.memo is a higher-order component that performs shallow comparison of current vs previous props. If all props are shallowly equal, the component skips rendering (returns the last rendered output from cache). Option A describes useMemo — a different hook. Option C is wrong — React.memo's cache is per-render-cycle (not lifetime). Option D is false — function components work with DevTools without React.memo."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: useEffect runs synchronously after the DOM has been painted and the browser has had a chance to paint.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "a",
+      "explanation": "True. By default (no dependency array or dependency array with values), useEffect runs asynchronously after the render is committed to the DOM — after paint, so it does not block the browser's ability to display updates. This is why it's safe for non-blocking side effects. Strict Mode in dev double-invokes effects to detect missing cleanup. The flushSync option can override this order."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which scenario is NOT a valid use case for useReducer?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Managing complex state with multiple sub-values that change together" },
+        { "id": "b", "text": "State transitions that follow a predictable pattern (actions → reducer → new state)" },
+        { "id": "c", "text": "Replacing ALL useState usage anywhere in the application for performance reasons" },
+        { "id": "d", "text": "Avoiding passing too many update functions down the component tree (grouped dispatch)" }
+      ],
+      "correctKey": "c",
+      "explanation": "useReducer is not a blanket useState replacement for performance — it's designed for state with related sub-values or complex transitions. Option C is the wrong answer (the question asks which is NOT valid). useReducer is appropriate for A, B, and D. Replacing all useState with useReducer adds complexity without benefit in simple cases. The right tool depends on state shape, not performance benchmarking of the hook itself."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a discriminated union in TypeScript and when is it useful in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A union type where every member shares a common property (discriminant) that TypeScript uses for narrowing — useful for modeling conditional UI states (e.g. loading/success/error)" },
+        { "id": "b", "text": "A TypeScript type that excludes undefined from a union — used to make React props non-nullable" },
+        { "id": "c", "text": "A union of DOM elements that can be rendered conditionally based on CSS display property" },
+        { "id": "d", "text": "A type guard pattern that uses instanceof to check runtime types in JSX" }
+      ],
+      "correctKey": "a",
+      "explanation": "Discriminated unions use a shared literal property (type: \"loading\" | \"success\" | \"error\") as the discriminant. TypeScript narrows the type in switch/if branches, enabling exhaustive UI rendering per state. This pattern eliminates impossible states and enables exhaustive switch checks via the never type. Option B describes NonNullable or required modifiers. Option C is incorrect. Option D is a runtime check, not a discriminated union pattern."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the main limitation of React Context that useContext addresses?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context has no limitation — useContext gives components full read/write access to the Provider value" },
+        { "id": "b", "text": "Context re-renders all consumers on any value change even if they only read a subset — the limitation is that there is no built-in way to subscribe to a slice; a custom subscription wrapper or useMemo is needed" },
+        { "id": "c", "text": "Context cannot be used outside of a Provider tree — useContext solves this by providing a default value" },
+        { "id": "d", "text": "Context only works with primitive values; useContext enables object values to be passed" }
+      ],
+      "correctKey": "b",
+      "explanation": "Context's re-render issue: when a Provider's value changes, ALL components consuming that context re-render regardless of which slice they use. Options to mitigate: split contexts by concern, memoize the value with useMemo, or use a subscription library. Option A is false — useContext is read-only (no direct write). Option C is wrong — Context throws without a Provider unless a defaultValue is passed. Option D is false — Context works with any type."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Select ALL that apply. Which of the following are TRUE about controlled vs uncontrolled components?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "A controlled component's input value is driven entirely by React state — the onChange handler updates state, and the value prop reflects that state" },
+        { "id": "b", "text": "An uncontrolled component uses the DOM's internal state (ref) and reads the value via ref.current.value on form submission" },
+        { "id": "c", "text": "File inputs should always be controlled components so their FileList can be stored in state" },
+        { "id": "d", "text": "Uncontrolled components cannot trigger validation — validation requires controlled inputs" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "Controlled (A): value is from React state, onChange updates state. Uncontrolled (B): value is in DOM, read via ref on submit. Option C is false — file inputs <input type=\"file\"> are always uncontrolled because the FileList API is read-only (the value cannot be set programmatically for security). Option D is false — HTML5 constraint validation (required, pattern, etc.) works on both controlled and uncontrolled inputs."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of Error Boundaries in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Error Boundaries catch JavaScript errors in the entire React tree below them and display a fallback UI instead of crashing the whole application" },
+        { "id": "b", "text": "Error Boundaries prevent TypeScript compilation errors from crashing the running application" },
+        { "id": "c", "text": "Error Boundaries are a replacement for try-catch blocks in async useEffect callbacks" },
+        { "id": "d", "text": "Error Boundaries catch network errors from fetch calls made in useEffect" }
+      ],
+      "correctKey": "a",
+      "explanation": "Error Boundaries are class components that implement componentDidCatch or use the useErrorInfo hook (React 16+) to catch errors anywhere in the child component tree — render errors, lifecycle errors, constructor errors — and render a fallback UI. They do NOT catch: async code (setTimeout, Promise chains), server-side errors, or errors in the boundary itself. Options B, C, and D describe unrelated scenarios."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: useRef requires a type argument when used for DOM element references.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "False. When useRef is used for DOM elements, TypeScript infers the element type from the initial value. useRef<HTMLButtonElement>(null) is valid but the null initial value means TypeScript infers HTMLButtonElement | null. For non-null DOM access after mount, useRef<HTMLButtonElement>(null!) or use a callback ref pattern. TypeScript generics are optional — TypeScript can infer them in most cases."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does useReducer return? (Select ALL that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "The current state value" },
+        { "id": "b", "text": "A dispatch function to send action objects to the reducer" },
+        { "id": "c", "text": "A memoized getter function to read state without subscribing" },
+        { "id": "d", "text": "An isPending boolean indicating whether the reducer is running an async operation" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "useReducer returns a pair: [state, dispatch]. The dispatch function (B) is stable across renders — it never changes. It accepts an action object (or thunk/dispatch-call for complex patterns) and runs it through the reducer. Options C and D are incorrect — dispatch does not require subscription, and there is no built-in isPending flag in useReducer (that is useTransition's job)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the main purpose of React.Fragment?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Fragment is a performance optimization that prevents unnecessary DOM wrapper divs from being created in the actual DOM" },
+        { "id": "b", "text": "Fragment lets you group a list of JSX elements without adding an extra DOM node wrapper, avoiding unnecessary wrapper divs in the output" },
+        { "id": "c", "text": "Fragment is required when rendering arrays of React elements to enable proper key assignment" },
+        { "id": "d", "text": "Fragment provides a way to lazily load components via code-splitting" }
+      ],
+      "correctKey": "b",
+      "explanation": "React.Fragment groups elements without introducing a DOM node — it does not appear in the rendered HTML. This avoids extra <div> wrappers that affect CSS layout (e.g. flex/grid parents). Fragment can accept a key when rendering a list: <Fragment key={item.id}>. Option A is misleading — Fragment does not eliminate DOM nodes from the actual DOM (the grouped elements still render normally). Option C is wrong — keys belong on list items, not Fragment wrappers. Option D describes React.lazy + Suspense."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which TypeScript type correctly represents a readonly array of strings?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "readonly string[]" },
+        { "id": "b", "text": "string readonly[]" },
+        { "id": "c", "text": "ReadonlyArray<string>" },
+        { "id": "d", "text": "Immutable<string[]>" }
+      ],
+      "correctKey": "c",
+      "explanation": "TypeScript's ReadonlyArray<T> is the generic immutable array type (also aliased as readonly T[]). The syntax readonly T[] is shorthand for ReadonlyArray<T>. Option B (string readonly[]) is not valid TypeScript syntax. Option D (Immutable<T>) does not exist in TypeScript standard library — you would use a third-party library like Immer. Both A and C are correct; C is more explicit and is what the Readonly utility type uses internally."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the React Fiber reconciliation algorithm primarily designed to solve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Fiber introduces incremental rendering — the work is split into chunks and can be paused, aborted, or prioritized, enabling smooth updates even during heavy computations" },
+        { "id": "b", "text": "Fiber replaces the virtual DOM with a real DOM clone for faster rendering in all browsers" },
+        { "id": "c", "text": "Fiber enables React to run entirely in a Web Worker separate from the main thread" },
+        { "id": "d", "text": "Fiber adds built-in support for TypeScript generics at runtime to improve type safety" }
+      ],
+      "correctKey": "a",
+      "explanation": "React Fiber (introduced in React 16) re-implements the reconciliation algorithm as an incremental, interruptible work queue. Each unit of work (Fiber node) can be: processed, paused, yielded to higher-priority work (like user input), or discarded. This enables concurrent features like useTransition, Suspense, and useDeferredValue. Fiber does NOT run in Web Workers (C) — it runs on the main thread but yields control. It does not replace vdom (B) or add TS generics at runtime (D)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which statement about React.lazy and Suspense is TRUE?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.lazy uses dynamic import() internally and suspends rendering of the component while the chunk is being fetched — Suspense shows a fallback UI during the wait" },
+        { "id": "b", "text": "React.lazy can only be used with class components because it requires the component to have a componentDidMount lifecycle method" },
+        { "id": "c", "text": "React.lazy + Suspense works on the server side in Node.js environments without any additional configuration" },
+        { "id": "d", "text": "Suspense boundaries must be wrapped in useTransition for code-splitting to work" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.lazy(fn) calls import() to dynamically load a module. While the chunk loads, React throws a Promise (Suspense boundary catches it) and renders the fallback. Once resolved, React re-renders. Option B is false. Option C — React.lazy + Suspense for SSR requires frameworks like Next.js that handle the server-side suspension lifecycle (e.g. renderToStringAsync). Option D — Suspense does not require useTransition — they are independent concurrent features that compose well together."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does useDeferredValue do in React 18 concurrent features?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useDeferredValue defers a state update to the next tick, marking it as lower priority so the UI can remain responsive during expensive renders" },
+        { "id": "b", "text": "useDeferredValue delays the execution of a side effect inside useEffect by a fixed number of milliseconds" },
+        { "id": "c", "text": "useDeferredValue converts a Promise's result into a deferred ReactNode, replacing the need for Suspense boundaries" },
+        { "id": "d", "text": "useDeferredValue debounces a value to prevent excessive re-renders in input handlers" }
+      ],
+      "correctKey": "a",
+      "explanation": "useDeferredValue(value) marks a value as deferrable — React schedules the re-render at lower priority, allowing the main thread to stay responsive for user input. It's useful for expensive UI updates (like a filtered list) where immediate consistency is less important than responsiveness. Option B describes a custom delay or throttle, not useDeferredValue. Option C is false — Promises use Suspense or data-fetching libraries. Option D is debouncing — useDeferredValue is not debounce (the deferred render still happens immediately once scheduled)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: In strict mode, React intentionally double-invokes component render methods, useReducer reducer functions, and useEffect cleanup/effect functions in development to help detect side effects.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "a",
+      "explanation": "True. React StrictMode (development only) double-invokes: render methods, the useReducer initial reducer call, and effect setup/cleanup functions. This is intentional — it exposes side effects that are not properly cleaned up (e.g. stale closures, missing cleanup for subscriptions/timers). It does NOT double-invoke useState setters. If effects break when called twice, the effect has a hidden bug (usually missing cleanup or non-idempotent setup code)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a Higher-Order Component (HOC)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A HOC is a function that takes a component as input and returns a new enhanced component — it is a pattern for reusing component logic, not a component itself" },
+        { "id": "b", "text": "A HOC is a class component that extends another component to add functionality" },
+        { "id": "c", "text": "A HOC is a built-in React hook that wraps child components with additional behavior" },
+        { "id": "d", "text": "A HOC is a TypeScript utility type that creates a higher-kinded type for React components" }
+      ],
+      "correctKey": "a",
+      "explanation": "A HOC is a pure function (not a React component) that takes a WrappedComponent and returns a new EnhancedComponent. Classic examples: react-redux's connect, react-router's withRouter (deprecated), styled-components's styled. HOCs compose naturally but can cause wrapper-hell (HOC of HOC of HOC). Render props (now increasingly replaced by custom hooks) and hooks are the more modern alternatives for logic reuse."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Select ALL that apply. Which of the following are TRUE about React Server Components (RSC)?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Server Components can directly access server-side resources (databases, file system, secrets) without exposing them to the client" },
+        { "id": "b", "text": "Server Components cannot use hooks because hooks require a React component instance which does not exist on the server" },
+        { "id": "c", "text": "Server Components' code is included in the client-side JavaScript bundle" },
+        { "id": "d", "text": "Client Components can be imported and rendered inside a Server Component, but Server Components cannot be used inside Client Components without passing them as children props or via the \"use server\" directive" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "RSCs (A) run exclusively on the server and have zero client bundle footprint. They cannot use hooks (B) — hooks require React's runtime state machine, which only exists in the browser/node runtime, not during server rendering. Option C is false — RSC code never reaches the client bundle. Option D is a nuance: Client Components can import Server Components (the SC runs on server, result sent to client), but the reverse (RSC importing a CC) requires special patterns (children prop, \"use server\" boundary)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the primary performance concern with the React Context API at scale?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context values are serialized and deserialized on every Provider update, causing CPU overhead in large applications" },
+        { "id": "b", "text": "When the Provider value changes, ALL components consuming that context re-render — even those that only read a small portion of the context — because Context uses reference equality, not deep equality" },
+        { "id": "c", "text": "Context cannot be used with TypeScript because it loses type information at the boundary" },
+        { "id": "d", "text": "Context re-renders are slower than setState re-renders because they bypass the virtual DOM diffing algorithm" }
+      ],
+      "correctKey": "b",
+      "explanation": "The primary Context performance issue is broadcast re-rendering: any consumer of a context re-renders whenever the Provider's value reference changes, regardless of which part of the value the component actually uses. This is because Context uses strict reference equality (===) on the value. Solutions: split into multiple narrow contexts, memoize the value object with useMemo, or replace with a subscription-based state manager (Zustand, Redux). Option A is false — serialization is not part of Context. Option C is false. Option D is false — Context re-renders go through the normal vdom diffing."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which pattern would NOT effectively prevent an unnecessary re-render of a memoized child component?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Wrapping the child component in React.memo and passing only primitive props or stable callback references from useCallback" },
+        { "id": "b", "text": "Splitting a large context into multiple focused contexts so consumers only re-render when the specific slice they use changes" },
+        { "id": "c", "text": "Adding a key prop to the child component's JSX element to force React to unmount and remount it on every parent render" },
+        { "id": "d", "text": "Using useMemo to memoize an object prop so the reference stays stable across renders" }
+      ],
+      "correctKey": "c",
+      "explanation": "The question asks which would NOT prevent re-renders. Option C — adding a key to a child JSX element does the OPPOSITE: it forces React to destroy and recreate the component on every render, which is more expensive than a normal re-render. Keys are meant for list items to help React identify which elements changed — not for forcing remounts. The other options (React.memo, context splitting, useMemo) are all valid strategies to reduce unnecessary re-renders."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the correct way to handle the cleanup of a side effect that sets up a subscription?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Inside the useEffect, return a cleanup function that calls the unsubscribe method — React calls this cleanup before the next effect runs and on unmount" },
+        { "id": "b", "text": "Use a global variable outside the component to track the subscription and call cleanup in a separate useEffect with an empty dependency array" },
+        { "id": "c", "text": "React automatically cleans up subscriptions when the component function re-renders — no explicit cleanup is needed" },
+        { "id": "d", "text": "Call cleanup inside the return statement of the component function body so it runs before unmount" }
+      ],
+      "correctKey": "a",
+      "explanation": "The idiomatic pattern: useEffect(() => { const sub = subscribe(handler); return () => sub.unsubscribe(); }, [deps]). The returned function is the cleanup — React invokes it before running the effect again (on dep change) and on component unmount. Option B is an anti-pattern — global state leaks across component instances. Option C is false — React does not auto-cleanup subscriptions. Option D is wrong — the component function body runs during render, not unmount."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Select ALL that apply. Which statements about the interaction between useTransition and Suspense are TRUE?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "useTransition marks state updates as transitions so React can keep the UI responsive — isPending can be used to show a loading state while the transition is in progress" },
+        { "id": "b", "text": "Suspense wraps lazy-loaded components and shows a fallback while the component's code chunk loads — it integrates with useTransition when used together in concurrent mode" },
+        { "id": "c", "text": "useTransition and Suspense are mutually exclusive — you cannot use both in the same component tree" },
+        { "id": "d", "text": "useTransition is required to make Suspense work for code-splitting in React 18" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "useTransition (A) marks certain updates as interruptible, and isPending signals loading state during the transition. Suspense (B) shows fallback UI while lazy components load — in concurrent mode, React can pipeline these together smoothly. Option C is false — they are complementary (Suspense handles async loading; useTransition handles urgent-vs-deferrable updates). Option D is false — Suspense works for code-splitting independently of useTransition."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: In TypeScript strict mode, a component typed as React.FC<Props> will give `children` by default even if Props does not declare it.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "False. In TypeScript's older React.FC typings (pre-React 18.3), children WAS included implicitly. However, React 18.3 removed this implicit children from React.FC<Props> — Props must now explicitly declare children if needed. Additionally, React.FC is considered legacy by many React maintainers because it makes components harder to type correctly (children are optional, return type is React.FC which differs from plain function component types). Prefer plain function types: const Comp = ({ name }: { name: string }) => JSX."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between Omit<T, K> and Exclude<T, U> in TypeScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Omit removes keys from an object type (property-level); Exclude removes types from a union type (type-level) — they operate at different levels of the type system" },
+        { "id": "b", "text": "Omit and Exclude are identical — both can be used interchangeably for any type operation" },
+        { "id": "c", "text": "Exclude removes keys from an object type; Omit removes types from a union" },
+        { "id": "d", "text": "Omit works at runtime; Exclude only works at compile time" }
+      ],
+      "correctKey": "a",
+      "explanation": "Omit<T, K> creates a new object type from T minus the named properties in K (e.g. Omit<User, \"password\">). Exclude<T, U> filters union members — T extends U are removed (e.g. Exclude<string | number, string> = number). Option C reverses the definitions. Option D is misleading — both are purely compile-time TypeScript constructs with no runtime footprint."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following would NOT happen when React.memo is applied to a component?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React will skip calling the component function if all props are shallowly equal to the previous render" },
+        { "id": "b", "text": "React will deep-compare nested object and array props to determine if a re-render is needed" },
+        { "id": "c", "text": "React will return the cached output from the previous render without creating new DOM nodes" },
+        { "id": "d", "text": "React will still run its internal reconciliation algorithm for the component's children" }
+      ],
+      "correctKey": "b",
+      "explanation": "React.memo uses SHALLOW comparison of props — it does NOT deep-compare objects or arrays. If you pass a new object or array as a prop, React.memo considers it changed even if the content is identical. Solution: memoize the prop with useMemo/useCallback at the parent level before passing it down. Option A is correct behavior. Option C is correct — React reuses the cached render output. Option D is correct — reconciliation still occurs for children (memo only skips the wrapped component's own render)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a render prop pattern in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A render prop is a prop on a component whose value is a function that the component calls to render part of its UI — it enables logic sharing without inheritance or mixins" },
+        { "id": "b", "text": "A render prop is the JSX returned from a React component's render method — it refers to the virtual DOM output of the component" },
+        { "id": "c", "text": "A render prop is a TypeScript generic type that represents the return type of a React component" },
+        { "id": "d", "text": "A render prop is a special prop automatically injected by React into every component to track its render count" }
+      ],
+      "correctKey": "a",
+      "explanation": "A render prop is a function prop (conventionally named children or render) that a component calls to render its UI: <MouseTracker render={mouse => <Cat position={mouse} />} /> or <MouseTracker>{mouse => <Cat position={mouse} />}</MouseTracker>. The prop receives internal state/logic (mouse position) and the parent decides how to render it. This shares logic without HOCs or hooks. React Router's Routes and many animation libraries use this pattern historically — now mostly replaced by custom hooks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Select ALL that apply. Which statements about TypeScript generic constraints in React props are TRUE?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "extends can be used in generic definitions to constrain the type argument to a known shape (e.g. <T extends React.ReactNode>) so the component can safely access properties on T" },
+        { "id": "b", "text": "Generic components (e.g. function List<T>) allow the same component to work with different data types while retaining full type safety on the consumer side" },
+        { "id": "c", "text": "Using generics in React function components requires the component to be wrapped in React.forwardRef to preserve type inference across the generic boundary" },
+        { "id": "d", "text": "TypeScript generic components with default type parameters can omit the type argument when used in JSX, allowing TypeScript to infer it" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Generic constraints with extends (A) allow safe access to constrained properties. Generic components (B) like <List<T> items={T[]}> work with any compatible type while inferring types at call sites. Default type parameters (D) enable <List> (inferred) vs <List<string>> (explicit). Option C is false — generic function components work without forwardRef. forwardRef is for a different purpose (accessing the DOM ref)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of useSyncExternalStore in React 18?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useSyncExternalStore subscribes to an external store (e.g. Zustand, Redux, or a third-party subscription system) and forces a re-render when the store's state changes — it is the backbone of React 18's concurrent rendering support for external state" },
+        { "id": "b", "text": "useSyncExternalStore synchronizes React state with a server-side data source in real time using WebSockets" },
+        { "id": "c", "text": "useSyncExternalStore is a replacement for useState that provides built-in undo/redo history for state mutations" },
+        { "id": "d", "text": "useSyncExternalStore is used only for reading URL state (window.location) in React 18 applications" }
+      ],
+      "correctKey": "a",
+      "explanation": "useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot?) is React 18's official hook for integrating external subscription-based state (Zustand stores, Redux, third-party caches, or any pub/sub system). It ensures React 18's concurrent features don't cause inconsistencies by guaranteeing the snapshot is synchronous and stable during concurrent rendering. Option B describes WebSocket libraries, not useSyncExternalStore. Option C describes use-immer or similar. Option D is a narrow use case (React uses it internally for useLocation)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does React.lazy do when the dynamically imported component throws an error (e.g. network failure)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.lazy throws the error to the nearest Error Boundary in the component tree, allowing graceful error handling without crashing the entire app" },
+        { "id": "b", "text": "React.lazy retries the import automatically up to 3 times before surfacing the error" },
+        { "id": "c", "text": "React.lazy only works for network-based imports (CDN URLs) — local module failures are handled by the TypeScript compiler, not React" },
+        { "id": "d", "text": "React.lazy does not handle errors from failed imports — the error propagates as an uncaught Promise rejection to the browser" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.lazy uses the Suspense boundary as its error handling surface: when import() rejects (network error, 404, etc.), React treats this as a thrown promise which Suspense catches. If no Suspense boundary wraps the lazy component, the rejection becomes an uncaught global error. Wrapping the lazy tree in an Error Boundary (or using error boundaries around Suspense) provides graceful degradation. Option B is false. Option C is false. Option D is only true if no Suspense/Error Boundary is present."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the main concern when using CSS-in-JS libraries (like styled-components or Emotion) with React Server Components?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CSS-in-JS libraries that rely on JavaScript runtime style injection (e.g. injecting <style> tags at runtime) do not work during server rendering because there is no browser DOM — the styles are missing from the initial HTML" },
+        { "id": "b", "text": "CSS-in-JS libraries cannot be imported in TypeScript because they lack official type declarations" },
+        { "id": "c", "text": "CSS-in-JS styles are automatically server-rendered because they serialize to inline style attributes" },
+        { "id": "d", "text": "CSS-in-JS is incompatible with React Concurrent Mode and must always run in legacy concurrent mode" }
+      ],
+      "correctKey": "a",
+      "explanation": "Many CSS-in-JS libraries inject styles at runtime via JavaScript (using StyleSheet or Emotion's css prop). During server rendering in RSC or SSR, there is no JavaScript runtime, so styles injected via JavaScript are absent in the initial HTML. Modern solutions: use CSS modules, CSS files, Tailwind (static extraction), or CSS-in-JS libraries with SSR support (e.g. Emotion's extractCritical or styled-components's ServerStyleSheet). Option B is false for popular libraries (they ship types). Option C is false. Option D is false."
     }
   ]
 }

@@ -1,0 +1,533 @@
+{
+  "topicSlug": "dsa-trees",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the maximum number of nodes at level k of a binary tree?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "k — each level can have at most k nodes"
+        },
+        {
+          "id": "b",
+          "text": "2^k — each node at level k-1 can have 2 children, giving 2 × 2^(k-1) = 2^k nodes"
+        },
+        {
+          "id": "c",
+          "text": "k² — nodes grow quadratically with level depth"
+        },
+        {
+          "id": "d",
+          "text": "2^(k-1) — only the root counts as level 1, so level k has 2^(k-1) nodes"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Level 0 (root): 2⁰ = 1 node. Level 1: 2¹ = 2 nodes. Level 2: 2² = 4 nodes. This follows directly from binary branching: each level doubles the potential node count of the previous level. The total nodes in a complete binary tree of height h is 2^(h+1) - 1 (geometric series). Option D is the formula for maximum nodes up to and including level k-1, not level k specifically."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the maximum number of nodes in a binary tree of height h (where height = number of edges on the longest path from root to leaf)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "h + 1 — one more node than the number of edges"
+        },
+        {
+          "id": "b",
+          "text": "h² + 1 — quadratic growth with height"
+        },
+        {
+          "id": "c",
+          "text": "2^(h+1) - 1 — all levels are completely filled (full binary tree)"
+        },
+        {
+          "id": "d",
+          "text": "2^h — only 2^h leaf nodes at depth h"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "A complete binary tree of height h has all levels fully filled except possibly the last, which fills left to right. Maximum nodes: sum from i=0 to h of 2^i = 2^(h+1) - 1 (geometric series formula). Minimum nodes in a tree of height h: h + 1 (degenerate chain). This range from h+1 to 2^(h+1)-1 is why tree shape matters enormously for BST/tree-based algorithm performance. Option D (2^h) is the maximum number of leaf nodes, not total nodes."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In a Binary Search Tree (BST), what property must hold for every node?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "All nodes in the left subtree have values greater than the node, and all nodes in the right subtree have values less than the node"
+        },
+        {
+          "id": "b",
+          "text": "All nodes in the left subtree have values less than the node, and all nodes in the right subtree have values greater than the node"
+        },
+        {
+          "id": "c",
+          "text": "Nodes are stored in a max-heap property: parent ≥ left child and parent ≥ right child"
+        },
+        {
+          "id": "d",
+          "text": "The tree must be perfectly balanced: left and right subtrees differ in height by at most 1"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "BST invariant: left subtree contains values less than the node's value; right subtree contains values greater. This enables O(log n) search on average: each comparison eliminates half the remaining tree. Note that 'strictly greater' on the right (no duplicates, or handle duplicates consistently on one side) is a common convention. Option A reverses the inequality — it would make searching incorrect. Option C describes a max-heap, not a BST. Option D describes an AVL tree property, not a general BST."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of searching in a balanced BST with n nodes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — BST uses a hash-based lookup internally"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — BST requires a full traversal in the worst case"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — the search space is halved with each comparison, following the tree height"
+        },
+        {
+          "id": "d",
+          "text": "O(n log n) — each comparison requires O(log n) node address calculation"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "In a balanced BST (height ≈ log₂ n), search traverses a single path from root to a leaf, performing at most h = O(log n) comparisons. Each step compares the target with the current node value and recurses left or right. This is the fundamental advantage of search trees over unsorted arrays: O(log n) search instead of O(n) linear scan. The 'balanced' qualifier is critical — an unbalanced/skewed BST degenerates to O(n) search. Self-balancing trees (AVL, Red-Black) maintain this O(log n) guarantee."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of an inorder traversal of the BST below?\n\n        5\n       / \\\n      3    8\n     / \\   / \\\n    1   4 6   9",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Inorder traversal (left → root → right) on a BST visits nodes in ascending sorted order. This is a fundamental property: all left-subtree values are smaller, root is between left and right, all right-subtree values are larger. The recursive call stack: leftmost first (1), then 3, then 4, then root 5, then right subtree (6, 8, 9). Option A is preorder (root-first). Option C is reverse inorder (right-root-left, giving descending order). Option D is BFS/level-order traversal."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of performing a level-order (BFS) traversal of a binary tree with n nodes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(log n) — BFS uses a queue and visits nodes in logarithmic layers"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — each node is enqueued and dequeued exactly once"
+        },
+        {
+          "id": "c",
+          "text": "O(n²) — BFS requires comparing each node with every other node"
+        },
+        {
+          "id": "d",
+          "text": "O(1) — BFS uses pointer arithmetic to jump between levels"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "BFS uses a queue: initialize with root, then loop while queue non-empty: pop node, process it, enqueue its children. Each of n nodes is enqueued and dequeued exactly once — O(1) work per node → O(n) total. The queue holds at most the width of the widest level (O(n) worst-case for a complete tree). BFS is ideal for finding shortest paths in unweighted graphs/trees. DFS (recursive or stack-based) also visits every node once → O(n), but differs in space usage (stack depth vs queue width)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef level_order(root):\n    if not root: return []\n    result, queue = [], [root]\n    while queue:\n        node = queue.pop(0)\n        result.append(node.val)\n        if node.left:  queue.append(node.left)\n        if node.right: queue.append(node.right)\n    return result\n\nlevel_order(build_tree([3, 9, 20, None, None, 15, 7]))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Level-order (BFS) processes nodes by depth: root (3), then level 1 (9, 20), then level 2 (15, 7). The queue ensures FIFO order: left child appended before right, so left-to-right within each level. The tree [3,9,20,None,None,15,7] represents a BinaryTree LeetCode-style array where index i's children are at 2i+1 and 2i+2, yielding left=9, right=20, left's children=None, right's children=15 and 7. Option B has wrong order (20 before 9). Option C is reverse order. Option D has right before left within a level."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which traversals produce the output [1, 2, 3, 4, 5] for a left-skewed BST with root 1, right child 2, right child 3...? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Preorder (root, left, right)" },
+        { "id": "b", "text": "Inorder (left, root, right)" },
+        { "id": "c", "text": "Postorder (left, right, root)" },
+        { "id": "d", "text": "Level-order (BFS)" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "A left-skewed BST (chain) stores values in strictly ascending order along the left pointers. For such a tree, preorder (root-left-right) visits nodes in insertion order: [1,2,3,4,5]. Inorder of a BST is always sorted ascending: [1,2,3,4,5]. Level-order also visits in ascending order since it's essentially a linear chain: [1,2,3,4,5]. Postorder visits root last: [2,3,4,5,1] — the root is always processed last in postorder."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "BFS (Breadth-First Search) and DFS (Depth-First Search) both visit every node exactly once. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "BFS and DFS both mark nodes as visited and explore every reachable vertex. BFS uses a queue (FIFO) and processes level by level; DFS uses a stack (LIFO) or recursion and goes deep before backtracking. Both have O(V+E) time complexity (on adjacency list) since each vertex and edge is examined at most once. The difference is the order in which nodes are processed, not the set of nodes visited."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between an adjacency list and an adjacency matrix representation of a graph?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Adjacency list stores edges in a list; adjacency matrix stores vertices in a 2D array"
+        },
+        {
+          "id": "b",
+          "text": "Adjacency list is O(V+E) space and O(deg(v)) neighbor lookup; adjacency matrix is O(V²) space and O(1) edge existence check"
+        },
+        {
+          "id": "c",
+          "text": "Adjacency matrix is more space-efficient for sparse graphs; adjacency list is better for dense graphs"
+        },
+        {
+          "id": "d",
+          "text": "Adjacency list supports only directed graphs; adjacency matrix supports only undirected graphs"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Adjacency list: array of V lists, where list[i] stores neighbors of vertex i. Space: O(V+E) since only actual edges are stored. Neighbor lookup: O(deg(v)) by scanning the list. Adding an edge: O(1). Edge existence check: O(deg(v)). Adjacency matrix: V×V boolean matrix. Space: O(V²) regardless of edge count. Edge existence check: O(1) via matrix lookup. For sparse graphs (E << V²), adjacency list is vastly more space-efficient. For dense graphs or when edge existence checks are frequent, matrix may win. Option A reverses the definitions. Option C is false (sparse → list, dense → matrix). Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "In a graph with V vertices and E edges, what is the time complexity of performing DFS starting from a single source vertex?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(V) — DFS visits each vertex exactly once"
+        },
+        {
+          "id": "b",
+          "text": "O(E) — DFS traverses each edge exactly once"
+        },
+        {
+          "id": "c",
+          "text": "O(V+E) — DFS visits each vertex once and traverses each edge once"
+        },
+        {
+          "id": "d",
+          "text": "O(V²) — DFS requires examining all possible vertex pairs"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "DFS marks vertices as visited and explores all outgoing edges. Each vertex is visited at most once → O(V). Each edge is examined at most twice (once from each endpoint) → O(E). Combined: O(V+E). This holds for both adjacency list (explore all edges of each visited vertex) and adjacency matrix (scan entire row of V entries for each of V vertices → O(V²)). The O(V+E) bound is tight for adjacency list representation, which is why list representation is preferred for sparse graphs."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of a preorder traversal of the BST below?\n\n        5\n       / \\\n      3    8\n     / \\   / \\\n    1   4 6   9",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Preorder traversal: root → left → right. Visit order: 5 (root), then left subtree preorder: 3 (root of left) → 1 (leaf) → 4 (leaf), then right subtree: 8 → 6 → 9. Result: [5, 3, 1, 4, 8, 6, 9]. This traversal order is useful for cloning/copying trees (root processed before subtrees, so you know the parent before children) and prefix expression of expression trees. Option A is inorder (BST sorted). Option C is right-root-left traversal. Option D is reverse preorder."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a topological sort of a directed acyclic graph (DAG), and what algorithm computes it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A topological sort is an ordering where all edges point from higher to lower indices; it is computed using binary search on the adjacency matrix"
+        },
+        {
+          "id": "b",
+          "text": "A topological sort is a linear ordering where for every directed edge u→v, u appears before v; Kahn's algorithm (BFS with in-degree) or DFS postorder produces it"
+        },
+        {
+          "id": "c",
+          "text": "A topological sort is equivalent to sorting vertices by their degree; it is computed using merge sort on the degree sequence"
+        },
+        {
+          "id": "d",
+          "text": "A topological sort exists for all directed graphs; if a cycle exists, the algorithm ignores cycle edges"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Topological sort applies only to DAGs (directed acyclic graphs). Kahn's algorithm: compute in-degrees of all vertices, initialize queue with zero in-degree vertices, repeatedly remove a vertex (output it), decrement in-degrees of its neighbors, enqueue any that reach zero. DFS approach: perform DFS, add vertex to output list when backtracking (postorder), then reverse the list. Both produce valid topological orderings (which may not be unique). Option A is nonsense. Option C is wrong. Option D is false — topological sort is undefined if a cycle exists."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the space complexity of recursive DFS on a graph with n nodes and maximum recursion depth d?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — DFS uses an explicit stack that is discarded after each call"
+        },
+        {
+          "id": "b",
+          "text": "O(V) — the visited set stores all vertices"
+        },
+        {
+          "id": "c",
+          "text": "O(d) — the call stack depth is proportional to the maximum recursion depth, which in the worst case equals the number of nodes"
+        },
+        {
+          "id": "d",
+          "text": "O(E) — DFS must store all edges in the recursion stack during traversal"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "Recursive DFS uses the call stack implicitly. The maximum stack depth equals the longest path from the start vertex without revisiting a node. In the worst case (tree, or graph with no cycles), this equals the number of nodes O(V). For a balanced tree of height h, the depth is O(log V). The visited set is O(V) space but is separate from recursion depth. Option A is wrong (stack is call stack, not discarded). Option B describes the visited set, not recursion stack. Option D is wrong (edges are not stored in the stack)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A postorder traversal visits the root of a subtree after all its descendants have been visited. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Postorder traversal: left → right → root. This means the root is processed after both subtrees are fully explored. This order is essential for deleting/deleting trees (must free children before parent), computing tree height recursively (children computed before parent), and evaluating expression trees (operands before operators)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A Binary Search Tree (BST) always maintains O(log n) search time regardless of insertion order. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "A plain BST (without self-balancing) has no balance guarantee. Inserting sorted data [1,2,3,4,5] produces a degenerate chain (height = n) → O(n) search, losing the log-height advantage. Self-balancing trees (AVL, Red-Black, B-tree, Treap) maintain height ≈ log n through rotations/rebalancing, preserving O(log n) operations."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ndef height(root):\n    if not root: return 0\n    left = height(root.left)\n    right = height(root.right)\n    return max(left, right) + 1\n\n# Tree:    1\n#         / \\\n#        2   3\n#       /\n#      4\n#     /\n#    5\nheight(root)",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "The height of a binary tree = number of edges on the longest root-to-leaf path. The longest path is 1→2→4→5 (3 edges). Nodes: 1-2-4-5 on this path. So height = 3 (edges) or equivalently 4 (nodes). The recursive function returns nodes (including current): max(left,right)+1, giving 4. But 'height' convention varies: some define height as number of edges (3), others as number of nodes on path (4). The question states 'number of edges' in the option, making option B correct under that definition. Option A counts levels (root at level 1)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What are the three classic binary tree traversals and their order? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Inorder — left, root, right (BST produces sorted output)" },
+        { "id": "b", "text": "Preorder — root, left, right (used for copying trees, prefix expressions)" },
+        { "id": "c", "text": "Postorder — left, right, root (used for tree deletion, postfix expressions)" },
+        { "id": "d", "text": "Anti-order — right, left, root (reverse traversal used for validation)" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Inorder (left-root-right): BST in sorted order, left subtree first. Preorder (root-left-right): parent before children, used for serialization/copying. Postorder (left-right-root): children before parent, used for deleting trees (free children before parent) and postfix expression evaluation. Anti-order (right-left-root) is a valid traversal (reverse inorder) but not a classic named traversal like the three standard ones."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of a level-order (BFS) traversal of the BST below?\n\n        5\n       / \\\n      3    8\n     / \\   / \\\n    1   4 6   9",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Level-order (BFS): process all nodes at level 0 (root), then level 1 (3, 8), then level 2 (1, 4, 6, 9). Using a queue ensures left-to-right order within each level. Result: [5, 3, 8, 1, 4, 6, 9]. This traversal visits nodes by increasing depth. Option B is inorder. Option C is postorder. Option D is preorder."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of a postorder traversal of the BST below?\n\n        5\n       / \\\n      3    8\n     / \\   / \\\n    1   4 6   9",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Postorder traversal: left → right → root. Left subtree: 1, 4 (postorder of left subtree: 1, 4, 3). Right subtree: 6, 9 (postorder of right subtree: 6, 9, 8). Full postorder: [1, 4, 3, 6, 9, 8, 5]. This order is essential when you need to process all children before the parent (e.g., memory deallocation). Option A is level-order. Option C is preorder. Option D is incorrect postorder order."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the time complexity of inserting a node into a Red-Black tree with n nodes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — Red-Black trees use hash-based node insertion"
+        },
+        {
+          "id": "b",
+          "text": "O(log n) — insertion finds the position in O(log n) and rebalancing takes O(log n) rotations at most"
+        },
+        {
+          "id": "c",
+          "text": "O(n) — the tree may require restructuring all n nodes during insertion"
+        },
+        {
+          "id": "d",
+          "text": "O(n log n) — each comparison in the search phase costs O(log n)"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Red-Black trees are self-balancing BSTs. Insertion: (1) BST insert in O(log n) — find the leaf position by traversing from root. (2) Fix violations via rotations and recoloring — at most 2 rotations (amortized) and O(log n) recoloring up the tree. Total: O(log n). The key guarantee: height is always ≤ 2*log₂(n+1), so operations are guaranteed logarithmic. Used in C++ STL (map, set), Java TreeMap, and Linux kernel scheduling."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef bst_from_preorder(preorder, bound=float('inf')):\n    if not preorder or preorder[0] > bound: return None\n    val = preorder.pop(0)\n    node = TreeNode(val)\n    node.left = bst_from_preorder(preorder, val)\n    node.right = bst_from_preorder(preorder, bound)\n    return node\n\n# preorder = [8, 5, 1, 7, 10, 9, 12]\ntree = bst_from_preorder(preorder.copy())\n# Print inorder of resulting tree:\nprint(inorder_traversal(tree))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "This algorithm reconstructs a BST from its preorder traversal using the BST property: all left-subtree values < node, all right-subtree values > node. The bound parameter tracks the valid range. For [8,5,1,7,10,9,12]: 8 is root, 5<8→left subtree, 1<5→left subtree, 7>1,7<5→right child of 1, 10>8→right subtree of 8, 9<10→left child of 10, 12>10→right child of 10. Inorder of any BST (including reconstructed ones) yields sorted ascending order: [1,5,7,8,9,10,12]. Option A is preorder, not inorder. Options C and D have wrong inorder results."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the time complexity of building a BST from a sorted array in optimal fashion?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n log n) — each insertion into the BST costs O(log n), done n times"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — recursively build the BST from the middle element as root (balanced), visiting each element once"
+        },
+        {
+          "id": "c",
+          "text": "O(n²) — the sorted order requires O(n) search for each insertion point"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — only the middle element needs to be processed"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Optimal BST construction from sorted array: pick the middle element as root (ensures balance), recursively build left subtree from left half, right subtree from right half. Each element is visited exactly once during the recursive construction → O(n) time. Space: O(log n) recursion depth for a balanced tree, or O(n) if counting the output tree's node array. This is much better than inserting n elements one by one (O(n log n)) or inserting sorted elements into a plain BST (O(n²) worst case)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Both BFS and DFS have O(V+E) time complexity on adjacency list graphs, but differ in space complexity due to the data structure used. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Both BFS and DFS visit each vertex once and examine each edge once → O(V+E) time. The difference is auxiliary space: BFS uses a queue storing at most the widest frontier (O(V) worst-case), while DFS uses a call stack with depth equal to the longest path (O(V) worst-case, but often O(log V) for balanced graphs). The visited set is O(V) for both. For very wide graphs, BFS queue can dominate; for very deep graphs, DFS recursion dominates."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is an AVL tree and how does it differ from a Red-Black tree in terms of balance factor?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "AVL trees and Red-Black trees are identical — the names are synonyms for self-balancing BSTs"
+        },
+        {
+          "id": "b",
+          "text": "AVL trees require |height(left) - height(right)| ≤ 1 for every node (stricter balance); Red-Black trees only require root is black and red nodes have black children (more relaxed balance, faster insert/delete)"
+        },
+        {
+          "id": "c",
+          "text": "AVL trees use a max-heap ordering; Red-Black trees use a BST ordering"
+        },
+        {
+          "id": "d",
+          "text": "Red-Black trees are balanced with O(log n) per operation but AVL trees are not self-balancing"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "AVL trees (named after inventors Adelson-Velsky and Landis) enforce |balance factor| ≤ 1 for every node: the left and right subtree heights differ by at most 1. This is a stricter balance condition than Red-Black trees, meaning AVL trees are more balanced → faster search, but slower insert/delete (more rotations). Red-Black trees have a more relaxed property (coloring rules ensure height ≤ 2*log(n+1)) → faster insert/delete, slightly slower search. AVL is used in databases where search-heavy workloads dominate; Red-Black in language runtimes (C++ STL, Java Collections)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How do AVL rotations (single and double) restore balance after an insertion?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "AVL trees use only single rotations (zig/zag) for all imbalance cases; double rotations are unnecessary"
+        },
+        {
+          "id": "b",
+          "text": "Single rotation (zig/zag) fixes imbalances at the child level; double rotation (zig-zag or zag-zig) fixes imbalances at the grandchild level where a single rotation would be insufficient"
+        },
+        {
+          "id": "c",
+          "text": "AVL rotations rebuild the entire subtree from scratch using the middle element as root, ensuring perfect balance"
+        },
+        {
+          "id": "d",
+          "text": "AVL rotations only occur when the tree height exceeds the Red-Black tree maximum of 2*log(n+1)"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "AVL single rotation: used when the imbalance is a direct child of the imbalanced node (e.g., left-left outside case: rotate right). Double rotation: zigzag (left child rotates right, then node rotates left) or zag-zig (right child rotates left, then node rotates right). Double rotation handles cases where the child's imbalance direction is opposite to the parent's (grandchild pattern). For example, inserting 1, 2, 3 into an empty AVL tree: after 1,2 are inserted, the tree is imbalanced right-right → single left rotation restores balance."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the minimum number of nodes in an AVL tree of height h, and what recurrence describes it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "N(h) = N(h-1) + N(h-2) + 1 — the Fibonacci-like recurrence of AVL trees gives near-logarithmic growth"
+        },
+        {
+          "id": "b",
+          "text": "N(h) = N(h-1) + N(h-2) + 1 — similar to Fibonacci, giving approximately φ^h nodes where φ ≈ 1.618"
+        },
+        {
+          "id": "c",
+          "text": "N(h) = 2N(h-1) + 1 — exponential growth like a full binary tree"
+        },
+        {
+          "id": "d",
+          "text": "N(h) = h + 1 — linear, matching the minimum of any binary tree"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "AVL tree minimum node count: N(h) = N(h-1) + N(h-2) + 1 with N(0)=1, N(1)=2. This is nearly Fibonacci (F(n) = F(n-1) + F(n-2)) but with +1. Solving gives N(h) ≈ φ^(h+1) where φ ≈ 1.618. This means a tree of height h has at least N(h) ≈ 1.618^h nodes, or equivalently height h ≤ log_φ(n) — logarithmic! This is why AVL trees guarantee O(log n) operations. Option B correctly identifies the recurrence and growth but misstates the context. Option C is full tree formula. Option D is degenerate tree."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the minimum number of nodes in an AVL tree of height h?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "N(h) = h + 1 — linear minimum, same as any binary tree"
+        },
+        {
+          "id": "b",
+          "text": "N(h) = N(h-1) + N(h-2) + 1 — the AVL recurrence is nearly Fibonacci (F(n) = F(n-1) + F(n-2)), giving N(h) ≈ 1.618^h nodes and height O(log n)"
+        },
+        {
+          "id": "c",
+          "text": "N(h) = 2^(h+1) - 1 — the full binary tree maximum, which is also the minimum"
+        },
+        {
+          "id": "d",
+          "text": "N(h) = h² — quadratic minimum for AVL trees"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "AVL minimum node formula: N(0)=1, N(1)=2, N(h)=N(h-1)+N(h-2)+1. This is the Fibonacci recurrence + 1. Solving gives N(h) ≈ φ^(h+2) - 1 where φ≈1.618. Inverting: h ≤ log_φ(n) — logarithmic! This is why AVL trees guarantee O(log n) operations despite being more balanced than plain BSTs. The +1 term in the recurrence makes AVL trees slightly shallower than Fibonacci trees. Option A is the degenerate tree minimum. Option C is the full/perfect tree maximum (not minimum). Option D is wrong."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a segment tree, and what problems does it solve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A segment tree is a binary tree where each node stores the minimum of a segment; it supports O(n) range minimum queries but O(n) updates"
+        },
+        {
+          "id": "b",
+          "text": "A segment tree is a binary tree built on an array where each node stores an aggregate (min, max, sum) over a range; it supports O(log n) range queries and point updates in O(log n)"
+        },
+        {
+          "id": "c",
+          "text": "A segment tree is equivalent to a BST used for searching sorted arrays; it provides O(log n) search and O(n) insert"
+        },
+        {
+          "id": "d",
+          "text": "A segment tree is a balanced binary search tree used for range locking in concurrent databases"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Segment tree (interval tree): built on an array of size n. Leaves store individual elements; internal node stores aggregate (sum, min, max, GCD, etc.) of its children's range. A node covering range [l,r] has children covering [l,mid] and [mid+1,r]. Range query (range aggregate) traverses O(log n) nodes (the query covers ~2log n nodes in the tree). Point update updates O(log n) nodes (path from leaf to root). Space: 2n-1 nodes. Used for static range queries with point updates. Fenwick tree (BIT) is a more space-efficient alternative for associative operations (sum, product)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the time complexity of BST deletion when the node has two children?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — the node is replaced with its inorder successor in one step"
+        },
+        {
+          "id": "b",
+          "text": "O(log n) — find the inorder successor (minimum of right subtree), replace the node's value, and delete the successor node (which has at most one child)"
+        },
+        {
+          "id": "c",
+          "text": "O(n) — the entire right subtree must be traversed to find the replacement"
+        },
+        {
+          "id": "d",
+          "text": "O(n log n) — BST deletion requires O(log n) search plus O(n) to restructure the tree"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "BST deletion when node has two children: find the inorder successor (IOS = minimum node of right subtree, or inorder predecessor = maximum of left subtree). Copy the successor's value into the target node, then delete the successor node (which has at most one child → easy deletion). The search for IOS is O(log n) for balanced BST, O(h) for unbalanced. Total: O(log n) for balanced, O(n) for skewed. This is why BST deletion of two-child nodes is more complex than one-child or leaf nodes. Option A is wrong. Option C overestimates. Option D miscounts."
+    }
+  ]
+}

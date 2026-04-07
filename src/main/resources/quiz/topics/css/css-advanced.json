@@ -1,0 +1,742 @@
+{
+  "topicSlug": "css-advanced",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS feature allows you to store values in named variables for reuse throughout a stylesheet?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "CSS constants"
+        },
+        {
+          "id": "b",
+          "text": "CSS custom properties (CSS variables)"
+        },
+        {
+          "id": "c",
+          "text": "CSS mixins"
+        },
+        {
+          "id": "d",
+          "text": "CSS tokens"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS custom properties (formally: CSS variables) are defined with `--` prefix: `--primary: #007bff`. They are referenced with `var(--primary)`. They follow the cascade, can be inherited by child elements, and can be modified via JavaScript at runtime. They are the native CSS equivalent of variables in preprocessors (Sass variables), but unlike Sass variables, they exist at runtime in the browser and can be changed dynamically without a build step."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the correct syntax to reference a CSS custom property with a fallback value?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "color: var(--brand-color, #0066cc)"
+        },
+        {
+          "id": "b",
+          "text": "color: use(--brand-color, #0066cc)"
+        },
+        {
+          "id": "c",
+          "text": "color: variable(--brand-color, #0066cc)"
+        },
+        {
+          "id": "d",
+          "text": "color: --brand-color || #0066cc"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "`var(--name, fallback)` is the syntax. The fallback (second argument) is used when the custom property is not defined or is invalid. Multiple fallbacks can be nested: `var(--name, var(--another, #default))`. If the custom property is defined but set to an invalid value for the property, the fallback is also used. This makes custom properties robust: components can define their own values or inherit the fallback."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS selector targets an element when it is being hovered by a mouse?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": ":hover"
+        },
+        {
+          "id": "b",
+          "text": ":over"
+        },
+        {
+          "id": "c",
+          "text": ":mouseover"
+        },
+        {
+          "id": "d",
+          "text": ":focus-visible"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": ":hover is a pseudo-class that matches when the user designates an element with a pointing device (mouse). It's one of the most common interaction selectors. Important: :hover on mobile/touch devices is problematic — touch triggers :hover on tap and it can stick. Always ensure interactive elements are usable without hover. Modern CSS provides :hover@media(query hover: fine) to detect hover-capable devices."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `::before` do when added to a CSS rule?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It selects the element before the current element in the DOM"
+        },
+        {
+          "id": "b",
+          "text": "It inserts a pseudo-element before the content of the current element (as its first child)"
+        },
+        {
+          "id": "c",
+          "text": "It creates a CSS comment before the element"
+        },
+        {
+          "id": "d",
+          "text": "It triggers a CSS animation before the element renders"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "::before inserts a pseudo-element as the first child of the selected element. It must have `content: ''` (even if empty) to render. Common use: adding icons, decorative shapes, or quotation marks. ::before and ::after are 'pseudo-elements' — they don't exist in the DOM but are injected by CSS. ::after inserts as the last child. Both are inline by default. They are widely used for decorative elements, icon systems, and clearing floats."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the key difference between `:hover` (single colon) and `::before` (double colon) in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": ":hover targets existing elements; ::before creates a new pseudo-element that doesn't exist in the DOM"
+        },
+        {
+          "id": "b",
+          "text": "Single colon selects HTML elements; double colon selects CSS pseudo-classes"
+        },
+        {
+          "id": "c",
+          "text": "They are interchangeable — both syntaxes work for both features"
+        },
+        {
+          "id": "d",
+          "text": ":hover requires JavaScript; ::before works with CSS alone"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "`:hover` is a pseudo-class (single colon) — it selects elements based on state. `::before` is a pseudo-element (double colon) — it creates a new element that doesn't exist in the source HTML. Pseudo-classes describe state; pseudo-elements describe language syntax constructs or create virtual elements. In CSS3, double colon was introduced to distinguish pseudo-elements from pseudo-classes, though single colon is still accepted for pseudo-classes. Pseudo-elements must use double colon."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `:focus` match in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Any element currently receiving keyboard input"
+        },
+        {
+          "id": "b",
+          "text": "Any element that has been focused (received keyboard focus) and is currently the active element"
+        },
+        {
+          "id": "c",
+          "text": "Only <input> and <textarea> elements that contain text"
+        },
+        {
+          "id": "d",
+          "text": "Any element that has a CSS class named 'focus'"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": ":focus matches when an element has received focus (via tab navigation, click, or touch). :focus-visible matches when focus was received via keyboard (not pointer). :focus-within matches when any descendant of an element has focus. Common pattern: `:focus { outline: 2px solid blue; }` for accessibility — never remove focus outlines without providing an alternative. Never use `:focus` for styled focus indicators; use `:focus-visible` to avoid styling mouse users' click focus."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How do CSS custom properties participate in the cascade?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Custom properties are global and apply to all elements equally regardless of cascade rules"
+        },
+        {
+          "id": "b",
+          "text": "Custom properties follow normal cascade rules — they are inherited by descendants and can be overridden at any selector level, enabling component-level theming"
+        },
+        {
+          "id": "c",
+          "text": "Custom properties can only be defined on :root and cannot be overridden in child selectors"
+        },
+        {
+          "id": "d",
+          "text": "Custom properties cannot be inherited — each element must define its own values"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Custom properties follow the full cascade: defined on :root (global), overridden at a component level, inherited by all descendants. This is the key architectural advantage: `:root { --primary: blue; }` sets global default, `.card { --primary: red; }` overrides for card descendants. Components can expose CSS APIs via custom properties — consumers override values without specificity battles. Custom properties also inherit: if a custom property is not found on an element, it searches up the ancestor chain."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `:nth-child(2n+1)` select?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "All even-numbered children"
+        },
+        {
+          "id": "b",
+          "text": "All odd-numbered children (1st, 3rd, 5th, etc.)"
+        },
+        {
+          "id": "c",
+          "text": "All children starting from the 2nd"
+        },
+        {
+          "id": "d",
+          "text": "Only the first and last children"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": ":nth-child(2n+1) selects odd-numbered children. The formula is An+B: 2n gives even numbers (0, 2, 4... = 2nd, 4th, 6th...), +1 shifts to odd (1, 3, 5... = 1st, 3rd, 5th...). Common shortcuts: :nth-child(odd) = :nth-child(2n+1), :nth-child(even) = :nth-child(2n). :nth-child(3n) selects every 3rd element. Complex: :nth-child(3n+2) selects 2nd, 5th, 8th... This is one of the most powerful selectors for data tables, grids, and lists."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `:first-child` and `:first-of-type`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "They are identical — both select the first element among all siblings"
+        },
+        {
+          "id": "b",
+          "text": ":first-child selects an element only if it is the first child AND has no other siblings; :first-of-type selects the first element of its type among siblings"
+        },
+        {
+          "id": "c",
+          "text": ":first-of-type only works on list items (<li>); :first-child works on all elements"
+        },
+        {
+          "id": "d",
+          "text": ":first-child selects the first element in the document; :first-of-type selects the first of each type"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": ":first-child selects only elements that are both the first child of their parent AND the element type in question (e.g., `p:first-child` selects <p> only if it is the parent's first child). :first-of-type selects the first of that element type among siblings — it ignores other element types. Example: in `<div><span>A</span><p>B</p></div>`, `p:first-of-type` selects B (first <p>), but `p:first-child` selects nothing (the first child is <span>, not <p>). Use :first-of-type for element-of-type selection; :first-child for 'is this the first child'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `:not(.active)` select?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "All elements that have the class 'active'"
+        },
+        {
+          "id": "b",
+          "text": "All elements that do NOT have the class 'active'"
+        },
+        {
+          "id": "c",
+          "text": "All elements except the first child"
+        },
+        {
+          "id": "d",
+          "text": "All elements that are not currently visible"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": ":not() is a negation pseudo-class — it selects elements that do NOT match the argument selector. `:not(.active)` = all elements without class 'active'. :not() accepts any simple selector (class, ID, element, attribute, pseudo-class). Compound: `:not(.active, .disabled)` = elements without class active AND without class disabled. :not(:visible) selects hidden elements. Complex: `:not(:hover):not(:focus)` selects elements not being interacted with. Performance note: overly complex :not() chains can be slow — keep them simple."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What do logical properties (margin-inline-start, padding-block-end) provide that physical properties (margin-left, padding-top) do not?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Logical properties are faster to parse than physical properties in the browser"
+        },
+        {
+          "id": "b",
+          "text": "Logical properties are tied to writing direction — they adapt to rtl, ltr, vertical writing modes; physical properties always refer to fixed screen directions regardless of text flow"
+        },
+        {
+          "id": "c",
+          "text": "Logical properties only work in CSS Grid; physical properties work everywhere"
+        },
+        {
+          "id": "d",
+          "text": "Logical properties have higher specificity than physical properties"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Logical properties map to physical ones based on writing direction: margin-inline-start = left in LTR, right in RTL. margin-block-start = top in horizontal writing modes, right in vertical modes. This makes CSS writing-mode-aware — the same component works in LTR, RTL (Arabic, Hebrew), and vertical writing modes without modification. Physical properties (margin-left) are fixed to the screen regardless of writing direction. For internationalized applications, logical properties are essential."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `writing-mode: vertical-rl` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Text flows right-to-left horizontally"
+        },
+        {
+          "id": "b",
+          "text": "Text flows top-to-bottom vertically, with lines progressing from right to left (common in East Asian typography like Japanese)"
+        },
+        {
+          "id": "c",
+          "text": "Text is rendered vertically but lines progress left to right (vertical but LTR)"
+        },
+        {
+          "id": "d",
+          "text": "writing-mode only affects images, not text content"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "writing-mode: vertical-rl creates vertical text flow with lines progressing right-to-left. The text runs top-to-bottom, with subsequent lines to the left. This is the standard writing mode for traditional Mongolian and Japanese (among others). `vertical-lr` flows top-to-bottom with lines left-to-right. horizontal-tb is the default (left-to-right, top-to-bottom). Vertical writing modes are essential for proper support of CJK typography and artistic effects."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `::selection` pseudo-element in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It selects all text nodes in the document"
+        },
+        {
+          "id": "b",
+          "text": "It styles the portion of text selected by the user (highlighted with mouse/keyboard)"
+        },
+        {
+          "id": "c",
+          "text": "It creates a selectable checkbox or radio button style"
+        },
+        {
+          "id": "d",
+          "text": "It selects the first element in a document for special styling"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "::selection styles the text that a user highlights with their mouse or keyboard. Only certain CSS properties are allowed: color, background-color, text-shadow, text-decoration. Common use: `::selection { background: #007bff; color: white; }` for branded highlight colors. The `::selection` pseudo-element inherits. Note: it was single-colon (`:selection`) in older CSS but is now double-colon (CSS3 standard)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How do you create a custom property that computes to a different value based on a media query?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Custom properties cannot be used inside media queries — they are only valid in regular CSS properties"
+        },
+        {
+          "id": "b",
+          "text": "Define the custom property at :root, then override it inside a media query block — when the media query matches, the new value applies to all elements using that variable"
+        },
+        {
+          "id": "c",
+          "text": "Use calc() inside the var() call to adjust values based on viewport: var(--size, calc(100% * 2))"
+        },
+        {
+          "id": "d",
+          "text": "Custom properties are static — once defined they cannot be changed without JavaScript"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Custom properties can be overridden in media queries, just like any other CSS property. Pattern: `:root { --padding: 16px; }` at mobile (base). Then `@media (min-width: 768px) { :root { --padding: 32px; } }` overrides for larger screens. Components using `padding: var(--padding)` automatically adapt. This is the CSS-native theming pattern — a single property definition cascades and adapts contextually. No JavaScript needed."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `attr(data-count)` in `content: attr(data-count)` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It creates a new HTML data-count attribute on the element"
+        },
+        {
+          "id": "b",
+          "text": "It reads the value of the data-count HTML attribute and uses it as the content string in ::before/::after pseudo-elements"
+        },
+        {
+          "id": "c",
+          "text": "It counts the number of data attributes on the element and displays that number"
+        },
+        {
+          "id": "d",
+          "text": "It retrieves data from an external API and inserts it into the content"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "attr() is a CSS function that reads HTML attribute values for use in property values. `content: attr(data-label)` inserts the data-label attribute value as text content. The key limitation: attr() in content is the only context where attr() returns non-string values reliably. For other properties, attr() always returns a string. This pattern is used for accessible labels in counters, card counts, and tooltips without JavaScript: `.card::before { content: attr(data-badge); }`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the `::marker` pseudo-element, and what is its primary use case?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "::marker selects all elements with a Google Maps marker attribute — used only in mapping applications"
+        },
+        {
+          "id": "b",
+          "text": "::marker styles the bullet or number prefix of list items — it allows customizing list markers (bullets, numbers) without images or CSS counter hacks"
+        },
+        {
+          "id": "c",
+          "text": "::marker is a JavaScript-only pseudo-element for DOM manipulation"
+        },
+        {
+          "id": "d",
+          "text": "::marker styles the first character of any text element"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "::marker targets the automatically generated marker box of list items (bullets for <ul>, numbers for <ol>). It allows direct styling of list markers: `::marker { color: red; font-weight: bold; }`. Before ::marker, customizing list bullets required hiding the default marker and inserting a ::before pseudo-element. ::marker supports limited properties: color, content, font properties, and white-space. It's part of the CSS Pseudo-elements Module Level 4."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `@property` (CSS Houdini Properties and Values API) enable that regular custom properties cannot do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "@property allows animating custom properties because it registers the property with a type, inheritance flag, and initial value — enabling transitions and keyframe animations on values that were previously un-interpolatable"
+        },
+        {
+          "id": "b",
+          "text": "@property is a JavaScript-only API that enables reading CSS custom properties in Web Workers"
+        },
+        {
+          "id": "c",
+          "text": "@property replaces custom properties entirely with typed CSS variables that are compile-time checked"
+        },
+        {
+          "id": "d",
+          "text": "@property registers custom properties in the browser's DevTools without affecting animation behavior"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Regular custom properties store values as strings — animating `--progress: 0` to `--progress: 1` is impossible (no interpolation between strings). @property registers a custom property with: name, syntax (number, length, color, etc.), inherits flag, and initial value. This tells the browser the type, enabling it to interpolate the property in animations and transitions. Example: `@property --angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }` — now `--angle` can be animated from 0deg to 90deg in a keyframe. Browser support is growing (Chrome, Edge)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the CSS `@counter-style` at-rule and when is it preferable to `list-style-type`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "@counter-style defines how list markers are rendered; it is identical to list-style-type and provides no additional functionality"
+        },
+        {
+          "id": "b",
+          "text": "@counter-style defines custom counter systems with full control over the symbol sequence, negative symbols, prefix/suffix, and fallback — it replaces predefined keywords like decimal, disc with fully custom numbering systems (e.g., Japanese, Armenian, emoji)"
+        },
+        {
+          "id": "c",
+          "text": "@counter-style is only valid inside @media rules; list-style-type is for use in regular CSS blocks"
+        },
+        {
+          "id": "d",
+          "text": "@counter-style is a deprecated API replaced by CSS Counters Level 3"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "@counter-style creates fully custom counter systems that @counter-style system: fixed defines a finite symbol sequence that cycles, @counter-style system: cyclic cycles a single symbol indefinitely, @counter-style system: numeric provides a numeric base. Use it for: custom numbering (📍1, 📍2, 📍3), complex numbering systems (Japanese: 一, 二, 三), or language-specific styles. After defining: `list-style-type: my-counter`. The predefined system keywords (disc, decimal) are built-in counter-styles. CSS Counter Styles Level 3 is the specification."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does `direction: rtl` interact with logical properties to produce correct layout for RTL languages?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "direction: rtl only affects text alignment; logical properties still use left/right as physical directions regardless of direction value"
+        },
+        {
+          "id": "b",
+          "text": "direction: rtl combined with logical properties (margin-inline-start, padding-inline-end) automatically mirrors the layout — margin-inline-start becomes the right margin in RTL, creating a mirrored layout without changing any CSS values"
+        },
+        {
+          "id": "c",
+          "text": "direction: rtl overrides all CSS properties and forces every element to mirror — logical properties are ignored when direction is set"
+        },
+        {
+          "id": "d",
+          "text": "direction: rtl only affects text content; it has no effect on margins, padding, or borders"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "When `direction: rtl` is set on an element (or inherited from a parent), logical properties automatically flip: margin-inline-start becomes the right margin, margin-inline-end becomes the left margin, text-align: start aligns right, etc. This is the purpose of logical properties — they abstract the physical directions so that `margin-inline-start` always refers to the start edge in the current writing direction. A navigation bar built with logical properties renders correctly in both LTR and RTL layouts with zero additional CSS."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "CSS pseudo-elements (::before, ::after, ::first-line) create new elements in the DOM that can be selected with JavaScript.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Pseudo-elements (::before, ::after, ::first-line, ::selection, etc.) do NOT exist in the DOM. They are purely visual — CSS renders them but they cannot be selected with JavaScript DOM methods (querySelector, getElementById, etc.) and they are not accessible to screen readers (::before/::after content is accessible to AT in some contexts via content property, but the element itself is not in the accessibility tree as a separate node). This is why accessible patterns that rely on pseudo-elements (icon buttons, etc.) need aria-label on the visible element."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`:nth-of-type(2)` selects the second element of any type among siblings, whereas `:nth-child(2)` selects the second child only if it is of that element type.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": ":nth-child(2) counts all children and matches if the element is the 2nd child AND matches the selector. If the selector is `p:nth-child(2)` and the 2nd child is a <div>, it won't match. :nth-of-type(2) ignores other element types — it counts only siblings of the same element type. This distinction matters in mixed-content containers: `p:nth-of-type(2)` selects the 2nd <p>, regardless of what other siblings exist. Use nth-of-type when selecting by element type in mixed containers; nth-child when position among all siblings matters."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS custom properties defined with `@property` and a syntax type can be animated with @keyframes and transitions, while unregistered custom properties (plain --var: red) cannot be animated because they are treated as strings.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "This is the core limitation of unregistered custom properties — without @property registration, the browser treats them as strings. Animating `--color: red` to `--color: blue` can't interpolate (red → blue as strings? there's no interpolation). With `@property --color { syntax: '<color>'; inherits: false; initial-value: red; }`, the browser knows --color is a color type, enabling smooth interpolation in animations. This is the CSS Houdini Properties & Values API's key contribution — typed custom properties that enable transitions and animations."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this CSS produce?\n\n```css\n:root {\n  --brand: #0066cc;\n  --spacing: 16px;\n}\n.sidebar {\n  --brand: #ff6600;  /* local override */\n}\n.card {\n  background: var(--brand);\n  padding: var(--spacing, 8px);\n}\n\n<!-- HTML -->\n<div class=\"sidebar\">\n  <div class=\"card\">Card A</div>   <!-- What color? -->\n</div>\n<div class=\"card\">Card B</div>    <!-- What color? -->\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "Card A: #0066cc (inherits from :root), Card B: #0066cc (uses :root)"
+        },
+        {
+          "id": "b",
+          "text": "Card A: #ff6600 (inherits --brand from .sidebar), Card B: #0066cc (uses :root --brand)"
+        },
+        {
+          "id": "c",
+          "text": "Both cards: #ff6600 because --brand is global and cannot be overridden"
+        },
+        {
+          "id": "d",
+          "text": "Card A: #ff6600, Card B: black (--brand fallback to invalid)"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Custom properties follow the cascade. Card A is inside .sidebar — it inherits --brand: #ff6600 from .sidebar (the local override). Card B is outside .sidebar — it inherits --brand: #0066cc from :root. Both cards use padding: var(--spacing, 8px). --spacing is defined on :root (16px), so both cards get 16px padding (the fallback 8px is not used). This is the cascade + inheritance model of custom properties: they inherit like any CSS property, enabling component-level theming with zero specificity fights."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this CSS produce?\n\n```css\n@property --size {\n  syntax: '<number>';\n  inherits: false;\n  initial-value: 1;\n}\n.box {\n  --size: 1;\n  width: calc(var(--size) * 100px);\n  height: calc(var(--size) * 100px);\n  background: #f00;\n  transition: --size 0.5s ease, background 0.5s ease;\n}\n.box:hover {\n  --size: 2;\n  background: #00f;\n}\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "The box grows from 100px to 200px and turns blue — --size animates because @property registered it as a number type, enabling transition interpolation"
+        },
+        {
+          "id": "b",
+          "text": "The box jumps to 200px instantly — @property does not enable transitions on custom properties"
+        },
+        {
+          "id": "c",
+          "text": "Only the background animates — --size cannot be animated even with @property"
+        },
+        {
+          "id": "d",
+          "text": "The browser throws a CSS error because --size is defined twice"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "@property --size registers the custom property with syntax '<number>', allowing the browser to interpolate numeric values. With @property: --size: 1 → --size: 2 over 0.5s. Since width and height are calc(var(--size) * 100px), they animate from 100px to 200px. Without @property (plain --size: 1), the browser treats it as a string — '1' → '2' can't interpolate, and the transition would be skipped entirely. The @property registration is what unlocks the animation capability. This is CSS Houdini in action — a real-world practical use of the Properties and Values API."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `:has()` (the relational pseudo-class) do in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": ":has() selects the parent of an element matching a selector — for example, article:has(img) selects <article> elements that contain an <img>" },
+        { "id": "b", "text": ":has() selects all elements that come after another element in the DOM" },
+        { "id": "c", "text": ":has() creates a new pseudo-element inside the selected element" },
+        { "id": "d", "text": ":has() is a JavaScript selector only — CSS cannot use it" }
+      ],
+      "correctKey": "a",
+      "explanation": ":has() is the 'parent selector' — it selects elements based on what they contain. article:has(img) selects articles that have an image. form:has(input:invalid) selects forms with invalid inputs. li:has(> ul) selects list items with nested lists. This enables context-dependent styling without JavaScript. Browser support reached baseline in 2023 — safe to use with a fallback."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `@layer` declaration order determine in CSS cascade priority?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Declaration order only affects readability — all layers have equal cascade priority" },
+        { "id": "b", "text": "Layers declared later in the stylesheet have higher priority than layers declared earlier — rules in the last layer win over rules in earlier layers regardless of specificity" },
+        { "id": "c", "text": "Layers declared first have highest priority by default" },
+        { "id": "d", "text": "@layer order is irrelevant — specificity always determines which layer wins" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS @layer establishes a cascade hierarchy: later layers beat earlier layers, regardless of specificity within each layer. Declare: @layer reset, base, components, utilities — reset has lowest priority (gets overridden by all others). This solves the 'library overrides' problem: put third-party CSS in an early layer, your CSS in a later layer. Unlayered CSS always wins over all layers (acts as the topmost layer)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `margin-inline-start` represent in CSS logical properties?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "margin-inline-start always equals margin-left" },
+        { "id": "b", "text": "margin-inline-start equals margin-left in LTR writing modes and margin-right in RTL — it refers to the start edge of the inline axis" },
+        { "id": "c", "text": "margin-inline-start only applies to inline elements, not block elements" },
+        { "id": "d", "text": "margin-inline-start is deprecated — use margin-start instead" }
+      ],
+      "correctKey": "b",
+      "explanation": "Logical properties use writing direction to determine physical sides. margin-inline-start = the start edge of the inline axis (left in LTR, right in RTL). This enables CSS that adapts to text direction without media queries or overrides. margin-inline-end = the end edge. margin-block-start = top in horizontal writing, right in vertical. For internationalized apps, logical properties are essential."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does CSS `@property` require to register a custom property for animation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@property requires name, syntax, inherits, and initial-value — these four descriptors tell the browser the type so it can interpolate the property in @keyframes and transitions" },
+        { "id": "b", "text": "@property only requires the name — syntax and initial-value are inferred automatically" },
+        { "id": "c", "text": "@property is deprecated — CSS animations now work with unregistered custom properties" },
+        { "id": "d", "text": "@property only works inside @keyframes blocks" }
+      ],
+      "correctKey": "a",
+      "explanation": "@property requires exactly 4 descriptors: --name (the property name), syntax (the type, e.g., '<length>', '<color>', '<number>'), inherits (true/false), and initial-value (the starting value). Without syntax, the browser treats the value as a string — no interpolation possible. syntax: '<number>' + initial-value: 0 enables number animations. syntax: '<color>' enables color interpolation."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key advantage of scroll-driven animations (animation-timeline: scroll()) over Intersection Observer-based scroll effects?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Scroll-driven animations work on mobile only; Intersection Observer works on desktop only" },
+        { "id": "b", "text": "Scroll-driven animations are declarative CSS — no JavaScript needed — and run on the compositor thread for 60fps; Intersection Observer requires JavaScript and runs on the main thread" },
+        { "id": "c", "text": "Intersection Observer is faster than scroll-driven animations because it uses CSS" },
+        { "id": "d", "text": "There is no difference — they produce identical results" }
+      ],
+      "correctKey": "b",
+      "explanation": "Scroll-driven animations are CSS-native: `@keyframes reveal { from { opacity: 0; } to { opacity: 1; } } .el { animation: reveal linear both; animation-timeline: view(); }` — the animation progress is tied to scroll/view position without JavaScript. Intersection Observer requires JS to add/remove classes or update custom properties on scroll, which runs on the main thread. Scroll-driven animations can run on the compositor when animating transform/opacity."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does `@scope` (CSS Scoping) differ from BEM or CSS Modules for style isolation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@scope provides CSS-native style scoping without build tools or class-name hashing — it works at runtime in the browser, unlike BEM which requires naming conventions" },
+        { "id": "b", "text": "@scope is identical to BEM — both use class naming conventions to prevent style leakage" },
+        { "id": "c", "text": "CSS Modules are CSS-native; @scope requires a JavaScript build step" },
+        { "id": "d", "text": "@scope creates a new stacking context; BEM creates a new cascade layer" }
+      ],
+      "correctKey": "a",
+      "explanation": "@scope (.card) { .title { color: blue; } } scopes .title to elements inside .card — no build step, no hashing, no naming convention needed. BEM (.card__title) prevents collisions through naming. CSS Modules hash class names via a build step. @scope is the CSS-native runtime solution. It also supports @scope scope --exposes: .title to expose a selector, allowing external customization while keeping most styles isolated."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `@property --angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }` enable?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It creates a CSS-only way to rotate elements without transform — use margin-inline to simulate rotation" },
+        { "id": "b", "text": "It registers --angle as a typed angle property, enabling the browser to interpolate angle values in @keyframes and transitions — the custom property can be animated from 0deg to 90deg smoothly" },
+        { "id": "c", "text": "It replaces the transform: rotate() property with a custom property-based system" },
+        { "id": "d", "text": "@property with angle syntax is not valid — angles cannot be animated via custom properties" }
+      ],
+      "correctKey": "b",
+      "explanation": "Registering --angle with syntax: '<angle>' tells the browser the type, enabling it to interpolate degree values. With @keyframes rotating from 0deg to 90deg, the browser smoothly animates the angle. This is the power of @property — custom properties that encode typed values unlock animation of previously un-animatable CSS features. Use cases: animated gradients, complex SVG path morphing via d attribute, any custom numeric/color/angle property."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `:is(h1, h2, h3):has(+ p)` select?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "h1, h2, h3 elements followed by a paragraph" },
+        { "id": "b", "text": "h1, h2, h3 that have an immediately following sibling <p> element" },
+        { "id": "c", "text": "A heading that contains a paragraph inside it" },
+        { "id": "d", "text": "All h1, h2, h3 elements regardless of siblings" }
+      ],
+      "correctKey": "b",
+      "explanation": ":is() is a forgiving matches-any selector — :is(h1, h2, h3) matches any heading. The :has(+ p) part uses the adjacent sibling combinator (+) — it selects headings that have an immediately following <p> sibling. So .heading:has(+ p) selects headings that are immediately followed by a paragraph. This is useful for styling section headings that introduce body text differently from headings that introduce lists or other content."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `@layer` in combination with `@import` for managing third-party CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@import cannot be used inside @layer — third-party CSS must be linked via <link> tags" },
+        { "id": "b", "text": "@import url(reset.css) layer(reset); places the imported stylesheet into a named layer — allowing it to be overridden by layers declared later in your own CSS" },
+        { "id": "c", "text": "@import inside @layer automatically minifies the imported CSS" },
+        { "id": "d", "text": "Third-party CSS cannot be placed in layers — it always overrides author CSS" }
+      ],
+      "correctKey": "b",
+      "explanation": "@import url(library.css) layer(library); places the imported CSS in the 'library' layer. Your own CSS (in a later-declared layer) will always beat library CSS regardless of specificity. This is the cleanest way to import third-party CSS with guaranteed override priority: `@import url(normalize.css) layer(reset); @layer reset, base, components;` — reset has lowest priority."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `@property --gradient { syntax: '<gradient>'; inherits: false; initial-value: linear-gradient(black, white); }` enable?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It enables animating gradients by interpolating between two gradient values — the browser can tween from one gradient to another in a keyframe" },
+        { "id": "b", "text": "It sets a default gradient that cannot be overridden by child elements" },
+        { "id": "c", "text": "It replaces background-image for gradient rendering" },
+        { "id": "d", "text": "Gradient animation is not possible with @property — only color and number types can be animated" }
+      ],
+      "correctKey": "a",
+      "explanation": "With syntax: '<gradient>', the browser knows --gradient is a gradient type and can interpolate between gradient values in @keyframes. Example: @keyframes bg { 0% { --gradient: linear-gradient(black, white); } 100% { --gradient: linear-gradient(red, blue); } } — the browser smoothly morphs from one gradient to another. Without @property, gradients (which are complex types) couldn't be interpolated."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the cascade layer priority when unlayered CSS, layered CSS, and `!important` are combined?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Unlayered CSS always wins over layered CSS for normal declarations; within layers, !important reverses the layer order (earlier layers beat later layers for !important)" },
+        { "id": "b", "text": "!important overrides everything — layer order has no effect when !important is involved" },
+        { "id": "c", "text": "Layered !important beats unlayered !important regardless of layer order" },
+        { "id": "d", "text": "Unlayered CSS cannot use !important" }
+      ],
+      "correctKey": "a",
+      "explanation": "The cascade order for !important is REVERSED from normal declarations: later layers LOSE to earlier layers when !important is involved. Priority (lowest to highest): user agent < user < author normal < author !important < user !important. With @layer: author normal (unlayered > later layers > earlier layers). author !important: earlier layers > later layers > unlayered. This reversal means you can't use !important in a utility layer to 'win' over a base layer."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `:where(.card, .panel)` do differently from `.card, .panel`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "They are identical — :where() is just a modern syntax alias for comma-separated selectors" },
+        { "id": "b", "text": ":where() has zero specificity — it acts as if the selectors add no specificity weight, making it ideal for reset/utility layers; :is() has the specificity of its most specific argument" },
+        { "id": "c", "text": ":where() only works inside @media rules; comma selectors work everywhere" },
+        { "id": "d", "text": ":where() selects elements in the DOM order; comma selectors select all matches simultaneously" }
+      ],
+      "correctKey": "b",
+      "explanation": ":where() is the zero-specificity version of :is(). :where(.card, .panel) matches card and panel elements but contributes zero specificity — any other rule targeting the same elements will override it regardless of specificity. :is(.card, .panel) has the specificity of the most specific argument. :where() is perfect for design tokens and utility classes that should never create specificity conflicts."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "CSS `@layer` and CSS custom properties (CSS variables) can be used together to create a theming system where layers define the structure and custom properties define the values.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "CSS Layers manage cascade priority (structure), CSS custom properties manage theming (values) — they are orthogonal mechanisms that compose perfectly. Pattern: @layer components defines the styles with var(--primary), var(--spacing) etc. Then override the custom properties per-theme: :root[data-theme='dark'] { --primary: #90caf9; } This enables switching between themes without specificity battles."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The `:has()` pseudo-class is currently supported in all major browsers and is safe to use without a JavaScript fallback for basic use cases.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Browser support for :has() reached baseline (Chrome 105+, Safari 15.4+, Firefox 121+) in late 2023. For graceful degradation: styles inside :has() are ignored by unsupported browsers — the base styles still apply. For critical functionality, use @supports selector(:has(*)) to detect support before applying :has()-dependent styles."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS `@property` registered custom properties can be transitioned in `@keyframes`, but NOT in `transition` shorthand — transitions only work with custom properties in the latest Chrome/Edge versions.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "@property registered custom properties work with BOTH @keyframes AND transition. With @property --size { syntax: '<number>'; initial-value: 100; }, you can use: (1) transition: --size 0.5s — transitioning the custom property on state change. (2) @keyframes { to { --size: 200; } } — animating it in a keyframe. The @property registration enables both mechanisms by providing the type information needed for interpolation."
+    },
+    {
+      "levelTag": "MULTIPLE_ANSWER",
+      "questionText": "Which CSS features require the browser to support CSS Houdini APIs? (Select ALL that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "@property (CSS Properties and Values API)" },
+        { "id": "b", "text": "@layer (CSS Cascade Layers — part of CSS Cascade Level 5)" },
+        { "id": "c", "text": "CSS Paint Worklet (using registerPaint)" },
+        { "id": "d", "text": "@scope (CSS Scoping)" },
+        { "id": "e", "text": "CSS Layout API (Custom Layout)" }
+      ],
+      "correctKey": "a,c,e",
+      "explanation": "@property, CSS Paint Worklet, and CSS Layout API are Houdini APIs. @layer (CSS Cascade Layers) is NOT a Houdini API — it's part of standard CSS Cascade Level 5 and has broad support. @scope (CSS Scoping) is a standard CSS feature, not Houdini. Houdini APIs give JavaScript access to the CSS engine for custom rendering and layout algorithms."
+    }
+  ]
+}

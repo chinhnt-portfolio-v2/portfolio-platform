@@ -1,0 +1,353 @@
+{
+  "topicSlug": "js-prototype",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the prototype chain enable in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Objects to inherit properties and methods from other objects, forming a chain from an object up to Object.prototype (then null)" },
+        { "id": "b", "text": "Functions to be called recursively without a stack overflow" },
+        { "id": "c", "text": "Classes to be defined using the class keyword instead of function constructors" },
+        { "id": "d", "text": "Arrays to store multiple data types simultaneously" }
+      ],
+      "correctKey": "a",
+      "explanation": "JavaScript uses prototypal inheritance — objects can inherit from other objects. Each object has an internal [[Prototype]] link to another object (or null). When accessing a property, JavaScript walks up this chain until the property is found or null is reached. This enables shared behavior: if all arrays inherit from Array.prototype, they all share methods like .map() and .filter() without each array needing its own copy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the relationship between a constructor function and its prototype?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Every function automatically gets a .prototype property that points to an object with a constructor property pointing back to the function — used as the [[Prototype]] for objects created with new" },
+        { "id": "b", "text": "Constructor functions have no relationship to prototypes — they are completely separate concepts" },
+        { "id": "c", "text": "The .prototype property only exists on arrow functions, not regular functions" },
+        { "id": "d", "text": "Constructor functions replace the need for prototypes and store all methods directly on the function object" }
+      ],
+      "correctKey": "a",
+      "explanation": "When you define a constructor function (e.g., `function Person(name) { this.name = name; }`), JavaScript automatically creates a .prototype property on the function, pointing to an object. That object has a .constructor property pointing back to the function. When you call `new Person('Alice')`, the new object's [[Prototype]] is set to Person.prototype. Methods added to Person.prototype are shared by all instances via the prototype chain."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is `__proto__` and when should you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "__proto__ is the publicly accessible accessor for [[Prototype]] — use it for debugging or reading prototypes, but prefer Object.getPrototypeOf() / Object.setPrototypeOf() in production code" },
+        { "id": "b", "text": "__proto__ is the modern way to set prototypes in production — always prefer it over Object.create()" },
+        { "id": "c", "text": "__proto__ is deprecated and throws an error in strict mode" },
+        { "id": "d", "text": "__proto__ creates a new prototype chain from scratch" }
+      ],
+      "correctKey": "a",
+      "explanation": "__proto__ is the legacy accessor for [[Prototype]]. It's widely supported but has performance implications (changing __proto__ is slow). The modern, recommended alternatives are Object.getPrototypeOf(obj) and Object.setPrototypeOf(obj, prototype) — or Object.create(proto) when constructing objects. In modern TypeScript (ES2015+), __proto__ usage in production code is discouraged due to performance concerns."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the `class` keyword actually compile to in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Classes are syntactic sugar over prototype-based constructor functions — they still use the prototype chain, but provide cleaner syntax for defining constructors, methods, and inheritance" },
+        { "id": "b", "text": "Classes create entirely new language constructs that are completely unrelated to the prototype chain" },
+        { "id": "c", "text": "Classes are faster than constructor functions because they are interpreted by a separate class interpreter" },
+        { "id": "d", "text": "Classes enable private fields that were impossible with constructor functions" }
+      ],
+      "correctKey": "a",
+      "explanation": "JavaScript classes are syntactic sugar — under the hood, a class compiles to a constructor function with methods placed on the prototype. `class Person { constructor(name) { this.name = name; } greet() { ... } }` is equivalent to defining a constructor function and adding greet to Person.prototype. Class fields (#field) are the one feature that differs — they are own properties on each instance, not prototype methods. Class syntax also enables extends and super with semantic guarantees."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nfunction Animal(name) {\n  this.name = name;\n}\nAnimal.prototype.speak = function() {\n  return this.name + ' makes a sound';\n};\nconst dog = new Animal('Dog');\nconsole.log(dog.speak());",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dog makes a sound" },
+        { "id": "b", "text": "undefined makes a sound" },
+        { "id": "c", "text": "[object Object] makes a sound" },
+        { "id": "d", "text": "TypeError: speak is not a function" }
+      ],
+      "correctKey": "a",
+      "explanation": "new Animal('Dog') creates an object whose [[Prototype]] is Animal.prototype. speak() is defined on Animal.prototype, so dog.speak() is found via the prototype chain. Inside speak(), this refers to the calling object (dog), so this.name is 'Dog'. Output: 'Dog makes a sound'. This is the core of prototypal inheritance — one function definition (speak) is shared by all Animal instances."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Object.create(null) creates an object with no prototype at all.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Object.create(null) creates a 'pure dictionary object' with no prototype chain — its [[Prototype]] is null. This means it has no inherited methods like .toString(), .hasOwnProperty(), or __proto__. This is useful for creating truly clean hash maps/dictionaries where you don't want inherited properties interfering, and also for security (preventing prototype pollution attacks). Such objects are not instanceof Object."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nfunction Car(model) {\n  this.model = model;\n}\nconst tesla = Object.create(Car.prototype);\ntesla.model = 'Model 3';\nconsole.log(tesla instanceof Car);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "true" },
+        { "id": "b", "text": "false" },
+        { "id": "c", "text": "ReferenceError" },
+        { "id": "d", "text": "undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.create(Car.prototype) creates a new object whose [[Prototype]] is Car.prototype. This is equivalent to what `new Car()` does internally (but without calling the constructor). Setting tesla.model = 'Model 3' adds an own property. instanceof checks if Car.prototype appears anywhere in tesla's prototype chain — it does (tesla's [[Prototype]] is Car.prototype), so instanceof Car is true. Object.create() is a way to create objects with an explicit prototype without calling the constructor."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Static methods in a class are called on class instances, not on the class itself.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Static methods are called on the class constructor itself, NOT on instances. They are defined with the static keyword and are properties of the class, not the prototype. Example: `class MathHelper { static add(a, b) { return a + b; } }` — called as `MathHelper.add(1, 2)`, not instance.add(). Static methods cannot access instance properties directly (no this) but can access static properties. They are inherited by subclasses."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nfunction Parent() { this.x = 1; }\nParent.prototype.getX = function() { return this.x; };\nfunction Child() {\n  Parent.call(this);\n  this.y = 2;\n}\nChild.prototype = Object.create(Parent.prototype);\nChild.prototype.constructor = Child;\nconst c = new Child();\nconsole.log(c.getX());",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1" },
+        { "id": "b", "text": "undefined" },
+        { "id": "c", "text": "TypeError: getX is not a function" },
+        { "id": "d", "text": "2" }
+      ],
+      "correctKey": "a",
+      "explanation": "This is the Parasitic Combination Inheritance pattern. Child.prototype = Object.create(Parent.prototype) sets up the prototype chain (Child inherits from Parent). Parent.call(this) calls the Parent constructor as a function, initializing this.x on the Child instance. Child also sets this.y = 2. c.getX() is found on Parent.prototype via the chain, and this.x resolves to 1 on the Child instance c. Without Parent.call(this), x would be undefined. Setting Child.prototype.constructor = Child fixes the constructor reference."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does Object.getPrototypeOf(obj) return?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The direct [[Prototype]] of obj (equivalent to obj.__proto__ in legacy environments)" },
+        { "id": "b", "text": "A new object that is a copy of obj's prototype" },
+        { "id": "c", "text": "An array of all prototypes in the chain up to Object.prototype" },
+        { "id": "d", "text": "The constructor function used to create obj" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.getPrototypeOf(obj) returns the [[Prototype]] of obj — the object it inherits from. For a plain object literal {}, it returns Object.prototype. For an array [], it returns Array.prototype. This is the standard, preferred alternative to __proto__. Object.setPrototypeOf(obj, newProto) changes an object's prototype at runtime (though this has performance costs in most JS engines)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nclass Animal {\n  constructor(name) {\n    this.name = name;\n  }\n  speak() {\n    return `${this.name} speaks`;\n  }\n}\nclass Dog extends Animal {\n  speak() {\n    return `${this.name} barks`;\n  }\n}\nconsole.log(new Dog('Rex').speak());",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Rex barks" },
+        { "id": "b", "text": "Rex speaks" },
+        { "id": "c", "text": "undefined barks" },
+        { "id": "d", "text": "TypeError: Dog is not a function" }
+      ],
+      "correctKey": "a",
+      "explanation": "The extends keyword sets Dog's prototype to Animal.prototype (Dog.prototype's [[Prototype]] is Animal.prototype). This means Dog inherits from Animal. When Dog overrides speak(), the Dog version is found first in the chain, and this.name resolves to 'Rex' from the constructor. Output: 'Rex barks'. Without extends, Dog would not be an Animal subclass and instanceof Dog would not imply instanceof Animal."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is method shadowing (method overriding) in the context of the prototype chain?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Defining a property or method on a child object that has the same name as one in its prototype — the child's own property 'shadows' the prototype's, found first in the lookup" },
+        { "id": "b", "text": "A technique that permanently removes methods from the prototype chain" },
+        { "id": "c", "text": "A design pattern for defining private methods that cannot be accessed from the prototype chain" },
+        { "id": "d", "text": "Shadowing occurs when a function's name is reused in different scopes" }
+      ],
+      "correctKey": "a",
+      "explanation": "When a property exists both on an object and its prototype, the object's own property takes precedence — it 'shadows' the prototype's property. For data properties (not methods), the shadow can be prevented by making the prototype property non-configurable or by using Object.defineProperty. For methods, shadowing is the standard override mechanism. Note: setting obj.prop = 'x' doesn't delete the prototype's prop — it creates a new own property that shadows it."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The `super` keyword can only be used inside class methods that use the `extends` keyword.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The super keyword (super.method() or super()) only works in ES6 classes that extend another class. It references the parent class's prototype. You can call super() in a constructor (must be called before accessing this) and super.methodName() to call parent methods. In regular constructor functions (without class extends), there is no super — you manually set up the prototype chain and use Parent.prototype.methodName.call(this) for parent method calls."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between Object.create() and new Constructor()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Object.create(proto) creates an object with [[Prototype]] set to proto WITHOUT calling the constructor; new Constructor() creates the object AND calls the constructor function" },
+        { "id": "b", "text": "Object.create() is faster than new Constructor() in all cases and should always be used instead" },
+        { "id": "c", "text": "new Constructor() can only be used with ES6 classes; Object.create() works with both classes and constructor functions" },
+        { "id": "d", "text": "There is no functional difference — both create objects with the same prototype" }
+      ],
+      "correctKey": "a",
+      "explanation": "The key difference: Object.create(proto) sets the prototype and does NOT invoke any constructor — it gives you fine-grained control. new Constructor() does two things: (1) creates a new object with Constructor.prototype as its [[Prototype]], and (2) calls the Constructor function with the new object as this. Object.create() is useful for: creating objects with null prototype, creating objects without invoking a constructor, and mixin patterns. new is simpler for typical class-like instantiation."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does hasOwnProperty check, and why is Object.hasOwn() preferred in modern JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "hasOwnProperty checks own properties only (not inherited); Object.hasOwn() (ES2022+) is safer because it doesn't rely on a potentially-overridden hasOwnProperty on the object itself" },
+        { "id": "b", "text": "hasOwnProperty checks inherited properties; Object.hasOwn() checks both own and inherited" },
+        { "id": "c", "text": "Both methods do exactly the same thing — Object.hasOwn() is just a shorter alias" },
+        { "id": "d", "text": "Object.hasOwn() checks if the object itself is a property of its prototype" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.hasOwn() (ES2022) is the modern, recommended way to check own properties without relying on the object's own hasOwnProperty method. The issue: if an object has `hasOwnProperty` as its own property (e.g., `{ hasOwnProperty: fn }`), calling obj.hasOwnProperty('x') fails. Object.hasOwn(obj, 'prop') avoids this. For pre-ES2022, use Object.prototype.hasOwnProperty.call(obj, 'prop'). Both return true only for own enumerable properties."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When using ES6 class extends, the subclass constructor must call super() before accessing `this`.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "In ES6 class constructors, `this` is not available until after super() is called (in subclasses that extend a class). Calling super() initializes the parent class and returns the new instance. Attempting to use `this` before super() throws a ReferenceError. If you don't define a constructor in a subclass, it is auto-generated and automatically calls super() with all arguments. In classes that don't extend anything, there is no super."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is prototype pollution and how does it occur?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A security vulnerability where an attacker manipulates the prototype chain (via __proto__ or constructor.prototype) to inject malicious properties into all JavaScript objects — common in unsafe merge/deep-copy functions that don't validate keys" },
+        { "id": "b", "text": "A performance issue caused by creating too many objects with shared prototypes, causing memory exhaustion" },
+        { "id": "c", "text": "A bug in the JavaScript engine where the prototype chain enters an infinite loop" },
+        { "id": "d", "text": "An anti-pattern where methods are accidentally defined on Object.prototype instead of class prototypes" }
+      ],
+      "correctKey": "a",
+      "explanation": "Prototype pollution occurs when attacker-controlled input (e.g., from JSON API responses) is merged into objects without sanitization, allowing paths like __proto__, constructor, or prototype to be written. Example: `Object.assign(obj, JSON.parse(maliciousInput))` — if maliciousInput contains __proto__: { admin: true }, it pollutes Object.prototype, affecting all objects. Prevention: Object.freeze(Object.prototype), use Object.create(null) for dictionaries, validate merge keys, use schema validation, or use libraries like deep-freeze-js."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nfunction F() {}\nF.prototype = { value: 42 };\nconst f = new F();\nconsole.log(f.constructor === F);\nconsole.log(f.value);\nconsole.log(f instanceof F);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "false, 42, true" },
+        { "id": "b", "text": "true, 42, true" },
+        { "id": "c", "text": "false, undefined, true" },
+        { "id": "d", "text": "false, 42, false" }
+      ],
+      "correctKey": "a",
+      "explanation": "When you replace F.prototype with a new object, that new object has no .constructor property (it was on the old F.prototype object). The .constructor property falls through to Object.prototype.constructor (=== Object). So f.constructor === F is false. f.value is 42 (found on the new F.prototype). f instanceof F is true — instanceof checks F.prototype in f's prototype chain, which it is. To fix the constructor issue, restore it: F.prototype.constructor = F."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The mixin pattern in JavaScript involves copying properties from one object to another to simulate multiple inheritance.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Mixins solve JavaScript's single-prototype inheritance limitation by copying (own) properties from a source object to a target object. Example: `Object.assign(Dog.prototype, Animal.prototype)` copies Animal's methods onto Dog's prototype. This allows a Dog instance to access both Dog and Animal methods. Caveats: (1) methods copied to prototype are own properties (not shared via prototype), (2) instanceof Dog no longer implies instanceof Animal, (3) methods can't use super if they're copied rather than chained."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does Object.getOwnPropertyDescriptors(obj) return and why is it more useful than Object.keys()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Returns an object mapping all own property names to their property descriptor objects (configurable, enumerable, writable, value/accessor) — unlike Object.keys() which only returns enumerable string keys, it returns ALL own properties including non-enumerable ones" },
+        { "id": "b", "text": "Returns only the prototype properties of obj, not the own properties" },
+        { "id": "c", "text": "Returns a boolean indicating whether obj has any own properties at all" },
+        { "id": "d", "text": "Returns the property descriptors of inherited properties only" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.getOwnPropertyDescriptors(obj) returns a complete map of all own properties (not inherited) to their descriptors — including non-enumerable properties, Symbol-keyed properties, and accessor properties (get/set). This is essential for proper cloning (`Object.create(Object.getPrototypeOf(obj), Object.getOwnPropertyDescriptors(obj))`), which preserves property attributes (writable, configurable, enumerable) that Object.assign() would lose. Object.keys() only returns enumerable string-keyed own property names."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nfunction Person(name) { this.name = name; }\nPerson.prototype.greet = function() { return `Hello, I'm ${this.name}`; };\nconst alice = new Person('Alice');\nconst bob = new Person('Bob');\nbob.greet = function() { return 'Hi!'; };\nconsole.log(alice.greet());\nconsole.log(bob.greet());",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Hello, I'm Alice; Hi!" },
+        { "id": "b", "text": "Hello, I'm Alice; Hello, I'm Bob" },
+        { "id": "c", "text": "Hi!; Hi!" },
+        { "id": "d", "text": "Hello, I'm Alice; Hello, I'm Alice" }
+      ],
+      "correctKey": "a",
+      "explanation": "alice.greet() looks up greet on Person.prototype → found → returns 'Hello, I'm Alice'. bob.greet is an own property on the bob instance — it shadows Person.prototype.greet. So bob.greet() calls the own method → returns 'Hi!'. The prototype's greet is not called because the own property takes precedence. This is property shadowing: own properties always win over inherited prototype properties."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "ES6 private class fields (prefixed with #) are implemented using the WeakMap pattern under the hood.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "ES6 private fields (#field) are syntactic sugar over the WeakMap pattern: each class with private fields gets a private WeakMap that maps instance objects to their private field values. The # syntax gives you compile-time enforcement (unlike convention-based _private which is just a name). Private fields are not accessible outside the class body, not inherited, and cannot be deleted or reassigned without the class's methods."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the relationship between `instanceof` and the prototype chain?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "instanceof checks if Constructor.prototype appears anywhere in the object's prototype chain — meaning the object was created by that constructor (or one that inherits from it)" },
+        { "id": "b", "text": "instanceof checks if the object has all the same properties as the constructor" },
+        { "id": "c", "text": "instanceof checks if the object was literally created with the new keyword on that specific constructor function" },
+        { "id": "d", "text": "instanceof only works with ES6 classes, not with constructor functions" }
+      ],
+      "correctKey": "a",
+      "explanation": "obj instanceof C checks `C.prototype === obj's prototype chain`. More precisely, it traverses the prototype chain asking 'does any prototype in this chain equal C.prototype?' If you replace C.prototype with a new object, instanceof will return false for old instances — even though they were created by new C(). This is why replacing .prototype directly can break instanceof."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nfunction A() { this.x = 1; }\nA.prototype.x = 10;\nfunction B() { this.x = 2; }\nB.prototype = Object.create(A.prototype);\nB.prototype.constructor = B;\nconst b = new B();\nconsole.log(b.x, b instanceof B, b instanceof A);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "2, true, true" },
+        { "id": "b", "text": "10, true, false" },
+        { "id": "c", "text": "1, false, false" },
+        { "id": "d", "text": "2, true, false" }
+      ],
+      "correctKey": "a",
+      "explanation": "B.prototype = Object.create(A.prototype) sets up B's prototype chain to inherit from A.prototype. B.prototype.constructor = B fixes the constructor reference. new B() sets this.x = 2 (B's constructor runs). b.x resolves to 2 (own property on b shadows A's prototype.x=10). b instanceof B is true (B.prototype is in b's chain). b instanceof A is true (A.prototype is in b's chain via B.prototype → A.prototype). The own property x=2 shadows the prototype property x=10."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Object.assign() copies own enumerable properties from source objects to a target object. What property attributes does it preserve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Object.assign() copies only the VALUE and enumerable flag — it does NOT preserve getters, setters, writable, configurable, or non-enumerable properties" },
+        { "id": "b", "text": "Object.assign() fully preserves all property descriptors including getters, setters, and non-enumerable properties" },
+        { "id": "c", "text": "Object.assign() only copies Symbol-keyed properties and ignores string keys" },
+        { "id": "d", "text": "Object.assign() is equivalent to Object.create() and preserves all metadata" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.assign() performs a simple property assignment — it only copies enumerable own properties and their values. It does not preserve getters/setters (they become data properties), non-enumerable properties, or property descriptors (writable, configurable). For full cloning with all metadata, use `Object.create(Object.getPrototypeOf(obj), Object.getOwnPropertyDescriptors(obj))`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nclass Animal {\n  constructor(name) { this.name = name; }\n  speak() { return `${this.name} makes a sound`; }\n}\nclass Cat extends Animal {\n  constructor(name, color) {\n    super(name);\n    this.color = color;\n  }\n  speak() { return `${this.name} meows`; }\n}\nconst cat = new Cat('Whiskers', 'orange');\nconsole.log(cat.speak(), cat instanceof Animal);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Whiskers meows, true" },
+        { "id": "b", "text": "Whiskers makes a sound, true" },
+        { "id": "c", "text": "Whiskers meows, false" },
+        { "id": "d", "text": "undefined meows, true" }
+      ],
+      "correctKey": "a",
+      "explanation": "Cat extends Animal — Cat's prototype chain: Cat.prototype → Animal.prototype → Object.prototype. Cat overrides speak() so cat.speak() calls Cat's version → 'Whiskers meows'. Cat's constructor calls super(name) which runs Animal's constructor, setting this.name = 'Whiskers'. Then Cat sets this.color = 'orange'. instanceof Animal is true because Animal.prototype is in cat's prototype chain. This demonstrates both method overriding and super() constructor chaining."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When you do `class Dog extends null`, what does `new Dog()` return?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A valid object whose prototype is null — Dog.prototype's [[Prototype]] is null, and instanceof Object is false for Dog instances" },
+        { "id": "b", "text": "A TypeError because a class cannot extend null" },
+        { "id": "c", "text": "An object identical to Object.create(null) but with Dog as its constructor" },
+        { "id": "d", "text": "A Dog instance with all standard Object methods available" }
+      ],
+      "correctKey": "a",
+      "explanation": "class Dog extends null creates a class whose prototype is null. Dog.prototype's [[Prototype]] is null, and instanceof Dog is still true (Dog.prototype === obj's prototype). But instanceof Object is false because Object.prototype is not in the chain. This creates a 'null-prototype object' — no inherited methods from Object.prototype. It's equivalent to `Object.create(null)` but with a Dog constructor. Useful for pure data objects without inherited properties."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Object.prototype.hasOwnProperty.call(obj, 'prop') is a safe way to check own properties, preferred over obj.hasOwnProperty('prop') in untrusted environments.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "An object might have a named own property `hasOwnProperty` that shadows Object.prototype.hasOwnProperty. Calling `obj.hasOwnProperty('x')` would then fail. `Object.prototype.hasOwnProperty.call(obj, 'x')` always uses the original Object.prototype method, bypassing any overridden version. In ES2022+, prefer the safer `Object.hasOwn(obj, 'prop')` which doesn't rely on the object's own hasOwnProperty at all."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nfunction Base() {}\nBase.prototype.value = 1;\nconst protoHandler = {\n  get(target, prop) { return prop in target ? target[prop] : target.value; }\n};\nconst ProxyBase = new Proxy(Base, protoHandler);\nconst instance = new ProxyBase();\ninstance.value = 5;\nconsole.log(instance.value, instance instanceof Base);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "5, true" },
+        { "id": "b", "text": "1, true" },
+        { "id": "c", "text": "5, false" },
+        { "id": "d", "text": "1, false" }
+      ],
+      "correctKey": "a",
+      "explanation": "ProxyBase is a Proxy wrapping Base (the constructor). new ProxyBase() calls the proxy handler's construct trap, which delegates to Base. The returned instance has its own value=5 (own property set). The prototype chain: instance's own value=5, then Base.prototype.value=1 via __proto__. instance.value = 5 (own property wins). instanceof Base: Proxy magic intercepts the [[GetPrototypeOf]] trap to report Base.prototype as the prototype, so instanceof Base is true. This demonstrates how Proxy can intercept instanceof behavior."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following are valid ways to implement inheritance in JavaScript? (Select all that apply.)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Constructor function: define Parent, set Child.prototype = Object.create(Parent.prototype), restore Child.prototype.constructor" },
+        { "id": "b", "text": "ES6 class: class Child extends Parent { constructor() { super(); } }" },
+        { "id": "c", "text": "Object.create: const child = Object.create(Parent.prototype); child.constructor = Child; Child.prototype = child" },
+        { "id": "d", "text": "Prototype chain manipulation is deprecated and should always use ES6 class syntax" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "All three (A, B, C) are valid inheritance patterns. (A) is the Parasitic Combination Inheritance pattern. (B) is ES6 syntactic sugar over (A). (C) is essentially what class extends does under the hood using Object.create(). (D) is false — prototype manipulation is not deprecated; ES6 class is syntactic sugar, not a replacement. Legacy codebases still use constructor functions, and understanding all three patterns is essential for reading older code."
+    }
+  ]
+}

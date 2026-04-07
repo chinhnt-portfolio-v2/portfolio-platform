@@ -1,0 +1,469 @@
+{
+  "topicSlug": "react-ecosystem",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `createPortal` do in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "createPortal renders a React subtree into a different DOM node — used for modals, tooltips, and dropdowns that need to escape their parent's CSS overflow, z-index, or stacking context constraints"
+        },
+        {
+          "id": "b",
+          "text": "createPortal creates a new React application entry point"
+        },
+        {
+          "id": "c",
+          "text": "createPortal renders a React component into a different React Context"
+        },
+        {
+          "id": "d",
+          "text": "createPortal is a React Native API for rendering to a native view"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "createPortal(child, domNode) mounts the child React tree into a different DOM element. The React subtree still participates in React's event system (events bubble up through the React tree, not the DOM tree). This is critical for modals — they need to visually overlay everything but must still be in the React tree for event propagation and accessibility to work correctly."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is an Error Boundary in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A class component that implements componentDidCatch or static getDerivedStateFromError to catch JavaScript errors anywhere in the child component tree and display a fallback UI instead of crashing the whole app"
+        },
+        {
+          "id": "b",
+          "text": "A try-catch block inside a useEffect hook"
+        },
+        {
+          "id": "c",
+          "text": "A function component that prevents errors from being thrown"
+        },
+        {
+          "id": "d",
+          "text": "A React DevTools plugin that highlights error-prone components"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Error Boundaries catch errors during rendering, lifecycle methods, and constructors of the entire tree below them. They are class components — function components cannot be error boundaries (yet). An error boundary does NOT catch: event handlers (use try/catch there), async code (setTimeout), server-side rendering, or errors in the boundary itself. They are the React equivalent of a try/catch for the component tree."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `React Router's` `<Link>` component do compared to a regular `<a>` tag?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Link uses client-side navigation (updating the URL and rendering the new route without a full page reload), while <a href> triggers a full browser page reload"
+        },
+        {
+          "id": "b",
+          "text": "Link is just a styled version of <a> tag"
+        },
+        {
+          "id": "c",
+          "text": "<a> tag does client-side navigation; Link triggers a full page reload"
+        },
+        {
+          "id": "d",
+          "text": "Link and <a> are identical in React Router v6"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "React Router's `<Link>` intercepts clicks and uses the History API to update the URL and render the matched route without a full page reload. This preserves JavaScript state (React state, form inputs, scroll position) and enables the SPA (Single Page App) experience. Using `<a href>` inside a Router app causes a full page reload, destroying the React tree. Always use `<Link>` for internal navigation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is `react-hook-form` and what is its main advantage over controlled components with useState?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "react-hook-form manages form state by registering inputs and tracking their values without triggering re-renders on every keystroke — making forms significantly faster than useState-based controlled inputs for large or complex forms"
+        },
+        {
+          "id": "b",
+          "text": "react-hook-form automatically validates all fields using Zod schemas"
+        },
+        {
+          "id": "c",
+          "text": "react-hook-form is a replacement for HTML form elements"
+        },
+        {
+          "id": "d",
+          "text": "react-hook-form stores form data in localStorage automatically"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "react-hook-form uses uncontrolled inputs — it reads values directly from the DOM when needed (on submit or validation), rather than storing them in React state on every change. This means typing in a field does NOT trigger re-renders, making it dramatically faster for forms with many fields. It still re-renders for errors, touched fields, and submission states, but avoids the uncontrolled-input overhead of useState on every keystroke."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does TanStack Query (React Query) do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "TanStack Query manages async/server state — it handles caching, background refetching, deduplication, loading/error states, and pagination for API calls — replacing manual useEffect + useState for data fetching"
+        },
+        {
+          "id": "b",
+          "text": "TanStack Query is a CSS-in-JS library for styling React components"
+        },
+        {
+          "id": "c",
+          "text": "TanStack Query replaces the need for a REST API"
+        },
+        {
+          "id": "d",
+          "text": "TanStack Query is a state management library for local UI state"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "TanStack Query (formerly React Query) is the standard for async state management. It provides: caching (stale-while-revalidate), background refetching, optimistic updates, pagination/infinite scroll helpers, and devtools. It separates server state (data from API) from client state (UI state), which is a useful mental model. It is not a state management library for local UI — that is still useState or Zustand."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "React Portals allow events to bubble through the React tree even though the DOM node is outside the parent component.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Despite rendering into a different DOM node, a portal is still part of the React component tree. Events from the portal bubble up through the React tree (not the DOM tree), which means parent components can listen to portal events as if the portal were a regular child. This is essential for modals — parent close buttons and backdrop clicks still work correctly via React event propagation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `<Outlet>` do in React Router v6?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Outlet renders the matched child route's component — used in layout components to render the current route's page while keeping the layout (header, sidebar) visible"
+        },
+        {
+          "id": "b",
+          "text": "Outlet renders the parent route's component"
+        },
+        {
+          "id": "c",
+          "text": "Outlet is a hook for accessing route parameters"
+        },
+        {
+          "id": "d",
+          "text": "Outlet navigates to a new route programmatically"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Outlet is used in nested routing — `<Outlet />` in a parent route component renders the matched child route. Example: `/dashboard` layout renders a sidebar and `<Outlet />`, which renders either `/dashboard/settings` or `/dashboard/profile` depending on the URL. This is the standard layout/nested routing pattern in React Router v6."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of `<BrowserRouter>` in React Router?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "BrowserRouter uses the HTML5 History API (pushState/replaceState) to keep the URL and UI in sync without a full page reload — the standard router for web apps with real URLs"
+        },
+        {
+          "id": "b",
+          "text": "BrowserRouter forces all navigation to use hash-based URLs"
+        },
+        {
+          "id": "c",
+          "text": "BrowserRouter renders routes server-side"
+        },
+        {
+          "id": "d",
+          "text": "BrowserRouter is only used for React Native applications"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "BrowserRouter uses `window.history` API — the cleanest URLs (`/dashboard`) that work with any static file server or CDN. Other routers: `HashRouter` uses `#/dashboard` (useful for servers that serve a single index.html), `MemoryRouter` stores URL in memory (testing, native apps). For standard web apps, BrowserRouter is the correct choice."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the `useParams` hook return in React Router v6?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "An object of key-value pairs matching the URL parameters defined in the route path — e.g., for route `/users/:userId`, useParams() returns { userId: '42' }"
+        },
+        {
+          "id": "b",
+          "text": "An array of all URL segments"
+        },
+        {
+          "id": "c",
+          "text": "A string of the current path"
+        },
+        {
+          "id": "d",
+          "text": "The full URL query string"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "useParams returns the dynamic segments of the URL matched by the route. For `/users/:userId/posts/:postId`, useParams() returns `{ userId: '123', postId: '456' }`. These are strings. If a segment is optional or has a default, the param may be undefined. This is the standard way to access URL-based parameters in route components."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `useNavigate` in React Router v6?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "useNavigate returns a function to navigate programmatically — supporting both string paths (navigate('/dashboard')) and options (navigate(-1) for Go back) — replacing the useHistory hook from v5"
+        },
+        {
+          "id": "b",
+          "text": "useNavigate fetches data from an API endpoint"
+        },
+        {
+          "id": "c",
+          "text": "useNavigate renders a Link component"
+        },
+        {
+          "id": "d",
+          "text": "useNavigate is used to define new routes at runtime"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "useNavigate replaces useHistory from React Router v5. `const navigate = useNavigate()` — `navigate('/settings')` navigates to the path. `navigate(-1)` goes back. `navigate('/confirm', { replace: true })` replaces the current entry in history. It enables imperatively navigating after events (form submit, button click with side effects) without rendering a Link."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this form with react-hook-form?\n\nconst { register, handleSubmit, formState: { errors } } = useForm({\n  defaultValues: { email: '', name: '' },\n});\n\nreturn (\n  <form onSubmit={handleSubmit(data => console.log(data))}>\n    <input {...register('email', { required: true })} />\n    {errors.email && <span>Email is required</span>}\n    <input {...register('name', { minLength: { value: 2, message: 'Too short' } })} />\n    {errors.name && <span>{errors.name.message}</span>}\n    <button type=\"submit\">Submit</button>\n  </form>\n);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "A form that validates email (required) and name (minLength 2) before submission — errors display inline when validation fails; successful submission logs the form data object"
+        },
+        {
+          "id": "b",
+          "text": "A form that always logs data on submit regardless of validation"
+        },
+        {
+          "id": "c",
+          "text": "A form that prevents all user input until the form is validated"
+        },
+        {
+          "id": "d",
+          "text": "A form that automatically submits when the user tabs out of a field"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "react-hook-form's `register` function connects HTML inputs to the form state via ref. Validation rules are defined inline. `handleSubmit` is called on form submit — it runs validation first and only calls the callback if validation passes. `errors` is an object keyed by field name with the validation error. This is the core reactive validation pattern: validation is declarative and tied to registration."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does TanStack Query's `staleTime` differ from `gcTime` (formerly `cacheTime`)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "staleTime controls when data is considered stale (ready for refetch); gcTime controls how long unused query data stays in memory before being garbage collected — staleTime is about refetch strategy, gcTime is about memory management"
+        },
+        {
+          "id": "b",
+          "text": "They are aliases for the same thing"
+        },
+        {
+          "id": "c",
+          "text": "staleTime is for mutations; gcTime is for queries"
+        },
+        {
+          "id": "d",
+          "text": "gcTime determines when a query is automatically refetched"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "staleTime (default: 0) — data is considered stale immediately after a fetch. `staleTime: 5000` means 'don't refetch on mount if data is less than 5 seconds old'. gcTime (default: 5 min) — how long unused query data stays in cache before being removed. Set a longer staleTime to avoid unnecessary background refetches; set gcTime based on how long you want data to survive unmount/remount."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is an Error Boundary's main limitation regarding event handlers?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Error Boundaries do NOT catch errors thrown inside event handlers, async code (setTimeout, promises), or server-side rendering — those must be handled with try/catch, not Error Boundaries"
+        },
+        {
+          "id": "b",
+          "text": "Error Boundaries cannot catch errors in class components"
+        },
+        {
+          "id": "c",
+          "text": "Error Boundaries only catch errors in the first render"
+        },
+        {
+          "id": "d",
+          "text": "Error Boundaries cannot be used with React.memo"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Error Boundaries catch render-phase errors only — not: (1) event handlers (use try/catch in the handler), (2) async code (use .catch() on promises), (3) SSR errors, or (4) errors thrown in the boundary itself. For event handlers, wrap the handler body in try/catch. For async operations, use .catch() or an async error boundary wrapper."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "TanStack Query's `useQuery` hook automatically deduplicates requests. If two components call useQuery with the same queryKey simultaneously, they share the same request.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "TanStack Query deduplicates concurrent requests with the same queryKey. If Component A and Component B both call `useQuery({ queryKey: ['users'], queryFn: fetchUsers })` at the same time, only ONE network request is made. Both components receive the same data. This prevents the 'waterfall' of duplicate fetches and is a key performance feature of the library."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is `createPortal` typically used for in React component libraries?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Modals, tooltips, dropdown menus, and notification toasts — components that need to visually escape their parent's DOM hierarchy (for z-index, overflow, or stacking context) while remaining in the React component tree"
+        },
+        {
+          "id": "b",
+          "text": "Creating new browser tabs from a React application"
+        },
+        {
+          "id": "c",
+          "text": "Rendering React components into iframes for cross-origin isolation"
+        },
+        {
+          "id": "d",
+          "text": "Server-side rendering of React components"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Modals are the canonical portal use case. Without portals, a modal inside a parent with `overflow: hidden` or `z-index: 0` would be clipped or hidden. Portals render to `document.body` (or a specific portal root div), bypassing the parent's CSS constraints. Radix UI, MUI, and Headless UI all use portals for their modal and dropdown primitives."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does TanStack Query's `useMutation` return and when would you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "useMutation returns a mutate function and isPending state — use it for POST/PUT/DELETE requests that modify server state, not for data fetching (useQuery is for reads, useMutation is for writes)"
+        },
+        {
+          "id": "b",
+          "text": "useMutation is an alternative to useQuery for fetching large datasets"
+        },
+        {
+          "id": "c",
+          "text": "useMutation automatically retries failed requests indefinitely"
+        },
+        {
+          "id": "d",
+          "text": "useMutation requires a GraphQL subscription"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "useMutation is for writes: `const { mutate, isPending } = useMutation({ mutationFn: createUser, onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] }) })`. `mutate(newUser)` triggers the mutation. isPending tracks whether the mutation is in flight. `onSuccess` is where you invalidate queries to trigger re-fetch — keeping the server state (TanStack Query cache) in sync with mutations is the key pattern."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between `NavLink` and `Link` in React Router v6?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "NavLink is a Link that applies an active CSS class (or calls an `isActive` render prop) when the route matches — used for navigation menus to highlight the current route without manually tracking the active state"
+        },
+        {
+          "id": "b",
+          "text": "NavLink navigates to external URLs; Link is for internal routes"
+        },
+        {
+          "id": "c",
+          "text": "NavLink renders a <nav> element; Link renders an <a> element"
+        },
+        {
+          "id": "d",
+          "text": "NavLink requires authentication; Link does not"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "NavLink automatically applies `className=\"active\"` (or a custom `className`/`style` based on `isActive`) when the current URL matches the NavLink's `to` prop. This is the idiomatic way to build navigation menus in React Router — the active state is driven by the URL automatically, no manual state tracking needed. `Link` has no active-state behavior."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is React Router v6's `<Navigate>` component and when would you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Navigate is a component that redirects to a different route when rendered — used for redirecting unauthenticated users, redirecting after a successful action, or conditionally navigating based on state"
+        },
+        {
+          "id": "b",
+          "text": "Navigate is a hook for reading the current URL"
+        },
+        {
+          "id": "c",
+          "text": "Navigate is a replacement for useNavigate"
+        },
+        {
+          "id": "d",
+          "text": "Navigate renders a link that opens in a new tab"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "`<Navigate to=\"/login\" replace />` replaces the current history entry and navigates to /login. It is the component-based alternative to `useNavigate()`. Common use cases: protected routes (redirect to /login if not authenticated), post-action redirects (redirect to /dashboard after login). In React Router v6, `<Navigate>` is preferred over the old v5 `<Redirect>`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the `loader` function in React Router v6's data fetching pattern?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A loader is an async function attached to a route that fetches data before the route renders — data is available via useLoaderData and is returned server-side on initial load, enabling parallel data fetching without useEffect"
+        },
+        {
+          "id": "b",
+          "text": "A loader is a function that lazy-loads the route's component bundle"
+        },
+        {
+          "id": "c",
+          "text": "A loader is a CSS file that styles the route component"
+        },
+        {
+          "id": "d",
+          "text": "A loader is a React hook for monitoring component rendering performance"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "React Router v6's loaders work with the framework's SSR and data loading patterns (especially in frameworks like Remix). A loader is a pure async function that returns data — React Router ensures all loaders for matched routes run in parallel before rendering. `useLoaderData()` in the component accesses the loader's return. This eliminates useEffect + useState + loading spinners for route-level data fetching."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is optimistic updating in TanStack Query and how does it work?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Optimistic updates immediately update the query cache with the expected result before the server confirms — then roll back if the mutation fails — providing instant UI feedback without waiting for the server round-trip"
+        },
+        {
+          "id": "b",
+          "text": "Optimistic updates delay the mutation until the user confirms"
+        },
+        {
+          "id": "c",
+          "text": "Optimistic updates fetch data before rendering the component"
+        },
+        {
+          "id": "d",
+          "text": "Optimistic updates are only available for mutations that use WebSockets"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "The pattern: `useMutation({ onMutate: async (newData) => { await queryClient.cancelQueries({ queryKey }); const snapshot = queryClient.getQueryData(...); queryClient.setQueryData(..., optimisticData); return { snapshot }; }, onError: (err, newData, context) => { queryClient.setQueryData(..., context.snapshot); }, onSettled: () => { queryClient.invalidateQueries(...); } })`. onMutate runs before the request; onError rolls back; onSettled re-fetches to get the server's authoritative answer."
+    }
+  ]
+}

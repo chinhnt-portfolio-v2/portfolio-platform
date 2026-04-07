@@ -1,0 +1,382 @@
+{
+  "topicSlug": "java-oop",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which access modifier makes a field visible only within its own class?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "public" },
+        { "id": "b", "text": "protected" },
+        { "id": "c", "text": "private" },
+        { "id": "d", "text": "default (package-private)" }
+      ],
+      "correctKey": "c",
+      "explanation": "The `private` modifier restricts access to the declaring class only. `public` allows universal access; `protected` adds subclass access; default (no modifier) allows package-level access. Private fields are the foundation of encapsulation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which keyword is used to indicate that a class inherits from another class?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "inherits" },
+        { "id": "b", "text": "extends" },
+        { "id": "c", "text": "implements" },
+        { "id": "d", "text": "super" }
+      ],
+      "correctKey": "b",
+      "explanation": "The `extends` keyword establishes an inheritance relationship between two classes. A class can `extend` only one superclass (single inheritance). `implements` is used for interfaces; `super` references the parent class; `inherits` is not a Java keyword."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of this code?\n\nclass Animal { void speak() { System.out.print(\"sound \"); } }\nclass Dog extends Animal { void speak() { System.out.print(\"bark \"); } }\n\npublic class Main {\n  public static void main(String[] args) {\n    Animal a = new Dog();\n    a.speak();\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "sound" },
+        { "id": "b", "text": "bark" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Runtime error" }
+      ],
+      "correctKey": "b",
+      "explanation": "This demonstrates runtime polymorphism (dynamic method dispatch). The reference type is `Animal` but the object type is `Dog`. At runtime, the JVM calls the `Dog` version of `speak()`, not `Animal`'s. The method to call is determined by the actual object type, not the reference type."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which of the following best describes encapsulation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hiding data inside a class and exposing it through public methods" },
+        { "id": "b", "text": "Writing code that can run on multiple operating systems" },
+        { "id": "c", "text": "Reusing code by inheriting from a parent class" },
+        { "id": "d", "text": "Defining a contract that a class must follow" }
+      ],
+      "correctKey": "a",
+      "explanation": "Encapsulation bundles data (fields) with the methods that operate on that data, and restricts external access to internal state via private fields and public accessors. Option B describes platform independence; C describes inheritance; D describes interfaces."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is abstraction in Java?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hiding implementation details and exposing only essential features" },
+        { "id": "b", "text": "Creating multiple instances of a class" },
+        { "id": "c", "text": "Reusing existing code through inheritance" },
+        { "id": "d", "text": "Protecting data from unauthorized access" }
+      ],
+      "correctKey": "a",
+      "explanation": "Abstraction hides complex implementation details behind a simplified interface. Abstract classes and interfaces expose what something does (the contract) without revealing how it does it. The user interacts with the abstraction, not the underlying complexity."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "A class cannot be marked as both `abstract` and `final` in Java.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "An `abstract` class is incomplete and must be subclassed to be used; a `final` class cannot be subclassed. These are mutually exclusive requirements — a class cannot simultaneously require and prohibit inheritance. The Java compiler rejects this combination."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of this code?\n\nclass Base {\n  Base() { System.out.print(\"Base \"); }\n}\nclass Derived extends Base {\n  Derived() { System.out.print(\"Derived \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) { new Derived(); }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Derived" },
+        { "id": "b", "text": "Base Derived" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Runtime error" }
+      ],
+      "correctKey": "b",
+      "explanation": "Constructors chain upward — before a subclass constructor runs, the superclass constructor executes first. The implicit call to `super()` at the start of `Derived()` triggers `Base`'s constructor, printing 'Base ', then `Derived`'s constructor prints 'Derived '. This is part of the inheritance and initialization lifecycle."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "All methods in an interface are implicitly abstract in Java.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Since Java 8, interfaces can contain `default` methods (with implementation), `static` methods, and `private` methods. Only pre-Java 8 interfaces had exclusively abstract methods. A modern interface with only abstract methods is still valid, but the statement as a blanket rule is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which SOLID principle does this code violate?\n\nclass Bird {\n  void fly() { /* ... */ }\n}\nclass Penguin extends Bird { void fly() { throw new UnsupportedOperationException(); } }",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Liskov Substitution Principle (LSP)" },
+        { "id": "b", "text": "Open/Closed Principle (OCP)" },
+        { "id": "c", "text": "Interface Segregation Principle (ISP)" },
+        { "id": "d", "text": "Dependency Inversion Principle (DIP)" }
+      ],
+      "correctKey": "a",
+      "explanation": "LSP states that objects of a subclass must be substitutable for objects of the superclass without breaking the program. A `Penguin` claiming to be a `Bird` but throwing an exception when `fly()` is called violates this contract — it cannot substitute for `Bird` in all contexts. This is the classic Liskov violation with inheritance."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this code?\n\ninterface Playable { default String tune() { return \"generic\"; } }\nclass Guitar implements Playable { public String tune() { return \"Guitar: GCEA\"; } }\n\npublic class Main {\n  public static void main(String[] args) {\n    Playable p = new Guitar();\n    System.out.println(p.tune());\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "generic" },
+        { "id": "b", "text": "Guitar: GCEA" },
+        { "id": "c", "text": "Compilation error — cannot override default method" },
+        { "id": "d", "text": "Compilation error — missing @Override" }
+      ],
+      "correctKey": "b",
+      "explanation": "Default methods in interfaces (Java 8+) provide a default implementation that can be overridden. When a class implements the interface, its override takes precedence over the default. Even though the variable type is `Playable`, the runtime object is `Guitar`, so the `Guitar.tune()` method is called — demonstrating polymorphism at the interface level."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which of the following best describes the Single Responsibility Principle?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A class should have only one reason to change" },
+        { "id": "b", "text": "A class should implement only one interface" },
+        { "id": "c", "text": "A class should have only one instance throughout the application" },
+        { "id": "d", "text": "A class should have only one method" }
+      ],
+      "correctKey": "a",
+      "explanation": "The Single Responsibility Principle (SRP) states that a class should have only one reason to change — meaning it should have only one job or responsibility. This makes classes easier to maintain, test, and understand. Option B describes interface segregation; Option C describes singletons; Option D is not a real principle."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this code?\n\nclass A { int val = 1; }\nclass B extends A { int val = 2; }\n\npublic class Main {\n  public static void main(String[] args) {\n    A a = new B();\n    System.out.println(a.val);\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1" },
+        { "id": "b", "text": "2" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Runtime error" }
+      ],
+      "correctKey": "a",
+      "explanation": "Field hiding (shadowing) is resolved at compile time based on the reference type, not the runtime object type. Unlike methods, instance fields do not participate in dynamic dispatch. The compiler sees `a.val` and resolves it to `A.val = 1`. Method overriding is polymorphic; field hiding is not."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is method overloading?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Defining multiple methods with the same name but different parameter lists in the same class" },
+        { "id": "b", "text": "Defining a method in a subclass with the same signature as a superclass method" },
+        { "id": "c", "text": "Replacing a superclass method implementation in a subclass" },
+        { "id": "d", "text": "Calling a parent class method from a child class" }
+      ],
+      "correctKey": "a",
+      "explanation": "Method overloading (compile-time polymorphism) allows multiple methods with the same name in one class if they differ in parameter count, types, or order. Return type alone cannot distinguish overloaded methods. Option B describes method overriding. Option C also describes overriding. Option D describes the `super` keyword usage."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which keyword is used to prevent a class from being extended?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "static" },
+        { "id": "b", "text": "private" },
+        { "id": "c", "text": "sealed" },
+        { "id": "d", "text": "final" }
+      ],
+      "correctKey": "d",
+      "explanation": "The `final` keyword on a class prevents inheritance — no class can extend it. The String class is a well-known `final` class. Option C `sealed` (Java 17+) is the opposite: it restricts which classes can extend it, but requires at least one permitted subclass."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this code?\n\nclass Parent {\n  void greet() { System.out.print(\"Hello \"); }\n}\nclass Child extends Parent {\n  void greet(String name) { System.out.print(\"Hi \" + name); }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    Child c = new Child();\n    c.greet();\n    c.greet(\"Bob\");\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hello Hi Bob" },
+        { "id": "b", "text": "Hi Bob Hi Bob" },
+        { "id": "c", "text": "Compilation error — greet() is not visible" },
+        { "id": "d", "text": "Hello Hi Bob" }
+      ],
+      "correctKey": "d",
+      "explanation": "The `Child` class inherits `greet()` from `Parent` and adds an overload `greet(String)`. Overloading and overriding can coexist. `c.greet()` calls the inherited no-arg version → prints 'Hello '. `c.greet(\"Bob\")` calls the new overloaded method → prints 'Hi Bob'. These are separate methods resolved at compile time."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The Dependency Inversion Principle states that high-level modules should not depend on low-level modules.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "DIP states that both high-level and low-level modules should depend on abstractions. High-level classes should define the interface, and low-level classes should implement it. This decouples the architecture — changing a low-level implementation doesn't break high-level logic. Violations create tight coupling that makes code rigid and hard to change."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this code?\n\nabstract class Shape {\n  abstract void draw();\n  void print() { System.out.print(\"Shape \"); draw(); }\n}\nclass Circle extends Shape {\n  void draw() { System.out.print(\"Circle \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    Shape s = new Circle();\n    s.print();\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Shape Circle" },
+        { "id": "b", "text": "Circle" },
+        { "id": "c", "text": "Compilation error — cannot instantiate abstract class" },
+        { "id": "d", "text": "Shape Shape" }
+      ],
+      "correctKey": "a",
+      "explanation": "Polymorphism applies even through non-abstract methods. `print()` calls `draw()`, which is abstract. At runtime, the JVM dispatches to `Circle.draw()`. This pattern — a template method in an abstract class calling an abstract method — is a classic OOP design pattern where the parent class controls the algorithm and the subclass provides the step implementation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following is a benefit of programming to interfaces rather than concrete implementations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Faster runtime performance due to direct method calls" },
+        { "id": "b", "text": "Reduced memory usage since interfaces don't have instance fields" },
+        { "id": "c", "text": "Loose coupling — clients depend on abstraction, not concrete details" },
+        { "id": "d", "text": "Interfaces can have state (instance fields) in Java" }
+      ],
+      "correctKey": "c",
+      "explanation": "Programming to interfaces decouples client code from implementation classes. This enables swapping implementations (e.g., switching from in-memory storage to a database) without changing client code — the core of the Open/Closed Principle. Option A is wrong (interfaces add a level of indirection); Option B is incorrect; Option D is false — interfaces cannot have instance fields."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of this code?\n\nclass A {\n  A() { System.out.print(\"A \"); }\n  { System.out.print(\"A-init \"); }\n}\nclass B extends A {\n  B() { System.out.print(\"B \"); }\n  { System.out.print(\"B-init \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) { new B(); }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A B B-init A-init" },
+        { "id": "b", "text": "A-init A B-init B" },
+        { "id": "c", "text": "A-init A B-init B" },
+        { "id": "d", "text": "A-init A B B-init" }
+      ],
+      "correctKey": "d",
+      "explanation": "Instance initializer blocks run in textual order after `super()` and before the constructor body. Execution order: 1) `new B()` triggers `B`'s constructor which implicitly calls `A()` first. 2) `A`'s instance initializer runs → prints 'A-init'. 3) `A()` constructor body → prints 'A'. 4) `B`'s instance initializer → prints 'B-init'. 5) `B()` constructor body → prints 'B'. Result: A-init A B-init B."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A class can extend multiple classes in Java through multiple inheritance.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Java does not support multiple inheritance of state (multiple class inheritance). A class can `extend` only one class. This was a deliberate design decision to avoid the 'diamond problem' of ambiguous method/field resolution. Java achieves multiple-interface implementation (a class can `implement` multiple interfaces) and interface multiple inheritance, but not class multiple inheritance."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which OOP design pattern is demonstrated when a `Component` class is extended by `Button`, `Panel`, and `Dialog`, each overriding `render()` differently?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Strategy Pattern" },
+        { "id": "b", "text": "Template Method Pattern" },
+        { "id": "c", "text": "Composite Pattern" },
+        { "id": "d", "text": "Factory Pattern" }
+      ],
+      "correctKey": "c",
+      "explanation": "The Composite Pattern composes objects into tree structures to represent part-whole hierarchies. A `Component` defines a common interface (e.g., `render()`), and both leaves (Button) and composites (Panel containing Components) implement it uniformly. This lets clients treat individual objects and compositions uniformly. Strategy (A) encapsulates interchangeable algorithms; Template Method (B) defines a skeleton with overridden steps; Factory (D) handles object creation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of this code?\n\ninterface A { default void show() { System.out.print(\"A \"); } }\ninterface B { default void show() { System.out.print(\"B \"); } }\nclass C implements A, B {\n  public void show() { A.super.show(); B.super.show(); System.out.print(\"C \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) { new C().show(); }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "C" },
+        { "id": "b", "text": "A B C" },
+        { "id": "c", "text": "Compilation error — ambiguous default method" },
+        { "id": "d", "text": "A B" }
+      ],
+      "correctKey": "b",
+      "explanation": "When a class implements two interfaces that both have the same default method, the compiler requires explicit disambiguation. `C` resolves the conflict by calling both defaults via `A.super.show()` and `B.super.show()`, then adds its own behavior. Without this explicit override, the code would not compile — Java forces the developer to resolve the ambiguity rather than silently picking one."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of this code?\n\ninterface A { static String id = \"A\"; }\ninterface B extends A { static String id = \"B\"; }\nclass C implements B { }\n\npublic class Main {\n  public static void main(String[] args) {\n    System.out.print(A.id + \" \" + B.id + \" \");\n    // C c = new C(); System.out.println(c.id); // which id?\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A B" },
+        { "id": "b", "text": "B B" },
+        { "id": "c", "text": "A A" },
+        { "id": "d", "text": "Compilation error — ambiguous id" }
+      ],
+      "correctKey": "a",
+      "explanation": "Static fields in interfaces are not inherited by implementing classes — they belong to the interface type itself. `A.id` accesses A's static field = 'A'. `B.id` accesses B's static field = 'B'. `C.id` would not compile because static members of interfaces are not inherited; you would need `A.id` or `B.id` explicitly. This is a quirk of Java: interfaces can have static fields (implicitly public static final), but implementing classes do not inherit them."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which SOLID principle is violated by a class that has both data persistence logic and business rule validation logic?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Single Responsibility Principle (SRP)" },
+        { "id": "b", "text": "Open/Closed Principle (OCP)" },
+        { "id": "c", "text": "Liskov Substitution Principle (LSP)" },
+        { "id": "d", "text": "Interface Segregation Principle (ISP)" }
+      ],
+      "correctKey": "a",
+      "explanation": "SRP states a class should have only one reason to change. A class that both validates business rules AND persists data has two responsibilities — two different actors may want to change it for different reasons (business rules evolve vs persistence strategy changes). This God Object anti-pattern makes the class hard to test, maintain, and reuse. The fix is to split into a domain object and a repository/service."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: An interface can extend multiple interfaces in Java.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "a",
+      "explanation": "Java interfaces support multiple inheritance: `interface C extends A, B {}`. This allows an interface to combine contracts from multiple sources without the diamond problem (since interfaces have no state). A class implementing C must implement methods from both A and B. This is how Java models multiple-inheritance of type without the state/inheritance complications of class multiple inheritance."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of this code?\n\nabstract class Base {\n  Base() { display(); }\n  abstract void display();\n}\nclass Derived extends Base {\n  int x = 10;\n  Derived() { x = 20; }\n  void display() { System.out.print(x + \" \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    new Derived();\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0" },
+        { "id": "b", "text": "10" },
+        { "id": "c", "text": "20" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "a",
+      "explanation": "The constructor calls `display()` which is overridden by `Derived`. But when `Base` constructor runs, `Derived`'s fields have not yet been initialized — the instance fields `x` have their default value (0 for int). The instance initializer and Derived's constructor body have not run yet when the Base constructor calls display(). This prints the default value 0. This is the 'calling an overridable method in a constructor' anti-pattern — the method runs on a partially initialized object."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which design pattern would you use to ensure only one instance of a class exists and provide a global point of access to it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Singleton Pattern" },
+        { "id": "b", "text": "Factory Pattern" },
+        { "id": "c", "text": "Observer Pattern" },
+        { "id": "d", "text": "Adapter Pattern" }
+      ],
+      "correctKey": "a",
+      "explanation": "The Singleton pattern ensures exactly one instance and provides a global access point (typically via a static getInstance() method). Implementations include eager initialization, lazy initialization (thread-unsafe), synchronized lazy (thread-safe but slow), double-checked locking with volatile, and Bill Pugh's enum singleton (most robust). Factory Pattern (B) handles object creation; Observer (C) is for event systems; Adapter (D) converts interface compatibility."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nclass Outer {\n  private String s = \"Outer\";\n  class Inner {\n    private String s = \"Inner\";\n    void show() {\n      System.out.print(this.s + \" \");\n      System.out.print(Outer.this.s);\n    }\n  }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    Outer o = new Outer();\n    Outer.Inner i = o.new Inner();\n    i.show();\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Inner Outer" },
+        { "id": "b", "text": "Outer Inner" },
+        { "id": "c", "text": "Inner Inner" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "a",
+      "explanation": "Non-static inner classes have an implicit reference to the outer instance. Inside `show()`, `this.s` refers to Inner's field 'Inner'. `Outer.this.s` uses the qualified `this` syntax to explicitly access the outer class's field 'Outer'. The inner class instance is created with `o.new Inner()` — it must be tied to an outer instance. This is the correct syntax for accessing enclosing scope from a nested class."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following are valid reasons to prefer composition over inheritance?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Inheritance creates tight coupling — subclasses depend on parent implementation details" },
+        { "id": "b", "text": "Composition allows runtime behavior changes via interface injection" },
+        { "id": "c", "text": "Inheritance is always faster than composition in Java due to vtable lookups" },
+        { "id": "d", "text": "Composition avoids the 'fragile base class' problem where changes to parent break subclasses" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Composition (has-a) is preferred over inheritance (is-a) in many cases: loose coupling (B), runtime flexibility through interface injection, and avoiding the fragile base class problem (A, D). Option C is false — inheritance is not inherently faster; both compile to the same virtual method dispatch. The performance difference, if any, depends on JVM optimization (inlining, devirtualization), not the design pattern choice."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nrecord Point(int x, int y) {\n  Point { x = Math.max(0, x); y = Math.max(0, y); }\n  Point(int x) { this(x, 0); }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    Point p = new Point(-5, 3);\n    System.out.print(p.x() + \" \" + p.y());\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0 3" },
+        { "id": "b", "text": "-5 3" },
+        { "id": "c", "text": "0 0" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "a",
+      "explanation": "Java 16 records support compact constructors (no parameter list). The canonical constructor body `Point { x = Math.max(0, x); ... }` runs after argument validation. When `new Point(-5, 3)` is called, the compact constructor clamps x to 0 and leaves y as 3. The record accessor methods are x() and y(). Records are immutable data classes that automatically generate equals/hashCode/toString and accessor methods. The canonical constructor can be customized (like here) while maintaining the auto-generated accessors."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a sealed class in Java 17, and what is its purpose?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A class that restricts which other classes can extend it, by explicitly listing permitted subclasses" },
+        { "id": "b", "text": "A class that cannot be instantiated directly, similar to abstract" },
+        { "id": "c", "text": "A class that is thread-safe and cannot be modified after initialization" },
+        { "id": "d", "text": "A class that prevents its methods from being overridden" }
+      ],
+      "correctKey": "a",
+      "explanation": "Sealed classes (Java 17) restrict inheritance by explicitly listing which classes can extend or implement them via `permits`. Syntax: `sealed class Shape permits Circle, Rectangle, Triangle { }`. The permitted subclasses must be final, sealed, or non-sealed. This enables exhaustive pattern matching in switch expressions — the compiler can verify that all cases are covered. It bridges the gap between allowing controlled inheritance and completely forbidding it (final)."
+    }
+  ]
+}

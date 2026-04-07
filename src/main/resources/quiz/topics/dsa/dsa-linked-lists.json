@@ -1,0 +1,347 @@
+{
+  "topicSlug": "dsa-linked-lists",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of accessing an element by index in a singly linked list?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — linked list nodes store direct memory addresses for random access"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — the list must be traversed from the head to reach the index"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — binary search can navigate linked list nodes"
+        },
+        {
+          "id": "d",
+          "text": "O(n²) — each access requires a full list traversal"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Singly linked lists have no index-based random access. To reach index i, you must start at head and follow next pointers i times — a sequential walk. This is the fundamental trade-off: linked lists sacrifice O(1) indexed access for O(1) insertion/deletion at known positions (no shifting required). Arrays have the opposite trade-off: O(1) access but O(n) arbitrary insertion. Option A is wrong (arrays provide O(1) random access; linked lists don't store indices). Option C is wrong (binary search requires random access). Option D overcounts."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of inserting a node at the head of a singly linked list?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n) — all existing nodes must be renumbered and relinked"
+        },
+        {
+          "id": "b",
+          "text": "O(1) — create a new node, point its next to the current head, then update head pointer"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — the tree of nodes must be rebalanced"
+        },
+        {
+          "id": "d",
+          "text": "O(1) — the new node is automatically placed at the front without any pointer manipulation"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Head insertion is the linked list's most efficient operation: (1) allocate new node, (2) newNode.next = head, (3) head = newNode. No traversal needed — the head pointer is directly accessible. This O(1) property makes linked lists ideal for stack implementations. Option A describes array insertion cost, not linked list. Option C is wrong (linked lists are not trees, no rebalancing needed). Option D is incorrect — pointer manipulation is required."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of inserting a node at the tail of a singly linked list when a tail pointer is maintained?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — the tail pointer is updated directly without any traversal"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — the list must be traversed from head to find the insertion point"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — a binary search tree traversal locates the tail"
+        },
+        {
+          "id": "d",
+          "text": "O(1) — tail insertion works identically to head insertion"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "With a tail pointer maintained (tail.next = null, head is separately tracked), appending is: (1) tail.next = newNode, (2) tail = newNode. This is O(1) with no traversal. Without a tail pointer, appending would be O(n) because you'd need to traverse from head to find the last node. This is why linked list implementations often maintain both head and tail pointers. Option B is the cost without a tail pointer. Option C is wrong. Option D is misleading — tail insertion is different from head insertion logic."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following algorithm?\n\nclass ListNode:\n    def __init__(self, val=0, next=None):\n        self.val = val\n        self.next = next\n\ndef build(values):\n    dummy = ListNode(0)\n    cur = dummy\n    for v in values:\n        cur.next = ListNode(v)\n        cur = cur.next\n    return dummy.next\n\ndef print_list(head):\n    result = []\n    while head:\n        result.append(head.val)\n        head = head.next\n    return result\n\nhead = build([1, 2, 3])\nhead.next.next.next = head.next  # creates a cycle\nprint_list(head)[:7]",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "head.next.next.next (node3.next) points back to head.next (node2), creating a cycle: 1→2→3→2→3→2→3.... The print_list function follows .next until head is falsy (None). Since None is never reached, it would infinite-loop. However, slicing [:7] limits output to 7 elements — so it captures the first 7 nodes before the infinite loop triggers, giving [1,2,3,2,3,2,3]. Without the slice, this code hangs. Option A is wrong (cycle causes traversal to loop). Option C is wrong (points to node2, not node1). Option D is true without the [:7] guard."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "How does Floyd's cycle detection algorithm (tortoise and hare) detect a cycle in a linked list?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It uses a hash set to mark visited nodes; if a node is visited twice, a cycle exists"
+        },
+        {
+          "id": "b",
+          "text": "The tortoise moves one step at a time (slow pointer) and the hare moves two steps; if they ever meet, a cycle exists"
+        },
+        {
+          "id": "c",
+          "text": "It reverses the linked list and checks if the original head is reachable from the tail"
+        },
+        {
+          "id": "d",
+          "text": "It compares the length of the list to the position of the last node to detect wrapping"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Floyd's algorithm places two pointers at head: slow (tortoise) advances 1 node per step, fast (hare) advances 2 nodes. In a cycle of length c, the hare laps the tortoise. They are guaranteed to meet after O(n) steps because the relative speed of 1 node/step ensures the hare catches up within the cycle. Space: O(1). Option A describes hash-set cycle detection (also valid but O(n) space). Option C is a different approach (reversal detection requires modifying the list). Option D is not a detection mechanism."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does reversing a singly linked list NOT change?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The data values stored in each node remain in their original order within each node"
+        },
+        {
+          "id": "b",
+          "text": "The node objects themselves — only the next pointers are rewired"
+        },
+        {
+          "id": "c",
+          "text": "The total memory usage — no nodes are allocated or deallocated during reversal"
+        },
+        {
+          "id": "d",
+          "text": "The time complexity — in-place reversal is still O(n)"
+        }
+      ],
+      "correctKey": "d",
+      "explanation": "In-place reversal of a singly linked list uses three pointers (prev, curr, next) and rewires each node's next pointer from 'next' to 'prev'. The nodes themselves are not copied, moved, or recreated — only pointer references change. The algorithm traverses each node once → O(n) time, O(1) space. The key insight is that nodes are never recreated; only the linked structure (edges) changes. Option A is always true (node data is untouched). Option B is true (nodes stay in memory). Option C is true (no allocation). Option D is the trick — reversal is O(n) so this is NOT unchanged; it IS O(n)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the key advantage of a doubly linked list over a singly linked list?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) random access by index since both next and prev pointers enable binary search"
+        },
+        {
+          "id": "b",
+          "text": "O(1) deletion of a node when given the node reference, because you can update both prev.next and next.prev pointers"
+        },
+        {
+          "id": "c",
+          "text": "Faster traversal because two pointers can traverse the list simultaneously in parallel"
+        },
+        {
+          "id": "d",
+          "text": "Lower memory usage since each node only needs to store one pointer instead of two"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "In a singly linked list, deleting node X requires access to X's previous node — you must traverse from head to find it. In a doubly linked list, node X has both .prev and .next; to delete X: X.prev.next = X.next; X.next.prev = X.prev. Both pointer updates are O(1) given the node reference. This makes doubly linked lists ideal for LRU caches, browser history (back/forward), and text editors (undo/redo). Option A is false (no O(1) indexed access). Option C is false (both pointers traverse the same direction for one traversal). Option D is false (doubly linked uses more memory, not less)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When merging two sorted singly linked lists, what is the optimal algorithm?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Recursively merge: compare heads, attach the smaller one, recurse on its next — O(n+m) time, O(1) space"
+        },
+        {
+          "id": "b",
+          "text": "Convert both to arrays, sort, and convert back — O((n+m) log(n+m)) time"
+        },
+        {
+          "id": "c",
+          "text": "Append the second list to the first, then run merge sort on the combined list — O((n+m) log(n+m)) time"
+        },
+        {
+          "id": "d",
+          "text": "Use a hash map to map values to their source list, then rebuild — O(n+m) time but O(n+m) space"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Merging sorted linked lists is a classic O(n+m) merge operation: compare l1.val and l2.val, attach the smaller to the result, advance that pointer, repeat. This mirrors the merge step of merge sort. A dummy head node simplifies handling edge cases (empty lists). Iterative version uses O(1) extra space; recursive version uses O(n+m) call stack. Option B and C are correct but suboptimal (O(n log n) vs O(n+m)). Option D is wasteful."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ndef reverse_linked_list(head):\n    prev, curr = None, head\n    while curr:\n        nxt = curr.next\n        curr.next = prev\n        prev = curr\n        curr = nxt\n    return prev\n\ndef to_list(head):\n    result = []\n    while head:\n        result.append(head.val)\n        head = head.next\n    return result\n\nhead = build_list([1, 2, 3, 4, 5])\nto_list(reverse_linked_list(head))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "The classic in-place linked list reversal: prev starts None (new tail), curr starts at head. At each step: curr.next = prev rewires the link direction, then prev and curr advance. After n steps, curr is None and prev is the new head. This is O(n) time, O(1) space. Option A is wrong (the algorithm clearly rewires). Option C is a different pattern (e.g., reverse pairs). Option D is wrong — the last node becomes the new head, not None."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the time complexity of finding the middle node of a singly linked list using the fast/slow pointer technique?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — a hash map indexed by position gives direct O(1) access to the middle"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — the list is traversed once with fast pointer moving 2x speed, meeting the slow pointer at the middle"
+        },
+        {
+          "id": "c",
+          "text": "O(n/2) — two passes are required to determine the middle position"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — the fast pointer halves the search space logarithmically"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Initialize slow = head, fast = head. At each step: slow = slow.next, fast = fast.next.next. When fast reaches the end (None), slow is at the midpoint. For odd-length lists, fast.next is None at termination; for even-length lists, fast is None at termination — slow points to the second of the two 'middle' nodes. This is a single O(n) pass. Option A describes a hash-based approach (O(n) build, O(1) access, but O(n) space). Option C misrepresents the single pass (two pointers moving at different speeds is one pass). Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the time complexity of detecting a cycle using Floyd's algorithm?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — only two pointer comparisons are needed regardless of list length"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — at most one full traversal of the list is required before the pointers meet"
+        },
+        {
+          "id": "c",
+          "text": "O(n²) — cycle detection requires checking all possible cycle entry points"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — the fast pointer halves the effective list length each step"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "In Floyd's algorithm, the hare traverses 2 steps per step of the tortoise. If a cycle exists, the hare catches up within the cycle length. At most, the hare needs to do one full cycle traversal before meeting the tortoise, which occurs in O(n) total steps (where n is the list length including cycle). Space is O(1). Option A is wrong. Option C is wrong. Option D misapplies the halving concept — the fast pointer doesn't halve anything, it moves faster."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a sentinel/dummy node in linked list operations, and what problem does it solve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A dummy node stores a default value to prevent null pointer exceptions when the list is empty"
+        },
+        {
+          "id": "b",
+          "text": "A dummy node acts as a temporary placeholder at the start of the list, eliminating edge cases for head/tail insertion and deletion with a unified pointer update logic"
+        },
+        {
+          "id": "c",
+          "text": "A sentinel node marks the end of the list and allows early termination of traversal loops"
+        },
+        {
+          "id": "d",
+          "text": "A sentinel node caches the length of the list for O(1) size queries"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "A dummy/sentinel node is a placeholder placed before the real head (or after the tail). It simplifies edge cases: instead of separate handling for head insertion (updating head pointer) and middle insertion (updating prev.next), you create a dummy and always have a 'previous node' to update. The dummy is stripped off at the end. Common in merge operations, insertion sort on linked lists, and partition operations. Option A is partially correct but misses the key motivation. Option C is wrong (None marks the end). Option D is not the purpose of sentinel nodes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A singly linked list can be reversed in O(1) auxiliary space. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The iterative three-pointer approach (prev, curr, next) reverses in-place using only three pointer variables, regardless of list size. This gives O(1) auxiliary space. The recursive approach requires O(n) call stack space, so it is NOT O(1)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Finding the k-th node from the end of a singly linked list always requires a full O(n) traversal. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "The two-pointer technique solves it in O(n) time and O(1) space in a single pass: advance the first pointer k steps, then advance both pointers until the first reaches the end — the second pointer is now k steps behind, at the k-th-from-end node. This is not O(n²) or multi-pass."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "After detecting a cycle with Floyd's algorithm, how do you find the cycle's starting node (entry point)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Reset the slow pointer to head and move both pointers one step at a time; they meet at the cycle entry node after μ steps"
+        },
+        {
+          "id": "b",
+          "text": "Measure the cycle length c, then traverse c steps from head to find the entry point"
+        },
+        {
+          "id": "c",
+          "text": "Use the fast pointer to skip nodes at 3x speed until it catches the slow pointer, which marks the entry"
+        },
+        {
+          "id": "d",
+          "text": "The slow and fast pointers always meet at the entry point, so no additional steps are needed"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "After Floyd's detection (slow and fast meet inside the cycle), the entry point is found by resetting one pointer to head and moving both at 1 step per iteration: they will meet exactly at the cycle entry node. The proof: distance from head to entry = μ, distance from entry to meeting point = λ; tortoise traveled μ + λ, hare traveled μ + λ + c (one extra cycle). Since hare = 2 × tortoise: μ + λ + c = 2(μ + λ) → μ = c - λ. After resetting slow to head, moving both μ steps brings them to the entry. Option B is also valid (find cycle length c, then find node at position n-c from head) but requires two passes. Option C is not the Floyd method. Option D is false — they meet somewhere inside the cycle, not necessarily at entry."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef odd_even_linked_list(head):\n    if not head: return None\n    odd, even, even_head = head, head.next, head.next\n    while even and even.next:\n        odd.next = even.next\n        odd = odd.next\n        even.next = odd.next\n        even = even.next\n    odd.next = even_head\n    return head\n\ndef to_list(head):\n    return [head.val] + to_list(head.next) if head else []\n\nto_list(odd_even_linked_list(build_list([1, 2, 3, 4, 5])))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "The algorithm separates nodes by index parity: all odd-position nodes (1-based: 1,3,5) are collected in order, followed by all even-position nodes (2,4). The odd pointer skips one node and links to the next odd node; the even pointer follows the same pattern for evens. After processing, odd.next = even_head reconnects the two partitions. Result: [1→3→5→2→4]. This is a LeetCode-style problem requiring in-place O(1) space. Option A is wrong. Option C describes reversal. Option D describes pair swapping."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What recurrence relation describes the time complexity of recursive linked list reversal, and what is its space complexity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "T(n) = T(n-1) + O(1), resolving to O(n) time; space is O(1) since reversal is in-place"
+        },
+        {
+          "id": "b",
+          "text": "T(n) = 2T(n/2) + O(n), resolving to O(n log n) time; space is O(log n) for recursion depth"
+        },
+        {
+          "id": "c",
+          "text": "T(n) = T(n-1) + O(n), resolving to O(n²) time; space is O(n)"
+        },
+        {
+          "id": "d",
+          "text": "T(n) = T(n-1) + O(1), resolving to O(n) time; space is O(n) due to call stack"
+        }
+      ],
+      "correctKey": "d",
+      "explanation": "Recursive reversal: reverse(head.next) returns the new head of the reversed sublist; then append current head to its tail. Each call does O(1) work (link rewiring), so T(n) = T(n-1) + O(1) → O(n) time. The recursion depth is n (each call waits for its subcall to return), requiring O(n) call stack space. This is the key trade-off vs. the iterative O(1)-space version: recursive is cleaner but uses O(n) stack space. Option A incorrectly says O(1) space. Option B is merge sort's recurrence. Option C overcounts work per call."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Both singly and doubly linked lists have O(n) worst-case time complexity for search operations. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Both singly and doubly linked lists require sequential traversal from head to find a target value — there is no index-based jump or tree structure. The only difference is that doubly linked lists allow O(1) deletion given a node reference (since you have the prev pointer), while singly linked lists require O(n) traversal to find the previous node. Neither structure has O(log n) or O(1) search. Hash tables offer O(1) average search; balanced BSTs offer O(log n) search."
+    }
+  ]
+}

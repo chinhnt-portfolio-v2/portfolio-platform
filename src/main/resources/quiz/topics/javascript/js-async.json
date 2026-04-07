@@ -1,0 +1,366 @@
+{
+  "topicSlug": "js-async",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does a Promise represent in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A placeholder for a value that will be available sometime in the future (async operation) — in one of three states: pending, fulfilled, or rejected" },
+        { "id": "b", "text": "A synchronous blocking operation that waits for an event before continuing" },
+        { "id": "c", "text": "A built-in JavaScript loop that iterates over async data structures" },
+        { "id": "d", "text": "A function that executes immediately when called, without waiting" }
+      ],
+      "correctKey": "a",
+      "explanation": "A Promise is an object representing the eventual completion (or failure) of an async operation. It has three states: pending (initial), fulfilled (operation succeeded — resolved with a value), and rejected (operation failed — rejected with a reason). Once a Promise settles (fulfilled or rejected), it is immutable and its state cannot change. This replaces callback-based async patterns with a cleaner, chainable API."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `Promise.resolve()` return?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A Promise that resolves immediately with the given value" },
+        { "id": "b", "text": "A rejected Promise with undefined as the error" },
+        { "id": "c", "text": "The resolved value directly (not wrapped in a Promise)" },
+        { "id": "d", "text": "A pending Promise that never settles" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.resolve(value) returns a Promise that resolves with value. If value is already a Promise, it returns that Promise. If value is a thenable (object with .then()), it wraps it. If value is a regular value, it resolves immediately with that value. This is useful for ensuring a function always returns a Promise, or for converting sync values into Promise-returning APIs."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nsetTimeout(() => console.log('A'), 0);\nconsole.log('B');",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "B, A" },
+        { "id": "b", "text": "A, B" },
+        { "id": "c", "text": "A only" },
+        { "id": "d", "text": "B only" }
+      ],
+      "correctKey": "a",
+      "explanation": "Even with a 0ms delay, setTimeout schedules the callback as a macrotask. JavaScript is single-threaded — synchronous code runs first. console.log('B') executes immediately. After the call stack is empty, the event loop picks up the macrotask from setTimeout and logs 'A'. The 0ms delay means 'as soon as possible after current synchronous code', not 'immediately'."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the `async` keyword do when placed before a function?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Makes the function always return a Promise; inside the function, await can be used to pause execution until a Promise resolves" },
+        { "id": "b", "text": "Makes the function execute asynchronously on a separate thread" },
+        { "id": "c", "text": "Automatically rejects the function if it throws an error" },
+        { "id": "d", "text": "Converts the function into a generator function" }
+      ],
+      "correctKey": "a",
+      "explanation": "The async keyword: (1) makes the function always return a Promise (even if you return a plain value, it's wrapped in Promise.resolve()), and (2) allows the use of await inside the function body. await pauses the async function's execution until the awaited Promise settles — but unlike setTimeout, it does NOT block the main thread; the event loop continues processing other tasks."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What happens when a Promise is rejected without a .catch() handler?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "UnhandledPromiseRejection warning (or error in Node.js strict mode) — the rejection is logged but execution continues" },
+        { "id": "b", "text": "The entire JavaScript program crashes immediately" },
+        { "id": "c", "text": "The Promise silently swallows the rejection and returns undefined" },
+        { "id": "d", "text": "The rejection is automatically retried by the engine" }
+      ],
+      "correctKey": "a",
+      "explanation": "Unhandled rejections cause a warning in browsers and throw an error in Node.js (process.on('unhandledRejection')). The warning/event fires after a tick (microtask queue drain). This is why you should always add .catch() or use try/catch with await. Even in browsers, unhandled rejections are becoming stricter — Chrome logs errors (not warnings) since v67. Use window.addEventListener('unhandledrejection') to handle these globally."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "The `await` keyword can be used outside of an async function in top-level JavaScript modules.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "In ES2022, top-level await was introduced in ES modules. At the top level of a module (not inside a function), you can write `await expression` and it behaves as if it's inside an async function — the module waits for the Promise to resolve before executing subsequent module code. This enables simpler module-level async initialization patterns without wrapping in an async IIFE."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nasync function test() {\n  console.log('1');\n  await Promise.resolve();\n  console.log('2');\n  await Promise.resolve();\n  console.log('3');\n}\ntest();\nconsole.log('4');",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "1, 2, 3, 4" },
+        { "id": "b", "text": "1, 4, 2, 3" },
+        { "id": "c", "text": "1, 4, 3, 2" },
+        { "id": "d", "text": "4, 1, 2, 3" }
+      ],
+      "correctKey": "b",
+      "explanation": "async functions run synchronously until the first await. '1' logs. The first await pauses the function (yielding to the event loop), and test() returns a pending Promise. '4' logs (sync code continues). The event loop picks up the resumed async function, logs '2'. Second await pauses again, then '3' logs. Order: sync parts run first (1, 4), then async continuations (2, 3). This is why await is said to 'block the async function' but not the event loop."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Promise.all() fails fast — it rejects as soon as any one Promise rejects.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Promise.all() follows fail-fast semantics: if any Promise rejects, the entire Promise.all rejects immediately with that rejection reason, even if other Promises are still pending. Promise.allSettled() (ES2019) was added specifically to wait for all Promises regardless of outcome — it never rejects, and each result is annotated with status: 'fulfilled' or 'rejected'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nPromise.resolve(1)\n  .then(x => x + 1)\n  .then(x => { throw new Error('oops'); })\n  .catch(e => 3)\n  .then(x => x + 1)\n  .then(console.log);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "4" },
+        { "id": "b", "text": "undefined" },
+        { "id": "c", "text": "Error: oops" },
+        { "id": "d", "text": "3" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise chain: 1 → +1 = 2 → throw Error (rejection) → .catch returns 3 (the catch handler's return value becomes the resolved value) → +1 = 4 → console.log(4). A .catch() handler that returns a value (not another Promise/rejection) resolves the chain with that value — effectively recovering from the error. If the catch didn't return, the chain would continue with undefined. If re-thrown, subsequent catch blocks would handle it."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the microtask queue's relationship to the macrotask queue in the event loop?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Microtasks (Promises, queueMicrotask) are processed BEFORE macrotasks (setTimeout, setInterval, I/O) — the microtask queue is drained completely after each macrotask's synchronous code, and also between macrotasks" },
+        { "id": "b", "text": "Microtasks and macrotasks are processed alternately in strict round-robin order" },
+        { "id": "c", "text": "Macrotasks are processed before microtasks to ensure UI responsiveness" },
+        { "id": "d", "text": "Microtasks are a subset of macrotasks processed by the same queue" }
+      ],
+      "correctKey": "a",
+      "explanation": "After each task (macrotask) completes, the browser checks the microtask queue — and drains it completely before picking the next macrotask. This includes all resolved Promise callbacks and explicit queueMicrotask calls. The implication: a Promise chain that keeps queuing microtasks can starve macrotasks (setTimeout, UI updates), potentially causing UI freezes. After each microtask, the event loop checks if it's time to render — rendering happens between macrotasks, not after every microtask."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nconsole.log('1');\nsetTimeout(() => console.log('2'), 0);\nPromise.resolve().then(() => console.log('3'));\nqueueMicrotask(() => console.log('4'));\nconsole.log('5');",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "1, 5, 3, 4, 2" },
+        { "id": "b", "text": "1, 5, 2, 3, 4" },
+        { "id": "c", "text": "1, 5, 3, 2, 4" },
+        { "id": "d", "text": "1, 5, 4, 3, 2" }
+      ],
+      "correctKey": "a",
+      "explanation": "Sync code runs first: logs 1, then 5. After sync code: the microtask queue drains completely. Promise.resolve().then() queues '3'; queueMicrotask() queues '4'. Both are microtasks — Promise's then runs first (3), then queueMicrotask callback (4). Finally, the event loop picks the setTimeout macrotask (2). Order: 1 → 5 → 3 → 4 → 2. Both Promise.then and queueMicrotask are microtasks processed before the next macrotask."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between Promise.all(), Promise.race(), and Promise.allSettled()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "all() waits for all and fails fast on any rejection; race() settles with the first settled result (fulfillment or rejection); allSettled() waits for all and never rejects, reporting each result" },
+        { "id": "b", "text": "all() returns the first resolved value; race() returns all resolved values; allSettled() cancels all Promises on failure" },
+        { "id": "c", "text": "all() cancels pending Promises when one rejects; race() waits for all Promises; allSettled() is identical to all()" },
+        { "id": "d", "text": "all() runs Promises in parallel; race() runs them sequentially; allSettled() is only available in Node.js" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.all() takes an iterable of Promises and: resolves with array of values if ALL resolve, or rejects immediately when ANY reject (fail-fast). Promise.race() resolves/rejects as soon as the first Promise in the iterable settles. Promise.allSettled() (ES2019) always waits for all Promises and returns an array of {status: 'fulfilled', value} or {status: 'rejected', reason} objects — useful when you want all results regardless of success/failure."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a 'thenable' in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Any object with a .then() method — Promise.resolve() and async/await treat thenables the same as native Promises, awaiting or resolving them" },
+        { "id": "b", "text": "A Promise that has been resolved but not yet consumed with .then()" },
+        { "id": "c", "text": "A function that can only be called once before it becomes unusable" },
+        { "id": "d", "text": "A thenable is the same as a generator function" }
+      ],
+      "correctKey": "a",
+      "explanation": "A thenable is any object (or class instance) that implements .then(). Promise.resolve() accepts thenables and wraps them in a real Promise. This means jQuery's $.Deferred(), Bluebird promises, and any custom thenable implementation are all compatible with async/await. However, this is also a security consideration — never await on untrusted thenables. Example: `{ then: resolve => setTimeout(() => resolve(5), 100) }` is a thenable."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Using try/catch with await will only catch errors from synchronous code inside the try block, not from the awaited Promise itself.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "try/catch with await catches BOTH synchronous errors (thrown inside try) and asynchronous errors (Promise rejections from awaited Promises). When you `await promise`, if the Promise rejects, the await expression throws — and try/catch catches it as a synchronous-looking exception. This is the main advantage of async/await over .then() chains for error handling: you get synchronous-looking try/catch for async operations."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `Promise.resolve(1).finally(() => 2)` return?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A Promise resolved with 1 — .finally() passes through the previous resolution/rejection value without modifying it" },
+        { "id": "b", "text": "A Promise resolved with 2" },
+        { "id": "c", "text": "A rejected Promise with reason 2" },
+        { "id": "d", "text": "undefined — .finally() always returns undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": ".finally() is designed for cleanup (loading spinners, resource release) — it always runs whether the Promise fulfills or rejects, and it does not consume or modify the settlement value. The previous Promise's value passes through unchanged. If .finally() returns a Promise (e.g., an async cleanup function), the Promise waits for that to settle before propagating the original result. In this case: original resolves with 1, .finally() ignores the return value 2, final resolution is 1."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "requestAnimationFrame callbacks are placed in the same queue as setTimeout/setInterval callbacks.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "requestAnimationFrame (rAF) callbacks are processed during the rendering phase, which happens between macrotasks when the browser is ready to paint. They are not in the macrotask queue — they are processed before the next macrotask if a render is due. rAF callbacks can be queued inside setTimeout callbacks, and setTimeout can be called from rAF. They serve different purposes: macrotasks for scheduling, rAF for smooth animation tied to the browser's refresh rate."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nasync function async1() {\n  console.log('a');\n  await async2();\n  console.log('b');\n}\nasync function async2() {\n  console.log('c');\n}\nconsole.log('d');\nsetTimeout(() => console.log('e'), 0);\nasync1();\nPromise.resolve().then(() => console.log('f'));\nconsole.log('g');",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "d, a, c, g, b, f, e" },
+        { "id": "b", "text": "d, c, a, g, b, f, e" },
+        { "id": "c", "text": "d, a, c, g, f, b, e" },
+        { "id": "d", "text": "d, g, a, c, f, b, e" }
+      ],
+      "correctKey": "c",
+      "explanation": "Step by step: 'd' logs. async1() is called — it logs 'a', then await async2() calls async2() synchronously: async2 logs 'c' and returns (implicit Promise.resolve). async1 pauses here, returns a Promise. Promise.resolve().then() queues 'f' (microtask). 'g' logs (sync). Microtask queue drains: async1 resumes (b), then Promise.then (f). Finally, macrotask: setTimeout logs 'e'. Order: d → a → c → g → f → b → e. Key insight: await async2() pauses AFTER async2() returns synchronously, not after it settles."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of the AbortController API for aborting fetch requests?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It provides a signal that can be passed to fetch() and other async APIs to cancel in-flight requests by calling abort(), rejecting with AbortError" },
+        { "id": "b", "text": "It automatically cancels all pending Promises when any one Promise in a Promise.all chain rejects" },
+        { "id": "c", "text": "It prevents the browser from making network requests at all by blocking the request queue" },
+        { "id": "d", "text": "It replaces the need for error handling with Promise.allSettled" }
+      ],
+      "correctKey": "a",
+      "explanation": "AbortController provides a standard way to cancel fetch (and other abortable) operations. Create: `const controller = new AbortController()`; pass `signal` to fetch: `fetch(url, { signal: controller.signal })`; cancel: `controller.abort()` — this causes fetch to reject with AbortError ('AbortError: The user aborted a request.'). Multiple fetches can share the same signal. AbortController is also used with react-query, SWR, and other data-fetching libraries."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between createTask() (from the AsyncLocalStorage API) and regular async function calls?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "AsyncLocalStorage.run(store, fn, ...args) executes fn with a store context that propagates through all async boundaries (Promises, microtasks) — enabling request-scoped state without explicit parameter passing" },
+        { "id": "b", "text": "createTask() is a standard JavaScript method for creating synthetic Promises that resolve faster than native Promises" },
+        { "id": "c", "text": "AsyncLocalStorage.run() blocks the event loop until fn completes, preventing race conditions" },
+        { "id": "d", "text": "createTask() replaces async/await and eliminates the need for .then() chains" }
+      ],
+      "correctKey": "a",
+      "explanation": "AsyncLocalStorage (Node.js 12+, now in browsers too) provides async context tracking. Unlike closure-scoped variables (which don't survive async boundaries), AsyncLocalStorage store context propagates through all async operations (Promises, async/await, setTimeout, I/O callbacks) within the run() call. This is ideal for request-scoped data like request IDs, user context, or tracing — instead of threading through every function parameter."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "In Node.js, an unhandled Promise rejection that is not caught will crash the process with a non-zero exit code.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "In Node.js, unhandled Promise rejections cause the process to emit an 'unhandledRejection' event. If no handler is attached, Node.js v15+ throws and crashes with exit code 1. Before v15, it only printed a warning. In browsers, unhandled rejections fire 'unhandledrejection' on window. In both environments, it's critical to handle all rejections with .catch() or try/catch. Use process.on('unhandledRejection', handler) to add a global fallback and always log the reason."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `Promise.race([Promise.resolve(1), 2, Promise.resolve(3)])` return?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A Promise that resolves with 1 — the first settled value wins, and non-Promise values are automatically wrapped in resolved Promises" },
+        { "id": "b", "text": "A Promise that resolves with [1, 2, 3] as an array" },
+        { "id": "c", "text": "A Promise that rejects because 2 is not a Promise" },
+        { "id": "d", "text": "A Promise that resolves with 2 — the first primitive value wins" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.race() iterates over the iterable and waits for the first Promise to settle (resolve or reject). Non-Promise values are implicitly wrapped in Promise.resolve(), so [Promise.resolve(1), 2, Promise.resolve(3)] treats 2 as Promise.resolve(2). The first to settle is Promise.resolve(1) (immediately resolved), so the race resolves with 1."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "After the synchronous code in the current task finishes, the microtask queue is drained completely before the next macrotask runs.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "After each task (macrotask) completes, the browser drains the microtask queue completely — all Promise callbacks, queueMicrotask callbacks, and MutationObserver callbacks run until the queue is empty. Only then does the event loop pick the next macrotask (setTimeout, setInterval, I/O callback). This is why Promise chains can starve macrotasks: if microtasks keep queueing more microtasks, the macrotask never runs."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nasync function fetchData() {\n  try {\n    const result = await fetch('/api/data');\n    console.log('success');\n  } catch (err) {\n    console.log('error caught');\n  }\n}\nfetchData();\nconsole.log('script done');",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "script done, then success or error caught (order depends on fetch timing)" },
+        { "id": "b", "text": "success or error caught, then script done" },
+        { "id": "c", "text": "error caught always (fetch fails without a network)" },
+        { "id": "d", "text": "script done, success, error caught" }
+      ],
+      "correctKey": "a",
+      "explanation": "The async function body runs synchronously until the first await. fetch() starts the request (returns a pending Promise). The function pauses and returns a Promise. 'script done' logs. When fetch resolves/rejects, the microtask queue drains the continuation. If fetch succeeds, 'success' logs; if it fails (no network), catch runs and 'error caught' logs. 'script done' always appears first because the await pauses the async function before it completes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What happens when an async generator yields a Promise?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The generator pauses at that yield and the returned iterator's next() resolves with undefined — the Promise is NOT automatically awaited by the generator unless you explicitly yield Promise.resolve()" },
+        { "id": "b", "text": "The generator automatically awaits the yielded Promise and resumes when it settles" },
+        { "id": "c", "text": "The yielded Promise causes the generator to throw an error" },
+        { "id": "d", "text": "Async generators cannot yield Promises — only primitive values are allowed" }
+      ],
+      "correctKey": "a",
+      "explanation": "Async generators (async function*) yield values, not Promises that are automatically awaited. If you yield a Promise, its value is what next() returns. To await inside an async generator, use `yield await somePromise` — the await pauses the async generator until the Promise resolves, then yields its resolved value. This is different from `yield somePromise` which yields the Promise object itself."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "If multiple Promises in a `Promise.all()` reject simultaneously, which rejection reason is propagated by Promise.all()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Promise.all() rejects with the first rejection (by order in the iterable, not by which settled first) — the rejection is deterministic based on the array position" },
+        { "id": "b", "text": "Promise.all() collects all rejection reasons and throws an AggregateError containing all of them" },
+        { "id": "c", "text": "Promise.all() rejects with whichever Promise settles first, regardless of array position" },
+        { "id": "d", "text": "Promise.all() silently ignores rejections and resolves with all fulfilled values" }
+      ],
+      "correctKey": "a",
+      "exexplanation": "Promise.all() iterates over the input in order and attaches rejection handlers to each Promise. The first rejection in array order causes Promise.all() to reject — not the fastest rejection. In modern JavaScript (ES2022+), you can use Promise.allSettled() to wait for all and collect both successes and failures. AggregateError is used by Promise.any() (which ignores rejections) when all reject."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `Promise.resolve({ then: cb => setTimeout(() => cb(42), 100) })` demonstrate about Promise.resolve()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Promise.resolve() unwraps thenables — it awaits the thenable's resolve call and resolves with 42, demonstrating that jQuery Deferred and similar patterns are compatible with native Promises" },
+        { "id": "b", "text": "Promise.resolve() treats this as an already-rejected Promise because the thenable resolves asynchronously" },
+        { "id": "c", "text": "Promise.resolve() ignores thenables and returns a Promise that never settles" },
+        { "id": "d", "text": "Promise.resolve() throws a TypeError because thenables must be synchronous" }
+      ],
+      "correctKey": "a",
+      "explanation": "This is a classic thenable pattern. Promise.resolve() calls thenable.then(resolve => ...) to unwrap it, passing the internal resolve function as cb. After 100ms, cb(42) is called, which resolves the outer Promise with 42. This is how jQuery's $.Deferred(), Bluebird promises, and other thenable implementations are made compatible with async/await. It's also why untrusted thenables are a security concern — Promise.resolve() blindly calls .then()."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nasync function demo() {\n  console.log('a');\n  await Promise.resolve();\n  console.log('b');\n  await Promise.resolve();\n  console.log('c');\n  setTimeout(() => console.log('d'), 0);\n}\nsetTimeout(() => console.log('e'), 0);\ndemo();\nconsole.log('f');",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "a, f, b, c, e, d" },
+        { "id": "b", "text": "a, b, c, f, e, d" },
+        { "id": "c", "text": "a, f, c, b, e, d" },
+        { "id": "d", "text": "a, b, f, c, e, d" }
+      ],
+      "correctKey": "a",
+      "explanation": "Step-by-step: 'a' logs. First await pauses demo(), returns Promise. 'f' logs (sync). Microtask: demo resumes, 'b' logs. Second await pauses again. Microtask: demo resumes, 'c' logs. Synchronous code done. Now macrotasks drain: the setTimeout from demo (d) was queued before c, so e (from the outer setTimeout) was queued first — but both are setTimeout(0), so e's macrotask is picked first (it was queued first), logging 'e', then 'd'. Order: a → f → b → c → e → d."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "An async function always returns a Promise, even if it throws a synchronous error — the error is caught and the returned Promise rejects.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "async functions guarantee a Promise return. Synchronous errors thrown inside an async function cause the returned Promise to reject: `async function f() { throw new Error(); }` — calling f() returns a rejected Promise. This is why async/await handles both sync and async errors uniformly: both reject the returned Promise. An alternative is wrapping in try/catch inside the async function — caught errors resolve the Promise instead."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does the Scheduler API's `scheduler.yield()` (or `Task.yield()`) do, and how does it relate to async/await?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "scheduler.yield() yields control back to the browser's main thread scheduler, allowing higher-priority tasks to run before the generator/async function resumes — enabling cooperative multitasking for long synchronous tasks without blocking the UI" },
+        { "id": "b", "text": "scheduler.yield() is identical to setTimeout(fn, 0) and schedules the continuation as a macrotask" },
+        { "id": "c", "text": "scheduler.yield() pauses the JavaScript engine and waits for user input before resuming" },
+        { "id": "d", "text": "scheduler.yield() is a deprecated API that was replaced by requestIdleCallback" }
+      ],
+      "correctKey": "a",
+      "explanation": "The Scheduler API (origin trial in Chrome) provides scheduler.yield() — a way to cooperatively yield to the main thread scheduler during long synchronous tasks. Unlike setTimeout (macrotask) which defers indefinitely, yield() lets the browser schedule higher-priority work (user input, animations) while still making progress on the background task. It works inside async functions and generators. This is the building block for React's useTransition under the hood."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nasync function fetchWithAbort() {\n  const controller = new AbortController();\n  const timeout = setTimeout(() => controller.abort(), 100);\n  try {\n    await Promise.race([\n      fetch('/api/data', { signal: controller.signal }),\n      new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 200))\n    ]);\n    clearTimeout(timeout);\n    console.log('data');\n  } catch (e) {\n    console.log(e.message === 'timeout' ? 'timeout' : 'aborted');\n  }\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "data — because the fetch completes within 100ms (before the 200ms fallback timeout), so clearTimeout is called and the race resolves with the fetch response" },
+        { "id": "b", "text": "timeout — because AbortController aborts the fetch at 100ms, causing Promise.race to reject with AbortError, not Error('timeout')" },
+        { "id": "c", "text": "aborted — because the fetch abort signal fires before the 200ms Promise resolves" },
+        { "id": "d", "text": "The code throws an unhandled AbortError" }
+      ],
+      "correctKey": "a",
+      "explanation": "This demonstrates Promise.race combined with AbortController for request timeout. The 100ms setTimeout calls controller.abort(). If fetch completes within 100ms, clearTimeout cancels the 200ms timer, and the fetch Promise resolves first — race resolves with the data. If fetch takes longer than 100ms, AbortController aborts and race rejects (or the 200ms fallback fires). In a real scenario, the 100ms abort fires before the 200ms fallback, so the fetch's AbortError propagates from the race — the output would be 'aborted' unless the fetch is fast enough."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "`structuredClone()` can clone Promises, Functions, DOM nodes, and objects with circular references without throwing.",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "structuredClone() cannot clone Functions — they throw a DataCloneError" },
+        { "id": "b", "text": "structuredClone() CAN clone Promises, but they are not preserved as live promises in the clone — they resolve with undefined" },
+        { "id": "c", "text": "structuredClone() CAN handle circular references (objects that reference themselves) without throwing" },
+        { "id": "d", "text": "structuredClone() can clone DOM nodes in browsers that support the structured clone algorithm" }
+      ],
+      "correctKey": "a,c",
+      "explanation": "structuredClone() handles circular references (C) but throws DataCloneError for Functions (A) and Symbols. Promises (B) are not live-cloned — a cloned Promise resolves with undefined. DOM nodes (D) are cloneable in the browser environment. This makes structuredClone() unsuitable for cloning live async state, but useful for deep-cloning plain data objects without JSON.parse(JSON.stringify()) limitations."
+    }
+  ]
+}

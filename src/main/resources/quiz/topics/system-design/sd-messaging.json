@@ -1,0 +1,228 @@
+{
+  "topicSlug": "sd-messaging",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the fundamental difference between a message queue and a publish-subscribe (pub/sub) system?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A message queue and pub/sub are identical — the terms are interchangeable in modern distributed systems" },
+        { "id": "b", "text": "A message queue delivers each message to exactly one consumer (point-to-point); a pub/sub delivers each message to all subscribed consumers (fan-out) — the key distinction is the delivery semantics" },
+        { "id": "c", "text": "A pub/sub system stores messages permanently; a message queue deletes messages after delivery" },
+        { "id": "d", "text": "A message queue requires producers and consumers to be online simultaneously; pub/sub does not" }
+      ],
+      "correctKey": "b",
+      "explanation": "Message queues (SQS, RabbitMQ classic queue mode) implement point-to-point: each message is consumed by exactly one consumer — once consumed, it is removed or marked consumed. Pub/sub (Kafka topics, RabbitMQ fanout/exchange, Google Pub/Sub) implements fan-out: each message is delivered to all active subscribers. A payment processing system uses a queue (one processor handles each payment). A notification system uses pub/sub (email, SMS, push all get the same event). Option A is false. Option C conflates delivery with persistence. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "An order service publishes an OrderCreated event to a message broker. A payment service and an inventory service both need to process this event independently. Which messaging pattern best supports this requirement?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A message queue — the broker delivers the event to one consumer; that consumer then forwards the event to both services sequentially" },
+        { "id": "b", "text": "A fan-out exchange or pub/sub topic — each subscriber (payment service, inventory service) receives its own independent copy of the OrderCreated event to process independently" },
+        { "id": "c", "text": "A direct point-to-point channel between the order service and each consumer — the order service must maintain separate connections to each consumer" },
+        { "id": "d", "text": "A message queue with competing consumers — both services compete to consume the same event, and the first one to grab it wins" }
+      ],
+      "correctKey": "b",
+      "explanation": "Fan-out pub/sub: the OrderCreated event is published once to a topic/exchange, and each subscriber gets its own independent subscription and copy. The payment service and inventory service each process their own copy — no competition, no coordination needed. This is the core pattern for event-driven architectures where multiple independent services need to react to the same business event. Option A (queue) delivers to one consumer — the other service would never see the event. Option C is not a messaging pattern — it describes direct coupling. Option D (competing consumers) is the queue model — only one wins."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a dead-letter queue (DLQ) in a message queue system, and when is it used?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A dead-letter queue is the main queue where unprocessed messages accumulate — it is used to track messages that need manual review" },
+        { "id": "b", "text": "A dead-letter queue captures messages that fail processing repeatedly (exceed max delivery attempts) so they don't block the main queue; failed messages are inspected, retried with backoff, or routed to an alerting system for manual resolution" },
+        { "id": "c", "text": "A dead-letter queue is used to store messages before they are published — acting as a staging area to control message throughput" },
+        { "id": "d", "text": "Dead-letter queues are only needed for batch processing systems, not real-time event streaming" }
+      ],
+      "correctKey": "b",
+      "explanation": "A dead-letter queue (DLQ) is a designated queue that receives messages that fail processing after a configurable number of retry attempts (maxDeliveries). Without a DLQ, failed messages would be re-queued infinitely (poison message) or silently dropped. DLQ enables: (1) isolating toxic messages that can't be processed (malformed payload, business rule change), (2) alerting and manual inspection, (3) manual replay after fixing downstream issues. Best practice: set max attempts (e.g., 3), use exponential backoff between retries, and always DLQ. Option A misdescribes the main queue. Option C describes a staging queue, not DLQ. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Your system needs at-least-once delivery semantics — every message must be processed at least once, but duplicates are acceptable. What techniques does a consumer use to achieve this safely?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "At-least-once requires synchronous acknowledgment of each message before the next message is consumed — this guarantees each message is processed exactly once" },
+        { "id": "b", "text": "A consumer uses idempotency keys (message ID + deduplication check in DB) to safely process the same message multiple times — the downstream operation is idempotent so duplicates are harmless" },
+        { "id": "c", "text": "At-least-once delivery is impossible to implement reliably in asynchronous systems — you can only guarantee at-most-once" },
+        { "id": "d", "text": "Use a consumer-side TTL that discards messages after 1 second — if not processed in time, the message is considered lost" }
+      ],
+      "correctKey": "b",
+      "explanation": "At-least-once delivery means the broker redelivers messages if the consumer fails before acknowledging. This can cause duplicates. The consumer's job is to make operations idempotent: (1) check if a message ID was already processed (deduplication table in DB), (2) use database unique constraints on message_id to reject duplicates, (3) design the downstream operation to be naturally idempotent (e.g., 'set value to X' is idempotent, 'increment by 1' is not). Exactly-once semantics (across producer → broker → consumer) requires distributed transactions or a two-phase commit — expensive. Option A describes synchronous processing, not at-least-once. Option C is false. Option D is at-most-once behavior."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Apache Kafka uses a log-based storage model. What happens when a consumer group processes messages, and how does Kafka's offset management support this?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Kafka stores messages in a queue and deletes them after acknowledgment — consumers compete for messages like in traditional message queues" },
+        { "id": "b", "text": "Kafka retains messages in a persistent append-only log partitioned by topic; consumers track their own offset (position in the log) and can replay messages from any offset — enabling replay of historical events, backfilling, and flexible consumer group scaling without message loss" },
+        { "id": "c", "text": "Kafka delivers each message to all consumers simultaneously — there is no consumer group concept" },
+        { "id": "d", "text": "Consumer offsets are stored in the database by the application — Kafka itself does not track consumer position" }
+      ],
+      "correctKey": "b",
+      "explanation": "Kafka's log-based model is fundamentally different from queue-based systems. Messages are stored partitioned and committed to an append-only log (persisted to disk, configurable retention). Consumers in a consumer group share partitions: each partition is assigned to one consumer in the group. Each consumer tracks its own offset (committing after successful processing). Because offsets are tracked separately, consumers can: replay from any offset, consume at their own pace, and re-read old messages for debugging or new services. Kafka's consumer offset storage (in __consumer_offsets topic or __consumer_offsets in KRaft mode) is separate from the main log. Option A describes queue semantics (not Kafka). Option C is false. Option D is only partially true."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between Amazon SQS Standard Queue and SQS FIFO Queue in terms of delivery guarantees and ordering semantics?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Both SQS Standard and FIFO provide exactly-once delivery with strict ordering — the difference is only throughput capacity" },
+        { "id": "b", "text": "SQS Standard Queue provides at-least-once delivery with best-effort ordering (messages may be delivered out of order); SQS FIFO Queue provides exactly-once processing with strict FIFO ordering of messages within a message group ID" },
+        { "id": "c", "text": "SQS FIFO Queue provides at-least-once delivery; SQS Standard Queue provides at-most-once delivery" },
+        { "id": "d", "text": "SQS Standard Queue has higher throughput but no ordering guarantee; SQS FIFO has lower throughput and guarantees messages are delivered in the order they were published across ALL messages in the queue globally" }
+      ],
+      "correctKey": "b",
+      "explanation": "SQS Standard: at-least-once delivery (duplicates possible), best-effort ordering (occasional out-of-order delivery). SQS FIFO: exactly-once processing (deduplication via message deduplication ID or content-based hash), strict FIFO ordering within a message group ID. FIFO queues limit throughput to ~300 messages/second per API call (or ~3,000 with batching) vs. near-unlimited for Standard. FIFO ordering is per message group ID — multiple groups can be processed concurrently while maintaining FIFO within each group. Option A is false (Standard does not provide exactly-once). Option C reverses the guarantees. Option D overstates FIFO global ordering."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Event-driven architecture (EDA) decouples producers from consumers. What is the key advantage of loose coupling in EDA, and what new challenges does it introduce?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "EDA eliminates the need for any monitoring or observability because events are self-describing and always processed correctly" },
+        { "id": "b", "text": "EDA decouples producers and consumers in time (async) and space (different deployment units) — allowing independent scaling, fault isolation, and enabling new consumers to react to existing events without modifying the producer; challenges include debugging distributed event flows, handling out-of-order events, and managing event schema evolution" },
+        { "id": "c", "text": "Event-driven architecture is fundamentally simpler than synchronous request-response because it removes the need for error handling and retry logic" },
+        { "id": "d", "text": "Loose coupling in EDA means producers and consumers share the same data schema to avoid translation overhead" }
+      ],
+      "correctKey": "b",
+      "explanation": "EDA's temporal and spatial decoupling enables: independent service evolution, addition of new consumers without touching producers, different teams working autonomously, resilience (producer doesn't need to know if consumers are up). The challenges: (1) debugging is harder — no single call stack, (2) ordering is not guaranteed unless explicitly designed for, (3) schema changes (adding fields) must be backward-compatible, (4) eventual consistency means consumers may see a different state at any moment, (5) observability requires distributed tracing across event boundaries. Option A is false. Option C is false. Option D describes tight coupling."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the 'at-most-once' delivery semantics problem, and why is it generally undesirable for business-critical operations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "At-most-once means messages are guaranteed to arrive within 1 millisecond of being sent — it is the fastest delivery mode" },
+        { "id": "b", "text": "At-most-once delivery means a message may be lost entirely if the consumer fails before processing — the system never re-delivers; for business operations (payment, order), losing a message causes real-world consequences (money uncharged, order unfulfilled) — making at-most-once unacceptable" },
+        { "id": "c", "text": "At-most-once is the default and preferred mode in Kafka and SQS; it is safer than at-least-once because duplicates are never sent" },
+        { "id": "d", "text": "At-most-once only applies to batch processing systems, not real-time event streams" }
+      ],
+      "correctKey": "b",
+      "explanation": "At-most-once: message is delivered once OR not at all — if the consumer fails after delivery but before processing, the message is lost and not retried. For business-critical operations (charging a card, sending an email, reserving inventory), losing the message is unacceptable. At-least-once (retry until acknowledged) + idempotency handling (deduplication) is the standard for business events. Exactly-once (across producer → broker → consumer) is the gold standard but expensive (distributed transactions). Option A mischaracterizes it. Option C is false (at-most-once is not the default in Kafka/SQS). Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A consumer processes a message and then crashes before acknowledging it. With SQS, what happens to this message?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SQS deletes the message immediately upon delivery — it is lost and cannot be recovered" },
+        { "id": "b", "text": "SQS holds the message invisibly for the visibility timeout window (30 seconds default); if no acknowledgment is received, the message becomes visible again in the queue and is delivered to another consumer (or retried by the same consumer after the timeout)" },
+        { "id": "c", "text": "SQS moves the message to the dead-letter queue automatically after the first failure" },
+        { "id": "d", "text": "SQS immediately redelivers the message to the same consumer every 5 seconds until acknowledged" }
+      ],
+      "correctKey": "b",
+      "explanation": "SQS uses a visibility timeout mechanism: when a consumer receives a message, it is invisible to other consumers for the visibility timeout period (default 30s, configurable 0s–12h). If the consumer doesn't delete the message within this window, SQS makes it visible again for another delivery attempt. The consumer can call ChangeMessageVisibility to extend the window if processing takes longer. DLQ movement requires explicit configuration of maxReceiveCount on the queue's redrive policy. Option A is false. Option C requires explicit DLQ configuration. Option D is not how SQS works."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: In an event-driven architecture, the event bus (or message broker) is a trusted component — events published to the bus are always processed correctly by all consumers.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "The event bus is not a trusted trust boundary in the sense that it provides no application-level guarantees about consumer behavior. Consumers can crash, throw exceptions, process events out of order, or misinterpret event schemas. The bus only guarantees delivery semantics (at-least-once, at-most-once, etc.) — not application correctness. Producers must design for consumer failures: use idempotency keys, version events, and handle poison messages via DLQs. Additionally, a consumer can be down for an extended period and miss events entirely (backfill requires explicit replay support, e.g., Kafka log retention). Trust must be earned by the consumer with proper error handling, not assumed from the bus."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: Apache Kafka guarantees that messages are always delivered to consumers in the exact order they were produced.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Kafka guarantees ordering within a single partition. Because messages within a partition are stored in a committed append-only log, they are delivered to any consumer in offset order. However, if a topic has multiple partitions (which is the normal case for parallelism), different partitions receive messages in parallel and there is no global ordering across partitions. Only messages with the same partition key are guaranteed to be in order (because they go to the same partition). If global event ordering is required, use a single-partition topic (at the cost of throughput). This is a common misconception from Kafka's default multi-partition configuration."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: A message queue and a database table can be used interchangeably for storing work that needs to be processed asynchronously — both are valid patterns for implementing a task queue.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Databases can implement simple work queues (polling a jobs table, SELECT FOR UPDATE SKIP LOCKED) but are not a substitute for purpose-built message brokers. Databases are not designed for high-throughput message consumption patterns, lack native push notifications to consumers, require polling or scheduled jobs to check for new work, and create contention on the same tables used for application data. Purpose-built brokers (Kafka, SQS, RabbitMQ) provide delivery guarantees, DLQs, routing, fan-out, observability, and consumption models designed for message processing. Using a DB as a queue is a temporary shortcut that creates polling overhead, scalability bottlenecks, and operational complexity at scale."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You are designing an event-driven order processing system with multiple microservices: OrderService, PaymentService, InventoryService, and ShippingService. Each service must process events in the correct order (e.g., payment must complete before shipping). How do you design for distributed saga orchestration with message queues?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use a central orchestrator (saga orchestrator) that sends sequential commands to each service via dedicated queues; each service publishes a reply event to the orchestrator; on failure, the orchestrator sends compensating transactions (e.g., refund) in reverse order" },
+        { "id": "b", "text": "Let all services subscribe to the same topic and process events as they arrive — each service is responsible for detecting out-of-order events and waiting for the correct sequence" },
+        { "id": "c", "text": "Use a global database transaction that spans all services — message queues cannot participate in distributed transactions" },
+        { "id": "d", "text": "Serialize all events through a single Kafka partition with a fixed ordering key to guarantee cross-service ordering — this is the standard approach for saga patterns" }
+      ],
+      "correctKey": "a",
+      "explanation": "The saga pattern manages distributed transactions without distributed locks (no 2PC). Two approaches: (1) Choreography — services publish events that trigger other services; events chain; compensating transactions are triggered by failure events. (2) Orchestration — a central saga orchestrator sends commands to each service, waits for reply events, and coordinates the sequence; on failure, it sends compensating transactions (refund, inventory restore) in reverse order. For a multi-step order flow with strict ordering requirements, orchestration provides better visibility and control. Option B is unreliable — distributed ordering without explicit coordination is not guaranteed. Option C (global DB transaction) doesn't work across service boundaries. Option D (single partition) doesn't solve the saga ordering problem."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kafka can handle millions of messages per second, but a consumer is experiencing significant lag — the consumer is processing slower than messages are arriving. What are the most effective ways to reduce consumer lag?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Increase the Kafka broker's disk I/O capacity — consumer lag is always caused by the broker, not the consumer" },
+        { "id": "b", "text": "Consumer lag is reduced by: (1) scaling the consumer group horizontally (add more consumer instances, each assigned additional partitions), (2) increasing consumer parallelism (more partitions), (3) optimizing consumer processing logic (batch processing, async I/O, connection pooling), (4) partitioning strategy — ensure the partition key distributes load evenly and doesn't create hot partitions" },
+        { "id": "c", "text": "Restart the Kafka consumer — lag is caused by in-memory state corruption and restarting clears it" },
+        { "id": "d", "text": "Consumer lag is a normal and acceptable state — it indicates the system is buffering messages for later processing and poses no risk" }
+      ],
+      "correctKey": "b",
+      "explanation": "Consumer lag (difference between latest offset and consumer's committed offset) indicates the consumer can't keep up with producers. Solutions: (1) horizontal scaling — add more consumer instances; Kafka partitions are the unit of parallelism, so more partitions enable more consumers. (2) Optimize consumer code: use batch consume (poll N messages, process in parallel), async I/O for downstream calls, connection pooling, efficient deserialization. (3) Partitioning strategy: if one partition is hot (e.g., celebrity user), it creates a bottleneck — split or add a bucket dimension to the key. (4) For very slow consumers, consider offloading to a pre-processing pipeline. Option A is wrong (lag is a consumer-side problem). Option C is not a general solution. Option D is false for real-time systems."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You need to implement a pattern where a message should be processed exactly once, even if the message broker, consumer, and downstream database all have independent failure modes. What is the minimal architecture needed for exactly-once processing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Exactly-once is impossible in distributed systems without a central coordinator — use at-least-once with client-side idempotency as the practical equivalent" },
+        { "id": "b", "text": "Exactly-once requires coordinating producer, broker, and consumer: producer uses idempotency keys, broker deduplicates (Kafka idempotent producer + transactions), and consumer deduplicates in a database using the message ID as a unique constraint — the combination of these three layers achieves exactly-once semantics" },
+        { "id": "c", "text": "Use a two-phase commit (2PC) protocol across the message broker and consumer database — this guarantees exactly-once by atomically committing both the message acknowledgment and the database write" },
+        { "id": "d", "text": "Exactly-once can be achieved by setting the message TTL to 0 and using synchronous acknowledgment — the broker will automatically retry until exactly-once is achieved" }
+      ],
+      "correctKey": "b",
+      "explanation": "Exactly-once delivery across all three layers: (1) Kafka's idempotent producer + transactional production ensures a message is written to the log exactly once. (2) Kafka's transactional consume + commit (using the consumer offset in the same transaction as the DB write) ensures the offset and the database change are committed atomically. (3) Consumer deduplication: the DB write uses message_id as a unique constraint — if a duplicate message is consumed (broker redelivery), the DB insert/update is a no-op. This is the Kafka transactional API + outbox pattern. Option A dismisses it as impossible — it's achievable but complex. Option C (2PC) doesn't apply to Kafka consumer commits. Option D is nonsense."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A system processes 10,000 events per second. Each event triggers a downstream HTTP API call. Under peak load, downstream API timeouts are causing message processing failures and retry storms. What is the most effective mitigation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Remove retries entirely — failed messages should go directly to the DLQ to prevent retry storms" },
+        { "id": "b", "text": "Implement a retry queue with exponential backoff with jitter: on first failure, re-queue with a 1-second delay; on second failure, 2 seconds; on third, 4 seconds; cap at a maximum; use jitter (randomized delay) to prevent thundering herd when the downstream recovers" },
+        { "id": "c", "text": "Reduce the number of concurrent consumers to 1 — sequential processing prevents API overload and ensures all retries are processed in order" },
+        { "id": "d", "text": "Increase the downstream API's timeout from 1 second to 30 seconds — this gives the downstream more time to respond under load" }
+      ],
+      "correctKey": "b",
+      "explanation": "Exponential backoff with jitter is the standard mitigation for retry storms: each retry waits longer before retrying, preventing a flood of simultaneous retries from overwhelming a recovering downstream service. Jitter (randomization added to each delay) prevents synchronized retry storms where all consumers retry at exactly the same moment (e.g., all retry after 1s, all fail, all retry after 2s — thundering herd). Best practice: exponential backoff with full jitter (random value between 0 and min(cap, base * 2^attempt)) — this is the AWS architecture blog recommended approach. Option A (no retries) loses messages. Option C (sequential) kills throughput. Option D (longer timeout) increases resource contention."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Your event-driven system requires events to be consumed in order within a partition, but a downstream service (e.g., an email service) cannot handle concurrent processing — it requires sequential processing. How do you design for both ordering and sequential consumption?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use a single-partition topic for all events — this guarantees ordering but limits throughput to one consumer and is the only way to ensure sequential processing" },
+        { "id": "b", "text": "Use a partition key that colocates events requiring sequential processing on the same partition — all events for a given entity (e.g., user_id) go to the same partition and are processed in order by a single-threaded consumer; other entities can be processed concurrently in parallel partitions" },
+        { "id": "c", "text": "Sequential processing and ordering are incompatible in distributed systems — you must choose one" },
+        { "id": "d", "text": "Implement a distributed lock at the consumer level — each consumer acquires a lock for the entity before processing, ensuring only one consumer processes events for that entity at a time" }
+      ],
+      "correctKey": "b",
+      "explanation": "Kafka partitions are the unit of ordering and parallelism. All events with the same partition key land in the same partition and are delivered in order to the consumer assigned to that partition. A single-threaded consumer (or single-threaded processing loop per partition) guarantees sequential processing for that entity. Multiple entities (different user_ids) go to different partitions and are processed in parallel. This is the standard pattern: partition by business key (user_id, order_id) to ensure causal ordering for related events. Option A (single partition) is too limiting — throughput is limited to one consumer. Option C is false. Option D (distributed lock) is expensive and unnecessary when partition-based colocation achieves the same goal more efficiently."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: In Kafka, a consumer group with 10 consumers can process a topic with only 3 partitions efficiently — adding more consumers than partitions provides no throughput benefit.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Kafka partitions are the unit of parallelism. Each partition can only be assigned to one consumer in a group at a time. With 3 partitions, at most 3 consumers are actively processing messages simultaneously — the remaining 7 consumers sit idle. This is a common Kafka misconfiguration: oversizing consumer groups beyond partition count wastes resources. Solution: scale consumers to match partition count (or slightly fewer for fault tolerance), and scale partitions when scaling consumers. The partition count is the upper bound on consumer parallelism for that topic."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "An e-commerce platform uses Kafka to publish OrderPlaced events. A new NotificationService is being added to send confirmation emails. You need to ensure that when the NotificationService is deployed, it can backfill and process historical events from the past 7 days. What Kafka configuration supports this?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Kafka topics have a fixed retention of 7 days; configure the retention.ms parameter to 7 days and ensure the consumer group offset is reset to 'earliest' when the new consumer first subscribes" },
+        { "id": "b", "text": "Create a new Kafka topic specifically for the NotificationService with a 7-day retention period; replay historical events from the OrderPlaced topic into the new topic using Kafka Streams or a Kafka Connect connector" },
+        { "id": "c", "text": "Kafka automatically retains all messages indefinitely; any new consumer can always read from the beginning regardless of when it was deployed" },
+        { "id": "d", "text": "Configure the consumer group's offset reset policy to 'latest' so the new service only processes new events as they arrive" }
+      ],
+      "correctKey": "b",
+      "explanation": "Kafka log retention is configurable (default: 7 days for log.retention.ms; varies by broker/tier). However, a topic configured for 7-day retention will have events older than 7 days deleted — you cannot backfill beyond the retention window. To backfill historical events for a new consumer: (1) create a dedicated topic or use an existing one with sufficient retention, (2) replay historical events from the source of truth (database CDC, event store, or original topic) using Kafka Connect Debezium CDC, Kafka Streams, or a custom replay job. Option A works only if the topic was already configured for 7-day retention when events were produced — if events are older, they're gone. Option C is false. Option D (latest) is for new production consumers, not backfill."
+    }
+  ]
+}

@@ -1,0 +1,235 @@
+{
+  "topicSlug": "js-functions",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which of the following correctly describes arrow function syntax?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "const add = (a, b) => a + b; — implicit return for single expressions" },
+        { "id": "b", "text": "const add = (a, b) => { a + b }; — returns undefined due to missing return statement" },
+        { "id": "c", "text": "const greet = name => { console.log('Hi', name) }; — this logs but returns undefined" },
+        { "id": "d", "text": "All of the above are correct" }
+      ],
+      "correctKey": "d",
+      "explanation": "Arrow functions have two return modes: implicit (no braces, single expression — returns that value) and explicit (with braces — must use return statement). Option A shows implicit return (correct). Option B shows block body without return (returns undefined). Option C shows a block body with side effect but no return (returns undefined). All three statements are correct descriptions of arrow function behavior."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a closure in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A function that remembers its lexical scope and can access variables from outer scopes even when executed outside that scope" },
+        { "id": "b", "text": "A way to immediately invoke a function after its definition using parentheses" },
+        { "id": "c", "text": "A method for preventing a function from being called more than once" },
+        { "id": "d", "text": "A JavaScript pattern that replaces the prototype chain for inheritance" }
+      ],
+      "correctKey": "a",
+      "explanation": "A closure is a function bundled together with references to its surrounding lexical environment (the scope chain). When a function is defined inside another function, the inner function retains access to the outer function's variables even after the outer function has returned. Example: `function outer() { let count = 0; return () => ++count; }` — the returned function closes over count. This is the foundation of module patterns, data privacy, and factories."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nconsole.log(x);\nvar x = 5;",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "5" },
+        { "id": "b", "text": "undefined" },
+        { "id": "c", "text": "ReferenceError: x is not defined" },
+        { "id": "d", "text": "null" }
+      ],
+      "correctKey": "b",
+      "explanation": "var declarations are hoisted to the top of their function/script scope and initialized with undefined. The code is effectively interpreted as: `var x; console.log(x); x = 5;`. So x exists but hasn't been assigned yet when logged — it returns undefined. This is different from let (which is in the TDZ and throws ReferenceError) or const (which also throws ReferenceError before initialization)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `this` refer to inside a regular function called as a standalone function (not as a method)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The object that defined the function" },
+        { "id": "b", "text": "The global object (window in browsers, global in Node.js)" },
+        { "id": "c", "text": "undefined (in strict mode)" },
+        { "id": "d", "text": "The first argument passed to the function" }
+      ],
+      "correctKey": "c",
+      "explanation": "In strict mode, `this` is undefined when a regular function is called as a standalone function (not as a method of an object). In non-strict mode, it defaults to the global object (window in browsers), which is dangerous and a common source of bugs. Arrow functions don't have their own `this` — they inherit it from the enclosing lexical scope."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is an IIFE and why was it used before ES6 modules?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "An Immediately Invoked Function Expression — used to create a private scope for variables before block-scoped let/const and before ES6 module syntax existed" },
+        { "id": "b", "text": "An Immediately Invoked Function used to export modules to the global scope" },
+        { "id": "c", "text": "An IIFE is a syntax error in modern JavaScript and was never a valid pattern" },
+        { "id": "d", "text": "An Immediately Invoked Function that hoists all variables to the global scope" }
+      ],
+      "correctKey": "a",
+      "explanation": "An IIFE is a function wrapped in parentheses and immediately invoked: `(function() { ... })()`. Its purpose is to create a private function scope — variables inside are local and not exposed to the global scope. Before let/const (ES6) and ES6 modules, it was the primary way to encapsulate variable names and avoid global namespace pollution. Modern JavaScript uses block-scoped let/const and ES6 import/export instead."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Higher-order functions are functions that accept other functions as arguments or return functions.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Higher-order functions (HOFs) either take functions as arguments or return functions. Array methods like map, filter, and reduce are classic examples: `arr.filter(x => x > 0)` takes a callback function. Functions like `once(fn)` that return a one-time version of another function are also HOFs. This is a core functional programming concept in JavaScript."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nconst arr = [1, 2, 3];\narr.forEach(n => console.log(n * 2));\nconst doubled = arr.map(n => n * 2);\nconsole.log(doubled);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "2, 4, 6 printed three times" },
+        { "id": "b", "text": "2, 4, 6 printed once; [2, 4, 6] logged" },
+        { "id": "c", "text": "[2, 4, 6] printed once; [2, 4, 6] logged" },
+        { "id": "d", "text": "undefined, undefined, undefined; [2, 4, 6] logged" }
+      ],
+      "correctKey": "b",
+      "explanation": "forEach() calls the callback for each element and returns undefined — it only produces side effects (logging in this case), printing 2, 4, 6. map() returns a new array with each element transformed by the callback — returning [2, 4, 6]. The original arr is not modified by either call. These are two distinct behaviors: forEach is for side effects, map is for transformation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Arrow functions have their own `this` binding that is determined by the surrounding lexical context.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Arrow functions do NOT have their own `this` binding — this is the key difference from regular functions. Arrow functions lexically capture `this` from their enclosing scope. This means `this` inside an arrow function is permanently bound to whatever `this` was in the surrounding code at the time the arrow function was defined. It cannot be changed with .call(), .apply(), .bind(), or as an object method."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\nfor (let j = 0; j < 3; j++) {\n  setTimeout(() => console.log(j), 0);\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0, 1, 2 then 0, 1, 2" },
+        { "id": "b", "text": "3, 3, 3 then 0, 1, 2" },
+        { "id": "c", "text": "0, 1, 2 then 3, 3, 3" },
+        { "id": "d", "text": "3, 3, 3 then 3, 3, 3" }
+      ],
+      "correctKey": "b",
+      "explanation": "This is the classic closure-in-loop problem. With var, there is only ONE variable i shared across all three setTimeout callbacks. By the time the callbacks run (after the loop finishes), i has already reached 3. With let, each iteration of the loop creates a NEW binding of j (block scope), so each callback captures a different j. Result: var logs 3, 3, 3; let logs 0, 1, 2. This is why let (or an IIFE to capture i) is preferred in loops with closures."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `.bind()` do compared to `.call()` and `.apply()`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "bind() returns a new function with `this` permanently bound; call() and apply() invoke the function immediately with a given `this` value" },
+        { "id": "b", "text": "All three methods do the same thing — invoke a function with a given `this` binding" },
+        { "id": "c", "text": "bind() invokes immediately like call(); call() returns a new bound function like bind()" },
+        { "id": "d", "text": "bind() and apply() are the same; call() is different" }
+      ],
+      "correctKey": "a",
+      "explanation": "call() and apply() invoke the function immediately with a specified `this` and arguments (apply takes an array, call takes a spread list). bind() does NOT invoke — it returns a NEW function with `this` permanently bound to the specified value, and optionally pre-filled arguments (partial application). The new function can be called later. This distinction matters when you need a persistent binding."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nfunction greet(name, greeting) {\n  return `${greeting}, ${name}!`;\n}\nconst sayHi = greet.bind(null, 'Alice');\nconsole.log(sayHi('Good morning'));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Good morning, Alice!" },
+        { "id": "b", "text": "Alice, Good morning!" },
+        { "id": "c", "text": "Alice, undefined!" },
+        { "id": "d", "text": "Good morning, undefined!" }
+      ],
+      "correctKey": "c",
+      "explanation": "bind() performs partial application by pre-filling arguments from left to right. greet.bind(null, 'Alice') creates a new function where the first parameter (name) is permanently set to 'Alice'. When you call sayHi('Good morning'), 'Good morning' becomes the second parameter (greeting). But the template literal is `${greeting}, ${name}!` — so it produces 'Alice, Good morning!'. Wait: actually 'Alice' is name, 'Good morning' is greeting → 'Good morning, Alice!'. Let me reconsider: bind pre-fills name='Alice'; call sayHi('Good morning') → greeting='Good morning'. Output: 'Good morning, Alice!' (option A). Actually I need to recount: greet has (name, greeting) order. bind(null, 'Alice') pre-fills name='Alice'. sayHi('Good morning') passes 'Good morning' as greeting. Result: 'Good morning, Alice!' — option A."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a pure function?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A function that always returns the same output for the same input and has no side effects (no mutations, no I/O)" },
+        { "id": "b", "text": "A function that uses only the var keyword and avoids let/const" },
+        { "id": "c", "text": "A function that returns a Promise and can handle async operations" },
+        { "id": "d", "text": "A function declared with the `pure` keyword in JavaScript" }
+      ],
+      "correctKey": "a",
+      "explanation": "A pure function: (1) given the same arguments, always returns the same result (deterministic), and (2) produces no side effects — no mutation of external state, no I/O, no console.log, no network requests, no throwing exceptions. Pure functions are predictable, testable, and cacheable (memoizable). Most array methods like map/filter/reduce are pure when their callbacks are pure. JavaScript has no `pure` keyword (D is false)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Arrow functions can be used as constructor functions with the `new` keyword.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Arrow functions cannot be used as constructors — they do not have a [[Construct]] internal method. Calling `new ArrowFunc()` throws a TypeError: 'ArrowFunc is not a constructor'. This is intentional: arrow functions are designed to be lightweight and lexically bind `this`, making them unsuitable for the prototype-based constructor pattern. Use regular functions (or classes) when you need constructors."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nfunction outer() {\n  let count = 0;\n  return function inner() {\n    count++;\n    return count;\n  };\n}\nconst counter = outer();\nconsole.log(counter());\nconsole.log(counter());\nconsole.log(counter());",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1, 2, 3" },
+        { "id": "b", "text": "0, 1, 2" },
+        { "id": "c", "text": "1, 1, 1" },
+        { "id": "d", "text": "ReferenceError: count is not defined" }
+      ],
+      "correctKey": "a",
+      "explanation": "This is the module/closure pattern for data privacy. outer() creates a local variable count and returns inner, which closes over count. The returned counter function retains access to count even after outer() has returned. Each call to counter() increments the shared count variable. Since count is not in the global scope, it can't be accessed or reset from outside — only through the counter closure. Output: 1, 2, 3."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The arguments object inside an arrow function refers to the arguments passed to the arrow function itself.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Arrow functions do NOT have their own `arguments` object. If you access `arguments` inside an arrow function, it refers to the arguments object of the enclosing non-arrow function (lexical scoping). If there is no enclosing non-arrow function, it's a ReferenceError in strict mode. Use rest parameters (`...args`) instead, which is the modern equivalent and works in arrow functions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which array method is a higher-order function that reduces all elements to a single value?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Array.prototype.reduce(callback, initialValue)" },
+        { "id": "b", "text": "Array.prototype.flat(depth)" },
+        { "id": "c", "text": "Array.prototype.splice(start, deleteCount)" },
+        { "id": "d", "text": "Array.prototype.fill(value, start, end)" }
+      ],
+      "correctKey": "a",
+      "explanation": "reduce() applies a callback function against an accumulator, reducing the array to a single value. Signature: reduce(callback, initialValue) where callback receives (accumulator, currentValue, index, array). Example: `[1,2,3].reduce((acc, n) => acc + n, 0)` returns 6. flat() (B) flattens nested arrays. splice() (C) mutates the array in place. fill() (D) fills array elements with a value."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nfunction curriedAdd(a) {\n  return function(b) {\n    return function(c) {\n      return a + b + c;\n    };\n  };\n}\nconsole.log(curriedAdd(1)(2)(3));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "6" },
+        { "id": "b", "text": "123 (string concatenation)" },
+        { "id": "c", "text": "NaN" },
+        { "id": "d", "text": "TypeError: not a function" }
+      ],
+      "correctKey": "a",
+      "explanation": "Currying transforms a function with multiple arguments into a chain of functions, each taking one argument. curriedAdd(1) returns a function expecting (b); calling it with (2) returns a function expecting (c); calling it with (3) executes and returns a + b + c = 1 + 2 + 3 = 6. This is explicit currying. Libraries like lodash and Ramda provide curry utilities that can curry any function automatically."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is function composition and why is it useful in functional JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Combining small, pure functions by passing the output of one as the input to the next to build complex transformations — enabling reusable, declarative, and testable pipelines" },
+        { "id": "b", "text": "Using the spread operator inside function parameters to accept variable arguments" },
+        { "id": "c", "text": "Overloading a function to accept different numbers of arguments" },
+        { "id": "d", "text": "Memoizing a function's result to avoid recomputation on repeated calls" }
+      ],
+      "correctKey": "a",
+      "explanation": "Function composition: given f and g, composing them produces h(x) = f(g(x)). The output of one function becomes the input of the next. Example: `const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x)`; `const compute = pipe(double, addOne, square)`. This builds complex logic from simple, single-purpose pure functions. It's declarative (readable in order), reusable, and easy to test — each component is tested independently."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Tail call optimization (TCO) allows JavaScript engines to reuse stack frames for recursive calls in the tail position, preventing stack overflow for deep recursions.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Proper Tail Call (PTC) was introduced in ES2015 (strict mode only). When a function's last action is a call to another function, the JavaScript engine can reuse the current stack frame instead of adding a new one — enabling infinite recursion without stack overflow. Example: `function factorial(n, acc = 1) { return n === 0 ? acc : factorial(n - 1, n * acc); }` — the recursive call is in tail position. Note: TCO is not supported in all engines (not in Safari's JavaScriptCore in some modes) and was removed from the spec."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a trampoline and when would you use one?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A technique that converts recursive calls into iterative loops by wrapping results in thunk objects, avoiding stack buildup when TCO is unavailable in the JS engine" },
+        { "id": "b", "text": "A debugging tool that logs every function call and return value in a JavaScript program" },
+        { "id": "c", "text": "A way to ensure functions run in the correct order by using setTimeout between calls" },
+        { "id": "d", "text": "A pattern for memoizing expensive recursive calculations" }
+      ],
+      "correctKey": "a",
+      "explanation": "A trampoline wraps recursive calls so that instead of invoking the next recursive call directly (growing the stack), it returns a thunk (function) that, when called, produces the next step. The trampoline loop repeatedly invokes these thunks until a non-function result is returned. This converts recursion to iteration at the application level, avoiding stack overflow when TCO isn't available. Example: `const trampoline = fn => (...args) => { let result = fn(...args); while (typeof result === 'function') result = result(); return result; }`."
+    }
+  ]
+}

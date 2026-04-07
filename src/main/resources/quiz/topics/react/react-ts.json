@@ -1,0 +1,247 @@
+{
+  "topicSlug": "react-ts",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which TypeScript type correctly represents a React component that accepts `name` (string) and an optional `age` (number) and returns JSX?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "const Person: FunctionComponent<{ name: string; age?: number }> = ({ name, age }) => <div>{name} {age}</div>" },
+        { "id": "b", "text": "const Person = ({ name, age }: { name: string; age?: number }) => <div>{name} {age}</div>" },
+        { "id": "c", "text": "const Person: React.FC<{ name: string; age: number | undefined }> = ({ name, age }) => <div>{name} {age}</div>" },
+        { "id": "d", "text": "const Person: Component<{ name: string; age?: number }> = ({ name, age }) => <div>{name} {age}</div>" }
+      ],
+      "correctKey": "b",
+      "explanation": "The plain function signature (B) is the most idiomatic modern approach — explicit prop types without the quirks of React.FC/FunctionComponent. React.FC automatically adds `children?: ReactNode`, which you may not want, and its type system has edge cases (like not inferring return types perfectly for generics). Option D's `Component` is a class-only type."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a discriminated union in TypeScript and why is it useful in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A union of types where each type has a common literal property ('discriminant') that TypeScript uses to narrow the type — useful for rendering different UI based on state (e.g., loading/success/error states)" },
+        { "id": "b", "text": "A TypeScript feature that automatically excludes undefined from a union type" },
+        { "id": "c", "text": "A pattern where each member of a union must implement the same interface" },
+        { "id": "d", "text": "A TypeScript-only design pattern used only in React class components" }
+      ],
+      "correctKey": "a",
+      "explanation": "A discriminated union has a common literal field (the discriminant) like `type Status = { kind: 'loading' } | { kind: 'success'; data: T } | { kind: 'error'; message: string }`. TypeScript narrows the type when you check `status.kind`, enabling exhaustive conditional rendering with type safety. This pattern is the idiomatic way to model async states, wizard steps, or any conditional UI in TypeScript React apps."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the `satisfies` operator do in TypeScript 4.9+ and how is it useful in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It asserts a value matches a type without widening the type — preserving the narrow inferred type while validating against the constraint" },
+        { "id": "b", "text": "It narrows a union type to a single member" },
+        { "id": "c", "text": "It replaces the `as` type assertion and is safer" },
+        { "id": "d", "text": "It automatically satisfies all interface properties without declaring them" }
+      ],
+      "correctKey": "a",
+      "explanation": "`satisfies` validates that a value matches a type while keeping the value's inferred (narrower) type. Example: `const config = { height: 'auto', width: 100 } satisfies ThemeConfig` — config is typed as `{ height: string; width: number }` (inferred), not just `ThemeConfig`. In React, this is useful for validating prop objects, theme configurations, and route definitions without losing type inference."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `type Props = { children: React.ReactNode }` accept as valid children?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Only JSX elements" },
+        { "id": "b", "text": "Only string values" },
+        { "id": "c", "text": "JSX elements, strings, numbers, booleans, null, undefined, fragments, and arrays of all these" },
+        { "id": "d", "text": "Only React components, not primitive values" }
+      ],
+      "correctKey": "c",
+      "explanation": "React.ReactNode is the most permissive children type in React — it includes everything that can be rendered. `JSX.Element` (A) and `ReactElement` only cover JSX expressions. `ReactNode` even includes `undefined` and `null`, which matters when components conditionally render children. For maximum flexibility, use `React.ReactNode` for children props."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "TypeScript utility types like `Partial<T>`, `Required<T>`, and `Pick<T, K>` are evaluated at compile time.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "TypeScript utility types are erased at compile time — they produce new type annotations but generate no additional JavaScript. `Partial<T>` makes all properties optional; `Required<T>` makes all required; `Pick<T, K>` selects specific keys. They are purely a static type-system feature used for prop transformations, API response typing, and form defaults."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `Omit<T, K>` do in TypeScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Removes the `K` property from type `T`" },
+        { "id": "b", "text": "Creates a type with only the properties of `T` that are not optional" },
+        { "id": "c", "text": "Excludes a type from a union" },
+        { "id": "d", "text": "Makes all properties of `T` optional" }
+      ],
+      "correctKey": "a",
+      "explanation": "Omit creates a new type by removing the specified key(s) from an existing type. `Omit<ButtonProps, 'onClick'>` removes the onClick prop, useful when wrapping a component and hiding inherited props. It is commonly combined with extending types: `type EditableButtonProps = Omit<ButtonProps, 'disabled'> & { editable: boolean }`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `interface` and `type` for defining prop shapes in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "interface can extend other interfaces; type can use union types and mapped types — both are valid for React props, with interface preferred for public APIs and type for complex transformations" },
+        { "id": "b", "text": "type is for primitive values only; interface is for object shapes" },
+        { "id": "c", "text": "interface is for class components; type is for function components" },
+        { "id": "d", "text": "There is no difference — they are interchangeable in all contexts" }
+      ],
+      "correctKey": "a",
+      "explanation": "Both are valid. Interfaces can be extended (`interface A extends B`) and are declaration-merged (useful for augmenting third-party types). Types can express unions, intersections, mapped types, and conditional types that interfaces cannot. For React prop shapes, interface is idiomatic for simple shapes (easier to read in error messages), but type is better for complex transformations. Both work; team consistency matters more than which you choose."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does this code output?\n\ntype Status = 'idle' | 'loading' | 'success' | 'error';\n\nfunction render(status: Status) {\n  if (status === 'loading') return <Spinner />;\n  if (status === 'success') return <Content />;\n  if (status === 'error') return <Error />;\n  return <div>Idle</div>;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "A loading spinner, content, error message, or idle div based on the status — with TypeScript narrowing the type in each branch" },
+        { "id": "b", "text": "A TypeScript error because Status is not a valid React component" },
+        { "id": "c", "text": "Always renders the idle div because the string union is not properly narrowed" },
+        { "id": "d", "text": "Only renders the loading state; other branches cause type errors" }
+      ],
+      "correctKey": "a",
+      "explanation": "TypeScript's control flow analysis narrows the union type within each if branch. After `status === 'loading'`, TypeScript knows `status` is `'loading'` in that branch. The final `return <div>Idle</div>` is the exhaustive fallback for the `'idle'` member. If you remove `return <div>Idle</div>`, TypeScript would correctly infer that the function might return `undefined` and raise an error."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a generic component in React TypeScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A component that uses TypeScript generics to accept a typed data prop, enabling a reusable List, Table, or Select that works with any data shape" },
+        { "id": "b", "text": "A component that can be used as both a class and a function component" },
+        { "id": "c", "text": "A higher-order component that wraps other components" },
+        { "id": "d", "text": "A component that renders different content based on the browser type" }
+      ],
+      "correctKey": "a",
+      "explanation": "A generic component uses `<T>` to parameterize its prop types. Example: `function List<T>({ items, renderItem }: { items: T[]; renderItem: (item: T) => ReactNode })`. This allows `List<User>` or `List<Product>` with full type safety — TypeScript knows the type of `item` in `renderItem`. Generic components are essential for reusable data-driven UI components."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is `React.ComponentProps<typeof MyComponent>` and when is it useful?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Extracts the props type from a component type — useful for forwarding props to another component or creating wrapper components that accept the same props" },
+        { "id": "b", "text": "Returns the return type of the component" },
+        { "id": "c", "text": "Creates a new component that renders the same as the original" },
+        { "id": "d", "text": "Returns the type of all hooks used inside the component" }
+      ],
+      "correctKey": "a",
+      "explanation": "`ComponentProps<typeof MyComponent>` extracts the prop type from a component reference. `const CardWrapper = (props: React.ComponentProps<typeof Card>) => <Card {...props} />` — this forwards all Card props without re-declaring them. Also useful for typing event handlers that should match a component's expected props. This is cleaner than manually re-declaring prop types and stays in sync automatically."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `React.ElementType` represent in TypeScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A string representing an HTML tag name (e.g., 'div', 'span')" },
+        { "id": "b", "text": "A union of string (HTML tags) and React component types — the broadest type for anything that can be rendered by React" },
+        { "id": "c", "text": "A TypeScript utility type that creates a new element type from an existing type" },
+        { "id": "d", "text": "A type for React elements that have been rendered to the DOM" }
+      ],
+      "correctKey": "b",
+      "explanation": "`React.ElementType` is the union of all valid element types React can render — both intrinsic string elements (`'div'`, `'a'`) and component types (class or function components, forwardRef, memo). It is the type of the `as` prop in polymorphic components: `function Box({ as, children }: { as?: React.ElementType; children: ReactNode })`. Without `ElementType`, the `as` prop would need a narrower union."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `type` and `interface` when declaring props for a React component?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "interface supports declaration merging (useful for extending third-party types) and extends; type supports unions, intersections, and mapped types" },
+        { "id": "b", "text": "There is no functional difference — both produce identical type objects at runtime" },
+        { "id": "c", "text": "type is evaluated at runtime while interface is erased — type is slower" },
+        { "id": "d", "text": "interface can only be used in class components; type is for function components" }
+      ],
+      "correctKey": "a",
+      "explanation": "The key difference is that interfaces support declaration merging: if two interfaces with the same name are declared, TypeScript merges them. This is useful for augmenting module types. Types cannot be merged. For React props, the practical difference is minimal in most cases, but interface is preferred when you want consumers to `extends` your props type, and type is preferred when you need union types or utility transformations."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the `infer` keyword in TypeScript conditional types?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It allows TypeScript to infer a type within a conditional type's extends clause — used to extract types from other types (e.g., extracting the return type of a function)" },
+        { "id": "b", "text": "It enables TypeScript to automatically infer the type of props in React components" },
+        { "id": "c", "text": "It infers the type of a variable from its initialization value" },
+        { "id": "d", "text": "It makes TypeScript infer the type of async functions without explicit return types" }
+      ],
+      "correctKey": "a",
+      "explanation": "`infer` is used inside the extends clause of a conditional type to capture a type variable from the type being checked. Classic example: `type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never` — this extracts the return type of a function. React's own type library uses `infer` extensively. Without `infer`, you cannot extract positional types from generics."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `as const` do in TypeScript and why is it useful in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It narrows a literal type to its most specific form and makes the type readonly — useful for defining constant arrays of options or route configurations without needing explicit type annotations" },
+        { "id": "b", "text": "It converts a value to a constant at runtime" },
+        { "id": "c", "text": "It asserts a type without changing the inferred type" },
+        { "id": "d", "text": "It creates a new array that cannot be modified" }
+      ],
+      "correctKey": "a",
+      "explanation": "`as const` is a const assertion — it narrows a literal to its narrowest type and makes all properties readonly. `const ROUTES = ['home', 'about'] as const` gives type `readonly ['home', 'about']` instead of `string[]`. In React, this is useful for type-safe option lists, menu configurations, and route definitions where you want the array contents to be literal types, not generic strings."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When TypeScript's strict mode is enabled, `useState<string | undefined>(undefined)` correctly initializes state as `string | undefined`.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "With strict mode enabled, TypeScript correctly infers `string | undefined` from the initial value `undefined`. This is idiomatic when the initial state should represent 'no value yet loaded'. The alternative `useState<string>('default')` would set a default value. Both patterns are valid depending on whether you want to represent 'loading' state via undefined or via a boolean flag."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does this type produce?\n\ntype Props = {\n  label: string;\n  value: number;\n  onChange: (value: number) => void;\n};\n\ntype FormProps = Omit<Props, 'onChange'> & {\n  onChange: (value: number, name: string) => void;\n};",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "A FormProps type with label (string) and value (number) from Props, plus an extended onChange that accepts both value and name parameters" },
+        { "id": "b", "text": "A TypeScript error because Omit cannot remove a function property" },
+        { "id": "c", "text": "FormProps is identical to Props because Omit has no effect on function properties" },
+        { "id": "d", "text": "A type with label and value only; onChange is removed entirely" }
+      ],
+      "correctKey": "a",
+      "explanation": "`Omit<Props, 'onChange'>` removes `onChange` from Props, leaving `label` and `value`. The intersection `& { onChange: ... }` then adds back an extended `onChange` with an additional `name` parameter. This is the idiomatic TypeScript pattern for extending prop APIs — 'omit this, replace with a different signature'. It avoids duplicating `label` and `value`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a mapped type in TypeScript and how is it used in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A TypeScript construct that iterates over the keys of a type using `[K in keyof T]` — used to transform prop types (e.g., making all optional, making all required, mapping to event handlers)" },
+        { "id": "b", "text": "A type that maps an external data structure to a TypeScript interface" },
+        { "id": "c", "text": "A TypeScript feature used only for iterating over arrays at runtime" },
+        { "id": "d", "text": "A type that maps URL paths to React component routes" }
+      ],
+      "correctKey": "a",
+      "explanation": "Mapped types transform existing types: `type Readonly<T> = { readonly [K in keyof T]: T[K] }`. React's prop-types-to-TypeScript migration, form library type generation, and `ComponentProps` utilities use mapped types extensively. A common React pattern: `type EventHandlers<T> = { [K in keyof T as `on${Capitalize<string & K>}`]: (event: T[K]) => void }` — this creates event handler props from a data shape."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between `React.ComponentProps`, `React.ComponentPropsOf`, and `React PropsWithoutref`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ComponentProps<typeof C> extracts all props from component C; PropsWithoutRef removes ref from those props (needed for forwardRef components); ComponentPropsOf is not a real React type" },
+        { "id": "b", "text": "They are all identical — different aliases for the same type" },
+        { "id": "c", "text": "ComponentProps is for class components; PropsWithoutRef is for function components" },
+        { "id": "d", "text": "ComponentProps extracts only optional props; PropsWithoutRef extracts required props" }
+      ],
+      "correctKey": "a",
+      "explanation": "`ComponentProps<typeof MyComponent>` extracts prop types. When wrapping a `forwardRef` component, the extracted type includes the `ref` prop, which you typically want to omit from the wrapper's props (since the wrapper manages its own ref). Use `Omit<ComponentProps<typeof MyComponent>, 'ref'>` or `PropsWithoutRef` from React types. Note: React's `PropsWithoutRef` was added in React 18 specifically for this use case."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a conditional type in TypeScript and how does it enable polymorphic component patterns in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A type that evaluates to one of two types based on a condition (T extends U ? A : B) — used for polymorphic 'as' prop patterns where the component's exposed API changes based on the `as` value (e.g., Box as 'a' gets anchor-specific props)" },
+        { "id": "b", "text": "A type that is only evaluated when the component is rendered in the browser" },
+        { "id": "c", "text": "A type that conditionally imports different component types at build time" },
+        { "id": "d", "text": "A type that checks if a component is a class or function at runtime" }
+      ],
+      "correctKey": "a",
+      "explanation": "Conditional types enable polymorphic components: `type BoxProps<T extends ElementType> = T extends 'a' ? AnchorProps : divProps`. When `Box as=\"a\"` — TypeScript narrows to `AnchorProps` and provides anchor-specific autocomplete (href, rel, target). Without conditional types, you'd have to expose all props (including irrelevant ones like href on a div) or lose type safety. Libraries like Chakra UI and Radix UI use this pattern heavily."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "TypeScript's strict null checks (`strictNullChecks: true`) is the only compiler option that matters for React type safety.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "While `strictNullChecks` is critical for catching null/undefined errors, `strict` mode (which enables `strictNullChecks`, `noImplicitAny`, `strictFunctionTypes`, `strictPropertyInitialization`, etc.) provides comprehensive type safety. For React specifically, `noUncheckedIndexedAccess` catches array index out-of-bounds, and `exactOptionalPropertyTypes` handles optional property edge cases. A well-configured tsconfig.json should enable `strict: true`."
+    }
+  ]
+}

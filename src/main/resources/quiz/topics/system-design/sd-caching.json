@@ -1,0 +1,241 @@
+{
+  "topicSlug": "sd-caching",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the fundamental purpose of a cache in a system architecture, and what is the most important trade-off it introduces?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A cache permanently stores frequently accessed data to replace the database as the primary data store" },
+        { "id": "b", "text": "A cache stores copies of frequently accessed data closer to the consumer to reduce latency and load on the origin; the main trade-off is data staleness — cached data can become outdated relative to the source of truth" },
+        { "id": "c", "text": "A cache is a software layer that speeds up reads but cannot be used for writes — it is purely a read optimization" },
+        { "id": "d", "text": "A cache eliminates the need for a database entirely by storing all application state in memory" }
+      ],
+      "correctKey": "b",
+      "explanation": "A cache (from French 'cacher' — to hide) is a temporary, high-speed storage layer that keeps copies of data likely to be re-requested. The core benefit is reduced latency and offloaded database/backend load. The fundamental trade-off is staleness: the cache is a copy, not the source of truth, so cached data can diverge from the origin over time. Cache invalidation strategies (TTL, event-driven eviction, write-through) are critical design decisions. Option A mischaracterizes cache as a permanent store. Option C is false (write-through, write-behind caches exist). Option D is dangerous."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is cache-aside (lazy loading), and what are its main advantages over cache-aside's alternatives?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache-aside eagerly loads all database data into cache on application startup to warm the cache proactively" },
+        { "id": "b", "text": "Cache-aside is a pattern where the application first checks the cache; on a cache miss, it reads from the database and populates the cache — the advantage is simplicity and only caching what is actually requested" },
+        { "id": "c", "text": "Cache-aside writes go directly to the cache and the cache propagates writes to the database asynchronously in the background" },
+        { "id": "d", "text": "Cache-aside guarantees that the cache is always 100% synchronized with the database at all times" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cache-aside (lazy loading): application code checks cache → if miss, reads from DB → populates cache → returns data. Advantages: simple to implement, only caches what is actually used (no wasted cache space on unused data), naturally adapts to access patterns, and doesn't require special infrastructure. Disadvantages: cache stampede (thundering herd on popular cache misses), cold-start latency for first requests, no write-through to update the cache. Alternatives: read-through (cache itself fetches on miss), write-through (cache updated synchronously on writes), write-behind (cache updated, DB updated asynchronously). Option A describes cache warming. Option C describes write-behind. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A popular blog post goes viral and your cache receives 10,000 requests per second for the same post content. On the first request, a cache miss causes a single database query — but on subsequent requests, all 9,999 other requests also hit the database simultaneously before the cache is populated. What is this problem called and how do you prevent it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache poisoning — malicious requests flood the cache with incorrect data; prevent by using signed cache entries" },
+        { "id": "b", "text": "Cache stampede (thundering herd) — multiple concurrent requests all miss the cache simultaneously and hit the database; prevent using probabilistic early expiration, a cache lock (only one request fetches from DB while others wait), or a background refresh with stale-while-revalidate" },
+        { "id": "c", "text": "Cache avalanche — all cache entries expire at once due to a shared TTL; prevent by adding random jitter to TTL values" },
+        { "id": "d", "text": "Cache fragmentation — memory is allocated and deallocated too frequently, causing memory pressure; prevent by pre-allocating a large heap" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cache stampede (thundering herd) occurs when popular cache entries expire (or are evicted) and many concurrent requests all miss simultaneously, overwhelming the backend. Solutions: (1) probabilistic early expiration (probabilistically refresh cache before actual expiry), (2) cache locks (mutex/semaphore — one request fetches from DB, others wait on the lock), (3) stale-while-revalidate (serve stale data while refreshing in background). Cache avalanche (C) is a related but different problem: mass expiry of entries sharing a TTL. Cache poisoning (A) and fragmentation (D) are unrelated."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is TTL (Time To Live) in the context of caching, and what are the consequences of setting a TTL too short vs. too long?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "TTL is the maximum size of a cache entry in bytes; a short TTL prevents cache bloat but causes frequent evictions of large objects" },
+        { "id": "b", "text": "TTL is the duration a cached entry remains valid before it should be refreshed or discarded; too short increases database load (frequent cache misses), too long increases staleness risk and wastes cache space on outdated data" },
+        { "id": "c", "text": "TTL is only relevant for CDN caches; application-level caches like Redis do not use TTL" },
+        { "id": "d", "text": "A longer TTL always improves cache hit rate and reduces backend load — there is no downside to very long TTLs" }
+      ],
+      "correctKey": "b",
+      "explanation": "TTL defines how long a cache entry is considered valid. Short TTLs (e.g., 60 seconds): lower staleness risk but more cache misses and backend load — good for rapidly changing data (stock prices, inventory counts). Long TTLs (hours/days): higher cache hit rate, less backend load, but stale data risk — appropriate for relatively static data (user profile metadata, configuration). The optimal TTL is data-dependent and often tuned empirically. Option A misdefines TTL. Option C is false (TTL is a core Redis feature). Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between write-through and write-behind (write-back) caching strategies?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Write-through and write-behind are identical — both update the cache and database simultaneously in the same synchronous operation" },
+        { "id": "b", "text": "Write-through updates the cache and database synchronously in the same operation — both must succeed before acknowledging the write; write-behind updates the cache immediately and asynchronously flushes to the database — acknowledging the write before the database is updated" },
+        { "id": "c", "text": "Write-behind always writes to the database first before updating the cache; write-through updates the cache first" },
+        { "id": "d", "text": "Write-through is an asynchronous strategy used for high-throughput write scenarios; write-behind is synchronous and used when data durability is critical" }
+      ],
+      "correctKey": "b",
+      "explanation": "Write-through: synchronous dual-write to cache + DB. Acknowledgment sent only after both succeed. Cache always has consistent, up-to-date data. Slower writes (two I/O ops). Good for: data that will be immediately re-read, cache-aside misses that should be populated. Write-behind (write-back): write to cache immediately (fast), acknowledge instantly, flush to DB asynchronously in background. High write throughput, but a crash between cache write and DB flush loses data (durability risk). Good for: high-write-throughput scenarios (logging, analytics, rate limiting) where occasional data loss is acceptable. Option A is false. Option C is backwards. Option D is backwards."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which cache eviction policy evicts the least recently used entry when the cache reaches its maximum capacity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "LRU (Least Recently Used) — discards the least recently accessed entry when capacity is reached" },
+        { "id": "b", "text": "LFU (Least Frequently Used) — discards the entry with the lowest access frequency count" },
+        { "id": "c", "text": "FIFO (First In, First Out) — discards the oldest entry regardless of access history" },
+        { "id": "d", "text": "Random Eviction — selects a random entry to discard; provides no statistical guarantee of keeping hot data" }
+      ],
+      "correctKey": "a",
+      "explanation": "LRU (Least Recently Used) tracks access timestamps for each entry and evicts the entry that hasn't been accessed for the longest time when capacity is full. It works well when recently accessed items are likely to be accessed again (temporal locality). LRU is the most commonly used eviction policy in Redis and Memcached (both use variants of LRU). LFU (B) is better for workloads where frequency matters more than recency (e.g., persistently popular items). FIFO (C) ignores usage patterns. Random (D) is simple but doesn't prioritize hot data. Option A is correct."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between LRU and LFU eviction policies, and when would LFU be more appropriate than LRU?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "LRU and LFU are the same algorithm with different names — both track access frequency in the same way" },
+        { "id": "b", "text": "LRU evicts least recently accessed items; LFU evicts least frequently accessed items; LFU is better when you want to keep persistently popular items even if they weren't accessed recently, and avoid keeping a single large spike that happened to be recent" },
+        { "id": "c", "text": "LFU always outperforms LRU for all cache workloads because frequency is a better predictor of future access than recency" },
+        { "id": "d", "text": "LRU is only used for CPU caches (L1/L2); LFU is used for disk and memory caches" }
+      ],
+      "correctKey": "b",
+      "explanation": "LRU uses recency as a proxy for future access (temporal locality assumption). LFU uses frequency as a proxy (items accessed many times are likely accessed again). LFU is better for workloads with 'bursty' access patterns: an item accessed once a million times recently gets evicted by an item accessed once right now in LRU, which is wrong for that workload. LFU's challenge: frequency counters accumulate ('cache pollution' from old hot items that are no longer accessed). Redis supports LFU via the maxmemory-policy 'allkeys-lfu' and 'volatile-lfu'. Option A is false. Option C is false (workload-dependent). Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Your Redis cache is consuming 100% of its allocated memory. What happens to new write operations, and what Redis configuration or strategy should you implement to handle this?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Redis automatically evicts old entries to make room for new writes — no configuration needed" },
+        { "id": "b", "text": "Redis by default returns an OUTOFMEMORY error when maxmemory is reached and no eviction policy can free space (unless the policy is 'noeviction' which also returns an error); you must configure an appropriate eviction policy (e.g., allkeys-lru, volatile-ttl) or scale the cluster" },
+        { "id": "c", "text": "Redis automatically switches to a disk-backed storage mode when memory is full — writes are redirected to the filesystem" },
+        { "id": "d", "text": "When Redis hits maxmemory, it starts returning null for all read operations until memory is freed" }
+      ],
+      "correctKey": "b",
+      "explanation": "Redis blocks write commands when maxmemory is reached (unless a suitable eviction policy is set). The default eviction policy is 'noeviction' (return error on write). Configuring 'allkeys-lru' or 'volatile-lru' enables automatic eviction of least-recently-used keys to free space. 'volatile-ttl' evicts keys with the shortest TTL. 'volatile-random' and 'volatile-lfu' also exist. Choosing the right policy depends on whether all keys are candidates for eviction or only keys with a TTL set. Redis Cluster mode distributes keys across nodes for horizontal memory scaling. Option A is wrong. Option C is wrong. Option D is wrong."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A CDN serves your static assets (images, CSS, JavaScript) globally. An updated CSS file was deployed to the origin server, but users worldwide are still seeing the old CSS for up to 24 hours. What is the root cause and how do you fix it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The CDN is serving stale content because the origin server is down — fix by restarting the origin server" },
+        { "id": "b", "text": "The CDN is honoring the Cache-Control TTL set by the origin; the old CSS is cached at edge PoPs for up to 24 hours; fix by setting a short TTL on static assets, using cache-busting (filename versioning like app.a1b2c3.css), or issuing a cache invalidation (purge) request to the CDN after deployment" },
+        { "id": "c", "text": "The CDN automatically purges all cached content on every origin server deployment — the issue is a browser cache problem, not CDN" },
+        { "id": "d", "text": "The CSS file is too large (> 1 MB) and the CDN rejects caching for files above its size limit" }
+      ],
+      "correctKey": "b",
+      "explanation": "CDN edge nodes honor the origin's Cache-Control max-age header. If the origin serves Cache-Control: max-age=86400 (24 hours), the CDN caches the file for 24 hours before checking the origin again. When deploying updates, old cached versions persist until TTL expires. Solutions: (1) set short TTLs for mutable assets, (2) implement cache-busting (fingerprint/ versioning in filenames: main.abc123.js vs main.js — changing content changes the URL so the CDN treats it as a new asset), (3) issue a cache purge/invalidation API call to the CDN immediately after deployment. Option A is unrelated. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is cache-busting (or cache-busting fingerprinting), and why is it the preferred way to handle caching for static assets that change frequently?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache-busting forces the browser to clear its entire browser cache whenever a new deployment occurs" },
+        { "id": "b", "text": "Cache-busting embeds a content hash or build timestamp into the filename or query string of a static asset; when the asset changes, the URL changes, causing the CDN and browser to treat it as a new resource — eliminating stale cache issues without requiring cache invalidation" },
+        { "id": "c", "text": "Cache-busting is a technique used exclusively by Redis to prevent cache stampede problems during key eviction" },
+        { "id": "d", "text": "Cache-busting requires users to manually clear their browser cache after every deployment" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cache-busting (fingerprinting) makes each version of a file have a unique URL: e.g., main.a3f8c1d2.js (hash-based) or main.20240407.js (timestamp-based). When the file content changes (new build), the hash changes → new URL → new cache entry → browsers and CDNs fetch the new file. Old cached versions naturally expire by TTL or are simply never requested again. This decouples cache TTL from deployment cadence — long TTLs (1 year) can be used safely for immutable build artifacts. Option A is false. Option C confuses stampede prevention with cache-busting. Option D is the old manual workaround."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the stale-while-revalidate caching pattern, and when is it most useful?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Stale-while-revalidate immediately expires all cache entries when the TTL is reached — the next request always triggers a fresh fetch" },
+        { "id": "b", "text": "Stale-while-revalidate serves a cached entry even after it has expired (stale) while asynchronously fetching a fresh copy in the background — providing fast responses without staleness forever" },
+        { "id": "c", "text": "Stale-while-revalidate is a write strategy that updates the cache and database in alternating order to balance write throughput" },
+        { "id": "d", "text": "Stale-while-revalidate is a cache eviction strategy that removes expired entries first before evicting non-expired entries" }
+      ],
+      "correctKey": "b",
+      "explanation": "Stale-while-revalidate (HTTP Cache-Control extension): return the cached (potentially stale) entry immediately to the user, then asynchronously refresh the cache in the background. Users get fast responses (no wait for revalidation), and the cache stays relatively fresh. The 'stale-while-revalidate' directive in Cache-Control: s-maxage=3600, stale-while-revalidate=60 means: serve from cache for 3600s, then for 60s more serve stale while refreshing. This is the HTTP equivalent of a cache lock + background refresh, and is natively supported by CDNs, Nginx, and many HTTP clients. Option A describes simple expiry. Option C and D are unrelated."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: Adding a cache layer in front of a database always reduces the average latency of read operations.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "A cache adds a network hop and potential serialization overhead. For requests that are cache misses, the path cache → miss → database is longer than database alone. If the cache hit rate is low (less than ~70-80%), the overhead of the added cache layer outweighs the benefit. Cache only helps when hit rate is high enough that the average latency (hit_rate × cache_latency + miss_rate × (cache_latency + db_latency)) is lower than raw database latency. Cache also helps reduce database load and improve throughput at the cost of staleness risk — the benefit is not just latency reduction."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: Setting a TTL of 0 on a cache entry effectively makes the entry never expire.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "In Redis, TTL=0 means the key is already expired and will be deleted on the next access (or immediately if lazy expiration is triggered). TTL=0 is a special value that means 'expired immediately' — the opposite of 'never expire.' To make an entry never expire in Redis, simply do not call EXPIRE on the key, or set TTL to -1. A null TTL in HTTP Cache-Control also has specific meaning (don't cache at all). This is a common misconception."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: A cache miss always requires a full round-trip to the database before the cached data can be restored.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "A cache miss can be handled in multiple ways. In cache-aside, yes, the application fetches from the DB. But in cache-aside with a mutex lock, concurrent requests wait for the first to populate the cache. In stale-while-revalidate, the stale cached value is returned while the cache is refreshed in the background — no waiting for the miss. In probabilistic early expiration, the cache may serve a fresh value even as it revalidates. The miss rate and database load are not the same thing — the cache miss latency can be hidden entirely by serving stale data while revalidating asynchronously."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Your team is evaluating Redis vs. Memcached as an application-level cache. Redis is single-threaded. How does this affect throughput and latency characteristics compared to Memcached's multi-threaded architecture?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Redis's single-threaded design is always slower than Memcached's multi-threaded design for all workloads because it can only use one CPU core" },
+        { "id": "b", "text": "Redis's single-threaded event loop eliminates lock contention entirely and provides predictable, consistent latency for all operations; Memcached's multi-threaded design can achieve higher raw throughput on multi-core machines but suffers from lock contention and inconsistent latency under high concurrency — Redis 6+ adds I/O threads to parallelize network processing while keeping command execution single-threaded" },
+        { "id": "c", "text": "Memcached's multi-threaded design is superior because it can process multiple commands simultaneously on different CPU cores; Redis cannot use more than one core without manual sharding" },
+        { "id": "d", "text": "Both Redis and Memcached are single-threaded and provide identical throughput characteristics; any performance difference is due to network configuration" }
+      ],
+      "correctKey": "b",
+      "explanation": "Redis's single-threaded event loop (using epoll/kqueue) provides latency consistency: no lock contention, no context switching overhead between threads, and predictable O(log N) complexity for most operations. It is not limited to one core for network I/O in Redis 6+ (I/O threads parallelize network processing) and scales well beyond Memcached for most workloads. Memcached's multi-threaded design (libevent-based) can saturate multiple cores for high-throughput scenarios but suffers from global metadata locks that limit scalability under contention. For typical application cache workloads (sub-millisecond target), Redis's single-threaded model is advantageous. For maximum throughput with many concurrent small operations, Memcached may edge out Redis."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A user profile service reads user data 100 times more frequently than it is updated. The cache stores user profiles with a 1-hour TTL. On update, the service invalidates the cache. Under high write concurrency, a scenario arises where a cache miss occurs just as an update is in-flight — one request reads old data, another updates DB, the first request re-populates the cache with stale data. How do you fix this?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Increase the TTL to 24 hours to reduce the probability of cache misses occurring near update time" },
+        { "id": "b", "text": "Use write-through caching: on update, write to the database AND the cache simultaneously in the same transaction so the cache always has fresh data" },
+        { "id": "c", "text": "Implement a cache update mutex or use a compare-and-swap (CAS) token: on update, store a version number in both the DB and cache; on read, verify the version matches before populating the cache — stale reads with old version are discarded" },
+        { "id": "d", "text": "Remove TTL entirely — without expiration, the cache will never miss and the stale data problem disappears" }
+      ],
+      "correctKey": "c",
+      "explanation": "This is a classic race condition between cache invalidation and concurrent reads (the 'delete-then-read' race). The standard fix is a version or timestamp check: store a version number with each entity in both the DB and cache. On a cache miss, the reader fetches from DB (getting version N), checks the version in the cache — if cache version != DB version, discard the stale value and refetch. More robust: use a distributed lock (Redis SETNX) around the read-and-cache operation to serialize reads during an in-flight update. Write-through (B) is also correct but requires the cache to be write-capable and still has race windows. Option A doesn't fix the race. Option D creates permanent staleness risk."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You are designing a caching strategy for a social media application where users can have millions of followers. Caching a user's timeline (posts from people they follow) needs to support high read throughput. What caching architecture is most appropriate?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache the full timeline for each user with a 5-minute TTL; when a user posts, immediately update all followers' timeline caches by pushing to each follower's cached timeline" },
+        { "id": "b", "text": "Use fan-out-on-read: timeline is assembled at read time from cached post objects; each post is cached individually by ID; this avoids massive write amplification but adds latency on reads for users with many followers" },
+        { "id": "c", "text": "Fan-out-on-write (push model) works for all social media use cases; it ensures timelines are always pre-computed and read instantly" },
+        { "id": "d", "text": "Social media timelines do not benefit from caching because they are unique to each user and change too frequently" }
+      ],
+      "correctKey": "b",
+      "explanation": "Twitter/Facebook-style timelines use fan-out-on-read (pull model): when User A loads their timeline, the system fetches the list of people A follows, then fetches recent cached posts from each followed user, merges and sorts them. Each post is cached individually (post ID → post content). Fan-out-on-write (push model) — pushing to all follower timelines on every post — causes massive write amplification for users with millions of followers (celebrity problem). Hybrid approaches are used in practice: fan-out-on-write for normal users, fan-out-on-read for high-follower-count accounts. Option A misdescribes a push model with a short TTL that doesn't solve celebrity followers. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A CDN is used for a video streaming application. Videos range from 30-second clips to 2-hour movies. The CDN serves millions of users. What CDN caching strategy would you recommend for optimizing both storage costs and playback start time (TTFB)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache all video content at the CDN edge with a TTL of 7 days; this maximizes cache hit rates and minimizes origin requests regardless of video length" },
+        { "id": "b", "text": "Use a tiered caching strategy: cache the first 5-10 minutes (intro segment) of each video at edge PoPs for fast playback start (low TTFB), and use a origin-pull (lazy loading) strategy for the remainder of the video streamed from the nearest regional cache mid-tier; short clips are fully cached, long videos are streamed with partial caching" },
+        { "id": "c", "text": "Disable CDN caching entirely and stream all video content directly from the origin server — CDN caching is not suitable for video streaming" },
+        { "id": "d", "text": "Store only the video thumbnail images in the CDN; the actual video files should always be streamed directly from object storage without CDN involvement" }
+      ],
+      "correctKey": "b",
+      "explanation": "Video streaming has unique caching requirements: (1) playback start time (TTFB/Time to First Byte) is critical for user experience; (2) long videos (2-hour movies) are too large to fully cache at every edge PoP; (3) only the first few minutes are watched on average (retention curve). Best strategy: segment-based caching — cache the first segment at edge (fast start), cache popular full videos at mid-tier regional caches, and stream remainder from origin or deep storage. Use HLS/DASH chunked delivery so each segment is independently cacheable. Option A wastes CDN storage on videos users rarely finish. Option C eliminates CDN benefits. Option D ignores that CDN works well for byte-range requests on video segments."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: In a Redis Cluster with multiple shards, cache-aside pattern works identically to a single-node Redis cache — if the key exists on one of the nodes, it will always be found regardless of which node handles the request.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "In Redis Cluster, keys are distributed across shards using hash slots (16384 slots, mapped to nodes by slot = CRC16(key) mod 16384). Each request must be routed to the correct node for the key's slot. If a client connects to the wrong node for a given key, it receives a MOVED redirect (the cluster tells the client which node to retry). Clients must implement smart routing (using cluster-aware drivers that cache slot mappings) or use a proxy (Redis Cluster Proxy, Twemproxy). Cache-aside pattern works fine in cluster mode but requires cluster-aware clients or proxies to route requests correctly. Single-node behavior assumptions break in cluster mode."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You need to implement a distributed session store for a globally distributed web application with 50 million active sessions. Sessions must be accessible within 10ms latency from any region. What is the most appropriate architecture?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Store sessions in a single Redis cluster in one region and accept the latency penalty for cross-region access — this is the most reliable approach" },
+        { "id": "b", "text": "Use a geo-distributed Redis cache (e.g., Redis Enterprise Global, CockroachDB, or DynamoDB Global Tables with DAX) with local read replicas in each region and a single write primary — route session reads to the nearest replica with session-level consistency (read-your-writes go to primary region), and writes to the primary" },
+        { "id": "c", "text": "Store sessions in an in-memory hash map on each application server — this eliminates network latency entirely for local session access" },
+        { "id": "d", "text": "Store sessions in browser cookies signed with HMAC — no server-side session storage is needed, and this scales infinitely without infrastructure" }
+      ],
+      "correctKey": "b",
+      "explanation": "Global session storage requires: (1) local read replicas in each region for sub-10ms reads, (2) a single write primary to avoid split-brain scenarios, (3) session-level consistency for read-after-write (same user's writes must be visible to them). Redis Enterprise (CRDT-based geo-replication), DynamoDB DAX + Global Tables, or CockroachDB can provide this. Redis Cluster is intra-region, not geo-distributed. Option A's single-region approach fails the 10ms global requirement. Option C (server-local memory) creates a session-loss problem on server restarts and doesn't work with horizontal scaling. Option D (HMAC cookies) has size limits (4KB), exposes session data to the client, and provides no server-side invalidation capability."
+    }
+  ]
+}

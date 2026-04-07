@@ -1,0 +1,527 @@
+{
+  "topicSlug": "dsa-sorting",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the average time complexity of quick sort?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n²) — quick sort degrades to quadratic behavior in typical datasets"
+        },
+        {
+          "id": "b",
+          "text": "O(n log n) — partition divides array roughly in half each recursive level with O(n) partition cost per level"
+        },
+        {
+          "id": "c",
+          "text": "O(n) — a single partition pass sorts the entire array"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — quick sort eliminates half the elements with each comparison"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Quick sort's average case: T(n) = T(k) + T(n-k) + O(n), where the partition pivot lands near the middle on average. Solving this recurrence gives O(n log n). This assumes a good pivot strategy (random, median-of-three, etc.). The worst case (pivot always minimum or maximum) gives O(n²). Option A is the worst case. Option C underestimates work (partition is done at every level of recursion, not just once). Option D is binary search complexity, not quick sort."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the space complexity of merge sort?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(1) — merge sort can be implemented in-place with only pointer swaps"
+        },
+        {
+          "id": "b",
+          "text": "O(log n) — recursion depth is logarithmic, and no extra arrays are needed"
+        },
+        {
+          "id": "c",
+          "text": "O(n) — the merge step requires a temporary array proportional to the subarray being merged"
+        },
+        {
+          "id": "d",
+          "text": "O(n log n) — every level of recursion requires O(n) auxiliary space"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "Merge sort's divide step is free (index arithmetic). The merge/combine step requires copying elements into a temporary array of size proportional to the subarray — O(n) space per merge. With careful implementation (allocating one auxiliary array and reusing slices), this is O(n) total auxiliary space. Recursion depth is O(log n). Standard analysis: O(n) auxiliary space + O(log n) stack = O(n). Option A is false. Option B ignores the merge buffer. Option D overcounts — O(n log n) would require new arrays at every level."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the key property that makes binary search applicable to finding a target in a sorted array?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The array must be stored in a balanced binary tree structure with O(1) index access"
+        },
+        {
+          "id": "b",
+          "text": "The sorted order allows eliminating half the remaining search space with each comparison based on whether the target is less than or greater than the middle element"
+        },
+        {
+          "id": "c",
+          "text": "Binary search requires the array to be completely full with no empty slots"
+        },
+        {
+          "id": "d",
+          "text": "Binary search only works on integer arrays; it cannot handle floating-point values"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Binary search exploits sorted order: after comparing target with arr[mid], you know whether the answer lies in the left half or right half (since all left elements < arr[mid] < all right elements). This eliminates half the search space per step. After log₂ n steps, the search space is size 1. The requirement is random access (indexable array), not a specific data structure. Option A describes an actual BST, not binary search. Option C and D are false restrictions."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef bubble_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        swapped = False\n        for j in range(0, n - i - 1):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n                swapped = True\n        if not swapped:\n            break\n    return arr\n\nbubble_sort([5, 2, 9, 1, 5, 6])",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Bubble sort repeatedly swaps adjacent elements if out of order. The outer loop runs n passes; inner loop shrinks from n-i-1 (rightmost i elements are already bubbled into place). After each pass, the largest unsorted element reaches its final position. The `if not swapped: break` optimization detects when the array is already sorted (no swaps in a pass) and exits early. Result: [1, 2, 5, 5, 6, 9]. Option B is wrong (swaps occur). Option C is descending sort. Option D is a partial result mid-algorithm."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does it mean for a sorting algorithm to be stable?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The algorithm's running time does not vary with input order — it always takes the same number of steps"
+        },
+        {
+          "id": "b",
+          "text": "Equal elements maintain their relative order from the input in the sorted output"
+        },
+        {
+          "id": "c",
+          "text": "The algorithm uses only O(1) auxiliary memory regardless of input size"
+        },
+        {
+          "id": "d",
+          "text": "The algorithm guarantees O(n log n) performance even in the worst case"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Stability means that when two elements have equal keys, their relative order in the output matches their relative order in the input. Example: sorting [(Alice, 2), (Bob, 1), (Carol, 2)] by score: a stable sort guarantees Alice appears before Carol (both score 2, Alice was first). An unstable sort may reverse them. Stability matters when sorting by multiple keys: sort by city, then by name — stable sort preserves city grouping while sorting within it. Merge sort is stable; quick sort is not (partition swaps can change relative order of equals)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of binary search on a sorted array of n elements?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(log n) — the search space halves with each comparison, requiring at most log₂ n iterations"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — the algorithm may need to scan the entire array in the worst case"
+        },
+        {
+          "id": "c",
+          "text": "O(1) — binary search jumps directly to the target using index arithmetic"
+        },
+        {
+          "id": "d",
+          "text": "O(n log n) — log n passes are needed over n elements"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Binary search computes mid = (lo+hi)//2, compares arr[mid] with target, and recurses into the half that could contain the target. Each step reduces the search space by half. After k steps, remaining space is n/2^k. It reaches size 1 when 2^k ≥ n → k ≥ log₂ n. This is the fundamental O(log n) search algorithm — logarithmic time means halving the work each step. Option B describes linear search. Option C is wrong. Option D miscounts — there is only one element examined per iteration."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which sorting algorithm works by repeatedly selecting the minimum element from the unsorted portion and placing it at the beginning?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Selection sort — find the minimum in the unsorted portion, swap it with the first unsorted position"
+        },
+        {
+          "id": "b",
+          "text": "Insertion sort — shift elements right to insert the current element into the sorted portion"
+        },
+        {
+          "id": "c",
+          "text": "Bubble sort — repeatedly swap adjacent elements until the minimum reaches the front"
+        },
+        {
+          "id": "d",
+          "text": "Merge sort — divide the array in half and recursively sort each half before merging"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Selection sort: for each position i from 0 to n-1, find the minimum element in arr[i..n-1] and swap it with arr[i]. This puts one element in its final position per outer iteration. Key properties: O(n²) time regardless of input order (no best/average case improvement), O(1) space (in-place), and it is NOT stable (swapping can change relative order of equal elements). For example, swapping arr[i] with the minimum may move an equal element past others. Option B describes insertion sort. Option C describes bubble sort's bubbling mechanism but bubble sort doesn't find a global minimum."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which sorting algorithm is stable by default? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Merge sort" },
+        { "id": "b", "text": "Bubble sort" },
+        { "id": "c", "text": "Quick sort (standard partition)" },
+        { "id": "d", "text": "Insertion sort" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Merge sort (stable when merging with ≤ comparison), bubble sort (adjacent swaps never change relative order of equal elements), and insertion sort (shifting only, no swaps that cross equal elements) are all stable by default. Quick sort's partitioning swaps elements across the pivot boundary, which can change the relative order of equal elements — making it unstable by default. To make quick sort stable, additional effort is required (index tracking or extra space)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the worst-case time complexity of quick sort and what causes it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n log n) — worst case occurs when the input is already sorted and the pivot is the first element"
+        },
+        {
+          "id": "b",
+          "text": "O(n²) — worst case occurs when the pivot consistently selects the smallest or largest element, creating maximally unbalanced partitions"
+        },
+        {
+          "id": "c",
+          "text": "O(n²) — worst case occurs when all elements are equal, causing excessive duplicate handling"
+        },
+        {
+          "id": "d",
+          "text": "O(n log n) — quick sort always performs in O(n log n) regardless of pivot selection"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Quick sort's worst case: T(n) = T(n-1) + T(0) + O(n) = O(n²). This occurs when the pivot is consistently the minimum or maximum element (e.g., already sorted array with first-element pivot, or reverse sorted with last-element pivot). The partition becomes maximally unbalanced: sizes 0 and n-1. Mitigation: randomized pivot selection (expected O(n log n)), median-of-three, or introsort (switch to heap sort after depth limit). Option A misidentifies the time complexity. Option C's all-equal case depends on partition strategy — naive partition degrades, 3-way partition handles it well. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ndef binary_search(arr, target):\n    lo, hi = 0, len(arr) - 1\n    while lo <= hi:\n        mid = (lo + hi) // 2\n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            lo = mid + 1\n        else:\n            hi = mid - 1\n    return -1\n\narr = [1, 3, 5, 7, 9, 11, 13, 15]\nprint(binary_search(arr, 7), binary_search(arr, 6))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Binary search on [1,3,5,7,9,11,13,15]: arr[3] = 7 → found at index 3. For target 6: lo=0,hi=7→mid=3→arr[3]=7>6→hi=2; lo=0,hi=2→mid=1→arr[1]=3<6→lo=2; lo=2,hi=2→mid=2→arr[2]=5<6→lo=3; lo=3>hi=2 → exit loop, return -1. Option B is wrong (6 is not in the array). Option C is wrong (3 is the correct index for 7). Option D is wrong (index 3, not 4)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between in-place and out-of-place sorting algorithms?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "In-place uses O(1) auxiliary space; out-of-place uses O(n) or more additional space"
+        },
+        {
+          "id": "b",
+          "text": "In-place algorithms can only sort arrays; out-of-place algorithms can sort any data structure"
+        },
+        {
+          "id": "c",
+          "text": "Out-of-place algorithms are always faster than in-place algorithms"
+        },
+        {
+          "id": "d",
+          "text": "In-place means the algorithm never swaps elements; out-of-place swaps elements during sorting"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "In-place sorting algorithms use O(1) or O(log n) auxiliary space (constant or logarithmic, relative to input size). Quick sort is in-place (O(log n) stack space worst-case). Out-of-place algorithms allocate additional memory proportional to input size. Merge sort is typically out-of-place (O(n) auxiliary array). The distinction matters for memory-constrained environments. Option B is false (in-place algorithms work on linked lists too). Option C is false (space vs time trade-off). Option D misdefines in-place."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which sorting algorithm has the best worst-case time complexity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Quick sort — O(n log n) worst case with randomized pivot"
+        },
+        {
+          "id": "b",
+          "text": "Merge sort — O(n log n) worst case guaranteed due to balanced divide-and-conquer"
+        },
+        {
+          "id": "c",
+          "text": "Heap sort — O(n log n) worst case with guaranteed O(1) auxiliary space"
+        },
+        {
+          "id": "d",
+          "text": "Insertion sort — O(n) best case and O(n²) worst case, averaging O(n) on small data"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Merge sort guarantees O(n log n) in all cases (best, average, worst) because it always divides perfectly balanced (T(n) = 2T(n/2) + O(n) → O(n log n)). Heap sort also has O(n log n) worst case but is in-place. Quick sort has O(n²) worst case (unbalanced partitions). The answer is merge sort because it provides guaranteed O(n log n) with consistent performance. However, in practice, introsort (quick sort + heap sort fallback) is often preferred for general sorting. Option C is also valid (heap sort O(n log n) guaranteed, O(1) space), but merge sort is the textbook answer for 'best guaranteed worst case.'"
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the recurrence relation for merge sort and what does it resolve to?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "T(n) = T(n-1) + O(1), resolving to O(n) — linear scan"
+        },
+        {
+          "id": "b",
+          "text": "T(n) = 2T(n/2) + O(n), resolving to O(n log n) via Master theorem (case 2: a=2, b=2, f(n)=Θ(n), so n^log_b(a)=n, f(n)=Θ(n) → Θ(n log n))"
+        },
+        {
+          "id": "c",
+          "text": "T(n) = T(n/2) + O(1), resolving to O(log n) — binary search style"
+        },
+        {
+          "id": "d",
+          "text": "T(n) = T(n-1) + O(n), resolving to O(n²) — insertion sort style"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Merge sort divides the array into two halves (2T(n/2)), recursively sorts each half, then merges them (O(n) merge cost). Master theorem: a=2, b=2, d=1 → n^(log_b a) = n^1 = n, f(n) = Θ(n) → case 2 → Θ(n log n). This is the textbook example for Master theorem case 2. Option A is linear search. Option C is binary search. Option D is O(n²)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Quick sort is a stable sorting algorithm. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Quick sort is NOT stable by default. During partitioning, elements are swapped across the pivot boundary. If two equal elements are on opposite sides of the partition, swapping them changes their relative order. This breaks stability. Merge sort is the stable O(n log n) alternative, though it requires O(n) auxiliary space. For applications requiring stability (multi-key sorting, preserving insertion order), use merge sort or implement quick sort with stable partition strategies."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Heap sort has O(n log n) worst-case time complexity and O(1) auxiliary space. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Heap sort builds a max-heap from the array (O(n)), then repeatedly extracts the maximum (O(log n) per extract) and places it at the end. This gives O(n log n) worst case with no recursion and only O(1) auxiliary space (the input array is sorted in-place). The main drawback is that heap sort is not cache-friendly (non-contiguous memory accesses) and is not stable. It is the only comparison sort with O(n log n) guarantee and O(1) space."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which sorting algorithms are in-place? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Quick sort" },
+        { "id": "b", "text": "Merge sort (standard implementation)" },
+        { "id": "c", "text": "Heap sort" },
+        { "id": "d", "text": "Insertion sort" }
+      ],
+      "correctKey": "a,c,d",
+      "explanation": "Quick sort (O(log n) stack space, in-place partitioning), heap sort (O(1) auxiliary space, fully in-place), and insertion sort (O(1) auxiliary space, in-place shifting) are all in-place. Merge sort requires O(n) auxiliary array for the merge step — standard implementations are out-of-place. Some complex in-place merge sort variants exist but are not commonly used."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ndef merge_sort(arr):\n    if len(arr) <= 1: return arr\n    mid = len(arr) // 2\n    left = merge_sort(arr[:mid])\n    right = merge_sort(arr[mid:])\n    return merge(left, right)\n\ndef merge(a, b):\n    result, i, j = [], 0, 0\n    while i < len(a) and j < len(b):\n        if a[i] <= b[j]: result.append(a[i]); i += 1\n        else: result.append(b[j]); j += 1\n    result.extend(a[i:]); result.extend(b[j:])\n    return result\n\nprint(merge_sort([38, 27, 43, 3, 9, 82, 10]))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Merge sort divides [38,27,43,3,9,82,10] into [38,27,43,3] and [9,82,10], recursively sorts each → [3,27,38,43] and [9,10,82], then merges these two sorted halves → [3,9,10,27,38,43,82]. The merge function performs the classic linear merge of two sorted lists. Option B is wrong (the algorithm clearly sorts ascending). Option C is incorrect (merge is called correctly). Option D describes a different algorithm."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the time complexity of finding the floor (largest element ≤ target) in a sorted array using binary search?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n) — linear scan is required to find the floor element"
+        },
+        {
+          "id": "b",
+          "text": "O(log n) — binary search can be adapted to find floor by tracking the best candidate found so far"
+        },
+        {
+          "id": "c",
+          "text": "O(1) — floor can be found by computing target minus one from the last element"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — binary search can directly jump to the floor using the target value as an index offset"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Binary search for floor: when arr[mid] ≤ target, mid is a candidate for floor — record it and search the right half for a potentially larger floor. When arr[mid] > target, search the left half. After log n steps, the best candidate found is the floor. This is a common binary search variant (along with ceiling, lower bound, upper bound). Option A is linear search. Option C is nonsense. Option D misrepresents how binary search works — it doesn't use arithmetic on the target as an index."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the lower bound on comparison-based sorting, and why can't it be beaten by comparison sorts?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n) — sorting requires examining every element at least once"
+        },
+        {
+          "id": "b",
+          "text": "O(n log n) — there are n! possible permutations and each comparison eliminates at most half, requiring log₂(n!) ≈ n log n comparisons in the worst case"
+        },
+        {
+          "id": "c",
+          "text": "O(n²) — sorting requires comparing every pair of elements in the worst case"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — a balanced binary decision tree can sort in logarithmic time"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Comparison sorts can be modeled as binary decision trees: each comparison (a[i] < a[j]?) has two outcomes, creating a binary tree. Sorting must distinguish all n! possible input orderings, so the decision tree must have at least n! leaves. A binary tree with L leaves has height ≥ log₂ L. So minimum height ≥ log₂(n!) ≈ n log₂ n - n log₂ e + O(log n) (Stirling's approximation). Therefore no comparison sort can beat Ω(n log n) in the worst case. This lower bound can be beaten by non-comparison sorts (counting sort, radix sort, bucket sort) when extra conditions exist (bounded integer range, fixed-length keys)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Counting sort has O(n + k) time and O(k) space where k is the range of input values, making it linear-time for bounded integers. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Counting sort works in three phases: (1) count occurrences of each value in O(n), (2) compute prefix sums to determine positions in O(k), (3) place elements in output array using counts in O(n). Total: O(n + k) time, O(k) auxiliary space. It is stable and non-comparison-based, so it can achieve better than Ω(n log n) when the range k is O(n). The trade-off: if k >> n², counting sort becomes impractical (too much memory). Radix sort extends this by applying counting sort digit-by-digit."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef insertion_sort(arr):\n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i - 1\n        while j >= 0 and arr[j] > key:\n            arr[j + 1] = arr[j]\n            j -= 1\n        arr[j + 1] = key\n    return arr\n\nprint(insertion_sort([5, 2, 9, 1, 5, 6]))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Insertion sort processes each element from index 1: it shifts all larger elements right to make room for the key. Trace: [2,5,9,1,5,6] after key=2; [2,5,9,1,5,6] after key=9 (no shifts); [1,2,5,9,5,6] after key=1 (shifts 5,9 right); [1,2,5,5,9,6] after key=5 (shifts 9 right); [1,2,5,5,6,9] after key=6 (shifts 9 right). Result: [1, 2, 5, 5, 6, 9]. Option B is wrong. Option C is descending. Option D is mid-state."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is external sorting, and why is it needed?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "External sorting sorts data that does not fit in main memory (RAM); it uses disk I/O in passes (e.g., merge sort-based external merge sort), minimizing the number of expensive disk reads/writes"
+        },
+        {
+          "id": "b",
+          "text": "External sorting sorts arrays that are stored outside the CPU cache; it minimizes cache misses by sorting in cache-sized chunks"
+        },
+        {
+          "id": "c",
+          "text": "External sorting is a synonym for radix sort applied to large integers; it processes each digit as an external pass"
+        },
+        {
+          "id": "d",
+          "text": "External sorting sorts data in external (non-volatile) memory like SSDs; it is no different from internal sorting in terms of algorithm"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "External sorting handles data too large to fit in RAM — used in databases and file systems. The classic approach: (1) sort chunks that fit in RAM, write to disk, (2) merge sorted runs using a k-way merge (heap-based). The goal is minimizing disk I/O (random disk access is orders of magnitude slower than sequential read). External merge sort: sort M-page runs, then merge k runs at a time where k = RAM pages / run pages. Key insight: disk I/O is the bottleneck, not CPU comparisons."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which sorting algorithms are stable? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Bubble sort" },
+        { "id": "b", "text": "Merge sort" },
+        { "id": "c", "text": "Radix sort (LSD)" },
+        { "id": "d", "text": "Quick sort (standard partition scheme)" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Bubble sort (stable — adjacent swaps preserve relative order of equals), merge sort (stable — merge preserves order when elements are equal), and radix sort LSD (stable counting sort per digit preserves order across digits). Quick sort is NOT stable (partition swaps can cross equal elements). Radix sort MSD can be made stable with careful implementation, but LSD is inherently stable due to its per-digit counting sort foundation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the key property that makes counting sort run in linear time?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Counting sort uses binary search to locate each element's position in O(log n)"
+        },
+        {
+          "id": "b",
+          "text": "Counting sort uses the element values as array indices (no comparisons needed), and its runtime O(n + k) is linear when the range k is O(n)"
+        },
+        {
+          "id": "c",
+          "text": "Counting sort divides the array in half recursively and merges in O(n), achieving O(n log n)"
+        },
+        {
+          "id": "d",
+          "text": "Counting sort is a comparison-based sort that beats the Ω(n log n) lower bound by using a special comparison strategy"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Counting sort is non-comparison-based: it uses a count array where count[key] directly indexes by element value. For each element with value v, the output position is determined by counting occurrences — no pairwise comparisons. Time: O(n + k) where k = max - min + 1. When k = O(n), this is O(n). When k >> n (e.g., sorting 32-bit integers where k = 2³²), it becomes impractical. This is why radix sort applies counting sort digit-by-digit: each digit has range k = base (e.g., 10 for decimal), keeping k small and linear-time."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef radix_sort(arr):\n    max_val = max(arr)\n    exp = 1\n    while max_val // exp > 0:\n        counting_sort_by_digit(arr, exp)\n        exp *= 10\n    return arr\n\ndef counting_sort_by_digit(arr, exp):\n    n = len(arr)\n    output = [0] * n\n    count = [0] * 10\n    for x in arr:\n        count[(x // exp) % 10] += 1\n    for i in range(1, 10):\n        count[i] += count[i-1]\n    for i in range(n-1, -1, -1):\n        digit = (arr[i] // exp) % 10\n        count[digit] -= 1\n        output[count[digit]] = arr[i]\n    for i in range(n):\n        arr[i] = output[i]\n\nprint(radix_sort([170, 45, 75, 90, 802, 24, 2, 66]))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "c",
+      "explanation": "LSD (Least Significant Digit) radix sort processes digits from least to most significant. Pass 1 (ones digit): [170, 90, 802, 2, 24, 45, 75, 66]. Pass 2 (tens digit): [802, 2, 24, 45, 66, 170, 75, 90]. Pass 3 (hundreds digit): [2, 24, 45, 66, 75, 90, 170, 802]. Radix sort is stable (backward pass ensures stability) and runs in O(d × (n + k)) where d = digits and k = base. Option A is wrong sorting. Option B is an intermediate state. Option D is the result of LSD sort with wrong final order."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Heap sort builds a max-heap and then repeatedly extracts the maximum element. What is the time complexity of the heapify (build-heap) operation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n log n) — heapify calls bubble-down for each of the n elements, each taking O(log n)"
+        },
+        {
+          "id": "b",
+          "text": "O(n) — the bottom-up buildheap (Floyd's algorithm) runs in linear time because most nodes are at the bottom (small height) and higher nodes don't sink far"
+        },
+        {
+          "id": "c",
+          "text": "O(n²) — each node requires comparison with both children until the correct position is found"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) — heapify needs only to check the root node's children to maintain the heap property"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Floyd's bottom-up heap construction runs in O(n) — not O(n log n). The key insight: nodes at height h have at most ⌊log n⌋ - h children to sink past. Most nodes are at the bottom of the tree (large h → small height), so they sink very little. Summing the work across all levels gives the geometric series result O(n). If you insert n elements one by one (each O(log n)), it's O(n log n). The bottom-up construction saves a log factor. Option A describes n individual inserts. Option C overestimates. Option D underestimates."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which sort runs fastest on a nearly-sorted array: insertion sort, quick sort, or merge sort? (Select all that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Insertion sort — O(n) best case on nearly sorted data" },
+        { "id": "b", "text": "Quick sort — O(n log n) regardless of input order" },
+        { "id": "c", "text": "Timsort (used in Python/Java) — O(n) best case for runs that already exist" },
+        { "id": "d", "text": "Merge sort — O(n log n) but faster constant factors than quick sort on nearly sorted data" }
+      ],
+      "correctKey": "a,c",
+      "explanation": "Insertion sort has O(n) best case (already sorted or nearly sorted — inner loop rarely executes). Timsort (Python's sorted(), Java Arrays.sort()) exploits existing runs and runs in O(n) on nearly sorted data. Quick sort's performance is independent of input order (except for pivot quality — sorted input causes O(n²) worst case for naive pivot). Merge sort is O(n log n) regardless, with consistent performance but higher constant factors. The answer is insertion sort and Timsort."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The comparison-based sorting lower bound Ω(n log n) applies to all sorting algorithms. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "The Ω(n log n) lower bound applies only to comparison-based sorts (those that determine order by comparing pairs of elements). Non-comparison sorts can beat this bound under specific conditions: counting sort O(n + k) where k is the range, radix sort O(d × (n + k)) where d is digit count and k is base, bucket sort O(n) average when inputs are uniformly distributed. These algorithms use the structure of the data (integer bounds, string length) rather than pairwise comparisons."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef selection_sort(arr):\n    n = len(arr)\n    for i in range(n):\n        min_idx = i\n        for j in range(i+1, n):\n            if arr[j] < arr[min_idx]:\n                min_idx = j\n        arr[i], arr[min_idx] = arr[min_idx], arr[i]\n    return arr\n\nprint(selection_sort([64, 25, 12, 22, 11]))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Selection sort: pass 1 → min=11 at index 3 → swap arr[0] and arr[3] → [11,25,12,22,64]; pass 2 → min=12 at index 2 → swap arr[1] and arr[2] → [11,12,25,22,64]; pass 3 → min=22 at index 3 → swap arr[2] and arr[3] → [11,12,22,25,64]; pass 4 → min=25 at index 3 → already in place. Result: [11, 12, 22, 25, 64]. Selection sort makes exactly one swap per outer iteration and always performs O(n²) comparisons regardless of input order. Option B is wrong. Option C is ascending but wrong algorithm. Option D is mid-state."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the time complexity of radix sort, and what factors determine how many passes it requires?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n log n) — the number of passes depends on the logarithm of the number of elements"
+        },
+        {
+          "id": "b",
+          "text": "O(d × (n + k)) where d = number of digits (digits of max value), k = base (radix); fewer passes than d when using larger base with more complex counters"
+        },
+        {
+          "id": "c",
+          "text": "O(n + k) — one counting sort pass is always sufficient regardless of key size"
+        },
+        {
+          "id": "d",
+          "text": "O(n × k) — each of the n elements must be processed through all k buckets"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Radix sort (LSD or MSD) applies a stable sort per digit. Each digit sort (typically counting sort) runs in O(n + k) where k = base (radix). With d digits (e.g., for an integer with max value M, d = ⌈log_k M⌉), total time: O(d × (n + k)). Larger base k means fewer digits but more memory (k counters). Smaller base means more passes but less memory. For decimal numbers with base 10 and max value 802: d=3. For 32-bit integers with base 256: d=4. The choice of base balances memory vs. passes."
+    }
+  ]
+}

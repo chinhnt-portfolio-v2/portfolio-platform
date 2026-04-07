@@ -1,0 +1,253 @@
+{
+  "topicSlug": "react-rendering",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the Virtual DOM in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A direct copy of the browser's DOM stored in React state that updates synchronously" },
+        { "id": "b", "text": "A lightweight JavaScript representation of the real DOM — React compares (diffs) the new Virtual DOM with the previous one to determine the minimum number of changes needed before updating the real DOM" },
+        { "id": "c", "text": "A DOM API that allows direct manipulation of HTML elements" },
+        { "id": "d", "text": "A browser extension that speeds up React applications" }
+      ],
+      "correctKey": "b",
+      "explanation": "The Virtual DOM is a JavaScript object tree that mirrors the structure of the real DOM. When state changes, React creates a new VDOM tree, diffs it against the previous one (reconciliation), and then applies only the minimal set of changes to the real DOM. This batching and diffing makes React faster than direct DOM manipulation for complex UIs, but it is not free — unnecessary re-renders still cost CPU time."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is React's reconciliation algorithm?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A browser-native algorithm built into the DOM specification" },
+        { "id": "b", "text": "The process React uses to compare two Virtual DOM trees and determine which parts of the real DOM need to be updated — using heuristics to assume lists maintain order and elements of the same type produce similar trees" },
+        { "id": "c", "text": "A serialization format for transferring React state between server and client" },
+        { "id": "d", "text": "A backup copy of the previous Virtual DOM kept for debugging purposes" }
+      ],
+      "correctKey": "b",
+      "explanation": "Reconciliation is React's algorithm for diffing — the Fiber architecture (React 16+) makes it interruptible and prioritizes work, but the core heuristic remains: elements of different types produce different trees, elements with different keys are treated as different. Understanding these heuristics is why keys matter and why changing an element's type at a position can destroy and recreate its subtree."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Why does React require a `key` prop when rendering a list of components?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Keys are a security feature that prevents XSS attacks in list items" },
+        { "id": "b", "text": "Keys help React identify which items have changed, been added, or removed — enabling efficient DOM updates instead of destroying and recreating entire list contents on each update" },
+        { "id": "c", "text": "Keys are required by TypeScript for array elements to compile correctly" },
+        { "id": "d", "text": "Keys are used to sort the list items alphabetically" }
+      ],
+      "correctKey": "b",
+      "explanation": "Without a key, React cannot distinguish between list items — when you insert or delete an item, React destroys and recreates DOM nodes for every item after the change. With stable, unique keys, React can move existing nodes instead of destroying them. Use stable IDs from your data, not array indices (which break when items are reordered or deleted)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the primary role of `React.memo`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "To memoize the result of an expensive computation inside a component" },
+        { "id": "b", "text": "To prevent a component from re-rendering unless its props have changed — achieved via shallow comparison of props" },
+        { "id": "c", "text": "To cache the result of an API call across component renders" },
+        { "id": "d", "text": "To replace the useMemo hook for value caching" }
+      ],
+      "correctKey": "b",
+      "explanation": "React.memo is a higher-order component that memoizes a component: `const MemoizedButton = React.memo(Button)`. It performs a shallow comparison of props on each render — if props are the same, the component skips rendering. This is effective when a component is expensive to render and its parent re-renders frequently. Without memo, even passing the same props causes a re-render. Note: shallow comparison means object/array/function props must be stable references (useCallback/useMemo) to benefit."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a PureComponent in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A class component that automatically implements shouldComponentUpdate with a shallow prop and state comparison — skipping renders when props and state haven't changed" },
+        { "id": "b", "text": "A component that can only render pure (deterministic) content with no side effects" },
+        { "id": "c", "text": "A component that renders a mathematical function as a chart" },
+        { "id": "d", "text": "A component that never re-renders, regardless of parent changes" }
+      ],
+      "correctKey": "a",
+      "explanation": "PureComponent (for class components) implements `shouldComponentUpdate` with a shallow equality check on props and state. It is the class equivalent of `React.memo` for function components. In modern React, function components + React.memo are preferred over class components + PureComponent, but the underlying concept (skipping renders when inputs are unchanged) is the same."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "When a parent component re-renders, all its children always re-render, regardless of their props.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "This is React's default behavior. Without React.memo, child components re-render every time their parent re-renders, even if the child component's props haven't changed. Understanding this is the foundation of React performance optimization — it explains why React.memo and stable prop references are necessary."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is `React.Suspense` used for?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "To pause a component's render until a condition is met and show a fallback UI while waiting" },
+        { "id": "b", "text": "To throw an error boundary when a component fails to render" },
+        { "id": "c", "text": "To lazy-load images that are outside the viewport" },
+        { "id": "d", "text": "To pause JavaScript execution during a React update cycle" }
+      ],
+      "correctKey": "a",
+      "explanation": "Suspense lets you declare loading states for async operations (data fetching with React 18's Suspense for data fetching, or code splitting with React.lazy). `<Suspense fallback={<Spinner />}><AsyncComponent /></Suspense>` shows the spinner while AsyncComponent is loading. It works by having the suspended component 'throw' a promise — React catches it and renders the fallback. This is the foundation of React's concurrent features."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does this code do?\n\nconst UserList = React.memo(function UserList({ users }: { users: User[] }) {\n  return (\n    <ul>\n      {users.map(u => <li key={u.id}>{u.name}</li>)}\n    </ul>\n  );\n});",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "A memoized component that only re-renders when the `users` array reference changes" },
+        { "id": "b", "text": "A component that throws an error if users is undefined" },
+        { "id": "c", "text": "A component that automatically sorts the users list" },
+        { "id": "d", "text": "A component that can only be rendered inside a Suspense boundary" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.memo wraps the component and performs shallow comparison of the `users` prop on each render. If the `users` array reference is the same (same data, not a new array), the component skips re-rendering. This is effective when the parent creates a new `users` array on every render (e.g., `users.map(...)`) — in that case, memo won't help without useMemo at the parent level to stabilize the reference."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What happens when you use `useMemo` to memoize a list that is passed as a prop to a `React.memo`-wrapped child?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useMemo stabilizes the array reference across renders; React.memo skips the child's re-render because the prop reference is unchanged — together they prevent unnecessary renders" },
+        { "id": "b", "text": "useMemo and React.memo conflict — you should only use one or the other" },
+        { "id": "c", "text": "useMemo has no effect when used with React.memo — the child always re-renders" },
+        { "id": "d", "text": "useMemo forces the child to re-render even when props are unchanged" }
+      ],
+      "correctKey": "a",
+      "explanation": "The combination is synergistic: useMemo at the parent level creates a stable reference for the list; React.memo at the child level skips rendering when props are shallowly equal. Without useMemo, even if the list data is the same, a new array `items.map(...)` on each parent render defeats React.memo's shallow comparison. With both, the parent computes once, memoizes the result, and the child skips re-rendering."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `useMemo` and `React.memo`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useMemo memoizes a computed VALUE; React.memo memoizes a COMPONENT — they address different optimization targets and can be used together" },
+        { "id": "b", "text": "useMemo is for class components; React.memo is for function components" },
+        { "id": "c", "text": "useMemo runs on the server; React.memo only runs in the browser" },
+        { "id": "d", "text": "They are functionally identical — different names for the same thing" }
+      ],
+      "correctKey": "a",
+      "explanation": "useMemo memoizes the RESULT of a computation (expensive calculation, derived data). React.memo memoizes the COMPONENT itself (skipping its render if props are unchanged). Using useMemo to create a stable object/array and passing it to a React.memo child is a common performance pattern. Using them together is not redundant — they optimize different things."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "React.Suspense can only be used with React.lazy for code splitting.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "While Suspense + React.lazy is the most common use case, React 18 extended Suspense as a general primitive for async data fetching (React Server Components, and frameworks like Relay and Remix). The core mechanism — a component that 'suspends' by throwing a promise — is framework-agnostic. Future React versions will expand this capability further."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this render cycle?\n\nfunction Parent() {\n  const [count, setCount] = useState(0);\n  const memoizedList = useMemo(() => [1, 2, 3], []);\n\n  return (\n    <div>\n      <MemoizedChild list={memoizedList} />\n      <button onClick={() => setCount(c => c + 1)}>{count}</button>\n    </div>\n  );\n}\n\nconst MemoizedChild = React.memo(function Child({ list }: { list: number[] }) {\n  console.log('Child rendered');\n  return <div>{list.join(',')}</div>;\n});",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Child renders once; on button click, Child does NOT re-render because its list prop reference is stable" },
+        { "id": "b", "text": "Child renders on every button click because React.memo does not work with useMemo" },
+        { "id": "c", "text": "Child renders on every button click because React.memo does not work with arrays" },
+        { "id": "d", "text": "Child never renders because it is memoized" }
+      ],
+      "correctKey": "a",
+      "explanation": "useMemo with `[]` deps creates a stable `memoizedList` reference — it is the same array on every render. React.memo compares `list` by reference — since `memoizedList` never changes, React.memo skips Child's render even when Parent re-renders. This is the intended behavior. The button click updates `count`, causing Parent to re-render, but Child is skipped."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the `key` prop do that React.memo cannot replace?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The key prop is used by React's reconciliation algorithm to identify elements across re-renders; React.memo only compares props — it cannot identify that a completely different element is at the same tree position" },
+        { "id": "b", "text": "The key prop is a security feature that React.memo cannot replicate" },
+        { "id": "c", "text": "The key prop is required by TypeScript for list rendering" },
+        { "id": "d", "text": "The key prop makes components re-render immediately" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.memo compares props. If you swap two siblings (swap items 1 and 2), React.memo sees that the props are different and re-renders both — potentially animating incorrectly or losing local DOM state. Adding a unique key tells React these are different items that should be moved, not re-rendered. The key is a reconciliation signal that operates at a different level than memo's prop comparison."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the 'batched updates' behavior introduced in React 18?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React 18 automatically batches all state updates — whether they are in event handlers, promises, setTimeout, or native event callbacks — into a single re-render instead of multiple separate re-renders" },
+        { "id": "b", "text": "Batching is a technique that groups CSS style updates before applying them to the DOM" },
+        { "id": "c", "text": "Batching was only available in React 17 for class components" },
+        { "id": "d", "text": "Batching is a manual optimization that requires useMemo to activate" }
+      ],
+      "correctKey": "a",
+      "explanation": "Before React 18, only updates inside React event handlers were batched. Updates in setTimeout, promises, or native event listeners were NOT batched — causing multiple re-renders. React 18's automatic batching (via the new concurrent features) batches all updates regardless of where they originate. This means `setA(1); setB(2)` inside a setTimeout now triggers ONE render, not two. This improves performance without any code changes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Why might using the array index as a `key` cause rendering bugs?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Because the array index changes when the list is reordered, causing React to incorrectly match DOM nodes to data items — leading to stale state in form inputs, wrong animations, or reordered content" },
+        { "id": "b", "text": "Because the array index is not a valid prop in TypeScript" },
+        { "id": "c", "text": "Because array indices are always 0-based and React cannot handle 0 as a key" },
+        { "id": "d", "text": "Because using index as key causes TypeScript to report a type error in strict mode" }
+      ],
+      "correctKey": "a",
+      "explanation": "When you reorder items in a list keyed by index, React sees that item 0 is now 'different' from what it was before (different data), and item 1 is also different. React destroys the old DOM nodes and creates new ones, losing local component state (like form inputs, scroll positions, or animation states). If the list is static (never reordered or deleted), index-as-key is safe. Otherwise, use a stable, unique ID from your data."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "React.memo's default comparison is a shallow comparison. What does this mean for function and object props?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "For function and object props, shallow comparison checks equality of the reference — so new function objects or new object references on every render will always be considered 'different', defeating React.memo unless the reference is stabilized with useCallback or useMemo" },
+        { "id": "b", "text": "Shallow comparison deeply inspects the contents of objects and arrays to determine equality" },
+        { "id": "c", "text": "Shallow comparison only works with primitive types; object props are always treated as equal" },
+        { "id": "d", "text": "Shallow comparison is slower than deep comparison" }
+      ],
+      "correctKey": "a",
+      "explanation": "Shallow comparison (used by React.memo and PureComponent) compares primitives by value and objects/arrays/functions by reference. A new `() => {}` arrow function is always a new reference — shallow comparison sees 'different' and triggers a render. To make React.memo effective for components receiving objects or functions as props, stabilize those references with useCallback and useMemo in the parent."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the relationship between React's Fiber architecture and concurrent rendering?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Fiber (React 16) made rendering interruptible by splitting work into work units (Fiber nodes); concurrent features (React 18) leverage Fiber to pause, prioritize, and resume work — enabling Suspense, useTransition, and automatic batching" },
+        { "id": "b", "text": "Fiber and concurrent rendering are the same thing — just different names" },
+        { "id": "c", "text": "Fiber replaced the Virtual DOM entirely; concurrent rendering is a separate optimization layer" },
+        { "id": "d", "text": "Fiber was removed in React 18 and replaced with concurrent mode" }
+      ],
+      "correctKey": "a",
+      "explanation": "Fiber was React 16's internal rewrite — it replaced the old call-stack-based reconciliation with a linked tree of 'Fiber nodes' that can be paused and resumed. This is what made concurrent features possible. Concurrent rendering (React 18) uses Fiber's interruptibility to schedule work by priority — urgent work (typing) interrupts less urgent work (filtering a large list). Understanding this explains why useTransition and useDeferredValue work."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of this component tree during React 18 concurrent rendering?\n\nfunction App() {\n  return (\n    <React.Suspense fallback={<Spinner />}>\n      <Dashboard />\n    </React.Suspense>\n  );\n}\n\n// Dashboard suspends if user is not loaded\nfunction Dashboard() {\n  const user = useSuspenseQuery({ queryKey: ['user'], queryFn: fetchUser });\n  return <div>{user.name}</div>;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Spinner renders while the user query is pending; once resolved, Dashboard takes over and Spinner is unmounted" },
+        { "id": "b", "text": "Dashboard renders immediately; the Spinner is ignored" },
+        { "id": "c", "text": "A TypeScript error because useSuspenseQuery is not a valid React hook" },
+        { "id": "d", "text": "An infinite loading loop because Suspense doesn't handle query errors" }
+      ],
+      "correctKey": "a",
+      "explanation": "React's Suspense boundary catches the thrown promise from the suspending component. While the promise is pending, React renders the fallback (Spinner). When the promise resolves, React re-renders and displays Dashboard. This is the declarative async rendering pattern — no conditional loading state, no useEffect to manage loading flags. The query library (TanStack Query in this example) throws a promise while fetching."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between `React.lazy` and eager loading?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.lazy uses dynamic import (code splitting) to load a component only when it is first rendered — reducing initial bundle size; eager loading loads everything upfront" },
+        { "id": "b", "text": "React.lazy preloads all components before the app starts; eager loading is lazy" },
+        { "id": "c", "text": "React.lazy only works with class components" },
+        { "id": "d", "text": "React.lazy and eager loading produce identical bundle sizes" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.lazy uses `React.lazy(() => import('./HeavyComponent'))` — Webpack (or your bundler) creates a separate chunk that is only fetched when the component first renders. This reduces the initial JavaScript bundle, improving Time to Interactive. The tradeoff is a potential loading delay on first navigation to that route. Always wrap React.lazy in a Suspense boundary with a meaningful fallback."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "React.memo compares props using Object.is. What is the practical implication for props that are arrays created inline?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Inline arrays like `[1, 2, 3]` are always new references on every render — Object.is sees them as different, causing React.memo to re-render the child even when the data is logically the same — fix with useMemo at the parent" },
+        { "id": "b", "text": "Object.is deeply compares array contents, so inline arrays are always considered equal" },
+        { "id": "c", "text": "Inline arrays are automatically memoized by React and don't cause re-renders" },
+        { "id": "d", "text": "Inline arrays cannot be used as props in React.memo" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.is is a strict reference comparison for objects/arrays/functions — `{ a: 1 } !== { a: 1 }` even though they have identical content. This is why `const items = [1,2,3]` created inline in a parent render produces a different reference than the previous render, defeating React.memo. The solution is useMemo: `const items = useMemo(() => [1,2,3], [])` — one array reference, reused across renders. Without useMemo, React.memo has no data content comparison."
+    }
+  ]
+}

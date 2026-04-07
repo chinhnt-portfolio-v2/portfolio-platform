@@ -1,0 +1,429 @@
+{
+  "topicSlug": "spring-testing",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @SpringBootTest do in a Spring Boot test?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It compiles the Spring Boot application at test time" },
+        { "id": "b", "text": "It loads the full Spring ApplicationContext for integration testing — starting the embedded server, wiring all beans, and applying auto-configuration" },
+        { "id": "c", "text": "It runs unit tests on @Configuration classes only" },
+        { "id": "d", "text": "It generates test coverage reports for the application" }
+      ],
+      "correctKey": "b",
+      "explanation": "@SpringBootTest launches the full Spring ApplicationContext for integration tests — all beans are created, auto-configurations applied, and the embedded server starts (if @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT) or DEFINED_PORT). This is the closest simulation of a running application in a test. @SpringBootTest without arguments uses MOCK environment (no real server). The alternative @WebMvcTest and @DataJpaTest are slice tests that only load a subset of the context — faster but less comprehensive. Use @SpringBootTest for true end-to-end scenarios; use slices for isolated component tests."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @WebMvcTest do when applied to a controller test?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It loads the entire ApplicationContext including DataSource and JPA repositories" },
+        { "id": "b", "text": "It loads only the web layer (controllers, @ControllerAdvice, MockMvc) — slicing out DataSource, JPA, and other infrastructure beans for fast controller unit tests" },
+        { "id": "c", "text": "It starts an embedded Tomcat server for controller testing" },
+        { "id": "d", "text": "It automatically mocks all @Service beans in the application" }
+      ],
+      "correctKey": "b",
+      "explanation": "@WebMvcTest is a slice test that loads only Spring MVC components: @Controller, @ControllerAdvice, Converter, ResourceHandler, and WebMvcConfigurer beans. It auto-configures MockMvc, excludes @Component/@Service/@Repository beans, and auto-configures a MockMvc instance. The test provides or mocks the controller's dependencies. By default it uses a mock web environment (no real server). Use @WebMvcTest(MyController.class) to target a specific controller. To inject mock services into the controller under test, use @MockBean on fields — Spring registers these mocks in the web slice context. This is the fastest way to test controller logic in isolation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is MockMvc used for in Spring MVC testing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It starts a real HTTP server and sends real HTTP requests for end-to-end testing" },
+        { "id": "b", "text": "It performs server-side request testing without a real HTTP server — it posts requests through the DispatcherServlet directly, capturing and asserting the response" },
+        { "id": "c", "text": "It mocks the Spring ApplicationContext for unit testing without a servlet container" },
+        { "id": "d", "text": "It generates mock HTTP client code for integration with third-party APIs" }
+      ],
+      "correctKey": "b",
+      "explanation": "MockMvc is a Spring MVC test utility that performs server-side tests by calling the DispatcherServlet directly (without a real HTTP server). It simulates HTTP requests (get(), post(), put(), etc.), captures the resulting MockHttpServletResponse, and provides a fluent API for assertions: andExpect(status().isOk()), andExpect(jsonPath(\"$.name\").value(\"John\")). Use standaloneSetup(controller, mocks...) for pure unit tests (no Spring context). Use webAppContextSetup(context) for tests with a web ApplicationContext. MockMvc does NOT involve a real network socket — it is the fastest way to test controller logic."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @MockBean do in a Spring test?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It creates a real bean in the test context for integration testing" },
+        { "id": "b", "text": "It adds a Mockito mock to the Spring ApplicationContext, replacing the real bean — allowing you to stub behavior and verify interactions without loading external dependencies" },
+        { "id": "c", "text": "It serializes the real bean to JSON for snapshot testing" },
+        { "id": "d", "text": "It automatically injects a mock into all @Service methods without configuration" }
+      ],
+      "correctKey": "b",
+      "explanation": "@MockBean integrates Mockito with the Spring test context. It registers a mock bean that replaces the real bean of the same type in the ApplicationContext — any @Autowired injection of that type gets the mock. You then use Mockito's when(...).thenReturn(...) to stub behavior and verify(...).verify(...) to check interactions. Without @MockBean, you'd need to manually inject mocks into controllers via setters or constructors — not Spring-managed. @MockBean works with all test slice annotations (@WebMvcTest, @DataJpaTest, @SpringBootTest). Each test class gets a fresh mock unless you share mocks via @SpyBean."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @DataJpaTest do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It loads the full application context for testing JPA repositories with a real database" },
+        { "id": "b", "text": "It is a JPA slice test that configures an in-memory embedded database (H2), activates @EntityScan, configures JpaRepositories, and enables transaction rollback after each test" },
+        { "id": "c", "text": "It compiles JPA entity classes without running tests against a database" },
+        { "id": "d", "text": "It replaces JPA with Spring Data JDBC for repository testing" }
+      ],
+      "correctKey": "b",
+      "explanation": "@DataJpaTest is a slice test for JPA repository testing. It auto-configures: an in-memory embedded database (H2 by default, configurable), Spring Data JPA repositories (@Repository), EntityManager, and @Entity scanned classes. It disables auto-configuration of DataSource, transaction infrastructure, and web slices. Tests are transactional by default (rolled back after each test). @DataJpaTest also replaces the DataSource with an embedded one and configures Hibernate DDL auto to create-drop the schema. Use @AutoConfigureTestDatabase to use a real DB instead of the embedded one. @DataJpaTest is the fastest way to test repository logic."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between @MockBean and @SpyBean?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@MockBean creates a full Mockito mock; @SpyBean wraps a real bean with Mockito spy — real methods are called unless explicitly stubbed with when()" },
+        { "id": "b", "text": "Both annotations create identical mocks — @SpyBean is an older deprecated alias" },
+        { "id": "c", "text": "@SpyBean creates a mock without calling real methods; @MockBean calls real methods by default" },
+        { "id": "d", "text": "@SpyBean is used only for testing JPA repositories; @MockBean is for services only" }
+      ],
+      "correctKey": "a",
+      "explanation": "@MockBean creates a pure mock — all methods are stubbed to return null/empty defaults (or whatever you configure). No real code runs. @SpyBean wraps an existing bean — real methods are called by default, and you selectively stub only the methods you need with when().spy().method().thenReturn(...). Use @SpyBean when you want to test partial behavior — some methods real, some stubbed. Use @MockBean for full control over the bean's behavior. Both integrate with Spring's ApplicationContext. Overusing @SpyBean is a code smell — if you need to spy a class, consider whether it should be split into a collaborator and a strategy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @TestPropertySource do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It defines the location of test resource files like test fixtures" },
+        { "id": "b", "text": "It overrides or adds properties for a specific test class or method — either inline (properties = [...]) or via a properties file (locations = \"...\")" },
+        { "id": "c", "text": "It sets the active Spring profile for the test execution context" },
+        { "id": "d", "text": "It enables test-specific auto-configuration exclusions" }
+      ],
+      "correctKey": "b",
+      "explanation": "@TestPropertySource lets you override application.properties/yml for a specific test. Two modes: (1) properties inline: @TestPropertySource(properties = {\"spring.datasource.url=jdbc:h2:mem:testdb\"}) — overrides specific keys. (2) locations: @TestPropertySource(locations = \"classpath:test.properties\") — loads a test-specific properties file. Properties from @TestPropertySource have higher precedence than @SpringBootApplication defaults. Useful for: using an in-memory H2 database for tests instead of the production Postgres URL, disabling specific auto-configurations, or setting test-specific feature flags. In @DataJpaTest, @AutoConfigureTestDatabase replaces = AUTO) handles DB config without explicit @TestPropertySource."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of @JsonTest in Spring Boot testing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It mocks Jackson's ObjectMapper to return fixed JSON output" },
+        { "id": "b", "text": "It is a slice test that configures Jackson's ObjectMapper and JSON serialization support — useful for testing JSON mapping and serialization behavior in isolation" },
+        { "id": "c", "text": "It generates OpenAPI documentation from test cases" },
+        { "id": "d", "text": "It compares JSON responses against snapshot files stored in src/test/resources" }
+      ],
+      "correctKey": "b",
+      "explanation": "@JsonTest loads only Jackson/Aaron's JSON-related auto-configuration: ObjectMapper, Jackson2ObjectMapperBuilder, and any Jackson modules. This gives you a focused test context for JSON serialization/deserialization without loading web or database layers. You can then inject the configured ObjectMapper and use it to serialize objects and verify the output. It also auto-configures Jackson's MixIn support and Spring's Jackson2ObjectMapperBuilder. Use it to test DTOs, serialization format, date formatting, null handling, and custom serializers. @JsonTest with AssertJ's isEqualTo(JsonContent) is a powerful pattern for verifying JSON output."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does @AutoConfigureMockMvc add to a test compared to using MockMvc manually?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It starts a real embedded Tomcat server on a random port for MockMvc testing" },
+        { "id": "b", "text": "It auto-configures MockMvc with the Spring MVC test infrastructure and adds it as a test fixture — without loading the full @SpringBootTest context" },
+        { "id": "c", "text": "It replaces MockMvc with RestTemplate for API testing" },
+        { "id": "d", "text": "It automatically authenticates all requests with a mock user principal" }
+      ],
+      "correctKey": "b",
+      "explanation": "@AutoConfigureMockMvc (or the @ExtendWith(SpringExtension.class) equivalent in JUnit 5) auto-configures MockMvc for use in tests that have a Spring context. When combined with @SpringBootTest, it sets up MockMvc with the web ApplicationContext. On its own, it configures the MockMvc servlet filter chain but doesn't load the full Spring context. Use with @SpringBootTest for full integration: the MockMvc instance is injected automatically. It does NOT start a real HTTP server — that's @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT) + TestRestTemplate."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between @SpringBootTest(webEnvironment = MOCK) and webEnvironment = RANDOM_PORT?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "MOCK uses a real servlet container (Tomcat/Jetty); RANDOM_PORT uses a mock servlet environment" },
+        { "id": "b", "text": "MOCK uses MockMvc (no real HTTP, fast); RANDOM_PORT starts a real embedded server on a random port for full integration testing with TestRestTemplate or RestTemplate" },
+        { "id": "c", "text": "RANDOM_PORT uses an in-memory database; MOCK uses the configured datasource" },
+        { "id": "d", "text": "Both start a real server — RANDOM_PORT avoids port conflicts while MOCK does not" }
+      ],
+      "correctKey": "b",
+      "explanation": "MOCK (default): MockMvc-based testing, no HTTP server started, fast, suitable for controller/service tests. DEFINED_PORT: real embedded server on a configured port. RANDOM_PORT: real embedded server on a random available port (avoids conflicts in parallel test runs). NONE: no web environment at all (for non-web service tests). RANDOM_PORT is ideal for full integration tests where you want a real HTTP stack but need test isolation — use TestRestTemplate or RestTemplate to make HTTP calls to localhost. Port is injected via @LocalServerPort (or Environment). RANDOM_PORT is especially useful in CI pipelines where fixed ports may conflict."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of @DirtiesContext and when should you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It deletes test resource files before each test run" },
+        { "id": "b", "text": "It marks the ApplicationContext as dirty after a test — forcing Spring to rebuild it before the next test class/method to prevent state leakage between tests" },
+        { "id": "c", "text": "It marks a test as a dirty test (flaky) in the test report" },
+        { "id": "d", "text": "It refreshes the Spring context cache without restarting the application" }
+      ],
+      "correctKey": "b",
+      "explanation": "@DirtiesContext signals that a test modifies the Spring ApplicationContext state in a way that corrupts subsequent tests (e.g., modifying a singleton bean, changing profile state, closing beans). Spring closes and rebuilds the context for subsequent tests. Modes (via beforeMethod/afterMethod, beforeClass/afterClass): BEFORE_METHOD, AFTER_METHOD, BEFORE_CLASS, AFTER_CLASS, BEFORE_CURRENT_TEST_METHOD, AFTER_CURRENT_TEST_METHOD. Use sparingly — @DirtiesContext is expensive (context rebuild is slow). Better alternatives: use @MockBean to isolate tests, reset shared state via @BeforeEach, or use test-specific configurations that don't pollute the shared context. In Spring Boot 3.x, prefer isolated tests over @DirtiesContext."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does @ActiveProfiles(\"test\") do in a Spring test class?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It activates the 'test' Spring profile, loading application-test.properties or application-test.yml and activating @Profile(\"test\") beans" },
+        { "id": "b", "text": "It activates the 'test' profile at the JVM level for all tests in the suite" },
+        { "id": "c", "text": "It replaces all @Component beans with @MockBean equivalents" },
+        { "id": "d", "text": "It marks the test class as a test class in the Spring context" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ActiveProfiles(\"test\") activates the 'test' Spring profile for a specific test class or method. Spring loads application-test.properties/yml (in addition to application.properties), and beans annotated @Profile(\"test\") are registered. This is the standard way to configure test-specific beans, DataSources, or mocks. Use it with @TestPropertySource for fine-grained property overrides. @ActiveProfiles supports multiple profiles: @ActiveProfiles({\"test\", \"ci\"}). Without it, no profile is active unless spring.profiles.default is set. For @DataJpaTest, an H2 embedded database is already auto-configured without needing @ActiveProfiles."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between @MockMvc vs RestTemplate/TestRestTemplate in a @SpringBootTest?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "MockMvc tests go through the DispatcherServlet without a real HTTP layer; RestTemplate/TestRestTemplate makes real HTTP calls to a running server" },
+        { "id": "b", "text": "RestTemplate uses MockMvc under the hood; they are functionally identical" },
+        { "id": "c", "text": "MockMvc requires a running server; RestTemplate does not" },
+        { "id": "d", "text": "TestRestTemplate is for unit tests; MockMvc is for integration tests" }
+      ],
+      "correctKey": "a",
+      "explanation": "MockMvc simulates HTTP requests at the servlet filter level — no network socket, no HTTP wire. Fast, precise assertions on handler behavior, response headers, and body. RestTemplate/TestRestTemplate makes real HTTP calls over localhost — requires a running server (RANDOM_PORT or DEFINED_PORT). TestRestTemplate is the Spring Boot test variant of RestTemplate — it handles redirects and provides better error handling. For slice tests (@WebMvcTest), MockMvc is the only option (no real server). For full integration tests, MockMvc is faster but RestTemplate/TestRestTemplate tests the real HTTP layer (headers, cookies, SSL) end-to-end."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@WebMvcTest only loads @Controller beans — @Service and @Repository beans are excluded from the context.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "@WebMvcTest is a slice test that auto-configures only the web layer. @Component, @Service, and @Repository beans are explicitly excluded from the web slice to keep the context lean. If your controller depends on a service, you must provide a mock via @MockBean — Spring registers the mock in the web context and injects it into the controller. This is intentional: testing controllers in isolation from the service layer is the point of @WebMvcTest."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@DataJpaTest tests are transactional by default and automatically roll back after each test method.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "@DataJpaTest enables auto-configured transaction support: every test method runs inside a @Transactional boundary, and Spring automatically rolls back the database changes at the end of the test. This means each test starts with a clean slate — no data from previous tests persists. This is extremely useful for repository integration tests: you can insert test data, verify queries, and the DB state reverts automatically. The rollback happens regardless of whether the test passes or fails (unless you override with TestTransaction.flagForCommit())."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between @TestConfiguration and a static inner @Configuration class in a Spring test?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A static inner @Configuration class is always picked up by component scanning; @TestConfiguration is not unless explicitly imported with @Import" },
+        { "id": "b", "text": "Both are equivalent — the distinction is purely stylistic" },
+        { "id": "c", "text": "@TestConfiguration can only define @Bean methods; static @Configuration can only use @Component scanning" },
+        { "id": "d", "text": "@TestConfiguration is picked up by component scanning; static inner @Configuration requires @Import" }
+      ],
+      "correctKey": "a",
+      "explanation": "A static inner @Configuration class is automatically picked up by component scanning within its package context. @TestConfiguration is a Spring 5.2+ annotation that marks a class as additional test configuration — it is NOT picked up by component scanning (even if @SpringBootApplication is in the same package). This is intentional: @TestConfiguration beans only exist in the test context, not the production ApplicationContext. Use @Import(MyTestConfig.class) to include a @TestConfiguration explicitly. Use this pattern to provide test-specific mocks, embedded databases, or property overrides that should not appear in production beans."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of @EnabledIf and @DisabledIf in Spring test annotations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "They enable or disable test methods based on OS or JRE version using SpEL expressions" },
+        { "id": "b", "text": "They conditionally enable or skip test methods based on a SpEL expression evaluated at test runtime — allowing environment-specific test execution without recompilation" },
+        { "id": "c", "text": "They are JUnit 5 annotations for parameterized test control" },
+        { "id": "d", "text": "They enable/disable Spring profiles for individual test methods" }
+      ],
+      "correctKey": "b",
+      "explanation": "@EnabledIf and @DisabledIf evaluate a SpEL expression before running a test method. If the expression evaluates to true, the test is enabled (or disabled). Use cases: skip tests on specific operating systems (@EnabledIf(\"${os.name} contains 'Windows'\")), skip tests when a certain feature flag is off, or skip integration tests when a required service is unavailable. They complement @DisabledIfEnvironmentVariable and @EnabledIfEnvironmentVariable. Unlike @Assume (JUnit 4), these are Spring-specific annotations with full SpEL support. Note: @EnabledIf/@DisabledIf are evaluated by Spring's test infrastructure, not JUnit — they work with JUnit 5's @ExtendWith(SpringExtension)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How do you test a private method in a Spring bean using Mockito?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use Whitebox.invokeMethod() from Spring's test library to call private methods directly" },
+        { "id": "b", "text": "You don't — private methods are implementation details. Test the public API that calls the private method. If a private method is complex enough to need its own test, extract it to a separate collaborator class that you can mock or test independently." },
+        { "id": "c", "text": "Use @MockBean to mock the private method in the test context" },
+        { "id": "d", "text": "Private methods cannot be tested in Spring applications at all" }
+      ],
+      "correctKey": "b",
+      "explanation": "Testing private methods is generally an anti-pattern. Private methods are internal implementation details — they exist to decompose public behavior. If a private method is complex enough to warrant isolated testing, it is a sign it should be a separate public class with its own tests. Testing through the public API gives you behavior-driven tests that remain valid even when you refactor the internal implementation. Using reflection (Whitebox) or powermock to test private methods creates brittle tests that break on refactoring and don't test actual behavior. The correct approach: test public contracts, not private implementation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does @Nested test class configuration mean for Spring testing, and what is its relationship with @SpringBootTest?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Nested classes inherit the parent class's ApplicationContext — all nested tests share the same context, reducing setup overhead" },
+        { "id": "b", "text": "Each @Nested inner class in JUnit 5 can have its own @TestConfiguration, @MockBean, and @ActiveProfiles — inner classes do not inherit the outer class's test config, providing test isolation within the same context" },
+        { "id": "c", "text": "@Nested tests are always run in a separate ApplicationContext from the outer class" },
+        { "id": "d", "text": "@Nested is a JUnit 5 feature that has no relationship with Spring test context management" }
+      ],
+      "correctKey": "b",
+      "explanation": "In JUnit 5, @Nested test classes allow hierarchical test organization. For Spring testing: each @Nested class can declare its own @MockBean (adding mocks to the shared context), @TestConfiguration (extra beans), and @ActiveProfiles (profile overrides). Critically, @MockBean in a @Nested class adds to the outer class's context — all siblings share the same base context. This allows you to have one base context with common setup, then specialized mocks/configurations per nested test group. @TestConfiguration inner classes (non-static) are also picked up by the nested class's context. This pattern is powerful for organizing complex integration tests."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "TestRestTemplate follows redirects automatically, making it suitable for testing full HTTP redirect flows.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "TestRestTemplate (Spring Boot's test variant of RestTemplate) follows HTTP redirects automatically (RestTemplateBehavior.setRedirects(false) disables this). This means if your controller redirects from POST /logout to GET /, TestRestTemplate will follow the redirect and return the final response after redirection. This is different from MockMvc where redirects are not followed by default. Use TestRestTemplate with RANDOM_PORT WebEnvironment for full HTTP-level testing of redirect behavior, session handling, and cookie propagation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of @SpringBootTest's args attribute vs @TestPropertySource for configuring tests?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@TestPropertySource overrides args from @SpringBootTest; both have equivalent precedence" },
+        { "id": "b", "text": "args adds command-line arguments processed early (before the ApplicationContext is built); @TestPropertySource overrides properties at the property source level — args has higher precedence and is processed before property sources are merged" },
+        { "id": "c", "text": "args is for JVM arguments; @TestPropertySource is for application properties" },
+        { "id": "d", "text": "Both set properties at the same precedence level; the difference is syntax only" }
+      ],
+      "correctKey": "b",
+      "explanation": "@SpringBootTest(args = {\"--server.port=9000\", \"--spring.datasource.url=jdbc:h2:mem:testdb\"}) passes arguments as if they were command-line arguments — processed very early in the application startup lifecycle (before PropertySource initialization). @TestPropertySource overrides/adds to the property source hierarchy. For test setup, @TestPropertySource is more common and flexible. However, args is useful for: testing that command-line argument processing works correctly, setting properties that affect context creation (e.g., cloud config endpoints), and setting values not in application.properties. Command-line arguments have the highest precedence in Spring's property source order."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of @AutoConfigureTestDatabase in Spring Boot testing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It replaces the production DataSource with an embedded in-memory database (H2 by default) for @DataJpaTest and @SpringBootTest — preventing tests from touching production data" },
+        { "id": "b", "text": "It creates a test database schema automatically before each test run" },
+        { "id": "c", "text": "It enables JPA auditing for test classes" },
+        { "id": "d", "text": "It automatically configures multiple DataSource beans for parallel test execution" }
+      ],
+      "correctKey": "a",
+      "explanation": "@AutoConfigureTestDatabase (auto-configured by @DataJpaTest) replaces the application DataSource with a test-specific DataSource: by default, an embedded H2 in-memory database. You can disable it with @AutoConfigureTestDatabase(enabled = false) to use the real configured database, or specify a different embedded database (Derby, HSQLDB). This prevents accidental writes to production databases during testing. For @SpringBootTest, it is NOT auto-applied — you must explicitly add it or rely on @DataJpaTest's auto-configuration."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between unit tests and integration tests in the context of Spring applications?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Unit tests test a single class/method in isolation using mocks — no Spring context needed; integration tests load the Spring ApplicationContext and test component interactions end-to-end" },
+        { "id": "b", "text": "Integration tests are faster than unit tests because they run without a JVM" },
+        { "id": "c", "text": "Unit tests require a database connection; integration tests do not" },
+        { "id": "d", "text": "Unit tests are deprecated in Spring Boot 3.x — integration tests are preferred" }
+      ],
+      "correctKey": "a",
+      "explanation": "Unit tests (JUnit + Mockito): test one class in isolation. Inject mocks for dependencies (@MockBean in Spring tests, or Mockito.mock() for pure unit tests). No Spring context, no database, fast execution. Integration tests (@SpringBootTest, @DataJpaTest, @WebMvcTest): load Spring context and test components working together. Cover: bean wiring, auto-configuration, database interactions, HTTP endpoints. They are slower but catch configuration errors and integration bugs that unit tests miss. Best practice: many unit tests (fast, focused), fewer integration tests (broader coverage)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does @MockBean do internally in Spring's test context?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@MockBean creates a plain Mockito mock and adds it directly to the test class as a field" },
+        { "id": "b", "text": "@MockBean registers a Mockito mock in the Spring ApplicationContext as the bean of that type — replacing any existing bean of the same type — and injects it into the test class and other beans in the context" },
+        { "id": "c", "text": "@MockBean creates a SpyBean that calls real methods unless explicitly stubbed" },
+        { "id": "d", "text": "@MockBean creates a mock that is available only in the test class, not in the Spring context" }
+      ],
+      "correctKey": "b",
+      "explanation": "Internally, @MockBean uses Spring's TestBeanFactory to register the mock in the ApplicationContext. For each @MockBean field: (1) Spring creates a Mockito mock of the field's type. (2) If a real bean of that type exists, it is replaced. (3) The mock is registered as a bean in the context. (4) The mock is injected into both the test class and other beans that depend on it. This allows the rest of the context to use the mock while the test controls its behavior. The mock is recreated for each test class — each class gets a fresh mock."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between @ExtendWith(SpringExtension.class) and @SpringBootTest?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@ExtendWith(SpringExtension.class) integrates JUnit 5 with Spring's TestContext Framework — it loads the ApplicationContext but does NOT auto-configure Spring Boot features; @SpringBootTest extends this with full Spring Boot auto-configuration" },
+        { "id": "b", "text": "@SpringBootTest is faster than @ExtendWith because it skips Spring context loading" },
+        { "id": "c", "text": "@ExtendWith is deprecated in JUnit 5; @SpringBootTest is the only valid approach" },
+        { "id": "d", "text": "Both are identical — @SpringBootTest is simply a composed annotation" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ExtendWith(SpringExtension.class) is the JUnit 5 extension that integrates Spring's TestContext Framework with JUnit Jupiter. It loads the ApplicationContext but does NOT activate Spring Boot's auto-configuration, DevTools, or other Spring Boot-specific features. @SpringBootTest is a composed annotation that includes: @ExtendWith(SpringExtension.class) + @BootstrapWith(SpringBootTestContextBootstrapper.class). The bootstrapper activates Spring Boot's full auto-configuration machinery. Use @ExtendWith directly when you want Spring context but without Spring Boot's auto-configuration (e.g., pure Spring Framework applications)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How do you test a private method in a Spring-managed bean using Mockito?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use Whitebox.invokeMethod() from Spring's test library to call private methods" },
+        { "id": "b", "text": "You don't — private methods are implementation details. Test the public API that exercises the private method. If the private method needs isolated testing, extract it to a separate collaborator class that can be mocked or tested independently" },
+        { "id": "c", "text": "Use @MockBean to mock the private method in the test context" },
+        { "id": "d", "text": "Private methods cannot be tested at all in Spring applications" }
+      ],
+      "correctKey": "b",
+      "explanation": "Testing private methods is generally an anti-pattern. Private methods are internal implementation details — they exist to decompose public behavior. If a private method is complex enough to warrant isolated testing, it is a sign it should be a separate public class with its own tests. Testing through the public API gives behavior-driven tests that remain valid even when you refactor the internal implementation. Using reflection (Whitebox) or powermock to test private methods creates brittle tests that break on refactoring and don't test actual behavior."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of @TestConfiguration in Spring tests?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@TestConfiguration marks a class as additional test configuration — it is NOT picked up by component scanning unless explicitly imported with @Import — allowing test-specific beans that do not pollute the production context" },
+        { "id": "b", "text": "@TestConfiguration replaces the main @SpringBootApplication configuration class" },
+        { "id": "c", "text": "@TestConfiguration automatically mocks all @Service beans in the context" },
+        { "id": "d", "text": "@TestConfiguration is identical to @Configuration — the name is the only difference" }
+      ],
+      "correctKey": "a",
+      "explanation": "@TestConfiguration (Spring 5.2+) marks a class as additional test configuration. Unlike a regular @Configuration, it is NOT automatically picked up by component scanning — even if placed in the same package as @SpringBootApplication. This is intentional: test configurations should be explicitly included via @Import(MyTestConfig.class). Use it to: define test-specific @Bean definitions, provide mock implementations of external services, or register test-specific beans that should not exist in production. Static inner @Configuration classes are automatically picked up by scanning; non-static inner @TestConfiguration requires @Import."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does @JdbcTest provide in Spring Boot testing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It is a slice test for JDBC-based testing that configures only a JdbcTemplate and an in-memory DataSource — faster than @DataJpaTest because it does not load JPA/Hibernate" },
+        { "id": "b", "text": "It tests the Spring JDBC driver connection pooling configuration" },
+        { "id": "c", "text": "It replaces @DataJpaTest for repositories that use Spring Data JDBC" },
+        { "id": "d", "text": "@JdbcTest enables JPA auditing for raw JDBC operations" }
+      ],
+      "correctKey": "a",
+      "explanation": "@JdbcTest (Spring Boot 2.x+) is a slice test for plain JDBC testing without JPA/Hibernate. It auto-configures: JdbcTemplate, NamedParameterJdbcTemplate, an embedded DataSource (H2), and DataSourceTransactionManager. It does NOT configure EntityManager, JPA repositories, or Hibernate. Use it for: testing raw SQL queries, JDBC template usage, or when you want a lighter context than @DataJpaTest. If you use Spring Data JDBC (not JPA), use @JdbcTest or Spring Data JDBC's @DataJdbcTest."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between Mockito's verify(mock).method() and verify(mock, times(n)).method()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "verify(mock).method() asserts the method was called at least once; times(n) asserts an exact number of calls — without times(n), Mockito defaults to atLeastOnce()" },
+        { "id": "b", "text": "times(n) is the default verification mode; without it, verify() fails if the method is called more than once" },
+        { "id": "c", "text": "There is no difference — both verify an exact call count" },
+        { "id": "d", "text": "verify(mock) only works with @MockBean mocks; times(n) only works with Mockito.mock() mocks" }
+      ],
+      "correctKey": "a",
+      "explanation": "verify(mock).method() by default uses atLeastOnce() — it passes if the method was called at least once. verify(mock, times(2)).method() asserts the method was called exactly 2 times. Other modes: never() (0 times), atMost(n), atLeast(n). Use times(n) for precise call count verification. Over-verification (verifying too much) makes tests brittle — verify only what matters for the test's assertion. Prefer verifying state changes (return values, mock interactions) over verifying exact call sequences when possible."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What are the trade-offs between using @MockBean vs manually creating Mockito mocks in a Spring test?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@MockBean replaces the real bean in the Spring context — other beans that depend on it also get the mock; manually created mocks exist only in the test class and must be explicitly passed to the class under test" },
+        { "id": "b", "text": "Manually created mocks are registered in the Spring context; @MockBean mocks exist only in the test class" },
+        { "id": "c", "text": "Both approaches are functionally identical — @MockBean is purely a convenience annotation" },
+        { "id": "d", "text": "@MockBean cannot be used with @WebMvcTest — only Mockito.mock() works there" }
+      ],
+      "correctKey": "a",
+      "explanation": "@MockBean replaces the bean in the ApplicationContext — all injection points throughout the context get the mock. This is useful when testing a high-level component that calls a deep dependency. Manually created mocks (Mockito.mock(MyService.class)) exist only in the test — you must inject them manually (via setter or constructor). Use manual mocks when: testing a class in complete isolation (no Spring context at all), or when you want to test one specific collaboration path without affecting the wider context. Use @MockBean when: you need the Spring context to be aware of the mock (other beans need it injected), or when using slice tests like @WebMvcTest."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of JUnit 5's @Disabled and when should you use it in Spring tests?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Disabled marks a test as skipped at runtime — useful for temporarily disabling flaky tests, tests requiring a specific environment, or tests for unimplemented features without removing them" },
+        { "id": "b", "text": "@Disabled removes the test from the test class entirely before execution" },
+        { "id": "c", "text": "@Disabled is for Spring-specific tests only; JUnit 5 uses a different annotation" },
+        { "id": "d", "text": "@Disabled must be used with @SpringBootTest — it does not work with JUnit 5 extensions alone" }
+      ],
+      "correctKey": "a",
+      "explanation": "@Disabled (JUnit 5) is the JUnit-standard way to skip a test. Use it to: temporarily disable a failing test while investigating (add a comment explaining why), skip tests that require specific infrastructure (database, external service) not available in the CI environment, or mark unimplemented features (TDD workflow). Unlike @Ignore (JUnit 4), @Disabled is the standard JUnit 5 annotation. Prefer @Disabled over deleting or commenting out tests — the disabled test is still compiled and can be re-enabled easily. Always add a comment explaining WHY the test is disabled."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does Spring's test transaction management interact with Mockito mocks created via @MockBean?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Test transactions (from @Transactional) wrap the entire test method execution — mock interactions inside the test are within the transaction boundary; but since the mock is not a real bean, no actual database operations occur through it unless the mock is configured to call real methods" },
+        { "id": "b", "text": "@MockBean mocks are automatically rolled back by the test transaction manager" },
+        { "id": "c", "text": "Mockito mocks cannot be used inside @Transactional test methods" },
+        { "id": "d", "text": "Test transactions and @MockBean are independent — they do not interact" }
+      ],
+      "correctKey": "a",
+      "explanation": "In a @Transactional test, the test runs inside a test-managed transaction. @MockBean mocks exist in the Spring context but are NOT real beans with database connections. If a service containing a @MockBean dependency performs database operations through OTHER real beans (not the mock), those operations are rolled back at test end. The mock itself has no state to roll back. This means: @MockBean + @Transactional is perfectly valid — the mock's configured behaviors (when().thenReturn()) are preserved, and real DB operations from other beans are rolled back."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of @Nested test class configuration in Spring Boot testing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Nested classes inherit the parent class's ApplicationContext — all nested tests share the same context, reducing setup overhead" },
+        { "id": "b", "text": "Each @Nested inner class in JUnit 5 can have its own @TestConfiguration, @MockBean, and @ActiveProfiles — inner classes do not inherit the outer class's test config, providing test isolation within the same context" },
+        { "id": "c", "text": "@Nested tests are always run in a separate ApplicationContext from the outer class" },
+        { "id": "d", "text": "@Nested is a JUnit 5 feature that has no relationship with Spring test context management" }
+      ],
+      "correctKey": "b",
+      "explanation": "In JUnit 5, @Nested test classes allow hierarchical test organization. For Spring testing: each @Nested class can declare its own @MockBean (adding mocks to the shared context), @TestConfiguration (extra beans), and @ActiveProfiles (profile overrides). Critically, @MockBean in a @Nested class adds to the outer class's context — all siblings share the same base context. This allows you to have one base context with common setup, then specialized mocks/configurations per nested test group. @TestConfiguration inner classes (non-static) are also picked up by the nested class's context."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between @SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT) and RANDOM_PORT?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "DEFINED_PORT starts a real embedded server on a fixed port (default 8080); RANDOM_PORT starts on a random available port — RANDOM_PORT is preferred for CI pipelines and parallel test execution to avoid port conflicts" },
+        { "id": "b", "text": "Both modes are identical — the port number is the only difference" },
+        { "id": "c", "text": "DEFINED_PORT requires an external Tomcat server; RANDOM_PORT uses an embedded server" },
+        { "id": "d", "text": "RANDOM_PORT does not start a real HTTP server; DEFINED_PORT does" }
+      ],
+      "correctKey": "a",
+      "explanation": "DEFINED_PORT: starts a real embedded server on a fixed port (8080 by default, configurable via server.port in test properties). The port is predictable — useful when the test needs a specific port (e.g., external service integration). Downside: fixed ports can conflict in parallel test runs. RANDOM_PORT: starts on a random available port — avoids port conflicts, preferred for CI. Both start a real HTTP server. Use @LocalServerPort or Environment to retrieve the port at runtime."
+    }
+  ]
+}

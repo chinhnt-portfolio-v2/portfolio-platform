@@ -1,0 +1,390 @@
+{
+  "topicSlug": "spring-di",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which annotation marks a class as a Spring-managed bean suitable for auto-discovery via component scanning?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Bean" },
+        { "id": "b", "text": "@Component" },
+        { "id": "c", "text": "@Autowired" },
+        { "id": "d", "text": "@Configuration" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Component is the base stereotype annotation that makes a class eligible for Spring's component scanning — Spring will detect it and register it as a bean at runtime. @Bean is used inside @Configuration classes to declare beans programmatically. @Autowired is a dependency injection marker, not a stereotype. @Configuration is a container for @Bean definitions, not itself a bean stereotype."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @ComponentScan do by default in a Spring Boot application?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Scans only the package containing the main class and all sub-packages recursively" },
+        { "id": "b", "text": "Scans the entire classpath for @Component-annotated classes" },
+        { "id": "c", "text": "Scans only packages explicitly listed in application.properties" },
+        { "id": "d", "text": "Scans only classes in the WEB-INF directory" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ComponentScan without explicit base packages defaults to scanning the package of the annotated class (e.g., the @SpringBootApplication class) and all its sub-packages recursively. This is why placing your main class at the root of your package hierarchy is a convention — it ensures all components are picked up. Scanning the entire classpath (B) would be extremely slow and is not the default behavior."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the primary advantage of constructor injection over field injection?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Constructor injection allows runtime proxy injection that field injection cannot support" },
+        { "id": "b", "text": "Constructor injection enables immutable dependencies, explicit contracts, and easier unit testing without a Spring context" },
+        { "id": "c", "text": "Field injection is faster because it bypasses dependency resolution entirely" },
+        { "id": "d", "text": "Constructor injection is required by the JPA specification for entity listeners" }
+      ],
+      "correctKey": "b",
+      "explanation": "Constructor injection creates immutable (final) dependencies, makes required dependencies explicit in the method/class signature, and allows plain unit tests to instantiate the class with mocks — no Spring context needed. Field injection hides dependencies behind the class surface, circumvents final semantics, and forces you to use reflection or Spring test utilities in unit tests. Spring Boot's official guidance recommends constructor injection for all beans."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which annotation is the specialized @Component derivative for the data access layer?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Service" },
+        { "id": "b", "text": "@Repository" },
+        { "id": "c", "text": "@Controller" },
+        { "id": "d", "text": "@Bean" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Repository is a @Component specialization for the DAO/data access layer. In addition to being a stereotype, it also enables Spring's DataAccessException translation: any vendor-specific PersistenceException thrown by the underlying JPA/Hibernate implementation is translated into Spring's DataAccessException hierarchy, giving you consistent, decoupled exception handling. @Service and @Controller are stereotypes for service and web layers respectively, and carry no DA-specific semantics."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the @Bean annotation do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It marks a class as a component for auto-scanning" },
+        { "id": "b", "text": "It declares a method whose return value should be registered as a Spring bean in the ApplicationContext" },
+        { "id": "c", "text": "It injects a bean into a field using reflection" },
+        { "id": "d", "text": "It creates a new prototype-scoped bean on every access" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Bean is a method-level annotation placed inside a @Configuration class to declare that the method's return value should be registered as a bean. This is the programmatic equivalent of component scanning — used when you need fine control over bean creation (e.g., third-party library classes you cannot annotate). By default, the bean name is the method name, but you can override it with @Bean(\"customName\")."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default scope of a Spring bean?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "prototype" },
+        { "id": "b", "text": "request" },
+        { "id": "c", "text": "singleton" },
+        { "id": "d", "text": "session" }
+      ],
+      "correctKey": "c",
+      "explanation": "All Spring beans are singletons by default — one instance per Spring ApplicationContext, regardless of how many times it is injected. This is the opposite of Java's `new` operator which always creates a new object. Prototype scope (A) creates a new instance every time the bean is requested. Request (B) and session (D) are web-specific scopes that only apply in appropriate contexts."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What happens if two beans of the same type are registered and only one is injected?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Spring injects the bean marked with @Primary" },
+        { "id": "b", "text": "Spring throws a NoUniqueBeanDefinitionException at runtime" },
+        { "id": "c", "text": "Spring randomly picks one and logs a warning" },
+        { "id": "d", "text": "Spring merges both into a single bean automatically" }
+      ],
+      "correctKey": "b",
+      "explanation": "When Spring cannot determine a single candidate for injection (ambiguous dependency), it throws NoUniqueBeanDefinitionException at startup. Solutions include: @Primary on one bean, @Qualifier to specify by name, or refactoring to use interfaces/contracts. This is a fail-fast design — Spring prefers crashing at startup over silently picking a random bean."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which annotation allows you to specify which bean to inject when multiple candidates of the same type exist?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Primary" },
+        { "id": "b", "text": "@Qualifier" },
+        { "id": "c", "text": "@Autowired(required = false)" },
+        { "id": "d", "text": "@Lazy" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Qualifier lets you disambiguate by specifying the exact bean name to inject. You can use it on fields, constructor parameters, or setter methods: @Qualifier(\"mySpecificBean\"). @Primary (A) marks one bean as the default when no qualifier is specified — useful when you have a sensible default among multiple implementations. @Autowired(required=false) (C) makes injection optional. @Lazy (D) delays bean creation but doesn't resolve ambiguity."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Why does Spring wrap @Configuration classes in a CGLIB proxy?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "To enable web request routing in @Configuration classes" },
+        { "id": "b", "text": "To intercept @Bean method calls within the same @Configuration class and return cached singleton instances instead of re-executing the method" },
+        { "id": "c", "text": "To encrypt bean definitions before storing them in the ApplicationContext" },
+        { "id": "d", "text": "To enable constructor-based dependency injection in @Configuration classes" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring uses CGLIB to create a subclass of every @Configuration class at runtime. This subclass intercepts internal @Bean method calls (e.g., calling userService() inside another @Bean method in the same class) and returns the already-created singleton bean from the container — not a new object. Without this interception, calling `new UserService()` twice in two @Bean methods would create two separate instances, breaking singleton semantics. This is called 'configuration class enhancement'. Option A is incorrect — @Configuration classes are not web components. Option C and D are unrelated to CGLIB's purpose here."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does @Configuration(proxyBeanMethods = false) change the behavior of a configuration class?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It disables CGLIB proxying, making @Bean methods behave like plain Java methods — each call creates a new instance" },
+        { "id": "b", "text": "It enables JDK dynamic proxy instead of CGLIB for the configuration class" },
+        { "id": "c", "text": "It prevents the @Configuration class itself from being registered as a bean" },
+        { "id": "d", "text": "It enables constructor-based bean injection and disables setter injection" }
+      ],
+      "correctKey": "a",
+      "explanation": "Setting proxyBeanMethods = false disables the CGLIB interceptor on @Configuration classes. Each call to an @Bean method becomes a plain Java method call, creating a new instance each time. This is the 'lite mode' for @Configuration. It improves startup time slightly but breaks singleton guarantees for inter-@Bean method calls within the same class. This is useful in functional bean registration or when you want @Configuration classes to behave like plain @Component classes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between @Autowired and @Inject?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Inject is Spring-specific; @Autowired is JSR-330 standard" },
+        { "id": "b", "text": "@Autowired is Spring-specific with additional features like required flag; @Inject is JSR-330 standard and requires an external dependency" },
+        { "id": "c", "text": "There is no functional difference — they are aliases" },
+        { "id": "d", "text": "@Inject cannot be used on constructors, only @Autowired can" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Autowired is Spring's proprietary annotation. @Inject is the JSR-330 (javax.inject) standard equivalent. Both support field, constructor, and setter injection. The key differences: @Autowired has the `required` attribute to make injection optional; @Inject has no required attribute (use @Nullable or Java 8 Optional instead). @Inject requires adding the javax.inject dependency to your project. Using @Inject makes your code portable to other JSR-330 compliant containers (like Jakarta EE). Neither has superiority in Spring-only projects, but @Autowired is more commonly used in the Spring ecosystem."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When is setter injection preferred over constructor injection?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Setter injection is always preferred in Spring 6.x" },
+        { "id": "b", "text": "Setter injection allows optional dependencies and circular dependency resolution when combined with @Lazy" },
+        { "id": "c", "text": "Setter injection creates immutable beans that cannot be modified after construction" },
+        { "id": "d", "text": "Setter injection is required for @Configuration classes to enable CGLIB proxying" }
+      ],
+      "correctKey": "b",
+      "explanation": "Setter injection (via @Autowired on a setter method) is useful when a dependency is optional — you can check for null and provide a fallback. It also plays a role in circular dependency resolution: if A depends on B and B depends on A, Spring can use setter injection (with @Lazy on one side) to break the cycle by injecting a proxy first and resolving the actual bean only when used. Constructor injection cannot resolve circular dependencies directly — it fails at startup. Option A is false (constructor injection is preferred by Spring team). Option C describes constructor injection, not setter. Option D is unrelated."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does @Lazy affect bean initialization in Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It makes the bean a prototype — a new instance is created on every injection" },
+        { "id": "b", "text": "It defers bean creation until the bean is first explicitly requested from the ApplicationContext" },
+        { "id": "c", "text": "It disables component scanning for the annotated class" },
+        { "id": "d", "text": "It changes the bean's scope from singleton to request-scoped" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Lazy creates a CGLIB proxy that only resolves the actual bean when a method is called on it for the first time. This speeds up application startup when a bean has expensive initialization (e.g., database connection pool) that is not needed immediately. @Lazy can be placed on @Configuration classes, @Bean methods, or injection points (@Autowired fields). It does not change scope to prototype — each lazy bean still follows its declared scope. Option A is incorrect: prototype scope and @Lazy are unrelated mechanisms."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of @Order in Spring's bean registration context?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Order controls the initialization order of singleton beans at startup" },
+        { "id": "b", "text": "@Order determines the resolution order when injecting collections of matching beans (e.g., List<MyInterface>) and controls AspectJ aspect ordering" },
+        { "id": "c", "text": "@Order replaces @Primary and has higher precedence" },
+        { "id": "d", "text": "@Order is deprecated in Spring 6.x in favor of @Priority" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Order (and its counterpart @Priority on classes) controls two things: (1) the order in which beans are injected when multiple matching candidates exist in a collection (e.g., `List<MyInterface> myInterfaces` receives beans sorted by @Order), and (2) the execution order of @Aspect components. It does NOT control singleton initialization order at startup — Spring manages that independently. @Order has no effect on which bean is chosen for a single-valued injection; use @Qualifier or @Primary for that."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between ApplicationContext and BeanFactory?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ApplicationContext extends BeanFactory and adds enterprise-specific features: auto-registration of bean post-processors, internationalization, event publication, and hierarchical context support" },
+        { "id": "b", "text": "BeanFactory is newer and replaces ApplicationContext in Spring Boot 3.x" },
+        { "id": "c", "text": "ApplicationContext is the low-level container; BeanFactory is the high-level API" },
+        { "id": "d", "text": "There is no functional difference — they are interchangeable names for the same interface" }
+      ],
+      "correctKey": "a",
+      "explanation": "BeanFactory is the fundamental Spring IoC container interface — it provides basic getBean() functionality. ApplicationContext extends BeanFactory and adds enterprise features: BeanFactoryPostProcessor/BeanPostProcessor auto-detection, @Autowired/@@JSR-330 support, internationalization (MessageSource), event publication (ApplicationEventPublisher), and hierarchical contexts. In practice, ApplicationContext is always used in modern Spring applications. BeanFactory is rarely used directly except in resource-constrained environments or for very low-level integration. Spring Boot exclusively uses ApplicationContext."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What happens when a circular dependency exists between two singleton beans using constructor injection?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Spring fails fast at startup with a BeanCurrentlyInCreationException when two singleton beans have a circular constructor dependency (A→B→A). This is because Spring resolves constructor arguments by building a proxy first, but constructor injection requires the actual instance. Setter injection with @Lazy breaks this cycle by injecting a proxy that resolves to the real bean only when a method is called."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Can a @Bean method in a @Configuration class call another @Bean method in the same class and still get a singleton?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Yes, this works because Spring wraps @Configuration classes in a CGLIB proxy that intercepts intra-class @Bean method calls and returns the cached singleton from the container instead of re-executing the method. This is the 'full' @Configuration mode (proxyBeanMethods = true, the default). Without CGLIB (proxyBeanMethods = false), each call would create a new instance, breaking the singleton contract."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the fundamental difference between Spring's dependency injection and a Service Locator pattern?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Both patterns are equivalent — DI is just a rebranded Service Locator" },
+        { "id": "b", "text": "Service Locator requires the consumer to explicitly request dependencies from a registry; DI pushes dependencies into the consumer without it requesting them (Inversion of Control)" },
+        { "id": "c", "text": "DI is compile-time safe; Service Locator is runtime-only" },
+        { "id": "d", "text": "Service Locator supports circular dependencies; DI does not" }
+      ],
+      "correctKey": "b",
+      "explanation": "The core difference is Inversion of Control. In the Service Locator pattern, the consumer class explicitly calls `locator.getService(Type.class)` to retrieve its dependencies — it is aware of the locator and actively requests what it needs. In DI, the container constructs the object and 'pushes' the dependencies into it (via constructor, setter, or field) — the consumer is completely passive and unaware of the container. This passive nature is what enables key DI benefits: testability (no container needed), immutability, and clear contracts. Option A is false — the patterns are fundamentally different despite some superficial similarities."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following correctly describes how Spring resolves @Bean method arguments?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Bean method arguments are ignored and must be injected via @Autowired on the method" },
+        { "id": "b", "text": "@Bean method arguments are treated as autowired dependencies — Spring resolves them from the ApplicationContext by type, then by @Qualifier name matching the parameter name" },
+        { "id": "c", "text": "@Bean method arguments must all be annotated with @Autowired to be resolved" },
+        { "id": "d", "text": "@Bean method arguments can only be primitive types; complex objects must be returned via method chaining" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring treats @Bean method parameters as autowired dependencies automatically — no explicit @Autowired needed on parameters. Resolution follows the standard Spring DI algorithm: first by type, then by @Qualifier name match (parameter name is also considered as a fallback). This allows you to write ` @Bean DataSource postgresDataSource(DataSourceProperties props)` where Spring automatically passes the DataSourceProperties bean. This is a concise alternative to calling another @Bean method for shared configuration."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the relationship between BeanFactoryPostProcessor and BeanPostProcessor in Spring's lifecycle?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "BeanFactoryPostProcessor runs before BeanPostProcessor and operates on bean definitions (raw metadata); BeanPostProcessor runs after, operating on instantiated bean instances" },
+        { "id": "b", "text": "BeanPostProcessor runs before BeanFactoryPostProcessor because instances are created before definitions are modified" },
+        { "id": "c", "text": "Both run at the same time and are interchangeable in modern Spring applications" },
+        { "id": "d", "text": "BeanFactoryPostProcessor is deprecated in Spring 6.x; only BeanPostProcessor remains" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring's lifecycle order: (1) load bean definitions → (2) BeanFactoryPostProcessor runs (can modify raw BeanDefinition metadata — e.g., property placeholders resolved, bean class changes) → (3) instantiate beans → (4) BeanPostProcessor runs (can modify bean instances before and after initialization callbacks). A practical example: @PropertySource and ${} placeholders are resolved by BeanFactoryPostProcessor before beans are created. Custom BeanPostProcessor implementations can wrap beans in proxies (this is how @Transactional and @Async work). This distinction is critical for understanding Spring Boot's auto-configuration internals."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Why does Spring recommend constructor injection for mandatory dependencies and setter injection for optional ones?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Constructor injection with final fields ensures the component is fully initialized before any method is called — mandatory dependencies are guaranteed to be present or the object never exists. Making them final forces assignment at construction time. For optional dependencies, setter injection with @Autowired(required = false) or @Nullable parameters allows graceful degradation when a dependency is absent. Mixing both approaches (constructor for required + setter for optional) is a recognized best practice in Spring application design."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the @DependsOn annotation do in Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It defines the order of bean initialization by alphabetical name" },
+        { "id": "b", "text": "It forces Spring to initialize the specified beans before the annotated bean is created, even if there is no direct dependency relationship" },
+        { "id": "c", "text": "It creates a circular dependency between two beans" },
+        { "id": "d", "text": "It overrides @Autowired and injects dependencies in alphabetical order" }
+      ],
+      "correctKey": "b",
+      "explanation": "@DependsOn explicitly tells Spring that the annotated bean depends on the named beans being fully initialized first. Unlike constructor/setter injection which expresses a direct dependency, @DependsOn enforces ordering even when there is no direct injection relationship. Common use cases: a bean that uses a static initializer or a post-processor that reads from another bean, or when a bean needs a side effect from another bean's initialization (e.g., registering with a static registry). Without @DependsOn, Spring may initialize beans in any order, causing failures."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the key difference between a singleton-scoped and a prototype-scoped Spring bean?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Singleton beans are thread-safe; prototype beans are not" },
+        { "id": "b", "text": "Singleton beans are created once per ApplicationContext and shared; prototype beans are created fresh on every injection or getBean() call, with no shared state" },
+        { "id": "c", "text": "Prototype beans are faster because they are lazily initialized by default" },
+        { "id": "d", "text": "Singleton beans require constructor injection; prototype beans require setter injection" }
+      ],
+      "correctKey": "b",
+      "explanation": "Singleton (default scope): one instance per Spring ApplicationContext, created on first use (lazy) or at startup (if eager), shared across all injection points. Prototype: a new instance is created every time the bean is requested — Spring does not manage the full lifecycle after creation (no destruction callbacks). This makes prototype suitable for stateful objects that should not be shared. Important: prototype beans do NOT receive destruction callbacks from Spring — you are responsible for cleanup if needed."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a FactoryBean in Spring and when should you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It is a factory class that creates beans using the new keyword instead of Spring's proxy mechanism" },
+        { "id": "b", "text": "It is a special bean that acts as a factory for creating other beans — implementing FactoryBean<T> lets you customize bean creation logic beyond what @Bean methods can express" },
+        { "id": "c", "text": "It replaces @Configuration classes for creating beans from third-party libraries" },
+        { "id": "d", "text": "It is an alternative to @Component for declaring beans in XML configuration" }
+      ],
+      "correctKey": "b",
+      "explanation": "FactoryBean<T> is a factory interface in Spring. When you register a FactoryBean in the context, Spring calls getObject() to produce the actual bean. Use it when: (1) the bean creation logic is too complex for a @Bean method, (2) you need to produce multiple bean variants from one factory class (e.g., SqlSessionFactory vs SqlSession via one factory), (3) you need conditional bean creation at runtime. Note the naming: Spring registers the BEAN produced by the factory, not the factory itself. Access the factory bean directly via & prefix: context.getBean(\"&myFactory\")."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does Spring handle circular dependencies when using constructor injection with @Lazy on one side?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Spring creates a partial proxy for the first bean and defers full construction until the circular reference is resolved" },
+        { "id": "b", "text": "Spring injects a CGLIB proxy for the @Lazy bean, delaying resolution of the actual dependency until a method is called on it — breaking the cycle" },
+        { "id": "c", "text": "@Lazy is ignored for constructor injection; Spring always throws BeanCurrentlyInCreationException" },
+        { "id": "d", "text": "Spring automatically switches to setter injection for the circular pair" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Lazy on a constructor parameter injects a proxy wrapper instead of the real bean. When Spring builds the first bean, it injects the proxy immediately (satisfying the constructor) without needing the second bean fully constructed. The second bean's constructor only runs when a method on the proxy is actually called. This breaks the circular chain because neither constructor fully executes at construction time. This is one of the recommended solutions for constructor circular dependencies, alongside refactoring to setter injection or extracting the shared dependency into a third bean."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of @Conditional in Spring, and what are some of its common specialized annotations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Conditional pauses bean registration until a manual trigger is issued" },
+        { "id": "b", "text": "@Conditional controls whether a bean or configuration class is registered based on a custom Condition implementation — specialized annotations include @ConditionalOnProperty, @ConditionalOnClass, @ConditionalOnBean, @ConditionalOnMissingBean, @ConditionalOnExpression" },
+        { "id": "c", "text": "@Conditional marks a bean as read-only in the ApplicationContext" },
+        { "id": "d", "text": "@Conditional is used only for lazy bean initialization in Spring Boot" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Conditional is the base annotation for conditional bean registration. Implement matches(ConditionContext, AnnotatedTypeMetadata) to return true/false. Spring Boot auto-configuration uses it heavily via specialized annotations: @ConditionalOnClass — activate only if class is on classpath. @ConditionalOnBean — only if a bean already exists. @ConditionalOnMissingBean — only if a bean does NOT exist (user preference). @ConditionalOnProperty — based on environment properties. @ConditionalOnExpression — SpEL expression. These are the building blocks that make Spring Boot auto-configuration safe and non-intrusive."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does a BeanFactoryPostProcessor do that a BeanPostProcessor cannot do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "BeanFactoryPostProcessor modifies instantiated bean instances; BeanPostProcessor modifies raw bean definition metadata" },
+        { "id": "b", "text": "BeanFactoryPostProcessor operates on raw BeanDefinition metadata before beans are instantiated — it can modify bean class names, property values, and scope; BeanPostProcessor operates on already-instantiated bean instances" },
+        { "id": "c", "text": "BeanFactoryPostProcessor and BeanPostProcessor are interchangeable — both run at the same lifecycle point" },
+        { "id": "d", "text": "BeanPostProcessor is deprecated in Spring 6.x; only BeanFactoryPostProcessor remains" }
+      ],
+      "correctKey": "b",
+      "explanation": "BeanFactoryPostProcessor runs early: it receives all BeanDefinition objects (the recipe for creating beans) and can modify them before instantiation — useful for changing bean scope, overriding constructor arguments, or dynamically registering beans. BeanPostProcessor runs later: it wraps already-created bean instances and can modify them before and after initialization callbacks. Spring Boot's @ConfigurationProperties binding and property placeholder resolution both rely on BeanFactoryPostProcessor. Changing an already-instantiated bean's definition would be meaningless — hence the distinct, ordered lifecycle."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When should you use a prototype-scoped bean in Spring?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "When each injection point needs its own independent instance with no shared state" },
+        { "id": "b", "text": "When the bean holds mutable request-scoped or session-scoped state that should not leak between requests" },
+        { "id": "c", "text": "When the bean is stateless and needs to be shared across the entire application for performance" },
+        { "id": "d", "text": "When you want Spring to call a custom initialization method every time the bean is used" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "Prototype scope creates a new instance on every getBean() call or injection. Use it when: (a) each use needs independent state — e.g., a command object or DTO factory that should not share data between callers. (b) the bean represents a unit of work that should not survive the current operation. Do NOT use prototype for stateless services — singleton is correct because stateless services are inherently shareable and singleton avoids repeated object creation overhead. Note: prototype beans must be retrieved from the ApplicationContext directly (not injected) if you need a fresh instance per use, because injection happens once at construction time."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between ImportBeanDefinitionRegistrar and @Bean for programmatically registering beans in Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Bean is programmatic; ImportBeanDefinitionRegistrar is annotation-based and used only by Spring internally" },
+        { "id": "b", "text": "ImportBeanDefinitionRegistrar allows fine-grained BeanDefinition manipulation at runtime (before any bean is instantiated) — it can register beans conditionally, with custom scopes, or based on environment checks; @Bean is a method-level declaration processed during context refresh" },
+        { "id": "c", "text": "Both register beans at the same lifecycle point; the difference is only syntax" },
+        { "id": "d", "text": "ImportBeanDefinitionRegistrar can only register @Component-annotated classes, not plain POJOs" }
+      ],
+      "correctKey": "b",
+      "explanation": "ImportBeanDefinitionRegistrar is implemented by classes referenced via @Import(MyRegistrar.class). Its registerBeanDefinitions() method receives an AnnotatedBeanDefinitionRegistry, allowing you to programmatically register BeanDefinitions with full control: custom scope, lazy flags, depends-on, parent hierarchy. It runs very early — before component scanning occurs — making it suitable for meta-framework authors (e.g., MyBatis @MapperScan uses this). @Bean methods run as part of @Configuration processing, after bean definitions are loaded. For most applications, @Bean is sufficient. Use ImportBeanDefinitionRegistrar when you need conditional, dynamic bean registration based on runtime environment."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is bean definition inheritance in Spring and how is it used?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Child beans inherit runtime values from parent beans after construction" },
+        { "id": "b", "text": "Bean definition inheritance allows a parent BeanDefinition to share common property values (abstract = true) with child bean definitions that override or extend specific attributes — useful for reducing duplication in XML or programmatic configuration" },
+        { "id": "c", "text": "Bean definition inheritance enables runtime polymorphism through Spring's application context hierarchy" },
+        { "id": "d", "text": "Child beans automatically inherit all dependencies from parent beans without explicit declaration" }
+      ],
+      "correctKey": "b",
+      "explanation": "Bean definition inheritance (set parent bean name in BeanDefinitionBuilder or use abstract='true' in XML) lets child beans reuse common property values from a parent definition. The parent is typically marked abstract = true — it is not instantiated itself. Child beans override specific properties while inheriting the rest. Use case: reducing configuration duplication when many beans share the same dataSource, basePackage, or scope. In modern Spring (annotation-based config), this pattern is less common because shared configuration is typically extracted into a common @Configuration class with shared @Bean methods."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does Spring's component filter mechanism work with @ComponentScan, and when would you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Component filters restrict which classes are registered as beans during component scanning — using @ComponentScan(includeFilters) and excludeFilters with FilterType (ANNOTATION, ASSIGNABLE_TYPE, REGEX, ASPECTJ)" },
+        { "id": "b", "text": "Component filters rename beans during scanning to avoid naming conflicts" },
+        { "id": "c", "text": "Component filters are used only for filtering XML bean definitions, not annotation-based scanning" },
+        { "id": "d", "text": "Component filters sort beans alphabetically before registration" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ComponentScan's includeFilters and excludeFilters allow you to control which classes are auto-detected as beans. Filter types: ANNOTATION (exclude @Component but include custom stereotype), ASSIGNABLE_TYPE (include all subclasses/implementors of a class), REGEX (pattern match on class name), ASPECTJ (AspectJ pointcut expression). Use cases: include a third-party library's classes without @Component annotations by filtering on an interface, or exclude specific implementations from scanning. Note: by default, @ComponentScan excludes @Component (or @Service/@Repository/@Controller). Custom filters are powerful but can make the codebase harder to understand — document them clearly."
+    }
+  ]
+}

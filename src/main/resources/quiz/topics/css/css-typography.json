@@ -1,0 +1,677 @@
+{
+  "topicSlug": "css-typography",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property sets the size of the text?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "font-size"
+        },
+        {
+          "id": "b",
+          "text": "text-size"
+        },
+        {
+          "id": "c",
+          "text": "font-scale"
+        },
+        {
+          "id": "d",
+          "text": "content-size"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "`font-size` is the CSS property for text size. It accepts absolute units (px, pt), relative units (em, rem, %), and newer functions (clamp(), calc()). Never use pt (points) on the web — they're a print unit. px is absolute (not responsive to user font preferences). rem is recommended for accessible, user-preference-respecting typography."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the correct way to make text bold in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "text-weight: bold"
+        },
+        {
+          "id": "b",
+          "text": "font-weight: bold"
+        },
+        {
+          "id": "c",
+          "text": "font-style: bold"
+        },
+        {
+          "id": "d",
+          "text": "text-style: bold"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`font-weight` accepts keyword values (normal, bold) or numeric values (100–900 in steps of 100). Only variable fonts support the full numeric range; regular fonts typically have only normal (400) and bold (700). font-style is for italic/oblique, not bold. text-weight and text-style are not valid CSS properties."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `line-height: 1.5` mean?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "The line height is exactly 1.5 pixels"
+        },
+        {
+          "id": "b",
+          "text": "The line height is 1.5 times the font size of the current element"
+        },
+        {
+          "id": "c",
+          "text": "The line height is 1.5 rem units regardless of font size"
+        },
+        {
+          "id": "d",
+          "text": "The font size is 1.5 times the line height"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "When line-height is a unitless number, it multiplies the element's own font size. With font-size: 16px and line-height: 1.5, each line is 24px tall. Unitless values are preferred over px because they inherit proportionally — a child with a different font size still gets 1.5× its own size. Best practice: set line-height without units (e.g., 1.5) for body text; use unitless 1.2–1.4 for headings."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property controls the spacing between characters?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "text-spacing"
+        },
+        {
+          "id": "b",
+          "text": "letter-spacing"
+        },
+        {
+          "id": "c",
+          "text": "char-spacing"
+        },
+        {
+          "id": "d",
+          "text": "font-spacing"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`letter-spacing` controls space between characters (tracking in typographic terms). Positive values increase spacing, negative values tighten it. A common pattern: `letter-spacing: 0.05em` on uppercase headings to improve readability. word-spacing controls space between words. line-height controls space between lines. All three are independent."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `text-align: left` and `text-align: start`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "left aligns to the left edge; start aligns to the left in LTR and right in RTL languages"
+        },
+        {
+          "id": "b",
+          "text": "They are identical — both always align left regardless of writing direction"
+        },
+        {
+          "id": "c",
+          "text": "start aligns to the left but only for block elements; left works for all elements"
+        },
+        {
+          "id": "d",
+          "text": "start is the older property; left is the modern replacement"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "In LTR (English), left and start are identical. In RTL (Arabic, Hebrew), `start` aligns to the start of the writing direction (right), while `left` always aligns to the physical left. Using `start` makes CSS writing-mode-aware — it adapts to the text direction automatically. Always prefer `start`/`end` over `left`/`right` in internationalized applications."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `text-transform: uppercase` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It increases the font size to uppercase the text visually"
+        },
+        {
+          "id": "b",
+          "text": "It visually transforms text to all uppercase letters without changing the HTML source"
+        },
+        {
+          "id": "c",
+          "text": "It changes the HTML element from <span> to <strong>"
+        },
+        {
+          "id": "d",
+          "text": "It is deprecated in CSS3 — use font-variant: uppercase instead"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "text-transform is a purely visual transformation — it changes how text renders without altering the DOM or accessibility tree. Screen readers read the original HTML text, not the CSS-transformed version. This is important for accessibility: 'text-transform: uppercase' on a button label means screen readers still announce it as the original casing. Use it for visual design; don't rely on it for conveying meaning. Other values: lowercase, capitalize (first letter of each word), full-width."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of `white-space: nowrap`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It prevents text from wrapping at all — all text stays on a single line, potentially overflowing the container"
+        },
+        {
+          "id": "b",
+          "text": "It removes all whitespace from the text content"
+        },
+        {
+          "id": "c",
+          "text": "It sets the text color to white and the background to space character"
+        },
+        {
+          "id": "d",
+          "text": "It collapses all whitespace and wraps text at the container edge"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "white-space: nowrap prevents line breaks — text flows horizontally and can overflow its container. Common use: navigation menus, table cells with long text, status badges. To handle overflow with nowrap, combine with `overflow: hidden` and `text-overflow: ellipsis`. white-space values: normal (collapse + wrap), nowrap (collapse + no wrap), pre (preserve whitespace + no wrap), pre-wrap (preserve + wrap), pre-line (preserve line breaks + wrap)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `text-overflow: ellipsis` require to work correctly?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "text-overflow: ellipsis works on its own — ellipsis appears automatically when text overflows"
+        },
+        {
+          "id": "b",
+          "text": "It requires white-space: nowrap (to prevent wrapping), overflow: hidden (to clip), and a defined width on the element"
+        },
+        {
+          "id": "c",
+          "text": "It requires the element to have display: inline-block"
+        },
+        {
+          "id": "d",
+          "text": "text-overflow: ellipsis only works on <p> elements, not <div> elements"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Three conditions for text-overflow ellipsis: (1) `white-space: nowrap` — prevents the text from wrapping naturally, forcing overflow, (2) `overflow: hidden` — clips the overflow so the container stays bounded, (3) a defined width (or max-width). Without any of these, there's nothing to clip and the ellipsis won't appear. Common pattern: `.ellipsis { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `font-display: swap` in a @font-face declaration?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It swaps the loaded font with a system font if the custom font fails to load"
+        },
+        {
+          "id": "b",
+          "text": "It controls the font swapping strategy during load: swap shows fallback text immediately and swaps to the custom font when it loads, preventing invisible text (FOIT) at the cost of a layout shift (FOUT)"
+        },
+        {
+          "id": "c",
+          "text": "It automatically downloads the font from Google Fonts in the background"
+        },
+        {
+          "id": "d",
+          "text": "It disables the font file entirely and uses the nearest system font"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "font-display values: swap (show fallback immediately, swap when font loads — recommended for body text), block (brief invisible timeout, then swap — hides text briefly), optional (use font only if cached, never swap mid-session — for brand fonts), auto (browser default). swap prevents FOIT (Flash Of Invisible Text) but can cause FOUT (Flash Of Unstyled Text) when the custom font loads and causes layout shifts. Choose based on whether content accessibility (swap) or layout stability (optional/block) matters more."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key advantage of variable fonts over static fonts?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Variable fonts are always smaller file sizes than static fonts regardless of font family"
+        },
+        {
+          "id": "b",
+          "text": "Variable fonts encode a single font file with a design space (axes like weight, width, slant) — one file replaces multiple static font files, and intermediate values between defined weights are available"
+        },
+        {
+          "id": "c",
+          "text": "Variable fonts are vector-based while static fonts are raster-based"
+        },
+        {
+          "id": "d",
+          "text": "Variable fonts require JavaScript to render; static fonts work in plain CSS"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "A static font ships as separate files for each weight (400, 500, 700, etc.) — 5 weights = 5 files. A variable font encodes the entire design space in one file: you can use any weight from 100 to 900 (not just steps of 100), and it interpolates smoothly. Common axes: wght (weight), wdth (width), ital (italic), slnt (slant). This enables fluid font weight, continuous responsive typography, and reduced HTTP requests/load times."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `vertical-align: middle` do on an inline element or table cell?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It aligns text to the middle of the viewport"
+        },
+        {
+          "id": "b",
+          "text": "It aligns the element's middle point with the parent element's baseline plus half the x-height — not true vertical centering"
+        },
+        {
+          "id": "c",
+          "text": "It moves the element to the exact center of its container using flexbox logic"
+        },
+        {
+          "id": "d",
+          "text": "It aligns the text to the middle of the line-height box, which is identical to align-items: center"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "vertical-align: middle aligns the element's midpoint with the parent's baseline + half the x-height — not the visual center of the line box. This is why 'true' vertical centering often looks off with inline elements. For true vertical centering of inline content, use flexbox (`display: inline-flex; align-items: center`) on the parent. For table cells, vertical-align: middle works as expected. The baseline-alignment model is one of the most confusing parts of CSS typography."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `font-variant: small-caps` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It renders all lowercase letters as uppercase at a smaller size than regular uppercase letters"
+        },
+        {
+          "id": "b",
+          "text": "It converts the entire text to uppercase letters of the same size as the original lowercase"
+        },
+        {
+          "id": "c",
+          "text": "It renders all text in a smaller font size as a caption"
+        },
+        {
+          "id": "d",
+          "text": "It enables font ligatures between adjacent letters"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "small-caps renders lowercase letters as uppercase but at a smaller size than the original uppercase letters — maintaining the visual distinction between upper and lowercase while giving an all-caps appearance. This is the typographic 'small capitals' style, used for labels, subtitles, and acronyms. text-transform: uppercase converts everything to the same size — different from small-caps which preserves the size contrast. Modern CSS also supports font-variant-alternates for stylistic alternates."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of `font-feature-settings` in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It controls OpenType font features like ligatures (liga), kerning (kern), and alternate glyphs (swsh) — giving fine-grained control over font rendering details"
+        },
+        {
+          "id": "b",
+          "text": "It sets the fallback fonts when the primary font cannot be loaded"
+        },
+        {
+          "id": "c",
+          "text": "It adjusts the distance between font glyphs globally across the page"
+        },
+        {
+          "id": "d",
+          "text": "font-feature-settings is deprecated — font-variant properties should be used instead"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "`font-feature-settings` is a low-level property for accessing OpenType features not exposed by higher-level properties. Examples: `font-feature-settings: 'liga' 1` (standard ligatures), `'kern' 1` (kerning), `'swsh' 1` (swash alternates), `'onum' 1` (old-style numerals). The modern, higher-level approach uses `font-variant-*` properties (ligatures, numeric, caps, etc.) which map to OpenType features and are more readable. Use font-feature-settings when you need a feature not covered by font-variant."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `overflow-wrap: break-word` (formerly `word-wrap`) do that `word-break: break-all` does not?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "break-word breaks only at normal word boundaries; break-all breaks at any character boundary, including mid-word"
+        },
+        {
+          "id": "b",
+          "text": "break-all only works on block elements; break-word works on inline elements"
+        },
+        {
+          "id": "c",
+          "text": "break-word is for CJK text; break-all is for Latin text"
+        },
+        {
+          "id": "d",
+          "text": "There is no difference — both properties are identical aliases"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "overflow-wrap: break-word (word-wrap) breaks a long word only when it overflows its container — it tries to keep normal words intact. word-break: break-all breaks at any character boundary, even mid-word, which can create unreadable fragments. For general-purpose overflow handling: `overflow-wrap: break-word` is the safe choice. Use break-all only for specific use cases like code blocks or CJK content. The recommended modern shorthand: `overflow-wrap: break-word; hyphens: auto;`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does the CSS `font-variant-numeric` property control, and what values enable oldstyle (text) figures versus lining figures?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "font-variant-numeric controls the casing of numeric text; lining-nums shows uppercase numerals, oldstyle-nums shows lowercase-style numerals that align better with lowercase text"
+        },
+        {
+          "id": "b",
+          "text": "font-variant-numeric controls only the font size of numbers; lining figures are larger, oldstyle figures are smaller"
+        },
+        {
+          "id": "c",
+          "text": "font-variant-numeric is only available in variable fonts; static fonts ignore it"
+        },
+        {
+          "id": "d",
+          "text": "font-variant-numeric controls whether numbers can be used as CSS grid line names"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Lining figures (lining-nums: 1) are uniform height like uppercase letters — all numbers sit on the baseline and have the same cap height. Oldstyle figures (oldstyle-nums: 1) have ascenders (like 6, 8) and descenders (like 3, 7) that blend with lowercase text. Oldstyle is preferred for body text (numbers blend with text). Lining is preferred for tables and graphs (numbers align vertically). Other numeric values: tabular-nums (monospaced numbers for column alignment), ordinals, fractions."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is optical sizing in variable fonts, and how does `font-optical-sizing: auto` enable it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Optical sizing adjusts letter spacing based on font size — small text gets tighter spacing for compactness, large text gets wider spacing for readability"
+        },
+        {
+          "id": "b",
+          "text": "Optical sizing adjusts glyph shapes for optimal rendering at different sizes — variable fonts can modify stroke weight and spacing based on the font-size value to optimize legibility at each size"
+        },
+        {
+          "id": "c",
+          "text": "Optical sizing is a JavaScript API that measures text rendering quality in pixels"
+        },
+        {
+          "id": "d",
+          "text": "font-optical-sizing only works with static fonts; variable fonts require manual axis interpolation"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Optical sizing adjusts glyph shapes at different scales — historically, metal type had different cuts for body text vs display text. Variable fonts encode an 'opsz' (optical size) axis: at small sizes (e.g., 12px), the font uses wider strokes and more spacing for legibility; at large sizes (e.g., 72px), it uses more delicate strokes. `font-optical-sizing: auto` lets the browser apply this automatically based on font-size. Set `font-optical-sizing: none` to disable this behavior."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the CSS property `text-indent` and how does `text-indent: 2em` on a parent interact with child elements that have `display: inline-block`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "text-indent only indents the first line of block elements — it has no effect on inline or inline-block children"
+        },
+        {
+          "id": "b",
+          "text": "text-indent applies to the first formatted line of each block container — it does not affect inline, inline-block, or floated children which may not participate in the 'first line' if they precede the text content"
+        },
+        {
+          "id": "c",
+          "text": "text-indent creates a 2em margin on all sides of the element"
+        },
+        {
+          "id": "d",
+          "text": "text-indent is deprecated in CSS3 — use padding-left instead"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "text-indent indents the first line of a block container. It only affects the 'first line' — the inline content on the first line of the block. Elements on the first line that are not part of the first line's inline formatting context (floats, inline-block, absolute elements) do not get indented. An inline-block element with text inside is its own block container — its own first line is not the parent's first line. Understanding the 'first line' box in CSS is key to predicting text-indent behavior."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What are ligatures in typography, and how do you enable them in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Ligatures merge adjacent glyphs (like fi, fl, ff) into a single glyph for better visual spacing; enabled with font-feature-settings: 'liga' 1 or font-variant: common-ligatures"
+        },
+        {
+          "id": "b",
+          "text": "Ligatures are mathematical spacing algorithms that adjust kerning globally; enabled with letter-spacing: 0.05em"
+        },
+        {
+          "id": "c",
+          "text": "Ligatures are only available in serif fonts; sans-serif fonts cannot use them"
+        },
+        {
+          "id": "d",
+          "text": "Ligatures are enabled by default in all browsers — no CSS needed"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Standard ligatures (liga) merge common letter pairs: fi, fl, ff, ffi, ffl. Discretionary ligatures (dlig) are stylistic alternatives. Ligatures can make certain letter pairs look cleaner, but they can also reduce readability for dyslexic users or interfere with code syntax highlighting. Control with: `font-variant-ligatures: common-ligatures` (default), `none` to disable, or `font-feature-settings: 'liga' 0` for fine-grained control. Most web fonts support common ligatures."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In CSS, setting `font-size: 14px` produces the same responsive behavior as `font-size: 0.875rem` when the browser's root font size is the default 16px.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "0.875rem × 16px = 14px — mathematically equivalent. The difference: px is absolute (ignores user font preferences), while rem is relative to the root font size. If a user increases their default font size for accessibility, px text stays 14px while rem text scales. For accessibility, rem is preferred. For icon fonts or precise pixel-level design, px may be appropriate."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Google Fonts with `font-display: optional` will never cause a Flash of Unstyled Text (FOUT) if the font is cached in the browser from a previous visit.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "font-display: optional tells the browser to use the custom font only if it's immediately available (from cache) — never block text rendering. If the font isn't cached, it silently skips it and uses the fallback. On a subsequent visit (with font cached), the browser uses the cached font with no FOUT. This is the ideal strategy for brand/typeface-driven text where layout stability is more important than the custom font appearing."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A variable font with an opsz (optical sizing) axis will automatically apply different stroke weights and spacing when font-size changes, even without explicitly setting the opsz axis value — because font-optical-sizing: auto scales the opsz axis with font-size automatically.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "font-optical-sizing: auto is the default. It automatically maps the opsz axis to the font-size value: small font-size → low opsz value (wider strokes, more spacing for small sizes), large font-size → high opsz value (delicate strokes, tighter spacing for large display sizes). This is done entirely by the browser without explicit axis value setting. The optical size axis is a registered axis, so the browser handles it automatically. For manual control, set font-optical-sizing: none and set the axis manually."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the actual line height in pixels for this text?\n\n```css\nbody {\n  font-size: 16px;\n  line-height: 1.5;\n}\nh1 {\n  font-size: 48px;\n  /* What is the computed line-height of this h1? */\n}\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "24px — 1.5 × 16px (parent's font-size)"
+        },
+        {
+          "id": "b",
+          "text": "72px — 1.5 × 48px (h1's own font-size, since unitless line-height inherits proportionally)"
+        },
+        {
+          "id": "c",
+          "text": "48px — browser default line-height: normal is applied instead of the body's 1.5"
+        },
+        {
+          "id": "d",
+          "text": "1.5 — line-height is stored as unitless and only computed at paint time per element"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Unitless line-height inherits as a factor, not a computed value. The body has line-height: 1.5 (factor 1.5). When h1 inherits, it gets 1.5 — not 24px. The computed line-height for h1 = 1.5 × 48px = 72px. This is why unitless line-height is recommended: each element scales proportionally to its own font-size. If the body used `line-height: 24px` (with units), h1 would inherit 24px — far too cramped for 48px font size. The unitless inheritance model prevents this hierarchy problem."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this CSS produce?\n\n```css\n.card-title {\n  font-size: clamp(1.25rem, 3vw, 2.5rem);\n  font-optical-sizing: auto;\n  font-variant-numeric: oldstyle-nums tabular-nums;\n  font-feature-settings: 'liga' 0;\n}\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "Font scales from 1.25rem to 2.5rem, with optical sizing, tabular figures, and standard ligatures"
+        },
+        {
+          "id": "b",
+          "text": "Font scales fluidly with viewport, optical sizing adjusts glyphs automatically, uses oldstyle tabular numerals, and DISABLES standard ligatures"
+        },
+        {
+          "id": "c",
+          "text": "Font is locked at 2.5rem because clamp ignores vw values above the max"
+        },
+        {
+          "id": "d",
+          "text": "font-feature-settings: 'liga' 0 enables ligatures; oldstyle-nums enables proportional (non-tabular) numbers"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "clamp(1.25rem, 3vw, 2.5rem) — font scales smoothly with viewport, clamped 1.25rem–2.5rem. font-optical-sizing: auto (default) — browser adjusts stroke weight/spacing automatically with font-size. oldstyle-nums tabular-nums — oldstyle figures (ascenders/descenders) with tabular spacing (uniform width for column alignment) — ideal for body text with embedded numbers. 'liga' 0 — DISABLES standard ligatures (liga=0 turns them off). The combination is a sophisticated responsive heading with controlled numerals and no ligatures."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `font-weight: 700` mean compared to `font-weight: bold`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "bold and 700 are synonyms — both represent the same weight" },
+        { "id": "b", "text": "bold is a keyword equivalent to 700; numeric values (100–900) only work with variable fonts" },
+        { "id": "c", "text": "font-weight: 700 is heavier than bold in all browsers" },
+        { "id": "d", "text": "bold only works on serif fonts; 700 works on all fonts" }
+      ],
+      "correctKey": "a",
+      "explanation": "font-weight: bold and font-weight: 700 are functionally identical — 'bold' is a named alias for 700. The numeric scale (100–900) maps to named values: 100=thin, 200=extra-light, 300=light, 400=normal, 500=medium, 600=semi-bold, 700=bold, 800=extra-bold, 900=black. Variable fonts support smooth weight interpolation across this range; static fonts provide specific files for specific weights."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `font-style: italic` do, and how does it differ from `font-style: oblique`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "italic uses a distinct italic font face designed by the type designer; oblique simulates italics by slanting the regular face — italic is usually the preferred choice" },
+        { "id": "b", "text": "They are identical — both slants the text using the same algorithm" },
+        { "id": "c", "text": "oblique is the standard CSS italic; italic is the legacy syntax" },
+        { "id": "d", "text": "italic only works on serif fonts; oblique works on all fonts" }
+      ],
+      "correctKey": "a",
+      "explanation": "Italic uses a separate, distinct typeface designed for italic style (with different letterforms, not just slanted). Oblique (or oblique N deg) slants the regular typeface mechanically without changing the letterforms. Always prefer italic when available — it produces authentic typographic italic style. oblique is useful for fonts without a designed italic face."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of `text-decoration: underline` vs `border-bottom` for underlines?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-decoration: underline is the standard semantic underline; border-bottom creates a line below the element's border box and can be styled with color, width, and style" },
+        { "id": "b", "text": "They are interchangeable — both produce identical underlines" },
+        { "id": "c", "text": "border-bottom is faster; text-decoration should be avoided" },
+        { "id": "d", "text": "text-decoration is deprecated; use border-bottom for all underlines" }
+      ],
+      "correctKey": "a",
+      "explanation": "text-decoration: underline is the semantic, browser-native underline — it is the correct choice for links and meaningful text emphasis (screen readers don't announce it, but it signals importance). border-bottom creates a decorative line below the content box — it's more flexible (color, width, style, spacing) but semantically invisible. For accessible underlines, use text-decoration or text-decoration-color/text-decoration-thickness for customization."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the `lh` (line-height) unit in CSS, and when is it useful?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "lh equals the line-height of the current element — useful for spacing that scales with the current line height" },
+        { "id": "b", "text": "lh equals 1/100th of the element's height" },
+        { "id": "c", "text": "lh is an alias for em and is used exclusively for letter spacing" },
+        { "id": "d", "text": "lh is only valid inside font-related properties" }
+      ],
+      "correctKey": "a",
+      "explanation": "lh equals the computed line-height of the element — if line-height: 1.5 and font-size: 16px, lh = 24px. Useful for spacing that scales proportionally with text: margin-top: 1lh creates spacing equal to one line height above the text. This is cleaner than calc() for vertical rhythm. cap (1 cap = cap height of the font) is another useful typographic unit for sizing."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `font-stretch` control, and which fonts support it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-stretch changes the spacing between letters — identical to letter-spacing" },
+        { "id": "b", "text": "font-stretch adjusts the width of the character forms from ultra-condensed to ultra-expanded — only supported in variable fonts with a 'wdth' axis" },
+        { "id": "c", "text": "font-stretch is only valid on monospace fonts" },
+        { "id": "d", "text": "font-stretch is a deprecated CSS2 property replaced by font-variant-alternates" }
+      ],
+      "correctKey": "b",
+      "explanation": "font-stretch uses keywords (ultra-condensed, extra-condensed, condensed, semi-condensed, normal, semi-expanded, expanded, extra-expanded, ultra-expanded) or percentage values (50%–200%). Only variable fonts with a 'wdth' axis support smooth font-stretch. Static fonts provide specific widths — using font-stretch on a non-variable-width font has no effect. font-stretch is independent of font-weight."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is `font-variant: common-ligatures` and when should you disable it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "common-ligatures merges fi, fl, ff letter pairs; disable it for dyslexic users or code syntax highlighting where ligatures can obscure character boundaries" },
+        { "id": "b", "text": "common-ligatures enables old-style numerals; disable it to use lining numerals" },
+        { "id": "c", "text": "Ligatures are always beneficial and should never be disabled" },
+        { "id": "d", "text": "common-ligatures is the default — it cannot be overridden" }
+      ],
+      "correctKey": "a",
+      "explanation": "Standard ligatures (fi, fl, ff, ffi, ffl) merge adjacent characters for aesthetic purposes. In code editors, ligatures can cause confusion: 'ri' → 'r+i' look different from 'n' but ligatures can make them appear identical. Disable with font-variant-ligatures: no-common-ligatures or font-feature-settings: 'liga' 0. For dyslexic users, ligatures can reduce readability."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `text-rendering: optimizeLegibility` do for text display?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "optimizeLegibility tells the browser to prioritize legibility over speed — it enables kerning and disables ligatures for clearer text rendering" },
+        { "id": "b", "text": "optimizeLegibility enables ligatures and kerning for maximum text density" },
+        { "id": "c", "text": "text-rendering only affects SVG text elements, not HTML" },
+        { "id": "d", "text": "optimizeLegibility disables all text rendering optimization" }
+      ],
+      "correctKey": "a",
+      "explanation": "text-rendering: optimizeLegibility tells the browser to favor legibility (legibility = kerning + ligatures) over rendering speed. Other values: optimizeSpeed (no ligatures/kerning, faster), geometricPrecision (precise glyph metrics). For body text, optimizeLegibility is usually best. For SVG icons or charts, geometricPrecision may be preferable. Note: this is a hint — browsers decide how to implement it."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `font-variant-alternates` enable, and how does `font-feature-values` support it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-variant-alternates selects alternate glyph forms defined in the font; font-feature-values declares named alternates at the @font-face level so they can be referenced by name in font-variant-alternates" },
+        { "id": "b", "text": "font-variant-alternates enables ligatures; font-feature-values disables them" },
+        { "id": "c", "text": "font-variant-alternates only works on variable fonts" },
+        { "id": "d", "text": "font-feature-values is the only way to control alternates in CSS" }
+      ],
+      "correctKey": "a",
+      "explanation": "font-variant-alternates accesses stylistic alternates defined in the font (stylistic sets: swash, historic, etc.). font-feature-values provides named aliases: @font-feature-values myFont { @stylistic { alt1: 1; alt2: 2; } } — then use font-variant-alternates: stylistic(alt1) in your CSS. This maps human-readable names to OpenType feature codes. Useful for enabling decorative letterforms without knowing the underlying OpenType feature numbers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the relationship between `cap-height`, `x-height`, and the `ex` unit in CSS typography?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ex equals 1ch (character width); cap-height and x-height are CSS units for sizing images" },
+        { "id": "b", "text": "ex equals the x-height of the current font (height of lowercase letters like 'x'); cap-height equals the height of capital letters — these metrics are used for precise vertical spacing independent of font-size" },
+        { "id": "c", "text": "cap-height and x-height are identical — both refer to lowercase letter height" },
+        { "id": "d", "text": "ex is always equal to font-size divided by 12" }
+      ],
+      "correctKey": "b",
+      "explanation": "ex equals the x-height of the font (height of lowercase 'x'). cap-height is the height of capital letters. These metrics vary by font — Arial has different proportions than Times. ex is useful for vertical spacing tied to text proportions. The cap unit (CSS Values Level 4) equals the cap-height. These units enable spacing that scales proportionally with the specific font's metrics, independent of the arbitrary font-size."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is vertical rhythm in typography, and how can CSS line-height and margin-bottom achieve it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Vertical rhythm means all text elements have the same font-size; achieved by setting font-size: 1em on all elements" },
+        { "id": "b", "text": "Vertical rhythm means all text lines sit on a consistent baseline grid; achieved by setting a common line-height as the base unit and using multiples of it (e.g., margin-bottom: 1.5rem) for spacing between elements" },
+        { "id": "c", "text": "Vertical rhythm only applies to horizontal text; vertical writing modes don't need rhythm" },
+        { "id": "d", "text": "Vertical rhythm requires CSS Grid — flexbox and block layout cannot achieve it" }
+      ],
+      "correctKey": "b",
+      "explanation": "Vertical rhythm creates a consistent baseline grid where headings, body text, and images all align to the same horizontal lines. Implementation: (1) Set a base line-height on body (e.g., 1.5rem = base unit). (2) Set all vertical spacings (margins, padding) to multiples of this unit. (3) Headings with larger font sizes get proportionally larger line-heights that are still multiples of the base unit. This creates a 'musical' page rhythm that makes text feel cohesive."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "The CSS `ch` unit equals the width of the character 'M' in the current font.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "1ch equals the advance width of the '0' (zero) character, not 'M'. This is specified by the CSS Values spec: 'the advance width measure of the zero (0) glyph in the font'. Using '0' instead of 'M' makes ch more suitable for character-count-based layouts, since most fonts design digits to have uniform width."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`font-variant-numeric: tabular-nums` ensures that all digits have uniform width, making them ideal for aligning columns of numbers in tables and data displays.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Tabular nums (tabular-nums, also called 'figure spacing: tabular') forces all digits (0-9) to have the same advance width, so numbers like '1' and '5' occupy equal space. This is essential for aligned number columns in tables, price lists, and data grids. Without tabular-nums, numbers have proportional widths (1 is narrow, 0 is wide) causing misalignment when digits change."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A font with `font-variation-settings: 'wght' 250` and another with `font-variation-settings: 'wght' 900` can be loaded as a single variable font file and used with `font-weight: 250` and `font-weight: 900` in CSS.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Variable fonts encode variation axes (like 'wght') in a single file. Setting font-weight: 250 uses the weight axis at 250 value. The browser interpolates between the defined extremes of the axis. For the CSS shorthand to work, the axis name must match the CSS registered axis: 'wght' maps to font-weight, 'wdth' to font-stretch, 'ital' to font-style, 'opsz' to font-optical-sizing. Custom axes use 4-letter names."
+    }
+  ]
+}

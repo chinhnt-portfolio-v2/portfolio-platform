@@ -38,7 +38,7 @@
         { "id": "d", "text": "Both A and B are correct" }
       ],
       "correctKey": "d",
-      "explanation": "Option A is true — Object's default toString() produces strings like `Test@4aa298b7`. Option B is also true — the JVM automatically invokes toString() via `String.valueOf()` during concatenation (`\"obj=\" + myObj` → `\"obj=\" + myObj.toString()`). Option C is false; toString() override is a best practice, not a language requirement. Since both A and B are correct, D is the answer."
+      "explanation": "Option A is true — Object's default toString() produces strings like `Test@4aa298b7`. Option B is also true — the JVM automatically invokes toString() via `String.valueOf()` during concatenation. Option C is false; toString() override is a best practice, not a language requirement. Since both A and B are correct, D is the answer."
     },
     {
       "levelTag": "JUNIOR",
@@ -52,6 +52,223 @@
       ],
       "correctKey": "b",
       "explanation": "`==` checks reference equality (whether two variables point to the same object in heap memory). `.equals()` on String overrides Object's default to compare character sequences. Using == between two distinct String objects (even with identical content) returns false, while equals() returns true. The String pool can cause interned literals to share references, masking this distinction in simple tests."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following code?\n\nString s1 = new String(\"hello\");\nString s2 = new String(\"hello\");\nSystem.out.println(s1 == s2);\nSystem.out.println(s1.equals(s2));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true then true" },
+        { "id": "b", "text": "false then true" },
+        { "id": "c", "text": "true then false" },
+        { "id": "d", "text": "false then false" }
+      ],
+      "correctKey": "b",
+      "explanation": "`s1` and `s2` are two distinct heap objects created via `new String()`. The `==` operator compares reference identity — they are different objects, so `==` returns false. `.equals()` on String compares character content — both contain \"hello\", so it returns true. This is the canonical demonstration of the difference between identity and equality."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which of the following is a valid method signature for a Java constructor?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "public void MyClass(int x) { }" },
+        { "id": "b", "text": "public MyClass(int x) { }" },
+        { "id": "c", "text": "private static MyClass(int x) { }" },
+        { "id": "d", "text": "MyClass() { return this; }" }
+      ],
+      "correctKey": "b",
+      "explanation": "A constructor has no return type (not even void) and shares the class name exactly. Option A has a return type (void) — that's a regular method. Option C adds `static` which is illegal for constructors. Option D uses `return this;` which is legal inside a constructor but not as a return type declaration; the option itself is syntactically wrong. The correct signature is simply `public MyClass(int x)`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\npublic class Test {\n    static { System.out.print(\"A \"); }\n    { System.out.print(\"B \"); }\n    public Test() { System.out.print(\"C \"); }\n    public static void main(String[] args) {\n        new Test();\n        new Test();\n    }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "B C B C" },
+        { "id": "b", "text": "A B C A B C" },
+        { "id": "c", "text": "A B C B C" },
+        { "id": "d", "text": "B C A B C" }
+      ],
+      "correctKey": "c",
+      "explanation": "Static init block runs once when the class is loaded (before any instance). Instance init blocks run before the constructor body on every object creation. So: static init fires once → first object: instance init + constructor → second object: instance init + constructor. Result: A (static once) + B C (instance 1) + B C (instance 2) = 'A B C B C'."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the `final` keyword mean when applied to a method?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The method cannot have a body and must be implemented by a subclass" },
+        { "id": "b", "text": "The method cannot be overridden by subclasses" },
+        { "id": "c", "text": "The method must return a primitive type" },
+        { "id": "d", "text": "The method runs only once per JVM session" }
+      ],
+      "correctKey": "b",
+      "explanation": "`final` on a method prevents subclasses from overriding it. This is used when you want to lock in the implementation — the behavior is guaranteed to be what the parent class defines. It differs from `static` (shared across all instances) and `private` (inaccessible to subclasses entirely). A `private` method is implicitly `final` because it cannot be overridden."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which keyword prevents a class from being subclassed?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "static" },
+        { "id": "b", "text": "private" },
+        { "id": "c", "text": "final" },
+        { "id": "d", "text": "abstract" }
+      ],
+      "correctKey": "c",
+      "explanation": "`final` on a class prevents inheritance — no class can extend it. `abstract` is the opposite (forces inheritance). `static` makes a class-level member, not a class modifier. `private` restricts access, not inheritance. Option D would be correct if the question were 'which allows a class to be subclassed without providing implementation' — abstract is for that."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "True or False: In Java, primitive types are passed by reference.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "Java is strictly pass-by-value. For primitives, the value itself is copied. For objects, the reference (the memory address value) is copied — not the object itself. This means a method cannot reassign a caller's reference to point to a new object, but it can mutate the object's internal state if the object is mutable. The confusion arises because object references are copied, making it look like reference passing — but reassigning the parameter inside the method does not affect the caller."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nint a = 5;\nint b = a;\nb = 10;\nSystem.out.println(a);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "5" },
+        { "id": "b", "text": "10" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "Java is pass-by-value. When you assign `b = a`, you copy the value of `a` into `b`. Changing `b` later has no effect on `a`. Both are independent variables holding a copy of the same primitive value. The confusion with objects: if `a` were a reference to an object, both would reference the same object, and mutating that object would be visible through both variables — but reassigning `b = new Object()` would not affect `a`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which of these is the correct way to create and initialize an array of 5 integers in Java?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "int[] arr = new int[5]; // all elements default to 0" },
+        { "id": "b", "text": "int[] arr = new int[] {1, 2, 3, 4, 5};" },
+        { "id": "c", "text": "int[] arr = {1, 2, 3, 4, 5}; // valid only when declared inline" },
+        { "id": "d", "text": "All of the above are valid" }
+      ],
+      "correctKey": "d",
+      "explanation": "All three are valid syntax. Option A creates an array with default-initialized elements (int defaults to 0). Option B uses array initializer with explicit size. Option C is shorthand valid only in declaration context — `int[] arr; arr = {1,2,3,4,5};` would NOT compile. Option D is correct because all three forms are valid in the right context."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a diamond operator in Java generics?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A syntax feature that lets you omit the type parameter on the right side of an assignment when the type is obvious from the left side" },
+        { "id": "b", "text": "An operator for comparing two generic type parameters using the <> syntax" },
+        { "id": "c", "text": "A way to declare a generic class with two type parameters" },
+        { "id": "d", "text": "An operator used to invoke default methods in interfaces" }
+      ],
+      "correctKey": "a",
+      "explanation": "The diamond operator `<>` (introduced in Java 7) allows the compiler to infer the type parameter from context: `List<String> list = new ArrayList<>();`. Without it you would write `List<String> list = new ArrayList<String>();`. The diamond operator only works where the type can be inferred — it cannot be used on its own as `new ArrayList<>()`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the `this` keyword refer to in a Java instance method?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The currently executing class object" },
+        { "id": "b", "text": "The current object instance on which the method is being called" },
+        { "id": "c", "text": "The parent class of the current object" },
+        { "id": "d", "text": "A reference to the method parameters" }
+      ],
+      "correctKey": "b",
+      "explanation": "`this` is a reference to the current object — the instance whose method is executing. It is used to disambiguate instance variables from local parameters with the same name (`this.x = x`), to pass the current object to other methods, or to chain constructors (`this(args)`). In static methods, `this` is not available because static methods belong to the class, not an instance."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which access modifier allows access only within the same package?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "private" },
+        { "id": "b", "text": "protected" },
+        { "id": "c", "text": "default (package-private)" },
+        { "id": "d", "text": "public" }
+      ],
+      "correctKey": "c",
+      "explanation": "Default (no modifier, also called package-private) restricts access to classes in the same package only. `private` restricts to the same class. `protected` allows same package + subclasses. `public` allows anywhere. This is the least visible level in Java's four-tier access system: private < default < protected < public."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is method overloading?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Defining multiple methods with the same name but different parameter types or counts within the same class" },
+        { "id": "b", "text": "Overriding a parent class method with a more specific implementation in a subclass" },
+        { "id": "c", "text": "A technique to call a parent class constructor from a child class" },
+        { "id": "d", "text": "Using the 'super' keyword to access a parent method" }
+      ],
+      "correctKey": "a",
+      "explanation": "Overloading (compile-time polymorphism) occurs within the same class when multiple methods share a name but differ in parameter count, type, or order. Return type alone cannot differentiate overloads. Overriding (option B) is a different concept — redefining an inherited method in a subclass. Overloading is resolved at compile time based on the method signature."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which of the following correctly describes the Java heap memory?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Heap stores primitive types and method local variables; stack stores objects" },
+        { "id": "b", "text": "Heap stores objects and instance variables; stack stores method calls and local primitives/references" },
+        { "id": "c", "text": "Both heap and stack store the same kind of data; heap is just larger" },
+        { "id": "d", "text": "Heap is used for static variables; stack is used for dynamic allocation" }
+      ],
+      "correctKey": "b",
+      "explanation": "The heap stores all objects (created with `new`) and their instance variables — garbage is collected here. The stack stores method frames: local primitive variables and reference variables (the pointers, not the objects themselves). The stack is LIFO and per-thread; the heap is shared across all threads. A common mistake is thinking references live on the heap — they are on the stack (per thread), pointing to heap objects."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nString a = \"hello\";\nString b = \"hello\";\nString c = new String(\"hello\");\nSystem.out.println(a == b);\nSystem.out.println(a == c);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true then true" },
+        { "id": "b", "text": "true then false" },
+        { "id": "c", "text": "false then false" },
+        { "id": "d", "text": "false then true" }
+      ],
+      "correctKey": "b",
+      "explanation": "`a` and `b` are string literals assigned from the String pool — they point to the same pooled object, so `==` returns true. `c` is explicitly created with `new String()` on the heap — a new object separate from the pool. So `a == c` is false (different objects). Note: `a.equals(c)` is true because equals() compares content. This is why you should almost always use `.equals()` for String comparison, not `==`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which statement about `instanceof` is correct?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Returns true if the object is an instance of the class or any of its subclasses" },
+        { "id": "b", "text": "Returns true only for exact class match, not subclasses" },
+        { "id": "c", "text": "instanceof is deprecated in Java 17" },
+        { "id": "d", "text": "Returns the Class object of the instance" }
+      ],
+      "correctKey": "a",
+      "explanation": "`instanceof` returns true if the reference is an instance of the given class or any of its subclasses (descendants). Since Java 16, `instanceof` can be combined with pattern matching: `if (obj instanceof String s)` — the variable `s` is automatically cast and scoped within the if-block. Option B describes getClass() equality, not instanceof. Option C is false. Option D describes obj.getClass()."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nint[] arr = {3, 1, 4, 1, 5};\nSystem.out.println(arr[arr.length - 1]);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "3" },
+        { "id": "b", "text": "5" },
+        { "id": "c", "text": "4" },
+        { "id": "d", "text": "ArrayIndexOutOfBoundsException" }
+      ],
+      "correctKey": "b",
+      "explanation": "`arr.length = 5`, so `arr.length - 1 = 4`. Array indices are 0-based: arr[0]=3, arr[1]=1, arr[2]=4, arr[3]=1, arr[4]=5. `arr[4]` is the last element, which is 5. A common off-by-one mistake is using `arr[arr.length]` which would throw ArrayIndexOutOfBoundsException."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "True or False: A Java interface can have a constructor.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "Interfaces cannot have constructors because they cannot be instantiated directly. Prior to Java 8, interfaces could only declare abstract methods. Since Java 8, interfaces can have default methods, static methods, and private methods (for code sharing among default methods), but still no constructors. Abstract classes can have constructors because they can be partially implemented and extended."
     },
     {
       "levelTag": "MIDDLE",
@@ -93,6 +310,173 @@
       "explanation": "`? super Integer` is a lower-bounded wildcard. It accepts List<Integer>, List<Number>, or List<Object> — any list whose element type is a supertype of Integer. This makes the list safe for writes: you can add an Integer (which is a valid subtype of all those bounds) but reading gives you Object at best. The PECS rule: Producer Extends, Consumer Super."
     },
     {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nList<Integer> nums = Arrays.asList(1, 2, 3, 4, 5);\nList<Integer> result = nums.stream()\n    .map(x -> x * 2)\n    .filter(x -> x > 5)\n    .collect(Collectors.toList());\nSystem.out.println(result);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[2, 4, 6, 8, 10]" },
+        { "id": "b", "text": "[6, 8, 10]" },
+        { "id": "c", "text": "[2, 4, 6]" },
+        { "id": "d", "text": "[10]" }
+      ],
+      "correctKey": "b",
+      "explanation": "The pipeline: map doubles each number [1,2,3,4,5] → [2,4,6,8,10]. Then filter keeps only > 5 → [6,8,10]. So the answer is [6, 8, 10]. Understanding intermediate operation ordering matters — a common mistake is thinking filter runs before map, which would give a different result. But here the order is clear from the code."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which of these is a valid functional interface in Java?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "java.util.function.Consumer<T>" },
+        { "id": "b", "text": "java.util.function.Supplier<T>" },
+        { "id": "c", "text": "java.lang.Runnable" },
+        { "id": "d", "text": "java.util.List<T>" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "A functional interface has exactly one abstract method. Consumer<T> (accepts T, returns void) and Supplier<T> (returns T) are standard functional interfaces in java.util.function. Runnable (run() method) is a functional interface. List<T> has multiple abstract methods (add, remove, get, etc.) — it is not a functional interface. This distinction matters because lambdas can only target functional interfaces."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nOptional<String> opt = Optional.ofNullable(null);\nString result = opt.orElse(\"default\");\nSystem.out.println(result);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "null" },
+        { "id": "b", "text": "default" },
+        { "id": "c", "text": "NoSuchElementException" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "b",
+      "explanation": "`Optional.ofNullable(null)` creates an empty Optional. Calling `orElse(\"default\")` returns the fallback value when the Optional is empty — so 'default' is printed. `orElseGet(() -> \"default\")` is the lazy alternative (Supplier) — only called when needed. Using `orElse()` with a heavyweight object always constructs it, even if unused. `orElseThrow()` would throw NoSuchElementException instead."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key difference between `ArrayList` and `LinkedList` for the add(E element) operation at the end of the list?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "LinkedList is faster because it uses a doubly-linked structure" },
+        { "id": "b", "text": "Both are O(1) amortized for append, but ArrayList has better cache locality" },
+        { "id": "c", "text": "ArrayList is O(n) because it must shift all existing elements" },
+        { "id": "d", "text": "LinkedList is O(1) only when using addFirst(), not add()" }
+      ],
+      "correctKey": "b",
+      "explanation": "ArrayList's add(E) amortized O(1): appending to the end of the backing array is constant time until resize is needed. LinkedList's add(E) is also O(1) (maintain tail pointer). However, ArrayList has superior cache locality (contiguous memory) making it faster in practice despite the same theoretical complexity. LinkedList adds overhead for node allocation and pointer updates. For random access, ArrayList is O(1) while LinkedList is O(n) — the main reason to choose LinkedList is when you're inserting/deleting at known positions frequently."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is method overriding?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Replacing a method in the same class with a different implementation based on parameter types" },
+        { "id": "b", "text": "A subclass providing a specific implementation of a method already defined in its parent class" },
+        { "id": "c", "text": "Using a lambda expression to replace any method in a class" },
+        { "id": "d", "text": "Changing a method's access modifier from private to public" }
+      ],
+      "correctKey": "b",
+      "explanation": "Overriding (runtime polymorphism) occurs when a subclass redefines a method from its parent class. The overridden method must have the same signature (or be covariant in return type), same or less restrictive access, and not throw new or broader checked exceptions. The `@Override` annotation helps catch errors. Option A describes overloading (compile-time). Option C describes lambda expressions, which can only replace functional interfaces, not arbitrary method overrides."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is covariant return type in Java?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A subclass override method can return a more specific subtype of the parent's return type" },
+        { "id": "b", "text": "A method's return type can be a supertype of its parameter type" },
+        { "id": "c", "text": "The return type must be exactly the same in the overriding method" },
+        { "id": "d", "text": "A generic method can return different types based on the type argument" }
+      ],
+      "correctKey": "a",
+      "explanation": "Covariant return types allow an overriding method to return a subtype of the parent's return type. Example: `Object` parent method returns `Object`, but `String` subclass overrides it to return `String`. This is valid in Java since Java 5 and allows the caller to avoid an explicit cast. Note: this only applies to reference types, not primitives."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nList<String> list = new ArrayList<>();\nlist.add(\"a\");\nlist.add(\"b\");\nlist.remove(0);\nSystem.out.println(list.get(0));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "a" },
+        { "id": "b", "text": "b" },
+        { "id": "c", "text": "IndexOutOfBoundsException" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "b",
+      "explanation": "`list.add(\"a\")` → [a], `list.add(\"b\")` → [a, b], `remove(0)` removes the element at index 0 ('a'), shifting 'b' to index 0 → [b]. `list.get(0)` then returns 'b'. A common confusion: `remove(Object o)` vs `remove(int index)`. `list.remove(\"a\")` would remove by object (first occurrence). `list.remove(0)` removes by index. Use `remove(Integer.valueOf(0))` or `remove(0L)` to force index removal if `0` is ambiguous."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nString s = null;\nSystem.out.println(s instanceof String);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true" },
+        { "id": "b", "text": "false" },
+        { "id": "c", "text": "NullPointerException" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "b",
+      "explanation": "`instanceof` returns `false` when the left operand is `null`, it does not throw NullPointerException. This is by design — null is not an instance of any type. Since Java 16, `instanceof` with pattern matching is null-safe: `if (obj instanceof String s)` — inside the if-block, `s` is only in scope if the check passes (non-null AND is a String)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which of the following are checked exceptions in Java?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "IOException" },
+        { "id": "b", "text": "NullPointerException" },
+        { "id": "c", "text": "FileNotFoundException" },
+        { "id": "d", "text": "SQLException" }
+      ],
+      "correctKey": "a,c,d",
+      "explanation": "Checked exceptions extend Exception but NOT RuntimeException — the compiler enforces that they are either caught or declared in the method's throws clause. IOException and its subclass FileNotFoundException are checked. SQLException is checked. NullPointerException is a RuntimeException (unchecked) — the compiler does not enforce handling. This distinction matters: checked = expected recoverable failures; unchecked = programming errors."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nMap<String, Integer> map = new HashMap<>();\nmap.put(\"a\", 1);\nmap.put(\"b\", 2);\nmap.putIfAbsent(\"a\", 3);\nSystem.out.println(map.get(\"a\"));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1" },
+        { "id": "b", "text": "3" },
+        { "id": "c", "text": "null" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "a",
+      "explanation": "`putIfAbsent(K, V)` only inserts the value if the key is not already present (or maps to null). Since 'a' already maps to 1, the putIfAbsent call does nothing. The original value 1 is returned by `map.get(\"a\")`. Note: `put` always overwrites, while `putIfAbsent` is conditional."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: The equals() method in Object compares reference equality by default.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object's default equals() uses `==` to compare references — two references are equal only if they point to the exact same object in memory. This is why you must override equals() in classes that need value-based equality. The contract requires that if you override equals(), you MUST also override hashCode() so that equal objects have equal hash codes (needed for correct behavior in HashMap, HashSet, etc.)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nclass A { void show() { System.out.print(\"A \"); } }\nclass B extends A { void show() { System.out.print(\"B \"); } }\n\nA obj = new B();\nobj.show();",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A" },
+        { "id": "b", "text": "B" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Runtime error" }
+      ],
+      "correctKey": "b",
+      "explanation": "Java uses virtual method dispatch (runtime polymorphism). Even though the reference type is `A`, the object is `new B()`. At runtime, the JVM looks up the actual object type (B) and calls B's overridden `show()` method. This is the essence of OOP polymorphism — the behavior depends on the actual runtime type, not the compile-time reference type. This would also be true if `show()` were public; it doesn't require any special access modifier."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which collection types allow duplicate elements?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "List" },
+        { "id": "b", "text": "Set" },
+        { "id": "c", "text": "Queue" },
+        { "id": "d", "text": "Map (values only, keys must be unique)" }
+      ],
+      "correctKey": "a,c,d",
+      "explanation": "Lists allow duplicates (ordered by index). Queues allow duplicates unless specified otherwise (e.g., PriorityQueue). Maps allow duplicate values but unique keys. Sets by definition do not allow duplicate elements (uses equals() to detect duplicates). Sorted sets additionally require comparable/comparator ordering."
+    },
+    {
       "levelTag": "SENIOR",
       "questionText": "Which garbage collection algorithm would you choose for an application with very short-lived objects (e.g., request processing in a web server)?",
       "questionType": "MULTIPLE_CHOICE",
@@ -130,6 +514,175 @@
       ],
       "correctKey": "c",
       "explanation": "Virtual method dispatch (dynamic dispatch) is the OOP mechanism the JVM uses to call the overridden method on the actual runtime type — this is the core of polymorphism. When a superclass reference points to a subclass object, calling an overridden method dispatches to the subclass version at runtime without compile-time knowledge. Reflection (A) inspects types at runtime but is not the standard polymorphism mechanism. Dynamic proxy (B) creates new classes; it doesn't invoke existing methods polymorphically. Method handles (D) are a JVM optimization layer, not the primary OOP feature."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\npublic class Test {\n    static boolean flag = false;\n    static int result = 0;\n    \n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> {\n            while (!flag) { }\n            System.out.println(result);\n        });\n        t.start();\n        Thread.sleep(100);\n        result = 42;\n        flag = true;\n        t.join();\n    }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0 (the loop spins forever)" },
+        { "id": "b", "text": "42" },
+        { "id": "c", "text": "0 (the loop exits but result is not visible)" },
+        { "id": "d", "text": "No output (the thread never terminates)" }
+      ],
+      "correctKey": "b",
+      "explanation": "In modern Java (JVM memory model), the loop `while (!flag)` may never exit if `flag` is not volatile — the JVM could cache `flag` in a CPU register. However, `result = 42` being written and `flag = true` happening in the main thread before `t.join()` creates a happens-before relationship: the join() call ensures all writes by the main thread are visible to thread t. Since `t.join()` is called after setting both `result` and `flag`, the result is guaranteed to be 42. Without join(), the outcome would be nondeterministic."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following are true about the Java Memory Model (JMM) happens-before relationship?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "The unlock of a monitor happens-before every subsequent lock on that same monitor" },
+        { "id": "b", "text": "A write to a volatile variable happens-before every subsequent read of that same volatile" },
+        { "id": "c", "text": "Thread.start() happens-before the started thread's first action" },
+        { "id": "d", "text": "The start of a thread happens-before the main thread's call to join()" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "The JMM defines happens-before rules that guarantee visibility of shared data across threads. Volatile (A, B) ensures write-read ordering. Thread.start() (C) ensures the caller sees all writes before the new thread starts. Thread.join() (D) is reversed: the completed thread's actions happen-before the join() caller's subsequent code — not the other way around. Option D is wrong because the happens-before goes from the thread to the join(), not the start to the join."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between a ReentrantLock and synchronized in Java?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "synchronized is reentrant; ReentrantLock is not" },
+        { "id": "b", "text": "ReentrantLock supports tryLock() with timeout and multiple wait sets (Conditions); synchronized does not" },
+        { "id": "c", "text": "Both have identical capabilities; the only difference is syntax" },
+        { "id": "d", "text": "synchronized is non-reentrant by default since Java 17" }
+      ],
+      "correctKey": "b",
+      "explanation": "ReentrantLock (java.util.concurrent.locks) offers advantages over synchronized: tryLock() with timeout, lockInterruptibly(), multiple Condition objects for complex producer-consumer patterns, and fairness policies. Both are reentrant (a thread that holds the lock can re-enter it). synchronized is simpler but less flexible. Option D is false — synchronized has always been reentrant."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is an internal iterator vs external iterator in Java?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Internal iterator (forEach) runs in the current thread; external iterator (Iterator) gives the caller control over stepping through elements" },
+        { "id": "b", "text": "Internal iterator is used in streams; external iterator is used in for loops" },
+        { "id": "c", "text": "External iterators are always faster than internal iterators" },
+        { "id": "d", "text": "There is no difference — the terms are interchangeable" }
+      ],
+      "correctKey": "a",
+      "explanation": "An external iterator (Iterator, ListIterator) is controlled by the client code — you call next() to advance. An internal iterator (forEach, stream operations) encapsulates the iteration logic; you provide a lambda and the library controls when elements are processed. Streams enable lazy evaluation and can be parallelized (parallelStream), while external iterators are eager and sequential by default. The choice affects performance, readability, and the ability to short-circuit."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the key difference between deep copy and shallow copy when cloning an object in Java?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Shallow copy copies all fields including references — shared referenced objects; deep copy recursively copies referenced objects too" },
+        { "id": "b", "text": "Deep copy is faster because it only copies primitive fields" },
+        { "id": "c", "text": "Shallow copy requires implementing Cloneable on every nested object" },
+        { "id": "d", "text": "Deep copy is the default behavior of Object.clone()" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.clone() default implementation is a shallow copy — primitive fields are copied, reference fields copy the reference (not the object), so both original and clone share the same referenced objects. Deep copy creates independent copies of all referenced objects recursively. Implementing deep clone requires either manually copying each nested object, using serialization, or using libraries like Apache Commons Lang's SerializationUtils. Option D is false — Object.clone() is shallow by default."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\npublic class Test {\n    static String s = \"original\";\n    public static void main(String[] args) {\n        change(s);\n        System.out.println(s);\n    }\n    static void change(String s) { s = \"modified\"; }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "original" },
+        { "id": "b", "text": "modified" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "NullPointerException" }
+      ],
+      "correctKey": "a",
+      "explanation": "Java is strictly pass-by-value. The variable `s` in `change()` is a copy of the reference. Reassigning `s = \"modified\"` inside the method changes the local copy to point to a new String, but does not affect the original reference in `main()`. The original `s` still points to \"original\". This is the same as saying: reassigning a reference parameter never affects the caller's reference. This is one of the most common Java misconceptions."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which JVM option would you use to capture heap dumps for OutOfMemoryError analysis?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/path/to/dumps" },
+        { "id": "b", "text": "-Xmx -Xms for heap sizing" },
+        { "id": "c", "text": "-XX:+UseG1GC for garbage collection analysis" },
+        { "id": "d", "text": "-Dcom.sun.management.jmxremote for heap monitoring" }
+      ],
+      "correctKey": "a",
+      "explanation": "The `-XX:+HeapDumpOnOutOfMemoryError` flag instructs the JVM to write a heap dump (HPROF format) when an OutOfMemoryError is thrown. `-XX:HeapDumpPath` specifies where to save it. Combined with tools like Eclipse MAT or VisualVM, this is essential for diagnosing memory leaks. Options B, C, and D address other JVM concerns (heap sizing, GC algorithm, JMX monitoring) but do not capture heap dumps."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nList<Integer> list = Arrays.asList(1, 2, 3, 4, 5);\nOptional<Integer> result = list.stream()\n    .parallel()\n    .filter(x -> x % 2 == 0)\n    .findFirst();\nSystem.out.println(result.orElse(-1));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "2" },
+        { "id": "b", "text": "May be 2 or 4 depending on thread scheduling" },
+        { "id": "c", "text": "Throws IllegalStateException" },
+        { "id": "d", "text": "-1" }
+      ],
+      "correctKey": "a",
+      "explanation": "`findFirst()` returns the first element in encounter order regardless of parallel or sequential processing. Even in parallel streams, `findFirst()` enforces encounter order (unlike `findAny()` which may return any element for maximum performance). The encounter order of the source array is 1,2,3,4,5, so the first even number is 2. Use `findAny()` if you want a potentially faster non-deterministic result in parallel streams."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nExecutorService executor = Executors.newSingleThreadExecutor();\nFuture<?> f = executor.submit(() -> {\n    System.out.print(\"A \");\n    throw new RuntimeException(\"error\");\n});\ntry {\n    f.get();\n    System.out.print(\"B \");\n} catch (Exception e) {\n    System.out.print(\"C \");\n}\nexecutor.shutdown();",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A B" },
+        { "id": "b", "text": "A C" },
+        { "id": "c", "text": "A (then uncaught exception propagates)" },
+        { "id": "d", "text": "C A" }
+      ],
+      "correctKey": "b",
+      "explanation": "The task prints 'A' then throws RuntimeException. `submit()` catches the exception and stores it in the Future. When `f.get()` is called, it re-throws the exception wrapped in ExecutionException. The catch block catches it and prints 'C'. 'B' is never printed because the exception prevents normal completion. Note: without calling `f.get()`, the exception would be swallowed silently by the single-threaded executor unless you call `shutdownNow()` or handle the uncaught exception in the executor."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between a thread pool using a bounded queue vs an unbounded queue?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Bounded queue limits memory usage but may reject tasks when full; unbounded queue may cause OutOfMemoryError under pressure" },
+        { "id": "b", "text": "Unbounded queue always performs better because it never rejects tasks" },
+        { "id": "c", "text": "Bounded queue requires more threads; unbounded requires fewer" },
+        { "id": "d", "text": "There is no practical difference — both behave identically under load" }
+      ],
+      "correctKey": "a",
+      "explanation": "Using an unbounded queue (LinkedBlockingQueue without capacity) means tasks queue up indefinitely. If the producer rate exceeds the consumer rate, the queue grows without bound — leading to OutOfMemoryError. A bounded queue (ArrayBlockingQueue or LinkedBlockingQueue with capacity) causes the rejectedExecutionHandler to trigger when full. Common strategies: CallerRunsPolicy (the calling thread runs the task, slowing the producer), AbortPolicy (throws RejectedExecutionException), or DiscardPolicy."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the correct way to create an immutable list in Java?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "List<String> list = new ArrayList<>(); // don't call add()" },
+        { "id": "b", "text": "List<String> list = Collections.unmodifiableList(Arrays.asList(\"a\", \"b\"));" },
+        { "id": "c", "text": "List<String> list = List.of(\"a\", \"b\"); // Java 9+ immutable list factory" },
+        { "id": "d", "text": "Both B and C create effectively immutable lists" }
+      ],
+      "correctKey": "d",
+      "explanation": "Both `Collections.unmodifiableList()` and `List.of()` create unmodifiable lists. Key differences: `List.of()` (Java 9+) does not permit null elements and throws UOE on structural modification. `Collections.unmodifiableList()` wraps an existing list — if that list is later modified, the unmodifiable view reflects those changes. For true immutability, `List.of()` is preferred for new code. Both prevent add/remove/set operations."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does a biased lock optimization do in the JVM, and what is its replacement?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Biased lock makes the first thread that acquires a monitor biased toward it — avoiding atomic operations on every lock; disabled by default since Java 15, replaced by lightweight locking" },
+        { "id": "b", "text": "Biased lock gives priority to the most recently used thread to reduce context switching" },
+        { "id": "c", "text": "Biased lock encrypts thread identifiers stored in the object header for security" },
+        { "id": "d", "text": "Biased lock was removed in Java 8 and replaced by striped locking" }
+      ],
+      "correctKey": "a",
+      "explanation": "Biased locking (JVM escape analysis optimization) lets the first thread that locks an object 'bias' the lock toward itself — subsequent synchronizations from the same thread bypass atomic CAS operations entirely. This optimizes single-threaded lock use but adds overhead when multiple threads contend (revoking the bias is expensive). Deprecated in Java 15 with `-XX:+UseBiasedLocking` defaulting to false. The thin lock → fat lock escalation path remains; biased locking is simply disabled by default in modern JVMs."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which mechanism allows Java to implement lazy initialization of expensive singletons in a thread-safe manner without synchronization overhead after initialization?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Double-checked locking using volatile on the instance field" },
+        { "id": "b", "text": "Eager initialization on a static field" },
+        { "id": "c", "text": "Using synchronized on every access to the getInstance() method" },
+        { "id": "d", "text": "Initializing the instance in a static initializer block" }
+      ],
+      "correctKey": "a",
+      "explanation": "Double-checked locking (DCL) with the `volatile` keyword ensures thread-safe lazy initialization without paying synchronization cost after the instance is created. The volatile keyword prevents instruction reordering (JVM memory barrier), ensuring the instance is fully constructed before being published to other threads. Without volatile, a partially constructed object could be visible to other threads. Option B (eager init) is simple but not lazy. Option C (full synchronized) is correct but wasteful after init. Option D is the same as eager init."
     }
   ]
 }

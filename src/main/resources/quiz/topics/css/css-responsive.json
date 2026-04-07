@@ -1,0 +1,664 @@
+{
+  "topicSlug": "css-responsive",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS feature allows you to apply styles conditionally based on the viewport width?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "@media print"
+        },
+        {
+          "id": "b",
+          "text": "@media screen"
+        },
+        {
+          "id": "c",
+          "text": "@media (max-width: 768px)"
+        },
+        {
+          "id": "d",
+          "text": "@if viewport"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "The `@media` at-rule applies styles conditionally. `(max-width: 768px)` is a media feature that targets viewports up to 768px wide. Common breakpoints: 480px (mobile), 768px (tablet), 1024px (desktop). `@media screen` selects screens vs print, not sizes. `@media print` targets printed output. Media queries are the primary tool for responsive CSS."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the 'mobile-first' approach in responsive CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Writing styles for mobile screens first, then using min-width media queries to add styles for larger screens"
+        },
+        {
+          "id": "b",
+          "text": "Using pixels instead of rem/em units to ensure consistent mobile rendering"
+        },
+        {
+          "id": "c",
+          "text": "Writing styles for desktop first, then using max-width to hide mobile-specific content"
+        },
+        {
+          "id": "d",
+          "text": "Using JavaScript to detect mobile devices and inject CSS classes"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Mobile-first means: start with base styles for mobile (no media query), then progressively enhance with `min-width` media queries for larger screens. Mobile-first produces smaller, more efficient CSS — mobile devices (typically the most constrained) load less overridden CSS. max-width-first (desktop-first) inverts this — mobile gets heavy overrides from desktop styles. The industry consensus is mobile-first because mobile is the most common entry point."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which unit is relative to the viewport width — changing when the browser window resizes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "em"
+        },
+        {
+          "id": "b",
+          "text": "rem"
+        },
+        {
+          "id": "c",
+          "text": "px"
+        },
+        {
+          "id": "d",
+          "text": "vw"
+        }
+      ],
+      "correctKey": "d",
+      "explanation": "1vw equals 1% of the viewport width — so 100vw is the full viewport width. vw changes with browser window resizing, making it useful for fluid typography and layout. vh (viewport height), vmin (minimum of vw/vh), and vmax (maximum) are the other viewport-relative units. px is absolute (96dpi), em/rem are relative to font size. Be careful with vw: scrollbar width can cause 100vw to cause horizontal overflow — use `100%` instead for full-width containers."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between `width: 100%` and `width: 100vw`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "100% and 100vw are interchangeable — both fill the viewport width"
+        },
+        {
+          "id": "b",
+          "text": "100% fills the parent element's content width; 100vw fills the full viewport width including the scrollbar area"
+        },
+        {
+          "id": "c",
+          "text": "100vw is only valid in media queries; 100% works everywhere"
+        },
+        {
+          "id": "d",
+          "text": "100% cannot be used with box-sizing: border-box"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "100% fills the containing block's width. 100vw fills the viewport width (100% of the window width, including the area under the scrollbar). Because scrollbars occupy space in the viewport, 100vw can be wider than the visible area, causing horizontal overflow. For full-width containers, 100% is generally safer. 100vw is useful when you specifically want the full viewport dimension, such as for hero sections that should extend to screen edges."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property prevents an element from becoming wider than a specified value, while still shrinking on smaller screens?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "width: max-content"
+        },
+        {
+          "id": "b",
+          "text": "max-width"
+        },
+        {
+          "id": "c",
+          "text": "width: 100%"
+        },
+        {
+          "id": "d",
+          "text": "flex: 0 0 auto"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "max-width sets the maximum width an element can be — it allows the element to shrink below that value on small screens but caps how large it can grow. A common pattern: `width: 100%; max-width: 600px` means 'be responsive (100%) but don't exceed 600px'. min-width sets a minimum, below which the element won't shrink. Together, `min()` and `max()` (CSS comparison functions) provide more powerful fluid sizing."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does a media query `(min-width: 768px)` match?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Viewports exactly 768px wide"
+        },
+        {
+          "id": "b",
+          "text": "Viewports 768px or wider"
+        },
+        {
+          "id": "c",
+          "text": "Viewports 768px or narrower"
+        },
+        {
+          "id": "d",
+          "text": "Viewports narrower than 768px"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "min-width: 768px matches viewports 768px wide and above (wider). max-width: 768px matches viewports 768px and below (narrower). The inclusive nature of both means `min-width: 768px` and `max-width: 768px` both match exactly 768px — a common source of accidental double-application. In mobile-first CSS, you use min-width to progressively enhance for larger screens."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of `clamp(min, preferred, max)` in responsive CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "It clamps the browser window to a specific size"
+        },
+        {
+          "id": "b",
+          "text": "It constrains a value between a minimum and maximum, with a preferred value that can scale within that range"
+        },
+        {
+          "id": "c",
+          "text": "It clips overflowing content to the nearest pixel boundary"
+        },
+        {
+          "id": "d",
+          "text": "It replaces media queries by automatically selecting the best breakpoint"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "clamp(min, preferred, max) returns a value clamped between min and max. The preferred value (often calc() or viewport units) is used if it falls within the range. Example: `font-size: clamp(1rem, 2.5vw, 2rem)` — font scales with viewport but never smaller than 1rem or larger than 2rem. This is 'fluid typography' — continuous scaling without discrete breakpoints. The alternative is multiple media query steps which create jarring size jumps."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does container queries add to CSS that media queries cannot provide?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Container queries respond to the viewport width — media queries do not"
+        },
+        {
+          "id": "b",
+          "text": "Container queries respond to the PARENT container's width, making components truly reusable and context-aware"
+        },
+        {
+          "id": "c",
+          "text": "Container queries are faster than media queries because they use less JavaScript"
+        },
+        {
+          "id": "d",
+          "text": "Container queries replace media queries entirely for all responsive use cases"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Media queries respond to the viewport — the same component in a 300px sidebar and a 700px main column sees the same query result. Container queries let a component query its own containing element's size, enabling true component reusability: the same Card component renders differently when placed in a sidebar vs a content area. The parent must have `container-type` set to establish a container context."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `@container (max-width: 400px)` require on the containing element?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "display: flex on the container"
+        },
+        {
+          "id": "b",
+          "text": "container-type: inline-size (or size) on the container to establish it as a query container"
+        },
+        {
+          "id": "c",
+          "text": "position: relative on the container"
+        },
+        {
+          "id": "d",
+          "text": "Container queries don't require any setup — they query any parent element automatically"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Container queries require the parent element to be explicitly defined as a container with `container-type: inline-size` (query inline size only) or `container-type: size` (query both inline and block size). Without this, the container query has no container to query and will behave unexpectedly. `container-name` optionally names the container for more specific queries via `@container name (...)`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which CSS function is best for fluid sizing that scales linearly between a min and max based on viewport width, without discrete steps?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "calc(100% - 20px)"
+        },
+        {
+          "id": "b",
+          "text": "clamp(min, vw-based preferred, max)"
+        },
+        {
+          "id": "c",
+          "text": "repeat(auto-fit, minmax(250px, 1fr))"
+        },
+        {
+          "id": "d",
+          "text": "Only JavaScript can achieve continuous fluid scaling"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "clamp() is the CSS-native way to achieve continuous fluid sizing. For a fluid font that scales from 16px to 24px across the 320px–1024px viewport range: `clamp(16px, calc(16px + 0.9vw), 24px)`. This avoids discrete breakpoints and produces smooth, imperceptible scaling. min() and max() are also useful: `min(100%, 600px)` equals whichever is smaller — ideal for responsive images and containers."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the correct order for applying responsive styles in a mobile-first stylesheet?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Base styles → max-width media queries (smallest to largest) → min-width overrides"
+        },
+        {
+          "id": "b",
+          "text": "Base styles (mobile) → min-width media queries (progressively larger) → final desktop styles at largest breakpoint"
+        },
+        {
+          "id": "c",
+          "text": "Desktop styles first → max-width media queries to progressively remove styles for smaller screens"
+        },
+        {
+          "id": "d",
+          "text": "All styles must be inside media queries — base styles without media queries are ignored"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Mobile-first CSS structure: (1) Base styles with no media query = mobile styles, (2) `min-width` media queries add/override styles for larger screens. Since min-width queries for larger screens are additive, this produces a clean progressive enhancement model. Mobile devices download and parse only what they need; larger screens get more. This is the opposite of desktop-first which forces mobile to download and override desktop defaults."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key advantage of `ch` (character) unit in responsive typography?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "1ch equals 1/100th of the viewport width, enabling fluid column widths"
+        },
+        {
+          "id": "b",
+          "text": "1ch equals the width of the '0' character in the current font, making it ideal for limiting line length to an optimal character count (45–75 characters)"
+        },
+        {
+          "id": "c",
+          "text": "ch is identical to em — both measure relative to font size"
+        },
+        {
+          "id": "d",
+          "text": "ch only works with monospace fonts; it is invalid for proportional fonts"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "The `ch` unit equals the advance width of the '0' (zero) character in the current font. While not exactly 1 character for all fonts, it is a close proxy for character width. This makes `max-width: 60ch` a CSS-native way to limit line length to ~60 characters (the typographic sweet spot for readability) — the line length adapts with font size changes. Research shows optimal reading line length is 45–75 characters."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `aspect-ratio: 16 / 9` do for an element?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Sets the element's padding to 16px by 9px"
+        },
+        {
+          "id": "b",
+          "text": "Enforces a 16:9 width-to-height ratio; the height adjusts automatically as width changes"
+        },
+        {
+          "id": "c",
+          "text": "Sets the font aspect ratio for variable fonts"
+        },
+        {
+          "id": "d",
+          "text": "aspect-ratio only works on images and cannot be applied to div elements"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "aspect-ratio defines the ratio of width to height. `aspect-ratio: 16/9` means height is 9/16ths of width — when the element is 640px wide, it is 360px tall. This is essential for responsive media: `iframe` embeds, video containers, and image placeholders maintain their proportions as the viewport changes. Without aspect-ratio, layout shifts occur as images load (CLS — Cumulative Layout Shift), hurting Core Web Vitals."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of the `svh` (small viewport height) unit compared to `vh`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "svh equals vh divided by the number of screen pixels (DPR)"
+        },
+        {
+          "id": "b",
+          "text": "svh equals 1% of the small viewport height (the viewport without the dynamic browser chrome); dvh equals 1% of the dynamic viewport height"
+        },
+        {
+          "id": "c",
+          "text": "svh is only valid inside media queries; vh is only valid in CSS properties"
+        },
+        {
+          "id": "d",
+          "text": "svh and vh are identical — svh is a deprecated alias"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "On mobile browsers with dynamic toolbars (地址栏 expands/collapses), vh changes when the URL bar shows or hides — causing layouts anchored to 100vh to jump. svh gives the smallest viewport (toolbar visible), dvh gives the dynamic viewport (current state). For sticky headers and full-height layouts, dvh prevents the jump when the keyboard opens or URL bar hides. svh is safer for 'never overflow' constraints."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does container queries solve the component reusability problem that media queries cannot?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Container queries make components responsive to the viewport; media queries cannot access viewport data"
+        },
+        {
+          "id": "b",
+          "text": "Container queries let a component adapt to the size of its own container rather than the viewport, meaning the same component renders differently in a sidebar vs a content area without knowing which context it will be placed in"
+        },
+        {
+          "id": "c",
+          "text": "Container queries are faster than media queries and work without JavaScript"
+        },
+        {
+          "id": "d",
+          "text": "Media queries cannot be used with CSS Grid; container queries are required for grid-based layouts"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "The core problem: media queries give viewport context, not component context. A Card component placed in a 300px sidebar and a 700px main column see the same viewport width — so a sidebar card would render incorrectly if styled with media queries. Container queries let the Card query its own parent container: `container-type: inline-size` on the sidebar → Card sees 300px. On the main column → Card sees 700px. Same component, different rendering, zero context knowledge required."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a practical pattern for truly fluid typography that scales smoothly between a minimum and maximum font size across ALL viewport widths?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Use fixed px font sizes for each breakpoint with media queries at 480px, 768px, 1024px, 1440px"
+        },
+        {
+          "id": "b",
+          "text": "Use clamp(min, preferred, max) with a calc() expression combining rem and vw units — the preferred value scales with viewport, clamped to min/max"
+        },
+        {
+          "id": "c",
+          "text": "Use viewport units (vw/vh) directly for font-size, which automatically scales and has no minimum/maximum"
+        },
+        {
+          "id": "d",
+          "text": "Use CSS custom properties with JavaScript to update font-size values on window resize"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "clamp() with a vw-based preferred value is the modern CSS solution for fluid typography. A common formula: `clamp(1rem, 0.75rem + 1.5vw, 2.5rem)` — the 1.5vw makes it scale with viewport, the rem offset keeps it proportional to user font size preference, and the min/max clamp the range. This produces continuous scaling across all viewport sizes with no breakpoints — unlike media queries which create discrete steps."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the relationship between container queries and the CSS `@layer` cascade mechanism for building a design system?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "@layer handles responsive breakpoints; container queries handle component-specific overrides within each layer"
+        },
+        {
+          "id": "b",
+          "text": "They are orthogonal mechanisms: @layer controls cascade priority between CSS origins; container queries control when component styles apply based on container size — they can be layered independently"
+        },
+        {
+          "id": "c",
+          "text": "@layer replaces container queries in modern design systems; they cannot be used together"
+        },
+        {
+          "id": "d",
+          "text": "Container queries only work inside @layer blocks; outside layers they are ignored"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "@layer and container queries solve different problems and compose well. @layer manages the cascade priority of your CSS (reset → base → components → utilities). Container queries manage component adaptation to context. A design system might define base component styles in a layer, then use container queries within those layers to create responsive variants. Neither mechanism depends on the other — they are independent tools in the responsive CSS toolkit."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "When using `min()` and `max()` CSS comparison functions, what is the key difference between `width: min(100%, 600px)` and `width: max(100%, 600px)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "min() constrains width to 600px maximum; max() sets width to 600px minimum. Both produce identical results in most containers."
+        },
+        {
+          "id": "b",
+          "text": "min() constrains width to 600px maximum, using 100% if the container is smaller; max() sets width to 600px minimum, using 100% only if the container exceeds 600px"
+        },
+        {
+          "id": "c",
+          "text": "min() only works for padding; max() only works for width — they cannot be swapped"
+        },
+        {
+          "id": "d",
+          "text": "Both always produce 600px because min/max are ignored in CSS"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "`min(100%, 600px)` = 'use 100% width, but never exceed 600px' — the browser takes whichever is smaller. `max(100%, 600px)` = 'be at least 100% of container, but if container is smaller than 600px, grow to 600px' — the browser takes whichever is larger. For responsive containers: `width: min(100%, 600px)` is the most common pattern (full width on small screens, capped on large). `max(100%, 600px)` is less common (stretch to fill, but don't shrink below 600px)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In mobile-first CSS, `max-width` media queries are used to progressively enhance styles for larger screens.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Mobile-first uses `min-width` for progressive enhancement — the base CSS targets mobile (smallest screens), and min-width media queries add more styles for larger screens. max-width queries are a desktop-first pattern: start with desktop styles, then use max-width to strip back for mobile. While both approaches work, min-width mobile-first is preferred because it results in smaller CSS payloads on mobile and follows the natural progressive enhancement philosophy."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The CSS functions `min()`, `max()`, and `clamp()` can be nested — for example `max(100%, min(clamp(16px, 2vw, 24px), 400px))` — to create multi-level responsive constraints.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "CSS math functions are fully composable. Nesting allows creating sophisticated multi-level fluid constraints: `min()` constrains the upper bound, `max()` constrains the lower bound, and `clamp()` within them provides smooth scaling. This is the power of modern CSS math — you can express complex responsive logic entirely in CSS without JavaScript or multiple media query breakpoints. The inner clamp scales with viewport, the outer min/max cap the result."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Container queries and media queries can be combined in the same @media rule — for example `@media (min-width: 768px) and (container: inline-size)` — to create context-aware responsive components that only activate on certain viewport sizes.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Media features can be combined with logical operators (and, or, not). Combining viewport queries (min-width) with container queries allows highly specific responsive behaviors: 'on viewports 768px and wider, if this component's container is at least 400px wide, switch to a two-column layout'. This layered approach gives you viewport-level page structure AND container-level component adaptation — the best of both worlds."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the computed width of the container in each scenario?\n\n```css\n.container {\n  width: min(100%, 800px);\n}\n/* Scenario A: parent width = 1200px */\n/* Scenario B: parent width = 400px */\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "A: 800px, B: 400px"
+        },
+        {
+          "id": "b",
+          "text": "A: 1000px, B: 400px"
+        },
+        {
+          "id": "c",
+          "text": "A: 100%, B: 800px"
+        },
+        {
+          "id": "d",
+          "text": "A: 800px, B: 800px"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "`min(100%, 800px)` means 'use whichever is smaller'. Scenario A (parent 1200px): 100% of 1200px = 1200px, min(1200px, 800px) = 800px — the container is capped at 800px. Scenario B (parent 400px): 100% of 400px = 400px, min(400px, 800px) = 400px — the container fills 100% of its parent. This pattern is the CSS-native way to create a max-width constraint that is responsive: full width on small screens, fixed max on large screens."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this CSS produce?\n\n```css\n.hero {\n  font-size: clamp(1.5rem, 5vw, 4rem);\n  /* Viewport is 375px wide */\n}\n```",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "1.5rem — viewport is smaller than the minimum, so clamp returns the min value"
+        },
+        {
+          "id": "b",
+          "text": "18.75px — 5vw × 375px = 18.75px"
+        },
+        {
+          "id": "c",
+          "text": "4rem — the max is applied because the preferred value is below minimum"
+        },
+        {
+          "id": "d",
+          "text": "5vw — clamp ignores min/max when using viewport units"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "clamp(MIN, PREFERRED, MAX) = clamp(1.5rem, 5vw, 4rem). At 375px viewport: 5vw = 18.75px. Since 18.75px < 1.5rem (≈24px at default settings), the preferred value is below the minimum. clamp returns 1.5rem (the min). This is exactly the purpose of clamp — it never goes below min or above max, regardless of viewport. At a 1000px viewport: 5vw = 50px, clamped between 1.5rem and 4rem. At 2000px: 5vw = 100px, clamped to 4rem (max)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `srcset` attribute on an <img> do for responsive images?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It provides multiple image URLs at different resolutions/sizes, and the browser picks the most appropriate one based on the viewport and device pixel ratio" },
+        { "id": "b", "text": "It loads all images simultaneously and switches between them based on scroll position" },
+        { "id": "c", "text": "It replaces the src attribute entirely and disables the fallback image" },
+        { "id": "d", "text": "srcset is deprecated — use CSS background-image with media queries instead" }
+      ],
+      "correctKey": "a",
+      "explanation": "srcset provides multiple image candidates with their sizes or pixel densities. The browser picks the best match: `srcset='img-400.jpg 400w, img-800.jpg 800w, img-1200.jpg 1200w'` lets the browser choose based on viewport width and device pixel ratio. The sizes attribute pairs with srcset to tell the browser how wide the image will be in the layout, enabling optimal image selection."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of the <picture> element in responsive images?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It displays multiple images side-by-side as a gallery" },
+        { "id": "b", "text": "It provides multiple <source> elements with different image formats or crops, allowing the browser to choose the best match — for format fallback (WebP/AVIF), art direction (different crops for mobile vs desktop), or resolution switching" },
+        { "id": "c", "text": "It creates a responsive image grid that reflows on mobile" },
+        { "id": "d", "text": "picture is only needed for SVG images" }
+      ],
+      "correctKey": "b",
+      "explanation": "<picture> uses multiple <source> elements with media queries or type attributes, plus a fallback <img>. The browser evaluates sources top-to-bottom, using the first matching one. Common uses: (1) Art direction — serve a portrait crop on mobile, landscape on desktop. (2) Format fallback — serve AVIF/WebP to supporting browsers, fall back to JPEG. (3) Resolution switching with srcset. Without <picture>, you can only use srcset for resolution switching."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `@container (min-width: 600px)` do when the parent container is 400px wide?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The query matches — container-type on the parent makes it behave as if it is 600px wide" },
+        { "id": "b", "text": "The query does NOT match — the container query reflects the actual container size (400px), so the styles inside the query are not applied" },
+        { "id": "c", "text": "The browser throws an error because container queries cannot be smaller than the container" },
+        { "id": "d", "text": "Container queries ignore width entirely — they always match regardless of container size" }
+      ],
+      "correctKey": "b",
+      "explanation": "Container queries reflect the ACTUAL computed size of the query container, not an arbitrary value. At 400px container width, @container (min-width: 600px) is false — the styles inside are not applied. This is the key distinction from media queries: media queries are fixed breakpoints tied to viewport; container queries are dynamic based on context. A component using container queries adapts to where it's placed."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key difference between `dvh` and `svh` viewport units for mobile full-height layouts?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "dvh = dynamic viewport height (current browser chrome state); svh = small viewport height (browser chrome always visible) — dvh changes when URL bar hides/shows; svh uses the minimum viewport" },
+        { "id": "b", "text": "svh is the standard viewport height; dvh is an experimental alias with no difference in behavior" },
+        { "id": "c", "text": "dvh is for desktop only; svh is for mobile only" },
+        { "id": "d", "text": "dvh and svh are identical — they are both 1% of the viewport height" }
+      ],
+      "correctKey": "a",
+      "explanation": "dvh (dynamic viewport height) = 1% of the dynamic viewport height, which changes as the browser chrome (URL bar, toolbar) expands or collapses. svh (small viewport height) = 1% of the smallest viewport height, with the browser chrome always visible. For full-height mobile layouts that need to account for the keyboard: use dvh for the most accurate current viewport. svh is safer for never-overflow constraints."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the CSS `sizes` attribute on an <img> tell the browser when paired with srcset?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The exact pixel dimensions of each image in srcset" },
+        { "id": "b", "text": "The browser how wide the image will be rendered in the layout, so it can choose the right srcset image — if sizes='100vw', the browser knows a 400px viewport needs the 400w image, not the 1200w image" },
+        { "id": "c", "text": "sizes overrides the srcset and forces the browser to download a specific image" },
+        { "id": "d", "text": "sizes is only needed when using the <picture> element" }
+      ],
+      "correctKey": "b",
+      "explanation": "sizes tells the browser the image's layout width at different viewport sizes. `sizes='(max-width: 600px) 100vw, 50vw'` means: at ≤600px, the image is 100vw wide; above 600px, it's 50vw. With this info, the browser calculates which srcset image is appropriate — at 400px viewport with 100vw layout size, the browser needs a ~400px image. Without sizes, the browser assumes the image is 100vw and may download unnecessarily large images."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the `lvi`, `rvi`, `vi`, `vb` viewport segments in CSS, and when are they used?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "They are deprecated viewport units replaced by svh/dvh" },
+        { "id": "b", "text": "lvi = left inset, rvi = right inset, vi = scrollbar + sidebar width, vb = vertical scrollbar width — used to account for browser UI that overlaps the viewport" },
+        { "id": "c", "text": "They are experimental units for logical viewport management only available in Chrome" },
+        { "id": "d", "text": "lvi/rvi/vi/vb are SVG viewport units unrelated to CSS responsive design" }
+      ],
+      "correctKey": "b",
+      "explanation": "Viewport segments (lvi, rvi, vi, vb) from the CSS Viewport Module handle multi-pane devices and foldable screens. lvi = left vertical inset (space taken by left-side UI like browser chrome on foldables), rvi = right, vi = viewport overlap inset, vb = vertical scrollbar width. These allow CSS to account for device regions that overlap the content, which is essential for proper full-viewport layouts on foldables."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the relationship between `container-type: inline-size` and `container-type: size` in container queries?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "inline-size and size are identical — both allow querying both inline and block dimensions" },
+        { "id": "b", "text": "inline-size creates a container that can be queried for inline (width) size only; size creates a container queryable for both inline and block (height) dimensions" },
+        { "id": "c", "text": "size creates a CSS Grid container; inline-size creates a flex container" },
+        { "id": "d", "text": "inline-size is the default; size must be explicitly set" }
+      ],
+      "correctKey": "b",
+      "explanation": "container-type: inline-size enables container queries for the container's inline dimension (width in horizontal writing modes). container-type: size enables queries for both inline and block (height) dimensions. Use inline-size for most use cases (responsive width-based layouts). Use size only when you need to query height as well. container-name optionally names the container for targeted queries."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does `prefers-color-scheme` media query interact with container queries to create truly adaptive components?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "prefers-color-scheme cannot be combined with container queries — they are mutually exclusive" },
+        { "id": "b", "text": "They can be combined: @container (min-width: 400px) { @media (prefers-color-scheme: dark) { ... } } — the container query adapts the layout, the media query adapts the theme, both independently" },
+        { "id": "c", "text": "prefers-color-scheme automatically overrides container queries on mobile devices" },
+        { "id": "d", "text": "Container queries automatically detect prefers-color-scheme and switch themes" }
+      ],
+      "correctKey": "b",
+      "explanation": "Container queries and media queries are fully composable. You can nest them: the container query checks the component's available width; inside it, the media query checks the user's color scheme preference. This independence is the power of composing CSS mechanisms: layout adapts to context (container), theme adapts to user preference (prefers-color-scheme). Both work together without conflict."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the key difference between `container query units` (cqw, cqh) and regular viewport units (vw, vh) for responsive component design?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "container query units are relative to the viewport; viewport units are relative to the container — they are interchangeable" },
+        { "id": "b", "text": "container query units (cqw = 1% of container width) are relative to the query container; viewport units (vw = 1% of viewport width) are relative to the viewport — container query units create components that scale relative to their own container, not the viewport" },
+        { "id": "c", "text": "container query units are faster than viewport units because they avoid layout recalculation" },
+        { "id": "d", "text": "viewport units are deprecated in favor of container query units" }
+      ],
+      "correctKey": "b",
+      "explanation": "Container query units (cqw, cqh, cqi, cqb, cqmin, cqmax) are defined relative to the query container's dimensions. If a container is 400px wide, cqw = 4px. This enables truly portable components: a badge using font-size: calc(cqw * 5) scales with its container, not the viewport. Place the same badge in a 200px sidebar → badge is smaller. In a 600px column → badge is larger. This is responsive scaling without media queries."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In a mobile-first CSS, the base styles (no media query) are applied to all screen sizes, and `min-width` media queries progressively add or override styles for larger screens.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "This is the core of mobile-first: base CSS = mobile styles. min-width media queries = progressive enhancement for larger screens. A media query `@media (min-width: 768px) { .card { flex-direction: row; } }` adds row layout only on ≥768px screens. Mobile devices never load those rules as overrides — they just use the base (column) styles."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Container queries and container query units (cqw, cqh) require `container-type` on the container, and `container-name` is required to distinguish between nested containers.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "container-type is required (inline-size or size). container-name is OPTIONAL — if omitted, the query uses the nearest ancestor container. You only need container-name when you have multiple nested containers and want to query a specific ancestor (e.g., @container card (min-width: 300px) { ... } queries the container named 'card')."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A component using `font-size: calc(cqw * 10)` will produce the same font size at a given pixel width, regardless of whether the scaling is driven by a container query or a fixed CSS width.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "cqw is always 1% of the query container's width, regardless of what mechanism is sizing the container (container query, fixed width, CSS Grid column width, flex item sizing). If the container is 400px, cqw × 10 = 40px. This means the component scales consistently based on its available space, making it truly portable — the same component produces the same font size whether the 400px width came from a container query or a fixed layout."
+    }
+  ]
+}

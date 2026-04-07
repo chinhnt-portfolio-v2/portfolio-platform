@@ -1,0 +1,329 @@
+{
+  "topicSlug": "dsa-stacks-queues",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of push and pop operations on a stack implemented with a linked list?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n) for push and O(1) for pop — linked list insertion at head is O(n) for arrays"
+        },
+        {
+          "id": "b",
+          "text": "O(1) for both push and pop — push adds to the head, pop removes from the head"
+        },
+        {
+          "id": "c",
+          "text": "O(n) for both — each operation requires a full traversal of the list"
+        },
+        {
+          "id": "d",
+          "text": "O(log n) for both — binary search is used to locate the stack top"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Stack (LIFO) implemented as a linked list with head as top: push = insert at head (newNode.next = head, head = newNode) → O(1). Pop = remove from head (temp = head, head = head.next, free temp) → O(1). No traversal needed — head is always accessible. This makes linked-list stacks very efficient. Array-backed stacks are also O(1) amortized for push (resize is O(n) occasionally) and O(1) for pop. Option A reverses the costs. Option C and D are incorrect."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a queue's FIFO property?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "First-In-First-Out — the first element enqueued is the first element dequeued; like a line at a store"
+        },
+        {
+          "id": "b",
+          "text": "First-In-First-Out — the last element enqueued is the first to be dequeued"
+        },
+        {
+          "id": "c",
+          "text": "Last-In-First-Out — the most recent element is dequeued first"
+        },
+        {
+          "id": "d",
+          "text": "FIFO means elements are processed in sorted order by value"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "FIFO (First-In-First-Out) means the oldest element (first to be inserted) is removed first. Real-world analogy: a queue/line at a coffee shop. Operations: enqueue (add to back/rear) and dequeue (remove from front). Used for BFS, task scheduling, print job queues, message queues. Option B reverses it. Option C describes a stack (LIFO). Option D is not a property of queues."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output of the following algorithm?\n\nstack = []\nstack.append(1)   # push 1\nstack.append(2)   # push 2\nstack.append(3)   # push 3\nprint(stack.pop()) # pop\nprint(stack.pop()) # pop\nstack.append(4)   # push 4\nprint(stack.pop()) # pop\nprint(stack.pop()) # pop",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Stack trace: push(1) → [1]; push(2) → [1,2]; push(3) → [1,2,3]; pop() → removes 3 (LIFO) → [1,2]; pop() → removes 2 → [1]; push(4) → [1,4]; pop() → removes 4 → [1]; pop() → removes 1 → []. Output: 3, 2, 4, 1. Option A is FIFO (queue behavior). Option C is wrong description. Option D is wrong — no error, all pops succeed."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the time complexity of enqueue and dequeue operations on a queue implemented with a circular buffer?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(n) — elements must be shifted when enqueuing at the front"
+        },
+        {
+          "id": "b",
+          "text": "O(1) for both — head and tail indices are maintained; operations just advance pointers with wrap-around"
+        },
+        {
+          "id": "c",
+          "text": "O(log n) — binary search is used to locate the queue head"
+        },
+        {
+          "id": "d",
+          "text": "O(1) for enqueue and O(n) for dequeue — dequeue requires finding the front element"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Circular queue (ring buffer): fixed-size array with two pointers (front and rear). Enqueue: add at rear, advance rear pointer (modulo capacity). Dequeue: remove at front, advance front pointer (modulo capacity). Both are O(1) — no element shifting. When rear == front, the queue is either empty (initial) or full (when using a full-slot convention). A common convention uses (rear+1) % capacity == front for full detection, leaving one slot unused. This is the standard queue implementation in operating systems (circular buffers for print queues, network buffers)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the primary application of a stack in algorithm design?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Breadth-first search — queues are used for level-order traversal"
+        },
+        {
+          "id": "b",
+          "text": "Depth-first search — the call stack or explicit stack tracks the next node to explore"
+        },
+        {
+          "id": "c",
+          "text": "Finding the shortest path — stacks maintain the minimum distance between nodes"
+        },
+        {
+          "id": "d",
+          "text": "Sorting elements — stacks can sort arrays faster than comparison-based sorts"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "DFS naturally uses a stack (LIFO): push neighbors onto the stack, pop and explore. Recursive DFS uses the call stack implicitly; iterative DFS uses an explicit stack. Stack's LIFO order produces depth-first exploration (going as deep as possible before backtracking). BFS uses a queue (FIFO) to explore level by level. Option A is correct about BFS but the question asks about stack applications. Option C is wrong (shortest path uses priority queue or BFS). Option D is wrong (stacks don't sort; they're used for expression evaluation)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a monotonic stack?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A stack that maintains elements in sorted ascending or descending order; used to find the next greater/smaller element in O(n)"
+        },
+        {
+          "id": "b",
+          "text": "A stack that uses a single monotonic function (f(x) = ax + b) to determine push/pop eligibility"
+        },
+        {
+          "id": "c",
+          "text": "A stack that grows by doubling its size when full, achieving amortized O(1) push"
+        },
+        {
+          "id": "d",
+          "text": "A stack with only one element allowed at each level, used for DFS on binary trees"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Monotonic stack maintains a stack where elements are monotonically increasing or decreasing. While iterating, pop elements that are smaller (or larger) than the current element and record the current element as their 'next greater' (or 'next smaller'). This turns O(n²) brute force (checking all previous elements) into O(n) by ensuring each element is pushed and popped at most once. Classic problems: Next Greater Element, Daily Temperatures (next warmer day), Largest Rectangle in Histogram. Option B, C, D are incorrect."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is a valid use of a queue in graph traversal?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Queue is used for depth-first search to track the deepest unexplored node"
+        },
+        {
+          "id": "b",
+          "text": "Queue is used for breadth-first search (BFS) — enqueue neighbors, process in FIFO order, guaranteeing level-by-level traversal"
+        },
+        {
+          "id": "c",
+          "text": "Queue can detect cycles by checking if a node is already in the queue"
+        },
+        {
+          "id": "d",
+          "text": "Queue replaces recursion to implement binary search on sorted arrays"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "BFS uses a queue: start with source vertex, dequeue vertex, enqueue all unvisited neighbors. The FIFO property ensures vertices discovered earlier are explored earlier — this gives level-order (breadth-first) traversal. BFS finds shortest paths in unweighted graphs (number of edges from source). The visited set prevents revisiting. Option A is DFS (stack). Option C is not BFS's primary purpose — cycle detection uses visited set + recursion stack (DFS) or in-degree tracking (Kahn's algorithm). Option D is nonsense."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\ndef next_greater(nums):\n    stack, result = [], [-1] * len(nums)\n    for i, num in enumerate(nums):\n        while stack and nums[stack[-1]] < num:\n            result[stack.pop()] = num\n        stack.append(i)\n    return result\n\nprint(next_greater([2, 1, 2, 4, 3]))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Monotonic increasing stack on [2,1,2,4,3]: i=0, stack=[0]; i=1, nums[0]=2>1 → stack stays [0,1]; i=2, nums[1]=1<2 → result[1]=2, pop 1; nums[0]=2<2? No (2<2 is false) → stack=[0,2]; i=3, nums[2]=2<4 → result[2]=4, pop 2; nums[0]=2<4 → result[0]=4, pop 0; stack=[3]; i=4, nums[3]=4>3 → no pop; stack=[3,4]. Result: [4,2,4,-1,-1]. Option B (2,2,4,-1,-1) is wrong because 1's next greater is 2 (not 2's next greater). Option C and D are wrong."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a stack overflow, and when does it typically occur?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Stack overflow occurs when the heap runs out of memory during dynamic allocation"
+        },
+        {
+          "id": "b",
+          "text": "Stack overflow occurs when the call stack exceeds its allocated memory limit, typically from unbounded recursion without a base case"
+        },
+        {
+          "id": "c",
+          "text": "Stack overflow occurs when a queue's circular buffer wraps around more than N times"
+        },
+        {
+          "id": "d",
+          "text": "Stack overflow only occurs in languages without garbage collection"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "The call stack has a fixed size (e.g., 1-8 MB). Each recursive call pushes a stack frame (return address, local variables, parameters). Unbounded recursion (e.g., infinite recursion without a base case) pushes frames until the stack overflows, causing a stack overflow error. In languages like Python, this manifests as RecursionError. Tail call optimization (TCO) can mitigate this in some languages (Scheme, Scala), converting tail recursion into iteration. Option A describes heap overflow. Option C is nonsensical. Option D is false (stack overflow occurs in all languages with call stacks)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of the following algorithm?\n\nfrom collections import deque\n\nqueue = deque()\nqueue.append(1)  # enqueue\nqueue.append(2)\nqueue.append(3)\nprint(queue.popleft())  # dequeue\nprint(queue.popleft())\nqueue.append(4)\nprint(queue.popleft())\nprint(queue.popleft())",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Queue operations (FIFO): enqueue 1 → [1]; enqueue 2 → [1,2]; enqueue 3 → [1,2,3]; dequeue → removes 1 → [2,3]; dequeue → removes 2 → [3]; enqueue 4 → [3,4]; dequeue → removes 3 → [4]; dequeue → removes 4 → []. Output: 1, 2, 3, 4. This is standard queue FIFO behavior. Python's collections.deque provides O(1) append and popleft, unlike list which has O(n) pop(0). Option B is stack behavior (LIFO). Option C is wrong. Option D is nonsense."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the time complexity of BFS using a queue on a graph with V vertices and E edges, represented as an adjacency list?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "O(V) — BFS visits each vertex exactly once"
+        },
+        {
+          "id": "b",
+          "text": "O(E) — BFS traverses each edge exactly once"
+        },
+        {
+          "id": "c",
+          "text": "O(V + E) — BFS visits each vertex once (O(V)) and examines each edge once (O(E))"
+        },
+        {
+          "id": "d",
+          "text": "O(V × E) — BFS compares every vertex with every edge"
+        }
+      ],
+      "correctKey": "c",
+      "explanation": "BFS: each vertex is enqueued and dequeued exactly once → O(V). For each dequeued vertex, all its outgoing edges are examined (adjacency list scan) → O(degree(v)) per vertex, total O(E). Combined: O(V+E). For adjacency matrix, examining neighbors requires scanning an entire row (V entries) for each vertex → O(V²). This is why adjacency list is preferred for sparse graphs (E << V²). Option A and B each capture only one part. Option D is gross overestimation."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a deque (double-ended queue) and what operations does it support efficiently?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "A deque is a priority queue where elements are ordered by priority; supports O(log n) insert and extract-max"
+        },
+        {
+          "id": "b",
+          "text": "A deque is a double-ended queue supporting O(1) insert and delete at both front and back ends, enabling both stack and queue behavior"
+        },
+        {
+          "id": "c",
+          "text": "A deque is a stack with exactly two elements, used for swapping pairs during sorting"
+        },
+        {
+          "id": "d",
+          "text": "A deque is equivalent to two stacks joined head-to-tail, supporting O(log n) operations due to synchronization overhead"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Deque (double-ended queue): O(1) insert/delete at both ends (appendleft, popleft, append, pop). This unifies stack (push/pop one end) and queue (enqueue/dequeue opposite ends). Real-world uses: sliding window maximum (monotonic deque), implementing BFS with priority, undo/redo buffers (max-length deque), palindrome checking. Python's collections.deque is implemented as a doubly-linked list of blocks (array blocks internally for cache locality), giving O(1) amortized operations. Option A describes a heap/priority queue. Option C is wrong. Option D mischaracterizes the complexity."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A stack can be used to evaluate postfix (Reverse Polish) expressions. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Postfix evaluation: scan tokens left to right. For each operand, push onto stack. For each operator, pop two operands (a = pop(), b = pop()), compute b op a (order matters for non-commutative operators), push result. When done, stack has one element — the result. Example: '3 4 + 2 *' = ((3+4)*2) = 14. The stack naturally handles operator precedence without parentheses. Infix-to-postfix conversion uses a stack for operators and parentheses (Shunting-yard algorithm)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The call stack used by recursive function calls follows LIFO (Last-In-First-Out) ordering. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Each recursive call pushes a new frame onto the call stack. The innermost (most recent) call is at the top of the stack and must complete (and pop) before the outer calls can resume. This LIFO behavior is why recursive algorithms naturally model depth-first traversal and why unbounded recursion leads to stack overflow. The return address, local variables, and parameters of each call are stored in its stack frame."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output of the following algorithm?\n\ndef is_balanced(s):\n    stack = []\n    pairs = {')': '(', ']': '[', '}': '{'}\n    for ch in s:\n        if ch in '([{':\n            stack.append(ch)\n        elif ch in ')]}':\n            if not stack or stack[-1] != pairs[ch]:\n                return False\n            stack.pop()\n    return len(stack) == 0\n\nprint(is_balanced(\"({[]})\"), is_balanced(\"([)]\"), is_balanced(\"{}\"))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "('{[]}')' checks: '{'→push, '('→push, '['→push, ']'→pop '[' matches, ')'→pop '(' matches, '}'→pop '{' matches. Stack empty at end → True. '([)]': '('→push, '['→push, ')'→pop '('? Stack top is '[' ≠ ')' → return False. '{}': '{'→push, '}'→pop '{' matches, stack empty → True. Output: True, False, True. This is the classic bracket balancing problem using a stack — push openers, pop and verify on closers. Option B is wrong. Option C is wrong (first is balanced). Option D is wrong (first is balanced)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the maximum number of elements that can be stored in a circular queue of size N implemented with the (rear + 1) % N == front convention?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "N — all N slots are usable for storing elements"
+        },
+        {
+          "id": "b",
+          "text": "N - 1 — one slot is left unused to distinguish the empty queue from the full queue"
+        },
+        {
+          "id": "c",
+          "text": "N + 1 — the circular nature allows one extra element beyond the physical size"
+        },
+        {
+          "id": "d",
+          "text": "2N — the circular queue doubles its capacity when full"
+        }
+      ],
+      "correctKey": "b",
+      "explanation": "Circular queue with N slots: using the convention (rear+1) % N == front to detect 'full', the queue can hold at most N-1 elements. When front == rear, the queue is empty. To distinguish empty from full without extra metadata, one slot must be unused. Alternative: store a 'size' counter or a 'full' flag to use all N slots. Option A (N) would make it impossible to distinguish empty (front==rear, 0 elements) from full (front==rear, N elements). This is a classic space-time trade-off in circular buffer design. Option C and D are wrong."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the sliding window maximum problem, and how does a monotonic deque solve it in O(n)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Sliding window maximum finds the maximum element in each window of size k; a monotonic deque maintains indices in decreasing order, popping smaller elements from the back when the current element arrives, giving O(n) total"
+        },
+        {
+          "id": "b",
+          "text": "Sliding window maximum uses a regular queue and dequeues the front element when the window slides, taking O(n×k) time"
+        },
+        {
+          "id": "c",
+          "text": "Sliding window maximum sorts each window and returns the median, using a heap for O(n log n)"
+        },
+        {
+          "id": "d",
+          "text": "Sliding window maximum can only be solved by checking all pairs of elements in O(n²)"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Sliding window maximum: given array and window size k, find max in each consecutive window of size k. Monotonic deque approach: maintain a deque of indices in decreasing value order. For each new element: (1) remove indices from front if they're outside the current window, (2) remove indices from back whose values are ≤ current (they'll never be the max while current is in the window), (3) append current index. The front of the deque is always the maximum of the current window. Each element is pushed and popped at most once → O(n) total. Naive O(n×k) approach checks all k elements per window. Option B is the naive approach. Option C is different (median, not max). Option D is wrong."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Using two stacks, it is possible to implement a queue that supports enqueue and dequeue both in O(1) amortized time. True or false?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Two-stack queue: stack_in (for enqueue) and stack_out (for dequeue). Enqueue: push onto stack_in (O(1)). Dequeue: if stack_out is empty, transfer all elements from stack_in to stack_out (pop from in, push onto out) — this reverses order, giving FIFO. Each element is pushed and popped at most twice (once to in, once to out). Amortized O(1) per operation. This is how some language runtimes implement queue-like behavior with two stacks. Real-world use: task scheduling with priority reversal, undo mechanisms."
+    }
+  ]
+}

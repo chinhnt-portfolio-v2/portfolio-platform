@@ -1,0 +1,442 @@
+{
+  "topicSlug": "spring-jpa",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does JpaRepository extend in Spring Data JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CrudRepository and PagingAndSortingRepository" },
+        { "id": "b", "text": "EntityManager directly" },
+        { "id": "c", "text": "DataSource interface" },
+        { "id": "d", "text": "Only CrudRepository, excluding paging" }
+      ],
+      "correctKey": "a",
+      "explanation": "JpaRepository extends PagingAndSortingRepository (which extends CrudRepository), adding JPA-specific methods like flush(), saveAndFlush(), and deleteInBatch(). This hierarchy gives JpaRepository all basic CRUD operations, pagination/sorting, and JPA-specific batch operations. Using JpaRepository over CrudRepository in JPA applications is recommended because it exposes JPA-specific operations and has performance benefits (batch deletes via deleteInBatch). Note: JpaRepository's deleteAllInBatch() bypasses @PreRemove callbacks — use deleteAll() if you need entity lifecycle hooks."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of the @Id annotation in a JPA entity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It marks a field as a foreign key to another entity" },
+        { "id": "b", "text": "It marks a field as the primary key of the entity" },
+        { "id": "c", "text": "It marks a field as indexed for faster queries" },
+        { "id": "d", "text": "It marks a field as versioned for optimistic locking" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Id marks the field as the primary key of the entity. It is mandatory — every JPA entity must have a primary key. The field type can be any basic type, UUID, or embeddable class. @GeneratedValue (or @GeneratedValue with a strategy) is typically used alongside @Id to specify how the ID is generated (auto-increment, sequence, UUID, etc.). Without @GeneratedValue, you must assign IDs manually before persisting."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between CrudRepository and JpaRepository?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JpaRepository is for MongoDB; CrudRepository is for relational databases" },
+        { "id": "b", "text": "JpaRepository adds JPA-specific methods like flush(), saveAndFlush(), and batch delete operations beyond CrudRepository's basic CRUD" },
+        { "id": "c", "text": "CrudRepository supports pagination; JpaRepository does not" },
+        { "id": "d", "text": "There is no difference — they are interchangeable aliases" }
+      ],
+      "correctKey": "b",
+      "explanation": "JpaRepository extends CrudRepository and adds JPA-specific operations: flush() (sync to DB immediately), saveAndFlush() (save and immediately flush), deleteInBatch() (batch delete without entity lifecycle callbacks), and getReferenceById() (lazy loading of proxy). CrudRepository is interface-agnostic and works for any store; JpaRepository is JPA-specific. For relational databases, JpaRepository is preferred for its JPA operations and better batch delete performance."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the @Table annotation do in a JPA entity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It marks the entity as a database table" },
+        { "id": "b", "text": "It specifies the physical table name (and optionally schema, indexes, and constraints) that this entity maps to" },
+        { "id": "c", "text": "It creates a new table in the database automatically" },
+        { "id": "d", "text": "It links the entity to a Spring Data repository" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Table is an optional annotation that lets you specify the database table name (name attribute), schema, unique constraints (@UniqueConstraint), and indexes (@Index) for the entity. By default, JPA uses the entity class name as the table name. @Table is useful when the database table naming convention differs from Java naming conventions, or when you need to define composite unique constraints or performance indexes directly in the entity metadata."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @GeneratedValue(strategy = GenerationType.IDENTITY) do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Uses a database sequence to generate the primary key" },
+        { "id": "b", "text": "Delegates ID generation to the database's auto-increment column — the JDBC driver returns the generated ID on insert" },
+        { "id": "c", "text": "Uses a UUID generator to create the primary key in Java" },
+        { "id": "d", "text": "Requires manual ID assignment before persisting the entity" }
+      ],
+      "correctKey": "b",
+      "explanation": "IDENTITY strategy delegates to the database's auto-increment mechanism (MySQL AUTO_INCREMENT, SQL Server IDENTITY). JPA/Hibernate sends the INSERT, the DB generates the ID, and the JDBC driver returns it — no additional round trip needed. Downside: IDENTITY disables batch inserts because each row must be inserted immediately to retrieve its ID. For batch insert performance, use SEQUENCE with a @TableGenerator. UUID is a separate strategy (GenerationType.UUID)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of @Column(name = \"...\") annotation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It defines a foreign key relationship to another table" },
+        { "id": "b", "text": "It maps the field to a specific database column name, with optional constraints like nullable, unique, length" },
+        { "id": "c", "text": "It creates an index on the column automatically" },
+        { "id": "d", "text": "It marks the field as the entity's primary key" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Column maps a field to a specific DB column and allows customization: name (override column name), nullable, unique, length, precision, scale, columnDefinition (raw SQL). Without it, JPA uses field name as the column name. Common uses: @Column(nullable = false) for NOT NULL constraints, @Column(length = 100) for VARCHAR length limits (Hibernate validates at flush time). Omitting @Column entirely falls back to JPA's default naming strategy (underscore-separated, camelCase fields → SNAKE_CASE columns)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the @Transient annotation do in a JPA entity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It marks a field as the primary key" },
+        { "id": "b", "text": "It marks a field to be excluded from database persistence — the field is held in memory only" },
+        { "id": "c", "text": "It marks a field as a version column for optimistic locking" },
+        { "id": "d", "text": "It marks a field as a lazy-loaded relationship" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Transient (or @Column(transient = true) in older JPA) tells JPA/Hibernate to completely ignore the field — no column is created, no value is persisted. Use it for computed fields, derived data, or temporary UI state held in the entity. The equivalent Java keyword `transient` has no effect in JPA. Spring Data JPA repositories also respect @Transient — derived query methods won't use transient fields."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the owning side of a JPA relationship?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The side with the @ManyToOne annotation" },
+        { "id": "b", "text": "The side where the foreign key column exists in the database — responsible for persisting the relationship state" },
+        { "id": "c", "text": "The side with @JoinColumn" },
+        { "id": "d", "text": "Both B and C — the owning side is where @JoinColumn is specified, typically on the @ManyToOne side of a bidirectional relationship" }
+      ],
+      "correctKey": "d",
+      "explanation": "The owning side is the entity that physically holds the foreign key column in its table (via @JoinColumn). In a unidirectional relationship, the owning side is the side with @ManyToOne (the one side has no awareness of the relationship). In a bidirectional relationship, the inverse side has mappedBy pointing to the owning side's field name. Only changes made on the owning side are persisted. The inverse side (with mappedBy) is purely navigational — modifying it has no effect on the FK unless you also modify the owning side."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is lazy loading in JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Data is loaded only when the field is first accessed, outside of the persistence context" },
+        { "id": "b", "text": "Data is loaded only when explicitly requested via JPQL FETCH JOIN or EntityGraph — not automatically loaded with the parent entity" },
+        { "id": "c", "text": "Data is loaded in batches for performance optimization" },
+        { "id": "d", "text": "Data is loaded synchronously from the database before the entity is returned" }
+      ],
+      "correctKey": "a",
+      "explanation": "Lazy loading (fetch = FetchType.LAZY) means the related data is NOT loaded when the parent entity is queried — instead, Hibernate creates a proxy (e.g., PersistentSet for collections, HibernateProxy for single entities). The actual DB query fires only when you first access the field. The catch: if the persistence context (transaction) is closed before access, you get LazyInitializationException — the proxy has no session to load from. Solutions: fetch within the transaction, use @Fetch(FetchMode.JOIN) in JPQL, or switch to EAGER (use with caution as it causes N+1 problems)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the N+1 query problem in JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "One entity has N relationships and one has one — causing a Cartesian product in joins" },
+        { "id": "b", "text": "Loading N entities causes N additional queries — one per entity when accessing a lazy collection: 1 query for parent + N queries for each child" },
+        { "id": "c", "text": "A query returns N results but only 1 is inserted into the persistence context" },
+        { "id": "d", "text": "N JPQL queries are merged into 1 batch insert operation" }
+      ],
+      "correctKey": "b",
+      "explanation": "N+1 occurs when loading N entities with lazy-loaded @OneToMany or @ManyToMany relationships. Hibernate fires 1 query to load parents, then N additional queries to load each child's collection on access. With 100 orders, that's 101 queries. Solutions: (1) Use @EntityGraph to eagerly fetch in a single JOIN query, (2) Use FETCH JOIN in JPQL: SELECT o FROM Order o LEFT JOIN FETCH o.items, (3) Set fetch = FetchType.EAGER (use sparingly — applies globally), (4) Use batch fetching (hibernate.default_batch_fetch_size) to batch the N queries into floor(N/size)+1 queries."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does @Query do in a Spring Data JPA repository method?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It creates a native SQL query that is validated against the database schema at startup" },
+        { "id": "b", "text": "It defines a custom JPQL or native SQL query on the repository method — overriding Spring Data's method-name-based query derivation" },
+        { "id": "c", "text": "It marks the method as a transaction boundary" },
+        { "id": "d", "text": "It enables query result caching at the Hibernate level" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Query lets you write a custom query on a repository method using JPQL (default) or native SQL (nativeQuery = true). Spring Data still validates the method signature but uses your query instead of deriving one from the method name. Use cases: complex WHERE clauses, aggregations, JOINs, or native DB features. With native queries (nativeQuery = true), results map to Object[] or DTOs (via @SqlResultSetMapping or constructor expressions), not directly to entities. @Query supports positional (?) and named (:param) parameters."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between @OneToMany with lazy loading using a List vs a Set?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "List uses an ArrayList and Set uses a HashSet — Hibernate initializes both identically" },
+        { "id": "b", "text": "Hibernate initializes List with a PersistentBag (an ArrayList-like unordered bag) and Set with PersistentSet — PersistentBag allows duplicate elements and can be more memory-efficient for lazy collections" },
+        { "id": "c", "text": "List supports indexed access (get(0)); Set does not — both behave identically for add/remove operations" },
+        { "id": "d", "text": "Set requires a @OrderColumn for correct lazy loading behavior" }
+      ],
+      "correctKey": "b",
+      "explanation": "Hibernate uses different persistent collection types: List (without @OrderColumn) → PersistentBag (List，允许 duplicates, unordered), List (with @OrderColumn) → PersistentList (ordered, uses ordinal index), Set → PersistentSet (no duplicates, no order). For @OneToMany lazy loading, PersistentBag is efficient (no dedup overhead) but doesn't maintain order without @OrderColumn. Using Set enforces uniqueness but adds hash overhead. For @ManyToMany, both List and Set are valid — choose based on whether order or uniqueness matters in your domain. @OrderColumn on a List adds an ordinal column but causes insertion complexity (re-indexing). Prefer Set for @ManyToMany relationships."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is optimistic locking and how is it implemented in JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Uses pessimistic locks (SELECT FOR UPDATE) to prevent concurrent modifications" },
+        { "id": "b", "text": "Adds a @Version column — Hibernate increments it on every update. If the version in DB differs from the in-memory entity on update, OptimisticLockException is thrown" },
+        { "id": "c", "text": "Uses database-level serializable transactions for all operations" },
+        { "id": "d", "text": "Requires explicit lock acquisition via EntityManager.lock() for every read" }
+      ],
+      "correctKey": "b",
+      "explanation": "Optimistic locking (via @Version) lets concurrent transactions proceed without blocking. Each transaction reads the current version. On commit, if the version in DB differs from when you read, it means another transaction modified the row — Hibernate throws OptimisticLockException (rolled back automatically). The client must retry. This approach avoids lock contention at read time, suitable for read-heavy workloads. Pessimistic locking (SELECT FOR UPDATE) blocks reads until the lock is released — use when you must serialize writes. @Version can be int, long, short, or Timestamp."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between cascade = CascadeType.ALL and cascade = {CascadeType.PERSIST, CascadeType.MERGE}?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CascadeType.ALL includes all cascade types except CascadeType.DETACH" },
+        { "id": "b", "text": "CascadeType.ALL propagates ALL entity lifecycle operations (persist, merge, remove, refresh, detach) to child entities; explicit cascade types let you control which operations propagate, giving more granular and safer relationships" },
+        { "id": "c", "text": "There is no difference — ALL is syntactic sugar for the same cascade types" },
+        { "id": "d", "text": "CascadeType.ALL only cascades persist and remove; merge is excluded for safety" }
+      ],
+      "correctKey": "b",
+      "explanation": "CascadeType.ALL = {PERSIST, MERGE, REMOVE, REFRESH, DETACH} — every operation cascades. Using ALL is common but dangerous: removing a parent automatically deletes all children (may violate FK constraints), and persisting cascades children without transactional consideration. Explicit cascades give you fine control: {PERSIST, MERGE} cascades save operations but not deletes (safer). CascadeType.REMOVE is often omitted to allow orphan removal separately. Always think about the business domain: should saving a Parent automatically save its children? Often, the answer is no — children should be saved explicitly within the same transaction."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does orphanRemoval = true do on a @OneToMany relationship?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "When a child is removed from the collection, it is automatically deleted from the database" },
+        { "id": "b", "text": "When a child is removed from the parent's collection, it becomes an orphan — if not referenced by any other parent, it is automatically deleted from the database when the parent is flushed" },
+        { "id": "c", "text": "It prevents deletion of a child entity if it has siblings" },
+        { "id": "d", "text": "It marks the child entity as read-only in the persistence context" }
+      ],
+      "correctKey": "b",
+      "explanation": "orphanRemoval=true means: if you call parent.getChildren().remove(child), Hibernate marks the child for deletion when the parent is flushed (not immediately). The child becomes an 'orphan' — no longer referenced. Hibernate issues a DELETE. This is equivalent to CascadeType.REMOVE for individual children (but only when dereferenced from THIS parent, not when the parent is deleted). Useful for composition: deleting an item from an invoice's line items should delete the item from DB. Note: orphanRemoval and CascadeType.REMOVE are related but not identical — orphanRemoval is directional (this parent only), CascadeType.REMOVE is triggered when the parent entity itself is deleted."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "JPQL uses entity names and field names, not database table and column names.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "JPQL operates at the entity level, not the SQL level. Queries use the entity class name (User, not users), field names (firstName, not first_name), and relationship fields (user.orders, not JOIN users ON...). Hibernate translates JPQL to the appropriate SQL for your dialect. This makes JPQL portable across databases. Native SQL queries (nativeQuery = true) use actual table and column names as they appear in the database."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Eager fetching (@Fetch(FetchType.EAGER)) is always the best strategy for @OneToMany relationships to avoid N+1 queries.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Eager fetching on @OneToMany is almost always a bad default. It causes N+1 problems: loading 10 orders eagerly fetches 10 collections in separate queries (or a Cartesian product if using JOIN), loading all data upfront even when you only need the parent entity. The correct approach is lazy loading with explicit fetch strategies: use @EntityGraph for known access patterns, JPQL FETCH JOIN for specific queries, or @BatchFetch for ad-hoc access. Eager fetching should only be used when the collection is always needed in your use case."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between @NamedEntityGraph and @EntityGraph in Spring Data JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@NamedEntityGraph is defined at the entity class level as a reusable, named query graph; @EntityGraph is applied at the repository method level for one-off fetch customization" },
+        { "id": "b", "text": "@EntityGraph is persistent across all repository queries; @NamedEntityGraph is method-specific" },
+        { "id": "c", "text": "@NamedEntityGraph uses JPQL FETCH JOIN internally; @EntityGraph uses Hibernate-specific projection APIs" },
+        { "id": "d", "text": "There is no functional difference — they are interchangeable aliases" }
+      ],
+      "correctKey": "a",
+      "explanation": "@NamedEntityGraph is a JPA 2.1 annotation placed on the entity class, defining a named graph of attributes to fetch. It can be referenced by name in @EntityGraph(value = EntityGraph.EntityGraphType.FETCH, graphName = \"...\"). @EntityGraph on a repository method is ad-hoc and inline — defined at the query site only. @NamedEntityGraph is reusable and can be referenced from multiple repository methods. Both generate a LEFT JOIN FETCH equivalent in the SQL. Use @NamedEntityGraph for recurring fetch patterns; use @EntityGraph for one-off cases."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does @Modifying on a repository query method do, and what is a critical requirement for it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Modifying enables UPDATE and DELETE queries and automatically flushes the persistence context — it requires @Transactional to be present on the calling method" },
+        { "id": "b", "text": "@Modifying turns a SELECT query into an INSERT without changing the method signature" },
+        { "id": "c", "text": "@Modifying is required for all @Query methods regardless of whether they modify data" },
+        { "id": "d", "text": "@Modifying automatically clears the EntityManager after execution to prevent stale data" }
+      ],
+      "correctKey": "a",
+      "explanation": "@Modifying marks a @Query as a bulk update/delete operation. CRITICAL: it MUST be called within a @Transactional context — Spring Data JPA does not start a transaction automatically for repository query methods. Without @Transactional, you get TransactionRequiredException. @Modifying queries execute directly in the DB (bypassing the persistence context), so entities in the context become stale — call entityManager.flush() and entityManager.clear() if you need consistency. Also note: @Modifying DELETE queries do NOT cascade to child entities or trigger @PreRemove/@PostRemove lifecycle callbacks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between PESSIMISTIC_READ and PESSIMISTIC_WRITE lock modes in JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PESSIMISTIC_READ allows concurrent reads but blocks writes; PESSIMISTIC_WRITE blocks both reads and writes" },
+        { "id": "b", "text": "PESSIMISTIC_READ acquires a shared lock allowing other transactions to read but not write; PESSIMISTIC_WRITE acquires an exclusive lock blocking both reads and writes by other transactions" },
+        { "id": "c", "text": "PESSIMISTIC_WRITE is equivalent to READ COMMITTED isolation; PESSIMISTIC_READ is equivalent to SERIALIZABLE" },
+        { "id": "d", "text": "Both lock modes are identical in behavior — the naming is purely semantic" }
+      ],
+      "correctKey": "b",
+      "explanation": "PESSIMISTIC_READ (shared lock): other transactions can read the row but cannot modify it until you commit. Use when you want to read data consistently without updates. PESSIMISTIC_WRITE (exclusive lock): other transactions cannot read OR write the row — this is equivalent to SELECT FOR UPDATE in SQL. Use when you need to update and ensure no one else reads stale data. Most databases implement PESSIMISTIC_READ the same as PESSIMISTIC_WRITE under the hood. lock() with PESSIMISTIC_WRITE throws LockTimeoutException if the lock cannot be acquired within the configured timeout. Use setLockTimeout() or hibernate.connection.locks_timeout to control wait behavior."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Can a JPA entity have multiple @Version columns for different optimistic locking strategies?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "JPA specification allows only ONE @Version column per entity. Having multiple @Version fields would create ambiguity in detecting concurrent modifications. If you need fine-grained optimistic locking for specific fields, use @OptimisticLock annotation (Hibernate-specific) on individual fields — changes to those fields only will trigger version increment. The @Version column still handles overall entity-level optimistic locking alongside @OptimisticLock."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between @JoinTable and @JoinColumn in JPA relationships?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@JoinColumn is for @ManyToOne (direct FK); @JoinTable is for @OneToMany requiring an intermediate join table" },
+        { "id": "b", "text": "@JoinColumn specifies a direct foreign key column on the owning entity's table; @JoinTable defines an intermediate join table (with two FK columns) for @ManyToMany or unidirectional @OneToMany relationships" },
+        { "id": "c", "text": "@JoinTable is for @OneToOne relationships only; @JoinColumn is for @ManyToMany" },
+        { "id": "d", "text": "Both specify direct FK columns but @JoinTable has better performance" }
+      ],
+      "correctKey": "b",
+      "explanation": "@JoinColumn creates a direct foreign key column in the entity's own table (e.g., USER table has an ADDRESS_ID column referencing ADDRESS). Use with @ManyToOne (owning side). @JoinTable creates an intermediate join table with two columns (e.g., USER_ADDRESS with USER_ID and ADDRESS_ID) — the FK columns live in this separate table, not in either entity's table. @JoinTable is required for @ManyToMany (inherent to the relationship type) and optional for @OneToMany (can use @JoinColumn instead for a direct FK in the child's table). Use @JoinTable when the relationship is 'owns and is owned by' rather than 'has many'."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does CascadeType.PERSIST do in JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It automatically deletes child entities when the parent is removed" },
+        { "id": "b", "text": "It automatically persists child entities when the parent is persisted — if you persist the parent, the children are also persisted in the same transaction" },
+        { "id": "c", "text": "It synchronizes the child's state with the parent's state on every database query" },
+        { "id": "d", "text": "It detaches child entities from the persistence context when the parent is detached" }
+      ],
+      "correctKey": "b",
+      "explanation": "CascadeType.PERSIST propagates the persist operation from parent to child. When you call entityManager.persist(parent), all children with CascadeType.PERSIST are also persisted automatically. Note: CascadeType.PERSIST does NOT cascade on merge — use CascadeType.MERGE for that. CascadeType.ALL includes PERSIST. Be careful: cascading persist without thinking can lead to accidentally persisting orphaned children. Always ask: does persisting this parent semantically mean 'also persist the child'?"
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is dirty checking in JPA/Hibernate?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It validates that entity field values meet @Column constraints before persisting" },
+        { "id": "b", "text": "It automatically detects changes to managed entities in the persistence context and generates UPDATE SQL statements at flush time — without explicit save() calls" },
+        { "id": "c", "text": "It locks rows in the database when they are first read to prevent concurrent modifications" },
+        { "id": "d", "text": "It compares the current entity state with the database and raises an exception if they differ" }
+      ],
+      "correctKey": "b",
+      "explanation": "Dirty checking is Hibernate's automatic change detection mechanism. The persistence context (first-level cache) holds a snapshot of the entity at load time. At flush time, Hibernate compares the current entity state with the snapshot — any changes generate UPDATE statements automatically. This means you can modify entity fields and call transaction.commit() — Hibernate figures out which columns changed and generates only the necessary SQL. Dirty checking runs per-entity: if only one field changed, only one SET clause is generated. This is a core JPA feature that eliminates manual update boilerplate."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between EntityManager.merge() and EntityManager.persist()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Both are identical — they both insert a new row into the database" },
+        { "id": "b", "text": "persist() inserts a new entity and makes it managed; merge() copies the state of a detached entity onto a managed instance and returns the managed instance — if the entity already exists in the DB, merge() updates it" },
+        { "id": "c", "text": "persist() updates an existing entity; merge() inserts a new entity" },
+        { "id": "d", "text": "merge() throws EntityExistsException if the entity already exists; persist() silently overwrites" }
+      ],
+      "correctKey": "b",
+      "explanation": "persist(): adds a new entity to the persistence context — makes it managed. Throws EntityExistsException if the entity already exists (detached entity with same ID). Use for inserting new records. merge(): takes a detached entity, finds the managed copy (either from persistence context or DB), copies state from the detached entity to the managed one, and returns the managed instance. The detached object is NOT modified. Use for reattaching detached entities. Key pitfall: calling merge() on a detached entity does NOT make the original object managed — you must use the returned instance."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the first-level cache in JPA and how does it affect query performance?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        "a { id: 'a', text: 'A server-side database query cache that stores query results across multiple transactions' }",
+        "b { id: 'b', text: 'The persistence context acts as a first-level cache — holding managed entities within a transaction; querying the same entity by ID within the same transaction returns the cached instance without a DB round trip' }",
+        { "id": "c", "text": "A Hibernate-specific query optimization that pre-loads all entities referenced in the current request" },
+        { "id": "d", "text": "A cache at the database driver level that reduces network latency for repeated queries" }
+      ],
+      "correctKey": "b",
+      "explanation": "The first-level cache (persistence context) is attached to the EntityManager/transaction. Within one transaction, querying the same entity by ID (find/getReference) or navigating relationships returns the same managed instance — no DB round trip. This is free and automatic. Outside a transaction, it is cleared. The second-level cache (L2, optional, Hibernate-specific) caches across transactions/sessions. Use first-level cache: no configuration needed — it just works. Avoid it as a performance silver bullet: complex queries still hit the DB."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between FetchType.EAGER and FetchType.LAZY for @ManyToOne relationships?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "EAGER loads the related entity immediately with the parent; LAZY loads it when the field is first accessed via a proxy" },
+        { "id": "b", "text": "LAZY is the default for @ManyToOne; EAGER must always be explicitly specified" },
+        { "id": "c", "text": "EAGER uses a separate transaction to load the related entity" },
+        { "id": "d", "text": "LAZY can only be used on @OneToMany; EAGER is the default for all relationship types" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ManyToOne defaults to EAGER (unlike @OneToMany which defaults to LAZY). EAGER means the related entity is loaded immediately in the same SQL query (JOIN FETCH). LAZY loads via proxy and triggers a query only when accessed. For @ManyToOne, EAGER is often acceptable because it is a single-valued relationship (one reference), not a collection. However, EAGER on multiple @ManyToOne fields can cause Cartesian products. The best practice: set fetch = FetchType.LAZY explicitly and use @EntityGraph or JPQL FETCH JOIN when you need eager loading."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does @EntityListeners do in JPA and when would you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It registers callback methods on an entity to respond to lifecycle events — e.g., @PrePersist, @PreUpdate, @PostLoad — useful for auditing, auto-populating fields, and cross-cutting concerns" },
+        { "id": "b", "text": "It listens to database change events from other applications" },
+        { "id": "c", "text": "It enables Hibernate's statistics listener for query performance monitoring" },
+        { "id": "d", "text": "It maps JPA events to Spring application events automatically" }
+      ],
+      "correctKey": "a",
+      "explanation": "@EntityListeners specifies callback classes that listen to entity lifecycle events: @PrePersist (before insert), @PostPersist (after insert), @PreUpdate (before update), @PostUpdate (after update), @PreRemove (before delete), @PostRemove (after delete), @PostLoad (after load from DB). Common uses: (1) Audit trail — auto-set createdAt/updatedAt timestamps. (2) Derive fields — compute fullName from firstName+lastName. (3) Domain event publishing. The callback class can be a separate class or an inner class on the entity. @EntityListeners(AuditListener.class) on the entity activates them."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between a JPQL JOIN and a JPQL JOIN FETCH?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JOIN FETCH always returns cartesian products; JOIN does not" },
+        { "id": "b", "text": "JOIN fetches the related entity in a second query (partial loading); JOIN FETCH fetches it in the same query with a LEFT JOIN, eagerly loading all requested associations in one query" },
+        { "id": "c", "text": "JOIN is for @OneToMany only; JOIN FETCH is for @ManyToOne only" },
+        { "id": "d", "text": "There is no functional difference — they are aliases for the same operation" }
+      ],
+      "correctKey": "b",
+      "explanation": "In JPQL, JOIN (without FETCH) only creates an alias for use in the WHERE clause — it does NOT load the related data. The association is still lazy. Example: SELECT o FROM Order o JOIN o.items WHERE o.status = 'PENDING' — this filters orders that have items but does NOT load items in the same query. JOIN FETCH: SELECT o FROM Order o LEFT JOIN FETCH o.items — this loads orders AND items in a single query with LEFT JOIN. Use JOIN FETCH to avoid N+1 queries. Without FETCH, accessing the collection in the result triggers a lazy load."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between @NamedQuery and @Query in Spring Data JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@NamedQuery is a JPA 2.0 static query defined at the entity class level; @Query is a Spring Data JPA annotation defined at the repository method level — @Query takes precedence if both apply to the same method" },
+        { "id": "b", "text": "@NamedQuery runs faster because it is pre-compiled by the JPA provider; @Query is interpreted at runtime" },
+        { "id": "c", "text": "@NamedQuery supports only native SQL; @Query supports only JPQL" },
+        { "id": "d", "text": "There is no difference — both annotations are interchangeable" }
+      ],
+      "correctKey": "a",
+      "explanation": "@NamedQuery (JPA annotation, placed on entity class) defines a static, named JPQL query: @NamedQuery(name = \"User.findByEmail\", query = \"SELECT u FROM User u WHERE u.email = :email\"). It is pre-parsed by the JPA provider at startup. @Query (Spring Data JPA annotation) is defined inline on the repository method. Spring Data resolves it by method name or uses the provided query. @NamedQuery can be referenced from multiple repository methods; @Query is method-specific. @Query takes precedence if both define the same method name. For most use cases, @Query is simpler and more co-located with the repository interface."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is Hibernate's @BatchFetch annotation and how does it solve the N+1 problem differently than JOIN FETCH?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@BatchFetch uses a separate query for each entity; JOIN FETCH uses a single query for all entities" },
+        { "id": "b", "text": "@BatchFetch(n) groups N lazy-loading entity accesses into a single IN query (e.g., batch size 100 → 10 entities cause 1 query instead of 10) — applied at the entity/collection level, not the query level" },
+        { "id": "c", "text": "@BatchFetch is equivalent to @EntityGraph — both load associations eagerly in the same query" },
+        { "id": "d", "text": "@BatchFetch requires explicit JPQL FETCH JOIN on every repository query" }
+      ],
+      "correctKey": "b",
+      "explanation": "@BatchFetch (Hibernate-specific) is a per-entity/collection fetch strategy that batches multiple lazy-load access into a single SQL query using WHERE id IN (...). Example: loading 50 Order entities, each with a lazy User → without BatchFetch: 1 + 50 queries. With @BatchFetch(size = 50) on User: 1 + 1 query (one IN query for all users). Unlike JOIN FETCH (query-level, must be specified per query), @BatchFetch is a property-level annotation — it applies everywhere the association is accessed lazily. Trade-offs: BatchFetch still fires multiple queries (just fewer), while JOIN FETCH does it in one query. JOIN FETCH is more efficient for known access patterns; BatchFetch is better for unpredictable access."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What are the trade-offs between optimistic locking and pessimistic locking in JPA?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Optimistic locking: no locks at read time, transactions proceed in parallel, conflict detected at commit time (version mismatch) — suitable for read-heavy workloads with rare conflicts" },
+        { "id": "b", "text": "Pessimistic locking: locks rows at read time (SELECT FOR UPDATE), preventing other transactions from reading/writing — suitable for write-heavy workloads with frequent conflicts" },
+        { "id": "c", "text": "Pessimistic locking guarantees no transaction rollback is ever needed; optimistic locking may require retry logic" },
+        { "id": "d", "text": "Optimistic locking performs better in high-contention scenarios because it avoids lock overhead" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Optimistic locking (@Version) allows concurrent reads, detects conflicts at commit: if another transaction modified the row, OptimisticLockException is thrown → application must retry. Benefits: no lock overhead, high concurrency for reads. Drawback: wasted work if conflicts are frequent, requires retry logic. Pessimistic locking (PESSIMISTIC_WRITE) acquires exclusive locks at read time: other transactions block or fail. Benefits: guaranteed consistency, no retry needed. Drawbacks: lock contention, deadlocks, reduced concurrency. Choose optimistic for low-contention reads; pessimistic for high-contention writes."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is Hibernate's natural ID caching and when is it useful?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Natural ID caching caches entities by their business key (e.g., email, ISBN) in a dedicated cache region — lookups via entityManager.unwrap(Session.class).byNaturalId() bypass the second-level cache and hit natural ID cache directly" },
+        { "id": "b", "text": "Natural ID caching is the same as the first-level cache — both store entities by surrogate ID" },
+        { "id": "c", "text": "Natural ID caching requires a separate database index for every natural ID lookup" },
+        { "id": "d", "text": "Natural ID caching is deprecated in Hibernate 6.x" }
+      ],
+      "correctKey": "a",
+      "explanation": "Natural IDs (@NaturalId annotation) represent business keys — unique identifiers defined by the domain (e.g., email, order number). Hibernate can cache lookups by natural ID in a dedicated cache region (natural-id cache). Use byNaturalId(MyEntity.class).using(\"email\", email).load() for fast lookups without querying by surrogate ID. This is faster than querying by non-indexed columns or using the second-level cache by ID. Natural ID caching integrates with L2 cache and is especially useful for reference data (countries, currencies) or entities frequently looked up by business keys."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between Hibernate's StatelessSession and a regular JPA EntityManager?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "StatelessSession bypasses the persistence context entirely — no first-level cache, no dirty checking, no lazy loading — each operation is direct SQL; useful for bulk operations or ETL where performance matters and entities don't need to be managed" },
+        { "id": "b", "text": "StatelessSession is faster because it uses a direct JDBC connection pool; EntityManager uses Hibernate's connection pool" },
+        { "id": "c", "text": "EntityManager is deprecated in favor of StatelessSession in Hibernate 6.x" },
+        { "id": "d", "text": "StatelessSession supports optimistic locking; EntityManager does not" }
+      ],
+      "correctKey": "a",
+      "explanation": "StatelessSession is a Hibernate-specific API that operates without a persistence context. There is no: first-level cache, dirty checking, automatic lifecycle callbacks (@PrePersist), or entity versioning. Entities returned are disconnected snapshots — detached from the moment they are returned. Use cases: bulk inserts/updates/deletes where you need raw performance without entity management overhead, ETL pipelines, data migration. Trade-offs: no automatic batching, no lifecycle callbacks, no managed entities. For bulk operations with batch size, use StatelessSession or Hibernate's scrollable results with a batch size."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does JPA handle entity identity (equality) and when should you override equals() and hashCode()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JPA uses database identity (@Id) for equality within a persistence context; for detached entities or collections (Set), you should override equals() and hashCode() using a business key or stable natural ID — not the surrogate ID" },
+        { "id": "b", "text": "JPA automatically overrides equals() and hashCode() for all entities using the @Id field" },
+        { "id": "c", "text": "equals() and hashCode() must always use the database surrogate ID (@Id) for consistency" },
+        { "id": "d", "text": "Overriding equals() and hashCode() is optional and has no impact on JPA behavior" }
+      ],
+      "correctKey": "a",
+      "explanation": "Within a persistence context, entity identity is managed by JPA: same @Id = same entity reference. Outside the persistence context (detached entities, in Sets), identity vs equality matters. Override equals() and hashCode() using a stable business key (e.g., email, UUID) — not the surrogate ID (@Id) which is null before persist and may differ across JPA implementations for detached entities. Pitfall: using @Id in equals() causes null pointer exceptions before persistence and breaks Set membership after entity becomes detached. Use a natural/business key or a UUID assigned at construction. JPA's entity equality is persistence-context-scoped; use business key equality for detached scenarios."
+    }
+  ]
+}

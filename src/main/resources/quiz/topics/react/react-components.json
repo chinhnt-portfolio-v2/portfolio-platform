@@ -1,0 +1,247 @@
+{
+  "topicSlug": "react-components",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the correct way to pass a required string prop called `title` and an optional function prop called `onConfirm` to a functional component?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "function Modal({ title: string, onConfirm?: () => void }) { ... }" },
+        { "id": "b", "text": "function Modal({ title, onConfirm }: { title: string; onConfirm?: () => void }) { ... }" },
+        { "id": "c", "text": "function Modal(props: { title: string }) { const { onConfirm } = props; ... }" },
+        { "id": "d", "text": "function Modal(title: string, onConfirm?: () => void) { ... }" }
+      ],
+      "correctKey": "b",
+      "explanation": "In TypeScript with React, the destructuring syntax `{ title, onConfirm }: { title: string; onConfirm?: () => void }` is idiomatic — the type annotation goes on the destructured object, not on individual variable names (A). Option C loses the type of `onConfirm`. Option D uses positional parameters, but React components receive a single `props` object, not positional arguments."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What will this component render?\n\nfunction Greeting({ children }: { children: React.ReactNode }) {\n  return <div>{children}</div>;\n}\n\n<Greeting>Hello World</Greeting>",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It renders <div>Hello World</div>" },
+        { "id": "b", "text": "It renders only Hello World with no wrapper div" },
+        { "id": "c", "text": "It causes a TypeScript error because children must be typed as string" },
+        { "id": "d", "text": "It renders undefined because children is not passed explicitly" }
+      ],
+      "correctKey": "a",
+      "explanation": "`children` typed as `React.ReactNode` accepts any renderable content — strings, numbers, JSX elements, fragments, arrays, etc. The component wraps `children` inside a `<div>`, so the output is `<div>Hello World</div>`. React treats string children as text content inside the div."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which method is the correct way to render a list of items in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use a for loop inside the render method to push `<li>` elements into an array" },
+        { "id": "b", "text": "Use Array.map() to transform each item into a JSX element and return it" },
+        { "id": "c", "text": "Use Array.filter() inside JSX to conditionally render items" },
+        { "id": "d", "text": "Use Array.reduce() to flatten nested arrays of components" }
+      ],
+      "correctKey": "b",
+      "explanation": "Array.map() is the idiomatic React pattern for rendering lists — it returns a new array of JSX elements, which React can render. Every element in the returned array must have a unique `key` prop. A for loop (A) does not return JSX inline. Array.filter inside JSX (C) is valid for conditional list rendering but is not the list-rendering pattern itself. Array.reduce (D) can be used but is not the standard approach for simple list rendering."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Why is the `key` prop important when rendering lists in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It is required by TypeScript for array elements to have a type" },
+        { "id": "b", "text": "It helps React identify which items have changed, been added, or removed during reconciliation, enabling efficient DOM updates" },
+        { "id": "c", "text": "It is a security feature that prevents XSS attacks in list items" },
+        { "id": "d", "text": "It is only needed when rendering arrays larger than 100 items" }
+      ],
+      "correctKey": "b",
+      "explanation": "The `key` prop tells React's reconciliation algorithm the identity of each element in a list. Without stable keys, React reuses DOM nodes incorrectly after list mutations, causing bugs like stale state in form inputs or reordered content. Keys should be unique among siblings and stable (not random on each render). Using array index as a key is risky when items can be reordered or deleted. Option A confuses TypeScript's type system with React rendering."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does this component render?\n\nfunction Badge({ count, show = false }: { count: number; show?: boolean }) {\n  return <>{show && <span>{count}</span>}</>;\n}\n\n<Badge count={0} show={true} />",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It renders <span>0</span>" },
+        { "id": "b", "text": "It renders nothing because 0 is falsy" },
+        { "id": "c", "text": "It renders the number 0 without the span wrapper" },
+        { "id": "d", "text": "It throws a TypeScript error because count is 0" }
+      ],
+      "correctKey": "b",
+      "explanation": "In React, `0` is falsy but NOT ignored by JSX. The expression `show && <span>{count}</span>` evaluates to `0` (the falsy value) when count is 0, which React then renders as the text '0'. This is a common React gotcha — the && pattern is only safe when the left side is never a falsy-but-renderable value. The fix is `count > 0 && <span>{count}</span>` or a ternary. Option A ignores the falsy evaluation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "React components must always return a single root element.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "React 16+ introduced Fragments (`<React.Fragment>` or shorthand `<>...</>`), allowing components to return multiple sibling elements without adding an extra DOM wrapper. You can also return an array of elements (each needing a key). The single-root rule was a React 15 constraint that no longer applies."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of the `children` prop in a React component?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It provides a way to pass event handler functions from parent to child components" },
+        { "id": "b", "text": "It is a special prop that contains the JSX content placed between the opening and closing tags of a component" },
+        { "id": "c", "text": "It is required on every React component and must always be declared in the props type" },
+        { "id": "d", "text": "It stores the component's internal state that persists across renders" }
+      ],
+      "correctKey": "b",
+      "explanation": "`children` is a special prop automatically available on every component — it contains whatever JSX is placed between the opening and closing tags when the component is used. For example, `<Card>Hello</Card>` makes `children = 'Hello'`. It enables composition patterns like layout components (Card, Modal, Layout) that wrap arbitrary content. Option A describes callback props, not children. Option C is false — children is optional and implicit."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is wrong with this component definition?\n\nconst Card = (title: string) => <div>{title}</div>;",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Arrow functions cannot be used to define React components" },
+        { "id": "b", "text": "React components receive a single props object as their argument, not individual parameters — so `title: string` is not valid as the first parameter" },
+        { "id": "c", "text": "The return type annotation is missing after the arrow" },
+        { "id": "d", "text": "Const declarations cannot hold JSX expressions" }
+      ],
+      "correctKey": "b",
+      "explanation": "React components — whether defined with `function` or `const` arrow — always receive a single argument: the `props` object. Writing `(title: string)` makes `title` a positional parameter, not a destructured prop. The correct pattern is `(props: { title: string })` or `({ title }: { title: string })`. Option A is false — arrow functions are widely used for React components. Option C is not the primary issue here."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Is it possible to render a React component conditionally without an extra DOM wrapper?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "No — every conditional render must produce a single root element, so you always need a wrapper div" },
+        { "id": "b", "text": "Yes — using React Fragments (`<>...</>` or `<React.Fragment>...</React.Fragment>`) allows multiple elements without adding to the DOM" },
+        { "id": "c", "text": "Yes — by returning null from the component instead of JSX" },
+        { "id": "d", "text": "Only if using React 15 or earlier; React 18 requires a wrapper" }
+      ],
+      "correctKey": "b",
+      "explanation": "Fragments (`<>...</>`) group multiple JSX elements without introducing an extra DOM node. This is essential for table rows, list items with multiple columns, or flex/grid layouts where a wrapper div would break the visual structure. Returning `null` (C) conditionally hides the component entirely, which is valid but not the same as rendering sibling elements."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between using `children` as a prop and passing explicit named props for composition in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Named props are for parent-to-child data flow; children is only for text content" },
+        { "id": "b", "text": "Children allows the consumer to inject arbitrary JSX; named props are more explicit and TypeScript-friendly for typed API contracts" },
+        { "id": "c", "text": "There is no functional difference — both patterns compile to identical code" },
+        { "id": "d", "text": "Named props can only pass primitives, not JSX elements" }
+      ],
+      "correctKey": "b",
+      "explanation": "The children prop enables a flexible composition pattern — the parent decides what goes inside. Named props make the API explicit and are better for TypeScript autocomplete and required/optional enforcement. Both are valid patterns: children suits generic wrappers (Layout, Card), named props suit explicit component APIs (Table columns, FormField labels). Choosing between them is a design decision based on how much flexibility vs. explicitness you want to expose."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which is the correct TypeScript type for a functional component that accepts `name` (string) and `age` (number) props and returns JSX?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "const Person: React.FC<{ name: string; age: number }> = ({ name, age }) => <div>{name} - {age}</div>" },
+        { "id": "b", "text": "const Person: React.Component<{ name: string; age: number }> = ({ name, age }) => <div>{name} - {age}</div>" },
+        { "id": "c", "text": "const Person = ({ name, age }: { name: string; age: number }) => <div>{name} - {age}</div>" },
+        { "id": "d", "text": "const Person: FunctionComponent<{ name: string; age: number }> = ({ name, age }) => <div>{name} - {age}</div>" }
+      ],
+      "correctKey": "c",
+      "explanation": "Option C is the plain function expression pattern — idiomatic in modern React + TypeScript codebases. `React.FC` (A) is available but has quirks: it automatically adds `children?: ReactNode`, which you may not want. Many teams prefer the plain function signature (C) for explicitness. Option B's `React.Component` is a class-based generic. Option D's `FunctionComponent` is an alias for `React.FC` — same limitations."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does this code output?\n\nfunction Item({ id, name }: { id: number; name: string }) {\n  return <li key={id}>{name}</li>;\n}\n\nfunction List() {\n  const items = [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }];\n  return (\n    <ul>\n      {items.map(item => <Item {...item} key={item.id} />)}\n    </ul>\n  );\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A list with two items: Alpha and Beta, with proper React key handling" },
+        { "id": "b", "text": "A TypeScript error because the key prop cannot be passed alongside spread props" },
+        { "id": "c", "text": "Only the first item (Alpha) renders because Beta's key is overwritten by the spread" },
+        { "id": "d", "text": "The key must be declared in the Item component's props type" }
+      ],
+      "correctKey": "a",
+      "explanation": "The `key` prop is special in React — it is not passed to the component as a prop and must not be included in the component's props type. The pattern `<Item {...item} key={item.id} />` correctly separates the `key` (used by React reconciliation) from the component props. This is the idiomatic way to pass data via spread while also providing a key. Option B, C, and D are incorrect."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When rendering a list of components, using the array index as a key is always safe.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Array index as a key is only safe when the list is static (items are never added, removed, or reordered) AND items never change. If items can be reordered (e.g., sorted) or deleted, React will incorrectly match items to DOM nodes, causing bugs like stale form state or reordered content. Use a stable, unique ID as a key whenever the list can change."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "You need a Card component that renders a title section and an arbitrary content section. Which prop pattern is most appropriate?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Card should accept `title` as a ReactNode and `content` as a ReactNode, both as required props" },
+        { "id": "b", "text": "Card should accept `title` as a string and `content` as a ReactNode — title as string is more restrictive but sufficient, and content via children for maximum flexibility" },
+        { "id": "c", "text": "Card should only use children prop and expose no named props" },
+        { "id": "d", "text": "Card should accept multiple named slots (title, subtitle, footer) as ReactNode props plus a single children for the main body" }
+      ],
+      "correctKey": "d",
+      "explanation": "Component composition with named slots (title, subtitle, footer) as ReactNode props gives consumers explicit control over each section while children covers the main body. This is the slot pattern used by MUI, Radix UI, and shadcn/ui — each slot has a clear purpose. Option B limits the title to a plain string, preventing JSX-based titles. Option C provides no structure at all."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between default props and default parameter syntax in React TypeScript components?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Default props (`Component.defaultProps`) are deprecated in modern React — destructuring with default values is the preferred approach" },
+        { "id": "b", "text": "Default props work only in class components; function components must use default parameter syntax" },
+        { "id": "c", "text": "Both are functionally identical and either can be used interchangeably in function components" },
+        { "id": "d", "text": "Default props are checked at runtime; default parameters are checked at compile time" }
+      ],
+      "correctKey": "a",
+      "explanation": "In modern React + TypeScript, default props on function components via `Component.defaultProps = { ... }` is largely replaced by ES6 default parameter syntax in the function signature (`({ name = 'Guest' })`). The default parameter approach is type-safe, co-located with the prop destructuring, and requires no separate object. `defaultProps` is still supported but considered legacy for function components."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this render?\n\nfunction Row({ id }: { id: number }) {\n  return <tr><td>{id}</td></tr>;\n}\n\nfunction Table() {\n  return (\n    <table>\n      {[{ id: 1 }, { id: 2 }].map(item => (\n        <React.Fragment key={item.id}>\n          <Row id={item.id} />\n        </React.Fragment>\n      ))}\n    </table>\n  );\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "A table with 2 rows, each containing one cell with the id" },
+        { "id": "b", "text": "A TypeScript error because React.Fragment cannot wrap a single child" },
+        { "id": "c", "text": "A compilation error because React.Fragment doesn't support the key prop in this syntax" },
+        { "id": "d", "text": "An empty table because Fragment doesn't render any DOM elements" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.Fragment with key (`<React.Fragment key={item.id}>`) is valid — the key must be an attribute, not a prop passed to the wrapped child. This is the one case where you must use the full `<React.Fragment>` syntax instead of `<>...</>` shorthand (which cannot accept a key). The table renders 2 rows correctly."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the primary difference between controlled and uncontrolled components in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Controlled components store their state in React state; uncontrolled components store state in the DOM and use refs to read it" },
+        { "id": "b", "text": "Controlled components are used with useState; uncontrolled components are used with useRef" },
+        { "id": "c", "text": "Uncontrolled components cannot validate input; controlled components can" },
+        { "id": "d", "text": "Controlled components are faster because they don't touch the DOM; uncontrolled components access the DOM directly" }
+      ],
+      "correctKey": "a",
+      "explanation": "A controlled component's value is driven entirely by React state — the parent owns the value and updates it via event handlers. An uncontrolled component owns its own internal state via the DOM (`<input defaultValue=\"...\" />`), and you access the value via a ref when needed (e.g., on form submit). Both patterns are valid; the choice depends on whether you need real-time access to the value in React or only on specific events."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the 'slot pattern' in React component design and when should you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A pattern where named props (slots) typed as ReactNode are used instead of or alongside children to give consumers structured places to inject content" },
+        { "id": "b", "text": "A pattern where component state is divided into separate slices, each managed by a different hook" },
+        { "id": "c", "text": "A CSS technique for rendering components in grid slots" },
+        { "id": "d", "text": "A testing pattern where components are tested in isolation by mocking their slot components" }
+      ],
+      "correctKey": "a",
+      "explanation": "The slot pattern uses typed ReactNode props (e.g., `header?: ReactNode`, `footer?: ReactNode`) alongside or instead of a single `children` prop. This gives consumers explicit, named places for different content sections. It provides better TypeScript autocomplete and avoids the 'children anywhere' ambiguity of a single children prop. It is widely used in component libraries (Radix UI, shadcn/ui Dialog, etc.) for composable UI primitives."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Higher-Order Components (HOCs) wrap existing components to add behavior. React composition via the slot/children pattern is considered preferable in most modern use cases.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "While HOCs (e.g., `withRouter(Component)`) were a dominant pattern in earlier React, the React team now recommends composition via children, render props, or custom hooks as simpler alternatives. HOCs introduce prop name collision risks, create extra wrapper DOM nodes, and make type inference harder. The hooks era (useContext, custom hooks) replaced many HOC use cases entirely. However, HOCs still have valid uses for cross-cutting concerns that hooks cannot cleanly address."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this component render?\n\nfunction Outer({ children }: { children: React.ReactNode }) {\n  return <div className=\"outer\">{children}</div>;\n}\n\nfunction App() {\n  return (\n    <Outer>\n      <span>Header</span>\n      <Outer>\n        <span>Nested</span>\n      </Outer>\n      <span>Footer</span>\n    </Outer>\n  );\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "A flat div with three spans: Header, Nested, Footer" },
+        { "id": "b", "text": "A div with Header, then a nested div with Nested, then Footer — two Outer divs in total" },
+        { "id": "c", "text": "A single div with Header and Footer only; the nested Outer is ignored" },
+        { "id": "d", "text": "A TypeScript error because Outer cannot be used inside itself" }
+      ],
+      "correctKey": "b",
+      "explanation": "React components can render themselves recursively (self-reference) as long as the data recurs. The outer `<Outer>` wraps its children — the inner `<Outer>` is just one of those children, so it renders as a nested `<div className=\"outer\">`. The result is `<div className=\"outer\"><span>Header</span><div className=\"outer\"><span>Nested</span></div><span>Footer</span></div>`. Recursive component rendering is valid when the component naturally handles its own children."
+    }
+  ]
+}

@@ -1,0 +1,429 @@
+{
+  "topicSlug": "spring-boot-auto",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @SpringBootApplication combine?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Configuration and @ComponentScan only" },
+        { "id": "b", "text": "@Configuration, @EnableAutoConfiguration, and @ComponentScan" },
+        { "id": "c", "text": "@EnableWebMvc and @EnableAutoConfiguration" },
+        { "id": "d", "text": "@SpringBootConfiguration and @EnableAutoConfiguration only" }
+      ],
+      "correctKey": "b",
+      "explanation": "@SpringBootApplication is a composed annotation that combines @Configuration (marks the class as a source of @Bean definitions), @EnableAutoConfiguration (activates Spring Boot's auto-configuration engine), and @ComponentScan (enables component scanning from the application class's package downward). This trio is the standard entry point for every Spring Boot application. The equivalent individual annotations are often used in more granular configurations. @SpringBootConfiguration is an alias for @Configuration specific to Spring Boot tests."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of Spring Boot starters?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "They provide pre-compiled executable JAR files for deployment" },
+        { "id": "b", "text": "They are dependency descriptors that aggregate all required dependencies for a specific feature (e.g., spring-boot-starter-web) — reducing dependency management complexity" },
+        { "id": "c", "text": "They are code generators that scaffold entire application layers" },
+        { "id": "d", "text": "They are runtime plugins that enable cloud-native features" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring Boot starters are convenience dependency descriptors following the naming pattern spring-boot-starter-{feature}. Each starter aggregates all required transitive dependencies for a technology (e.g., web, JPA, security, Thymeleaf) with compatible, tested versions. Instead of managing 10+ individual JAR versions, you add one starter and get a coherent, versioned set of dependencies. The 'spring-boot-starter' without a feature name (spring-boot-starter) provides core utilities: logging, YAML, environment, etc. Starters are the primary mechanism for Spring Boot's opinionated dependency management."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Where does Spring Boot auto-configuration look for configuration property sources?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Only application.properties in the classpath root" },
+        { "id": "b", "text": "application.properties or application.yml in the working directory, environment variables, and command-line arguments — in order of precedence (highest: command-line args)" },
+        { "id": "c", "text": "Only the application.yml file in the src/main/resources directory" },
+        { "id": "d", "text": "Only system properties set via System.setProperty()" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring Boot's PropertySource order (highest to lowest precedence): command-line arguments > OS environment variables > application.{properties, yml} > @PropertySource annotations. The Spring Boot-specific locations also include: random.* value injection, profiles-specific files (application-{profile}.properties), and Spring Boot's default values (lowest). YAML is parsed as a superset of JSON — a single YAML file can have multiple documents separated by '---'. The key insight is that you can override any property at a higher-precedence source without modifying application.properties."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the spring-boot-maven-plugin provide?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It compiles Java source files using Maven's compiler plugin" },
+        { "id": "b", "text": "It packages the application as an executable fat JAR with all dependencies, and provides the spring:run goal for development" },
+        { "id": "c", "text": "It automatically generates application.properties from the project structure" },
+        { "id": "d", "text": "It manages Spring Boot version upgrades in pom.xml" }
+      ],
+      "correctKey": "b",
+      "explanation": "The spring-boot-maven-plugin (or Gradle equivalent spring-boot-gradle-plugin) repackages your application into an executable JAR (fat JAR / Uber JAR) containing all compiled classes and dependencies. This allows you to run the app with java -jar app.jar without needing a separate servlet container. Key goals: repackage (creates the fat JAR), run (executes in development), and build-info (generates build metadata). Without this plugin, you'd get a plain JAR of your classes only — not runnable as a standalone app."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the @ConfigurationProperties annotation do in Spring Boot?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It generates getters and setters for configuration fields at compile time" },
+        { "id": "b", "text": "It binds external configuration properties (from application.properties/yml, environment variables) to a typed POJO, enabling type-safe configuration with validation" },
+        { "id": "c", "text": "It marks a class as a configuration class equivalent to @Configuration" },
+        { "id": "d", "text": "It overrides Spring Boot's auto-configuration with custom bean definitions" }
+      ],
+      "correctKey": "b",
+      "explanation": "@ConfigurationProperties binds externalized configuration (application.properties, env vars, YAML) to a Java POJO using relaxed binding rules (e.g., my-property → myProperty, MY_PROPERTY). This gives you type-safe, structured configuration with IDE autocomplete support. Enable it either by @EnableConfigurationProperties on a @Configuration class or @ConfigurationPropertiesScan to scan for @ConfigurationProperties classes automatically. You can add @Validated + JSR-380 constraints (@NotNull, @Min, @Max) for automatic validation. Unlike @Value which uses SpEL and is string-based, @ConfigurationProperties gives you full POJO semantics."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default behavior of the Spring Boot DevTools in a running application?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It compiles classes in the background and triggers a live restart of the application when class files change" },
+        { "id": "b", "text": "It automatically deploys WAR files to an external Tomcat server" },
+        { "id": "c", "text": "It enables hot swapping of methods without restarting the JVM" },
+        { "id": "d", "text": "It generates API documentation from controller annotations" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot DevTools monitors classpath files and triggers a restart (not a reload) of the application when changes are detected. It uses two classloaders: one for application classes (restarted), one for base classes (not restarted) — making restarts much faster than a full restart. It also disables template caching, enables remote debugging, and provides property defaults. It does NOT do hot swapping of individual methods (that requires JRebel or similar). DevTools is disabled in production (it detects a production profile via spring.devtools.restart.enabled)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between application.properties and application.yml?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "application.properties is for Spring Boot 2.x; application.yml is for Spring Boot 3.x" },
+        { "id": "b", "text": "Both are equivalent — YAML uses indentation and hierarchical structure, properties uses flat key=value pairs; Spring Boot supports both formats simultaneously" },
+        { "id": "c", "text": "application.yml has higher precedence than application.properties" },
+        { "id": "d", "text": "application.properties supports profiles; application.yml does not" }
+      ],
+      "correctKey": "b",
+      "explanation": "Both formats are parsed by Spring Boot's PropertySource loader and represent the same data. YAML supports hierarchical, nested configuration (cleaner for complex structures), while properties is flat (spring.datasource.url=...). YAML also supports multi-document files (--- separated) and more natural expression of lists. Spring Boot's RelaxedBinding handles name variations (myProp, my-prop, MY_PROP all map to myProp). Profile-specific files work identically: application-dev.properties and application-dev.yml both exist and are loaded when --spring.profiles.active=dev."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "How do you activate a Spring profile named 'production'?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Set a @Profile annotation on the main class: @Profile(\"production\")" },
+        { "id": "b", "text": "Pass --spring.profiles.active=production as a command-line argument, set the SPRING_PROFILES_ACTIVE environment variable, or configure spring.profiles.active in application.properties" },
+        { "id": "c", "text": "Create a ProductionApplication class that extends the main class" },
+        { "id": "d", "text": "Set spring.profiles.default=production in application.properties" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring profiles are activated via: command-line (--spring.profiles.active=production), environment variable (SPRING_PROFILES_ACTIVE=production — note underscores, not dots), or programmatically via SpringApplicationBuilder.profiles(). Profiles group beans and configuration — only beans annotated @Profile(\"prod\") are registered when 'prod' is active. Use @Profile(\"!test\") to exclude beans from certain profiles. Profile-specific files (application-prod.properties) are additive to the base file, not replacements — properties in the profile file override the base file."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does @EnableAutoConfiguration work under the hood?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It scans the classpath for all @Configuration classes and registers them as beans" },
+        { "id": "b", "text": "It imports AutoConfigurationImportSelector which reads META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports to load auto-configuration classes that conditionally create beans based on classpath presence" },
+        { "id": "c", "text": "It replaces all manual @Bean definitions with auto-configured defaults" },
+        { "id": "d", "text": "It enables Hot Reload for all configuration classes without restart" }
+      ],
+      "correctKey": "b",
+      "explanation": "@EnableAutoConfiguration (included in @SpringBootApplication) activates Spring Boot's auto-configuration engine. It imports AutoConfigurationImportSelector which reads the META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports file (Spring Boot 3.x; previously META-INF/spring.factories). This file lists all auto-configuration classes. Each auto-config class uses @Conditional annotations (e.g., @ConditionalOnClass, @ConditionalOnMissingBean, @ConditionalOnProperty) to decide whether to activate — for example, DataSourceAutoConfiguration only activates if HikariCP/DataSource classes are on the classpath AND no DataSource bean is already defined. This is the key to 'it just works': auto-configurations are smart fallbacks, not overrides."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between @ConditionalOnClass and @ConditionalOnMissingBean?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@ConditionalOnClass activates the configuration if a class exists on classpath; @ConditionalOnMissingBean activates only if a bean of that type does NOT already exist in the container" },
+        { "id": "b", "text": "Both check for classpath presence — the naming is purely stylistic" },
+        { "id": "c", "text": "@ConditionalOnMissingBean activates when a bean exists; @ConditionalOnClass activates when a class exists" },
+        { "id": "d", "text": "@ConditionalOnClass is for Spring profiles; @ConditionalOnMissingBean is for Spring Data repositories" }
+      ],
+      "correctKey": "a",
+      "explanation": "Both are @Conditional annotations used in auto-configuration classes. @ConditionalOnClass(value = DataSource.class): activates only if DataSource is on the classpath — prevents compilation errors when the optional dependency is absent. @ConditionalOnMissingBean(value = DataSource.class): activates only if no DataSource bean is already defined — this ensures user-defined beans take precedence over auto-configured ones (the user's beans must be registered FIRST, then auto-config runs and skips itself). The standard pattern in auto-config classes combines both: @ConditionalOnClass(DataSource.class) + @ConditionalOnMissingBean(DataSource.class) — 'only auto-configure if the dependency exists AND the user hasn't already provided a bean'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does @ConfigurationProperties(prefix = \"server\") bind to in application.properties?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "server.classpath.* properties only" },
+        { "id": "b", "text": "server.port, server.address, server.ssl.*, server.servlet.*, and all other server.* properties — using relaxed binding (server.port → setPort())" },
+        { "id": "c", "text": "server.* only in application.yml, not application.properties" },
+        { "id": "d", "text": "server.environment.* properties only" }
+      ],
+      "correctKey": "b",
+      "explanation": "@ConfigurationProperties with prefix 'server' binds all server.* properties from any source (properties, YAML, env vars) to the ServerProperties POJO fields. Spring's relaxed binding means: server.port (properties), server.port (YAML), SERVER_PORT (env var), and server.port (Java setter: setPort()) all map to the same field. ServerProperties is the main auto-configurable properties class for the embedded server (Tomcat/Jetty/Netty). Spring Boot exposes ~500+ properties classes for various auto-configured features. @ConfigurationPropertiesScan automatically discovers @ConfigurationProperties classes without requiring @EnableConfigurationProperties."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of the spring-boot-autoconfigure-metadata.json file?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It defines which auto-configuration classes should be loaded during startup" },
+        { "id": "b", "text": "It stores metadata about configuration properties (names, types, default values, deprecation info) used by IDE tooling and the auto-configuration engine for early filtering — speeding up startup by avoiding loading unnecessary configurations" },
+        { "id": "c", "text": "It maps environment variable names to property names for relaxed binding" },
+        { "id": "d", "text": "It stores the auto-configuration exclusion list for production deployments" }
+      ],
+      "correctKey": "b",
+      "explanation": "The autoConfigure-metadata.json file (generated by spring-boot-configuration-processor at compile time from @ConfigurationProperties classes) stores metadata about all exposed configuration properties: names, types, source, default values, and deprecation information. Spring Boot's auto-configuration engine uses this metadata for early elimination of inapplicable configurations — before attempting to load classpath resources or evaluate complex @Conditional expressions. IDEs (IntelliJ, VS Code) also use this metadata to provide autocomplete for application.properties/yml with validation. This is why adding spring-boot-configuration-processor to your build improves the developer experience for @ConfigurationProperties."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does spring.main.banner-mode control?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It controls whether the Spring logo ASCII art is shown at startup: console (print to stdout), log (write to logger), off (disabled)" },
+        { "id": "b", "text": "It controls whether Spring Boot checks for banner.txt in the classpath" },
+        { "id": "c", "text": "It enables the startup banner for production environments" },
+        { "id": "d", "text": "It controls the log level of the Spring banner" }
+      ],
+      "correctKey": "a",
+      "explanation": "spring.main.banner-mode accepts three values: console (print to System.out), log (write to the logger at INFO level), off (disable banner entirely). The default is console in development, off in production (implicit via SpringApplication.setBannerMode()). You can customize the banner by placing banner.gif, banner.jpg, banner.png (image, converted to ASCII), or banner.txt (text) in src/main/resources. Banner expressions support ${application.version}, ${spring-boot.version}, ${Ansi.NAME}, and more. The banner is part of SpringApplication's startup lifecycle, printed in run()."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the spring-boot-configuration-processor and why should you include it in your build?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It processes @Configuration classes at runtime to enable lazy initialization" },
+        { "id": "b", "text": "It generates spring-configuration-metadata.json at compile time from @ConfigurationProperties annotations, enabling IDE autocomplete, validation, and early auto-configuration filtering" },
+        { "id": "c", "text": "It auto-generates application.properties files from Java code structure" },
+        { "id": "d", "text": "It replaces the need for @EnableConfigurationProperties by processing them at compile time" }
+      ],
+      "correctKey": "b",
+      "explanation": "The spring-boot-configuration-processor is an annotation processor (runs during javac/compileJava) that reads @ConfigurationProperties classes and emits spring-configuration-metadata.json in META-INF/. This metadata file tells IDEs: what properties are available, their types, default values, and deprecation info. Without it, you get no autocomplete and no validation in application.properties/yml. Add it as 'annotationProcessor' dependency in Maven or 'annotationProcessor' in Gradle. It does NOT affect runtime behavior — only compile-time tooling. It's especially valuable for custom @ConfigurationProperties classes shared across a team."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Spring Boot auto-configuration will override any @Bean definitions in your @Configuration classes.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Auto-configuration classes use @ConditionalOnMissingBean to ensure they only register beans when no user-defined bean of the same type exists. This is the core principle of auto-configuration: user beans take precedence. The execution order is: user @Configuration beans first, then auto-configurations. So if you define a @Bean DataSource, Spring's DataSourceAutoConfiguration will skip its DataSource bean. This is why @ConditionalOnMissingBean is essential in every auto-configuration class."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The spring.profiles.default property can be overridden by the SPRING_PROFILES_ACTIVE environment variable.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Environment variables have higher precedence than properties files. SPRING_PROFILES_ACTIVE overrides spring.profiles.default set in application.properties. This means you can set a sensible default in application.properties (e.g., spring.profiles.default=dev) but override it in production via the environment variable. Spring Boot's property resolution order is designed so that deployment infrastructure (env vars, command line) always wins over application defaults."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between @AutoConfigureBefore and @AutoConfigureAfter in Spring Boot auto-configuration ordering?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@AutoConfigureBefore ensures this auto-configuration runs before the named one (registers beans earlier); @AutoConfigureAfter ensures this auto-configuration runs after the named one (registers beans later)" },
+        { "id": "b", "text": "Both annotations are equivalent — order is determined by class name alphabetically" },
+        { "id": "c", "text": "@AutoConfigureAfter makes the configuration class a @Lazy bean; @AutoConfigureBefore does not" },
+        { "id": "d", "text": "@AutoConfigureAfter is deprecated in Spring Boot 3.x" }
+      ],
+      "correctKey": "a",
+      "explanation": "@AutoConfigureBefore and @AutoConfigureAfter control the ordering of auto-configuration classes (not regular @Configuration). For example, RabbitAutoConfiguration may need DataSourceAutoConfiguration to run first if it depends on database metadata. In Spring Boot 3.x, the primary mechanism for ordering is AutoConfiguration.imports file + @AutoConfigureOrder (for fine-grained ordering). These annotations are transitive: if A @AutoConfigureBefore B and B @AutoConfigureBefore C, then A runs before C. Without explicit ordering, auto-configurations are sorted alphabetically by class name within their load group."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does Spring Boot's relaxed binding work for property names?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Relaxed binding allows all variations (camelCase, kebab-case, SCREAMING_SNAKE_CASE) to map to the same property — e.g., server-port, serverPort, SERVER_PORT all bind to setServerPort() or server.port in YAML" },
+        { "id": "b", "text": "Relaxed binding only works for environment variables; properties must match exact Java field names" },
+        { "id": "c", "text": "Relaxed binding converts all property names to SCREAMING_SNAKE_CASE regardless of source" },
+        { "id": "d", "text": "Relaxed binding is deprecated in Spring Boot 3.x in favor of strict name matching" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot's relaxed binding allows property sources with different naming conventions to map to the same Java property. Sources: properties files use relaxed dot-notation (server-port → serverPort), YAML uses kebab (server-port → serverPort), environment variables use SCREAMING_SNAKE (SERVER_PORT → serverPort), and system properties use dot-notation. This is why you can set server.port in application.properties but SPRING_APPLICATION_JSON with \"server\":{\"port\":8080} also works. The relaxed binder handles all four sources: PropertiesPropertySourceName, ServletEnvironment, StandardEnvironment, and Inlined Properties. Understanding this is critical for cloud deployments where env vars are the primary configuration mechanism."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of @ConditionalOnWebApplication vs @ConditionalOnNotWebApplication?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Both annotations check for the presence of web-related JARs on the classpath" },
+        { "id": "b", "text": "@ConditionalOnWebApplication activates the configuration only in a servlet-based or reactive web application context; @ConditionalOnNotWebApplication activates in batch/CLI applications — used to prevent auto-configurations from activating in unintended application types" },
+        { "id": "c", "text": "@ConditionalOnWebApplication checks if the application is running on a web server; @ConditionalOnNotWebApplication checks for command-line argument presence" },
+        { "id": "d", "text": "@ConditionalOnNotWebApplication is the inverse of @ConditionalOnClass for web applications" }
+      ],
+      "correctKey": "b",
+      "explanation": "These @Conditional annotations check the ApplicationContext type to determine whether to activate an auto-configuration. @ConditionalOnWebApplication: the context is WebApplicationContext (servlet or reactive). @ConditionalOnNotWebApplication: the context is a non-web context (e.g., BatchApplicationContext, CLI). Use these to prevent auto-configurations from interfering across application types: for example, certain auto-configurations should not activate in a Spring Batch job context. Spring Boot's ConditionEvaluationReport logs which conditions matched and which didn't — useful for debugging why an auto-configuration didn't activate. Also available: @ConditionalOnReactiveWebApplication, @ConditionalOnServlet."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between spring.factories and the new META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports file in Spring Boot 3?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Both files serve the same purpose but spring.factories is for JDK 8 and imports is for JDK 17+" },
+        { "id": "b", "text": "The imports file replaces spring.factories for auto-configuration class listing — it is line-based (one class per line), supports comments (#), and is simpler than spring.factories' properties format; spring.factories is deprecated in Spring Boot 3.x" },
+        { "id": "c", "text": "spring.factories is for enabling security features; imports is for data source configuration only" },
+        { "id": "d", "text": "The imports file is encrypted; spring.factories is plain text" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring Boot 3.0 introduced META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports (the new recommended location) to replace META-INF/spring.factories (EnableAutoConfiguration key). The imports file uses one class name per line (simpler than properties format), supports # comments, and is more maintainable. Spring Boot still reads spring.factories for backward compatibility but recommends migrating. The new format also supports auto-configuration ordering via @AutoConfigureOrder within the imports file itself. Spring Boot's own auto-configurations use the new format. For custom auto-configuration libraries, migrating to the new format ensures forward compatibility."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Spring Boot's failure analyzer improves error messages when auto-configuration fails.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "FailureAnalyzer is a Spring Boot mechanism that intercepts startup exceptions and produces human-readable diagnostic messages instead of raw stack traces. For example, if DataSource auto-configuration fails due to a missing property, a FailureAnalyzer produces: 'Failed to configure a DataSource: no URL specified... Consider the following: <action>'. This is far more actionable than a generic BeanCreationException. Custom FailureAnalyzers implement FailureAnalysis and are registered in META-INF/spring.factories. Spring Boot ships ~50+ built-in analyzers covering common misconfigurations. The ConditionEvaluationReport (enabled via --debug or logging.level.spring.autoconfigure=DEBUG) also lists which auto-configuration conditions passed/failed."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @ConditionalOnProperty do in Spring Boot auto-configuration?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It makes a bean read-only when the property name contains 'readonly'" },
+        { "id": "b", "text": "It activates the configuration only if the specified property exists and has the expected value — e.g., @ConditionalOnProperty(name = \"spring.data.jpa.repositories.enabled\", havingValue = \"true\")" },
+        { "id": "c", "text": "It automatically binds the property to a @ConfigurationProperties class" },
+        { "id": "d", "text": "It enables property-based routing between two different bean implementations" }
+      ],
+      "correctKey": "b",
+      "explanation": "@ConditionalOnProperty checks whether a configuration property exists and matches the expected value. Attributes: name (property name), havingValue (required value), matchIfMissing (default if property is absent). Use it to create feature flags: @ConditionalOnProperty(name = \"features.myFeature.enabled\", havingValue = \"true\", matchIfMissing = false). Without this, all bean definitions would always activate, causing errors when required dependencies are absent. Spring Boot's own auto-configurations use it extensively to allow users to disable or customize specific auto-configs via properties."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @ConditionalOnClass do in Spring Boot auto-configuration?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It activates the configuration only if a Java class with the specified name exists on the classpath — preventing compilation errors when optional dependencies are absent" },
+        { "id": "b", "text": "It imports the specified class into the Spring context at compile time" },
+        { "id": "c", "text": "It scans the classpath for all @Component-annotated classes" },
+        { "id": "d", "text": "It automatically adds the specified class as a dependency in Maven without modifying pom.xml" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ConditionalOnClass(value = DataSource.class) activates the @Configuration only if DataSource (or HikariCPDataSource) is present on the classpath. This is essential for optional dependencies: if a user does not include the JDBC driver, DataSourceAutoConfiguration should not fail with a ClassNotFoundException — it should simply be skipped. The class is referenced by name (String) internally so it can be checked without eagerly loading it. Use it whenever your auto-configuration depends on an optional library. Combined with @ConditionalOnMissingBean, it creates safe, non-intrusive auto-configuration."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does spring-boot-starter-parent provide in a Maven project?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It provides pre-compiled Spring Boot JAR files for embedding in a WAR file" },
+        { "id": "b", "text": "It is a parent POM that manages dependency versions, provides default plugin configurations (Java version, resource encoding), and enables Spring Boot's dependency management — child projects inherit versions without specifying them" },
+        { "id": "c", "text": "It compiles the application using Spring Boot's custom compiler instead of Maven's" },
+        { "id": "d", "text": "It replaces the need for spring-boot-starter by providing all Spring Boot dependencies directly" }
+      ],
+      "correctKey": "b",
+      "explanation": "spring-boot-starter-parent is the parent POM in Maven. Key benefits: (1) dependency management section — all spring-boot-starter-* dependencies inherit version from the parent, no explicit version needed. (2) Build plugin defaults — spring-boot-maven-plugin configured, Java version defaults set. (3) Resource filtering — application.properties in src/main/resources is processed. (4) Executable JAR packaging configured. Without it, you'd need to manually specify versions for all Spring Boot dependencies. spring-boot-dependencies is the equivalent for Gradle."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How do you disable a specific Spring Boot auto-configuration class?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "You cannot disable auto-configurations — they are always active" },
+        { "id": "b", "text": "Use spring.autoconfigure.exclude in application.properties: spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration — or exclude attribute on @SpringBootApplication" },
+        { "id": "c", "text": "Delete the auto-configuration JAR from the classpath" },
+        { "id": "d", "text": "Use @EnableAutoConfiguration(disabled = DataSourceAutoConfiguration.class) on the main class" }
+      ],
+      "correctKey": "b",
+      "explanation": "Two ways to exclude auto-configurations: (1) In application.properties: spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration (comma-separated for multiple). (2) On @SpringBootApplication: @SpringBootApplication(exclude = DataSourceAutoConfiguration.class) or @ExcludeAutoConfiguration in Spring Boot 3.x. The exclusion prevents that auto-configuration class from being loaded — useful when you provide your own DataSource, SecurityConfig, etc. and don't want the auto-configured defaults. Note: exclude order is processed after all auto-configurations are loaded."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of the spring.factories file in Spring Boot 2.x, and what replaced it in Spring Boot 3.x?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "spring.factories listed auto-configuration classes; Spring Boot 3.x uses META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports instead — a simpler line-based format replacing the properties format" },
+        { "id": "b", "text": "spring.factories stored application properties defaults; Spring Boot 3.x uses application.yml for this" },
+        { "id": "c", "text": "spring.factories defined Spring profiles; Spring Boot 3.x uses @ActiveProfiles for this" },
+        { "id": "d", "text": "spring.factories was for servlet registration; Spring Boot 3.x uses a different mechanism entirely" }
+      ],
+      "correctKey": "a",
+      "explanation": "In Spring Boot 2.x, spring.factories (EnableAutoConfiguration key) listed auto-configuration classes using properties syntax: EnableAutoConfiguration=\\norg.example.MyAutoConfiguration. Spring Boot 3.0 introduced META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports with a simpler line-based format (one class per line, # comments supported). The spring.factories format is deprecated but still supported for backward compatibility. Auto-configuration library authors should migrate to the new format for forward compatibility with future Spring Boot versions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between @ConfigurationProperties(prefix = \"...\") and @Value in Spring Boot?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@ConfigurationProperties binds multiple properties to a POJO with type-safe, hierarchical binding; @Value injects individual property values as string-based SpEL expressions — @ConfigurationProperties is preferred for structured configuration" },
+        { "id": "b", "text": "@Value is for database properties; @ConfigurationProperties is for HTTP endpoint configuration only" },
+        { "id": "c", "text": "@ConfigurationProperties requires the property to exist; @Value silently ignores missing properties" },
+        { "id": "d", "text": "Both annotations are functionally identical — the choice is purely stylistic" }
+      ],
+      "correctKey": "a",
+      "explanation": "@Value is simple: @Value(\"${my.property}\") injects one property as a string that Spring coerces to the target type. @ConfigurationProperties binds a prefix to a typed POJO: server.port, server.ssl.enabled, server.address all bind to ServerProperties fields with full IDE autocomplete and validation support. @ConfigurationProperties advantages: (1) structured, cohesive configuration for a feature, (2) validation via @Validated, (3) relaxed binding, (4) metadata for IDEs. Use @Value for simple, single-value injection; use @ConfigurationProperties for any structured feature config."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "How does Spring Boot's environment post-processor mechanism work?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "EnvironmentPostProcessor runs after the ApplicationContext is created — it modifies the bean definitions before instantiation" },
+        { "id": "b", "text": "EnvironmentPostProcessor runs before the ApplicationContext is created — it can modify the property sources (adding defaults from files, environment variables, etc.) before any bean is instantiated or property resolution occurs" },
+        { "id": "c", "text": "EnvironmentPostProcessor replaces @ConfigurationProperties for legacy applications" },
+        { "id": "d", "text": "EnvironmentPostProcessor encrypts properties before they are stored in the Environment" }
+      ],
+      "correctKey": "b",
+      "explanation": "EnvironmentPostProcessor runs very early in the Spring Boot lifecycle — before the ApplicationContext exists. It can add or modify property sources: for example, the default application.properties is loaded via EnvironmentPostProcessor. Use it to: add property sources from custom locations (e.g., /etc/myapp/config.yaml), apply defaults for specific environments, or override external configuration. Registered in META-INF/spring.factories under EnvironmentPostProcessor. The key difference from BeanFactoryPostProcessor: EnvironmentPostProcessor runs before the context; BeanFactoryPostProcessor runs during context refresh. For most use cases, @ConfigurationProperties is sufficient — EnvironmentPostProcessor is for meta-framework or advanced configuration."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the spring-boot-configuration-processor generate at compile time?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "spring-configuration-metadata.json in META-INF — listing all @ConfigurationProperties properties with their types, defaults, and descriptions" },
+        { "id": "b", "text": "IDE-friendly autocomplete hints in the IDE's internal format — showing property names, expected types, and default values" },
+        { "id": "c", "text": "Runtime bean registration for all @ConfigurationProperties classes" },
+        { "id": "d", "text": "Code that automatically writes the properties values back to application.properties on startup" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "spring-boot-configuration-processor is an annotation processor (runs during compileJava) that reads @ConfigurationProperties and @DefaultValue annotations and emits META-INF/spring-configuration-metadata.json. This file is consumed by: (a) IDEs (IntelliJ, STS) for autocomplete and validation in application.properties/yml. (b) Spring Boot's auto-configuration engine for early elimination of inapplicable configurations. The processor does NOT affect runtime behavior — only compile-time tooling. Adding it is one line in Maven (annotationProcessorPaths) or Gradle (annotationProcessor)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between property placeholder resolution and property binding in Spring Boot?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Property placeholder resolution uses ${placeholder} syntax resolved by BeanFactoryPostProcessor; property binding uses @ConfigurationProperties to bind properties to typed POJOs — both are complementary mechanisms that run at different lifecycle stages" },
+        { "id": "b", "text": "Both are identical mechanisms — they are different names for the same Spring Boot feature" },
+        { "id": "c", "text": "Property binding runs before property placeholder resolution in Spring Boot's lifecycle" },
+        { "id": "d", "text": "Property placeholder resolution only works for primitive types; property binding works for all types" }
+      ],
+      "correctKey": "a",
+      "explanation": "Property placeholder resolution (${property}) is a Spring Framework feature resolved by PropertySourcesPlaceholderConfigurer/BeanFactoryPostProcessor — replaces ${my.prop} in @Value annotations and @Bean method arguments. Property binding (@ConfigurationProperties) is a Spring Boot feature that binds properties to POJO fields during context refresh. Both run in the same lifecycle window and are fully compatible: you can use ${placeholder} inside @ConfigurationProperties default values. The key difference: placeholder resolution is string-based (SpEL), property binding is type-safe and structured."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What are the security considerations when exposing Spring Boot Actuator endpoints in production?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Actuator endpoints expose sensitive operational data — health endpoint is safe (public), but /heapdump, /threaddump, /env, /loggers, /auditevents expose sensitive system data; secure them with Spring Security by restricting to an internal network or authenticated users" },
+        { "id": "b", "text": "Actuator endpoints are always safe — Spring Boot automatically restricts them to localhost only" },
+        { "id": "c", "text": "You should never expose Actuator endpoints — disable them entirely in production" },
+        { "id": "d", "text": "Actuator endpoints require SSL certificates to be enabled in production" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot Actuator exposes operational endpoints: /health (safe — shows component health), /info, /metrics (Prometheus-compatible), /env (property sources), /heapdump, /threaddump, /loggers. In production: /env exposes secrets (property values), /heapdump contains memory snapshots with sensitive data, /loggers can modify logging levels. Mitigation: (1) Expose only /health and /info publicly. (2) Secure all others via Spring Security: requestMatchers(\"/actuator/**\").hasRole(\"ADMIN\"). (3) Use management.endpoints.web.exposure.include/exclude to control exposure. (4) Use management.endpoint.health.show-details=when_authorized. Never expose /heapdump or /threaddump publicly — they are attack vectors."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the Spring Boot lazy initialization feature and when should you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Lazy initialization defers all bean creation until first access — speeding up startup time and reducing memory footprint at startup; enable via spring.main.lazy-initialization=true or @Lazy on individual beans" },
+        { "id": "b", "text": "Lazy initialization enables hot reload of classes without restarting the application" },
+        { "id": "c", "text": "Lazy initialization is the default in Spring Boot 3.x — no configuration needed" },
+        { "id": "d", "text": "Lazy initialization disables auto-configuration to speed up startup" }
+      ],
+      "correctKey": "a",
+      "explanation": "spring.main.lazy-initialization=true makes all beans lazy by default (except @EntityScan which needs early initialization). Each bean is created only when first requested — reducing startup time and initial memory footprint. Trade-offs: (1) first request is slower as beans are created on-demand, (2) startup errors (missing beans, circular deps) are deferred to first access — harder to diagnose, (3) some features that require beans at startup (Actuator health, scheduled tasks) may fail if lazy. Use for large apps with many beans where startup time is a concern, but test thoroughly to ensure all beans initialize correctly under load."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the SpringApplicationBuilder fluent API and when is it useful?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SpringApplicationBuilder provides a fluent, chainable API for configuring and running Spring Boot applications programmatically — setting properties, profiles, sources, banner, and registering listeners before the context starts" },
+        { "id": "b", "text": "SpringApplicationBuilder is a replacement for @SpringBootApplication for Groovy-based applications" },
+        { "id": "c", "text": "SpringApplicationBuilder builds WAR files programmatically instead of using Maven plugins" },
+        { "id": "d", "text": "SpringApplicationBuilder generates the application.properties file at runtime" }
+      ],
+      "correctKey": "a",
+      "explanation": "SpringApplicationBuilder lets you configure Spring Boot programmatically via a fluent API: new SpringApplicationBuilder().sources(AppConfig.class).profiles(\"prod\").bannerMode(Banner.Mode.OFF).build().run(args). This is useful when: (1) you need conditional application startup based on environment, (2) you want to set properties/profiles before the context is built, (3) you need hierarchical application contexts (parent-child for microservices). The hierarchical contexts feature (parent/child) is useful for multi-module applications where each module needs its own context but shares a parent."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between Spring Boot's FailSafe and Strict JSON parsing modes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Strict mode throws an exception on unknown JSON properties; FailSafe mode silently ignores them — Spring Boot defaults to FailSafe for application.yml parsing to prevent startup failures from typos" },
+        { "id": "b", "text": "FailSafe mode logs warnings for unknown properties; Strict mode throws exceptions — Spring Boot defaults to Strict for application.properties parsing" },
+        { "id": "c", "text": "Both parsing modes are identical — the difference is only in documentation" },
+        { "id": "d", "text": "FailSafe mode converts all unknown properties to null; Strict mode converts them to empty strings" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot uses Jackson's FAIL_ON_UNKNOWN_PROPERTIES setting differently for YAML vs properties files. For YAML (application.yml), Spring uses a more lenient parser that ignores unknown properties by default — a typo in a YAML key won't crash the app. For Strict mode (when desired), you can configure ObjectMapper with DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES=true. This lenient default is intentional: it allows gradual migration of properties and reduces fragility. To enforce strict property checking, use spring-boot-configuration-processor + IDE validation, which flags unknown properties at compile time."
+    }
+  ]
+}

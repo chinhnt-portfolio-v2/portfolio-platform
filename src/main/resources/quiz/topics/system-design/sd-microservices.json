@@ -1,0 +1,228 @@
+{
+  "topicSlug": "sd-microservices",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the primary purpose of an API Gateway in a microservices architecture, and what problems does it solve?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "An API Gateway replaces the service mesh by providing distributed tracing and metrics collection for all services" },
+        { "id": "b", "text": "An API Gateway acts as a single entry point for all client requests, handling cross-cutting concerns like authentication, rate limiting, protocol translation (HTTP → gRPC), request routing, and aggregation — so individual services don't need to implement these concerns" },
+        { "id": "c", "text": "An API Gateway is a database proxy that routes database queries to the appropriate microservice based on the query type" },
+        { "id": "d", "text": "An API Gateway is only needed for legacy monolithic applications migrating to microservices" }
+      ],
+      "correctKey": "b",
+      "explanation": "The API Gateway is the single entry point for all external (and sometimes internal) client traffic. It handles cross-cutting concerns (auth, TLS termination, rate limiting, load balancing, request routing, protocol translation) so microservices remain focused on business logic. It can also aggregate multiple backend calls into a single client response (GraphQL Federation, BFF pattern). Without a gateway, each service must implement auth/rate-limiting separately, creating duplication and inconsistency. Popular gateways: Kong, AWS API Gateway, Envoy (as gateway), Nginx. Option A confuses gateway with service mesh. Option C is false. Option D is false — gateways are standard in greenfield microservices too."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Service A needs to call Service B in a microservices system. Service B occasionally becomes slow or unavailable. What pattern prevents Service A from also becoming unresponsive when Service B degrades?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Circuit breaker — if the failure rate to Service B exceeds a threshold, the circuit 'opens' and immediately returns a fallback response without calling Service B, preventing resource exhaustion and cascading failure" },
+        { "id": "b", "text": "Retry with exponential backoff — Service A retries Service B indefinitely until it succeeds; this is the standard circuit breaker behavior" },
+        { "id": "c", "text": "Load balancer — the load balancer automatically routes traffic away from failing instances of Service B" },
+        { "id": "d", "text": "Service registry — Service B registers its availability in a service registry, allowing Service A to discover healthy instances" }
+      ],
+      "correctKey": "a",
+      "explanation": "Circuit breaker (Michael Nygard, Release It!): a state machine (Closed → Open → Half-Open) monitors call failures. When failures exceed a threshold (e.g., >50% in 10 seconds), the breaker 'opens' — subsequent calls fail immediately (fallback) without making the network call. After a timeout, it moves to 'half-open' (allow one test call). If it succeeds, it closes; if it fails, it reopens. This prevents resource exhaustion (pool threads waiting on dead services) and cascading failures. Retry (B) without circuit breaker makes things worse under load. Load balancer (C) handles node-level failure, not service-level degradation. Service registry (D) handles discovery, not resilience."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is service discovery in microservices, and what is the difference between client-side and server-side discovery?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Service discovery is the process of routing API requests to the correct version of a service using semantic versioning" },
+        { "id": "b", "text": "Client-side discovery: the client queries a service registry (e.g., Eureka, Consul) to find service endpoints and load balances among them; server-side discovery: a router or load balancer (e.g., AWS ALB, Envoy) queries the registry and routes requests on behalf of the client — the client is unaware of the discovery process" },
+        { "id": "c", "text": "Server-side discovery requires each microservice to implement its own load balancing logic; client-side discovery uses a centralized load balancer" },
+        { "id": "d", "text": "Service discovery is only needed when using Docker containers; VMs do not require it" }
+      ],
+      "correctKey": "b",
+      "explanation": "Client-side discovery (Eureka, Consul + client SDK): the service consumer queries the registry directly, picks an instance, and handles load balancing — lightweight but couples clients to the registry API. Server-side discovery (AWS ALB, NGINX, service mesh sidecar like Envoy): the client sends requests to a well-known router, which queries the registry and routes — clients are simpler but the router is another component to manage. Kubernetes uses server-side discovery via kube-proxy + DNS (CoreDNS) — pods discover services via environment variables and DNS. Option A misdefines discovery. Option C reverses the definitions. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What are the two main approaches to implementing the saga pattern in microservices, and when would you choose orchestration over choreography?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Orchestration: a central coordinator sends commands to each service and waits for replies; Choreography: services publish and subscribe to events and react autonomously — use orchestration when you need explicit visibility, complex ordering, and clear failure handling; use choreography for simpler, loosely coupled flows" },
+        { "id": "b", "text": "Choreography is when a central database coordinates transactions across services; orchestration is when each service manages its own transaction independently" },
+        { "id": "c", "text": "Saga pattern uses distributed locks (2PC) for coordination; orchestration is the name for implementing saga without 2PC" },
+        { "id": "d", "text": "Orchestration and choreography are identical — both involve a central coordinator sending messages to services" }
+      ],
+      "correctKey": "a",
+      "explanation": "Saga Choreography: services publish domain events (e.g., OrderService publishes OrderPlaced → triggers PaymentService which publishes PaymentSucceeded → triggers InventoryService). No central coordinator — services react to events autonomously. Simple flows work well; complex flows create tangled event chains. Saga Orchestration: a saga orchestrator (a separate service or state machine) sends commands (ProcessPayment) to services, receives events, and decides next steps. Better for complex multi-step flows, gives clear visibility, and centralizes compensating transaction logic. Use orchestration for: complex ordering dependencies, multiple participants, and when you need a clear audit trail. Use choreography for: simple 2-3 step flows."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What are the three states of a circuit breaker, and what is the purpose of the half-open state?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Closed, Open, and Half-Open: Closed = circuit breaker is disabled; Open = circuit breaker is overloaded and logging all requests; Half-Open = circuit breaker is resetting after a timeout" },
+        { "id": "b", "text": "Closed (normal operation, failures counted), Open (failures exceeded threshold — calls fail immediately with fallback), and Half-Open (timeout elapsed — one test call allowed to check if the downstream service has recovered; if success → Closed, if failure → Open)" },
+        { "id": "c", "text": "Closed, Open, and Retrying: Closed = all requests pass; Open = all requests fail and are retried with backoff; Retrying = requests are queued for later processing" },
+        { "id": "d", "text": "Half-Open only exists in software circuit breakers, not hardware; hardware circuit breakers have only Closed and Open states" }
+      ],
+      "correctKey": "b",
+      "explanation": "Circuit breaker states: (1) Closed: normal operation, failures counted; if failures exceed threshold (e.g., 5 failures in 10s), transition to Open. (2) Open: all calls fail immediately with fallback, no calls reach the downstream — protecting it from being overwhelmed. (3) Half-Open: after a reset timeout, allow a limited number of test calls through; if they succeed, transition to Closed (recovered); if they fail, transition back to Open. The half-open state prevents a permanently broken downstream from staying open forever and allows recovery detection. Libraries: Resilience4j (Java), Hystrix (Netflix, in maintenance), Polly (.NET), circuit_breaker (Elixir)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the 12-factor app methodology, and which factors are most relevant to microservices deployment and operation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The 12-factor app is a set of 12 coding guidelines focused on improving test coverage in microservices — factors 1-6 cover unit testing" },
+        { "id": "b", "text": "The 12-factor app (Heroku, 2011) defines 12 best practices for cloud-native applications: factor IV (config store), VI (process stateless), XI (logs as event stream), XII (admin processes) are especially relevant to microservices — enabling independent deployability, horizontal scaling, and observability" },
+        { "id": "c", "text": "The 12-factor app mandates that all microservices must be written in the same programming language to ensure consistency" },
+        { "id": "d", "text": "The 12-factor app is primarily a database design methodology — factors 7-12 cover data management best practices" }
+      ],
+      "correctKey": "b",
+      "explanation": "The 12-factor app (heroku.com/blog/12factor) defines 12 principles for software-as-a-service: I. Codebase (one repo per service), II. Dependencies (explicitly declared), III. Config (store config in environment), IV. Backing services (DBs, caches as attached resources), V. Build/release-run (strict separation), VI. Processes (stateless, no local state), VII. Port binding (export services via port), VIII. Concurrency (scale via process model), IX. Disposability (graceful shutdown), X. Dev/prod parity, XI. Logs (treat as event streams), XII. Admin processes (run admin tasks same as app). For microservices: Factor III (config) enables per-environment config without code changes; Factor VI (stateless) enables horizontal scaling; Factor XI (logs) enables centralized observability."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is observability in the context of microservices, and why is it more challenging than in a monolithic application?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Observability means collecting logs only — metrics and traces are optional add-ons for microservices" },
+        { "id": "b", "text": "Observability means the ability to understand a system's internal state from its external outputs; in microservices it requires three pillars — metrics (Prometheus), distributed traces (Jaeger/Zipkin), and structured logs — to correlate events across service boundaries and diagnose failures in a distributed call chain" },
+        { "id": "c", "text": "Observability is less challenging in microservices because each service is small and easier to debug in isolation" },
+        { "id": "d", "text": "Observability is only needed in production environments, not during development or testing" }
+      ],
+      "correctKey": "b",
+      "explanation": "Observability (observability.io definition): the property of being able to infer internal state from external outputs. The three pillars: (1) Metrics — numerical measurements (latency, error rate, throughput) over time; (2) Distributed traces — a single request's path through multiple services (trace ID propagates via headers, e.g., W3C TraceContext); (3) Structured logs — machine-readable logs with correlation IDs. In microservices, a single user request may touch 10+ services — without distributed tracing, finding which service caused a latency spike is nearly impossible. The monolith has a single call stack; microservices have a distributed call graph. Option A is false (logs alone are insufficient). Option C is false (distributed = more complex). Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "In microservices, why is it critical that services share nothing (are stateless) and that configuration is externalized from the application code?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Statelessness is optional — services can store local session state as long as they use sticky sessions for routing" },
+        { "id": "b", "text": "Stateless services + externalized config are required for independent deployability, horizontal scaling, and fault tolerance — any service instance can handle any request; configuration changes (environment, database URL, feature flags) take effect by restarting the service without rebuilding or redeploying the artifact" },
+        { "id": "c", "text": "Externalized configuration is only needed for production environments; development and staging can use hardcoded values" },
+        { "id": "d", "text": "Hardcoded configuration is actually better for microservices because it prevents configuration drift between environments" }
+      ],
+      "correctKey": "b",
+      "explanation": "Microservices must be independently deployable — if a service needs a configuration change (new feature flag, changed DB URL) and that requires rebuilding the container image, you lose the ability to deploy independently. Configuration must live outside the artifact (environment variables, config maps, Consul, Spring Cloud Config, Vault). Stateless services (no in-memory session, no local filesystem writes as primary state) enable horizontal scaling — any instance handles any request, and instances can be killed/restarted at any time without user impact. Sticky sessions + local state are anti-patterns in microservices. Option A is false. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A microservice needs to notify another microservice when an order is created. The sender does not need to wait for the receiver to process the event. Which communication style is most appropriate?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Synchronous REST/gRPC call — the order service calls the notification service directly and waits for a response" },
+        { "id": "b", "text": "Asynchronous messaging (event or message queue) — the order service publishes an OrderCreated event to a message broker; the notification service subscribes and processes it independently; the order service does not wait for the notification to complete" },
+        { "id": "c", "text": "WebSocket — the order service opens a persistent connection to the notification service for push-based delivery" },
+        { "id": "d", "text": "Database polling — the notification service periodically queries the order database for new orders" }
+      ],
+      "correctKey": "b",
+      "explanation": "Asynchronous messaging decouples the producer (OrderService) from the consumer (NotificationService) in both time and space. OrderService publishes once; NotificationService processes at its own pace. Benefits: OrderService is not blocked, NotificationService can be scaled independently, events are durable (queue), and consumers can be added without modifying OrderService. Synchronous REST (A) creates coupling — if NotificationService is down, OrderService fails. WebSocket (C) is connection-oriented and not appropriate for this use case. Database polling (D) is an anti-pattern: creates coupling to schema, wastes resources polling, and introduces delay. Asynchronous messaging is the right pattern for fire-and-forget notifications."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: In microservices, a service should always expose a REST API over HTTP for synchronous calls because it is the most language-agnostic and interoperable protocol.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "REST over HTTP/1.1 is widely supported but has significant overhead for internal microservice-to-microservice calls: JSON serialization/deserialization is slow, HTTP/1.1 connections are blocking (head-of-line blocking), no native streaming, limited schema evolution support. Modern microservices use: gRPC (HTTP/2, binary Protobuf, strongly typed contracts, streaming) for internal synchronous calls where performance matters; REST/HTTP for external-facing APIs where simplicity and browser compatibility matter; GraphQL for client-facing data aggregation APIs. The choice depends on the use case — there is no universal 'most interoperable' winner. HTTP/2 + gRPC is actually more efficient for high-volume internal traffic."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: In a well-designed microservices architecture, each microservice should own its own database (or schema) and never share database tables or schemas with other services.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Database per service is a core principle of microservices: each service manages its own data store, and other services access it only through the service's API — never directly touching another service's database. This enforces encapsulation and loose coupling: if Service A's DB schema changes, Service B is unaffected as long as Service A's API contract is maintained. Shared databases (shared tables, shared schemas across services) create tight coupling — schema changes in one service break other services, making independent deployability impossible. This is the database-per-service pattern, and it prevents the 'distributed monolith' anti-pattern where services are deployed separately but coupled via a shared database."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: The strangler fig pattern is used to gradually migrate a legacy monolith to microservices by incrementally routing traffic from the monolith to new microservices until the monolith is eventually 'strangled' and can be decommissioned.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The strangler fig pattern (Martin Fowler): instead of a risky big-bang rewrite, you incrementally replace monolith functionality with microservices. An API gateway or reverse proxy intercepts requests — new/migrated features route to the new microservice, remaining features continue routing to the monolith. Over time, more traffic migrates to the microservice until the monolith handles only a small stub (eventually zero). Benefits: low risk, incremental value delivery, ability to rollback, real traffic testing. This is the recommended approach for modernizing legacy systems — not rewriting from scratch, which famously fails (Google, Amazon, and others have documented this). The monolith becomes the 'strangler fig' that is gradually replaced."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You are designing a microservices architecture where the OrderService synchronously calls PaymentService, which synchronously calls FraudDetectionService, which calls AddressVerificationService. This chain creates a 4-second end-to-end latency. What is this problem called and how do you redesign to reduce latency?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "This is a distributed monolith anti-pattern — all services must be merged back into a single monolith to reduce latency" },
+        { "id": "b", "text": "This is the distributed monolith or chatty microservice anti-pattern; redesign by replacing synchronous chains with asynchronous event-driven choreography: OrderService publishes OrderPlaced event; PaymentService, FraudDetectionService, and AddressVerificationService subscribe independently and process in parallel; OrderService waits for a composite event or uses a saga orchestrator" },
+        { "id": "c", "text": "This is a cascading failure — the circuit breaker pattern will resolve it without changing the architecture" },
+        { "id": "d", "text": "The solution is to increase the timeout values in each service from 1 second to 5 seconds — this gives each service enough time to complete" }
+      ],
+      "correctKey": "b",
+      "explanation": "Synchronous chains create 'distributed monolith' latency: end-to-end latency = sum of all service latencies. A 4-service chain with 1s per service = 4s total. This creates tight coupling (each service must be available for the chain to work) and cascades failures. Redesign: use async choreography or orchestration. OrderService publishes an event once; PaymentService, FraudDetectionService, and AddressVerificationService all process it in parallel (fan-out). Each returns results to the saga orchestrator or writes to a results store. The client polls or uses WebSocket for completion notification. This reduces end-to-end latency to the latency of the slowest step (not the sum). Option A is wrong (the solution is decoupling, not monolith). Option C (circuit breaker) handles failures, not latency. Option D masks the problem."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "In Kubernetes, a pod crashes and a new pod starts. During startup, it receives traffic before it is fully initialized — causing request failures. How does Kubernetes support graceful initialization before receiving production traffic?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Kubernetes automatically delays routing traffic to a new pod until it passes a readiness probe; configure readinessProbe (HTTP GET, TCP socket, or exec) to check if the application is ready to serve traffic — traffic is only routed to pods with a passing readiness probe" },
+        { "id": "b", "text": "Kubernetes sends 10% of traffic to all pods simultaneously during startup — this is the standard load balancing behavior and cannot be changed" },
+        { "id": "c", "text": "The pod must emit a SIGTERM signal to the ingress controller to signal readiness before accepting traffic" },
+        { "id": "d", "text": "Graceful initialization is handled automatically by the container runtime — no configuration needed" }
+      ],
+      "correctKey": "a",
+      "explanation": "Kubernetes distinguishes between livenessProbe (is the container alive? restart if not) and readinessProbe (is the container ready to receive traffic?). Only pods with a passing readinessProbe are added to the Service's endpoint slice and receive traffic. The readiness probe should check: (1) the HTTP endpoint returns 200 (not just that the port is open), (2) database connections are established, (3) cache is warmed. This prevents traffic from being routed to a pod still initializing (JVM warm-up, connection pool creation). Combined with preStop lifecycle hooks (e.g., sleep 5s before SIGTERM), this enables zero-downtime deployments and rolling updates. Option B is false. Option C is unrelated. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You need to ensure distributed tracing works across 15 microservices for every user request. What is required for traces to correctly link a single request across all 15 services, and what happens if one service fails to propagate the trace context?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Each service must use a shared relational database to store trace IDs and look them up on each call — this is the standard W3C TraceContext approach" },
+        { "id": "b", "text": "Each service must propagate a trace ID and span ID via standardized HTTP headers (W3C TraceContext: traceparent, tracestate) on every outgoing HTTP/gRPC call; if any service in the call chain fails to propagate headers, the trace breaks at that point — the portion after the break appears as an unrelated trace or is lost" },
+        { "id": "c", "text": "Distributed tracing requires a centralized trace collector that all services poll every 10 seconds — headers are not needed" },
+        { "id": "d", "text": "Traces are only maintained within a single Kubernetes cluster — cross-cluster traces are not possible without a shared service mesh" }
+      ],
+      "correctKey": "b",
+      "explanation": "Distributed tracing (Jaeger, Zipkin, AWS X-Ray, OpenTelemetry) links a single user request across all services using trace context propagation. The W3C TraceContext standard defines 'traceparent' (trace-id, span-id, trace flags) and 'tracestate' headers. The first service creates a root span; each subsequent service: (1) extracts headers from the incoming request, (2) creates a child span linked to the parent span-id, (3) injects headers into outgoing calls. If a service fails to inject headers (e.g., a legacy service or a non-instrumented library call), the trace breaks — the downstream appears as a separate trace. Auto-instrumentation libraries (OpenTelemetry agents) handle this automatically for common frameworks. Option A is false. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A microservice uses a shared library for database access. When the library needs a critical security patch, all 40 microservices that depend on it must be updated and redeployed. What architectural approach prevents this tight coupling to shared libraries?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Remove all shared libraries and copy the database access code into each microservice individually — this eliminates the shared dependency" },
+        { "id": "b", "text": "Use the Sidecar pattern: deploy a sidecar container alongside each microservice in the same pod that handles shared concerns (database connection pooling, metrics, secret injection) — library updates require only sidecar image rebuild, not application rebuild and redeployment" },
+        { "id": "c", "text": "Use a monorepo with automatic versioning — when the shared library is updated, a semantic version bump automatically updates all consuming microservices in CI" },
+        { "id": "d", "text": "Compile the shared library as a static binary and link it at container build time — this makes library updates invisible to the application" }
+      ],
+      "correctKey": "b",
+      "explanation": "The Sidecar pattern (also called ambassador or adapter) deploys a sidecar container alongside each application container in the same pod. The sidecar handles cross-cutting concerns: (1) service mesh sidecar (Envoy) handles network routing, retries, circuit breaking; (2) metrics sidecar (Prometheus node exporter); (3) secret injection sidecar (Vault agent sidecar); (4) database proxy sidecar (PgBouncer). Benefits: the shared logic lives in the sidecar container image, not the application — updating shared logic (e.g., a security patch) requires rebuilding only the sidecar image, not the application. The application is decoupled from the shared concern via a well-defined interface (usually localhost HTTP). Option A (copy-paste) is the scatter pattern, not a solution. Option C (monorepo) doesn't prevent redeployments. Option D still requires rebuilding."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You are deploying a new version of a microservice. In-flight requests must complete gracefully, and no requests should be lost. How do you achieve zero-downtime deployment in Kubernetes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use a blue-green deployment: spin up the new version alongside the old version, wait for the new version to pass health checks, then switch all traffic at once via the load balancer — zero downtime if the switch is instantaneous" },
+        { "id": "b", "text": "Use a rolling update: configure maxUnavailable=0 and maxSurge=1 in the Deployment strategy; combine with preStop sleep (draining in-flight connections) and readinessProbe (ensuring new pods are ready before receiving traffic); this incrementally replaces old pods with new ones while keeping the service available" },
+        { "id": "c", "text": "Stop the old version, wait 30 seconds, then start the new version — Kubernetes will automatically route traffic to the new pod once it is running" },
+        { "id": "d", "text": "Zero-downtime deployment is not possible in Kubernetes — some requests will always be dropped during version changes" }
+      ],
+      "correctKey": "b",
+      "explanation": "Rolling update with proper configuration: maxUnavailable=0 (no old pods killed before new pods are ready), maxSurge=1 (one extra pod during update), readinessProbe checking actual readiness (not just port binding), preStop lifecycle hook with a sleep to allow the kube-proxy to update iptables before SIGKILL, and graceful shutdown handling in the application (catch SIGTERM, stop accepting new connections, finish in-flight requests, then exit). Blue-green (A) also works but requires double the resources and a routing switch. The rolling update is the standard Kubernetes approach. Option C doesn't handle in-flight requests. Option D is false with proper configuration."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: In a service mesh architecture, the sidecar proxy (e.g., Envoy) handles all cross-cutting concerns — authentication, authorization, retries, circuit breaking, and telemetry — without any application code changes.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "In a service mesh (Istio, Linkerd, Consul Connect), a sidecar proxy (Envoy, Linkerd proxy) is injected alongside each application pod and intercepts all inbound and outbound network traffic. The mesh control plane (Istiod, Linkerd controller) configures the proxies with policies for: mutual TLS (mTLS) encryption, JWT authentication at the mesh level, rate limiting, retries (with backoff), circuit breaking, traffic splitting (canary deployments), and telemetry (metrics, traces). Application code is unmodified — it simply makes outbound calls to localhost, and the sidecar handles mTLS, routing, and retries transparently. This is the core value proposition of a service mesh: cross-cutting concerns handled at the infrastructure layer, not in application code. Without a mesh, each service must implement these in its own code (e.g., via libraries like Hystrix, Polly)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "An e-commerce platform needs to support canary deployments: 5% of production traffic should route to the new version of the CheckoutService to validate performance and correctness before full rollout. How do you achieve canary routing in a Kubernetes + service mesh environment?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use Kubernetes namespace isolation: deploy the new version in a separate namespace and manually configure the ingress controller to route 5% of traffic to the new namespace" },
+        { "id": "b", "text": "Use traffic splitting (weight-based routing) in the service mesh (Istio VirtualService, Linkerd) to split traffic: 95% to stable, 5% to canary; use metrics (error rate, latency) from Prometheus to determine if the canary is healthy; if metrics look good, incrementally increase canary weight to 10%, 50%, 100%" },
+        { "id": "c", "text": "Canary deployments require a separate Kubernetes cluster for the canary version — routing is done at the DNS level by splitting the domain" },
+        { "id": "d", "text": "Use a feature flag service (LaunchDarkly, Unleash) configured with 5% rollout percentage — the application code evaluates the flag and routes internally" }
+      ],
+      "correctKey": "b",
+      "explanation": "Service mesh traffic splitting (Istio VirtualService, Linkerd) allows weight-based routing at the mesh level without application changes. Example Istio VirtualService: 95% weight to subset 'stable', 5% to subset 'canary'. The mesh routes accordingly on every request. This is combined with: Prometheus metrics to monitor error rate and latency during the canary window; automatic rollback (if error rate exceeds threshold, mesh can automatically shift traffic back). Feature flags (D) are complementary but require application code to evaluate the flag — mesh-based routing is infrastructure-level and application-agnostic. Option A (separate namespace) is complex and doesn't integrate with metrics. Option C (separate cluster) is too heavy. Option D is code-based and less observable than mesh-level routing."
+    }
+  ]
+}

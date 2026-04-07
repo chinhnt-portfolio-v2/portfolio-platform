@@ -1,0 +1,234 @@
+{
+  "topicSlug": "sd-databases",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the primary purpose of database normalization, and what problem does it prevent?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Normalization speeds up queries by storing computed aggregates in separate tables" },
+        { "id": "b", "text": "Normalization organizes data into tables to eliminate redundant storage and prevent update anomalies (insert, update, delete) that corrupt data integrity when the same data is stored in multiple places" },
+        { "id": "c", "text": "Normalization is required for any database that uses foreign key constraints" },
+        { "id": "d", "text": "Normalization reduces the number of indexes needed to speed up joins between related tables" }
+      ],
+      "correctKey": "b",
+      "explanation": "Normalization (1NF through BCNF/3NF) eliminates data redundancy by splitting data into related tables so each fact is stored exactly once. The primary goal is preventing update anomalies: if 'customer address' is stored in both Orders and Invoices tables and the customer moves, an update must happen in multiple places — one might be missed, creating inconsistent data. Normalization also ensures referential integrity. Denormalization (adding redundant data) is done intentionally for read performance. Option A describes a materialized view, not normalization. Option C is incidental, not the primary purpose. Option D is backwards."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "You have a user table with a 'country' column used frequently in WHERE clauses. Most users are from one country (skewed data distribution). What problem can this cause with a simple B-tree index?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The index will use too much disk space because country has low cardinality" },
+        { "id": "b", "text": "The query optimizer may ignore the index for the majority country value and do a full table scan instead, because a B-tree index provides little selectivity for highly skewed distributions" },
+        { "id": "c", "text": "B-tree indexes cannot be created on columns with fewer than 100 distinct values" },
+        { "id": "d", "text": "The index will cause deadlock conflicts on concurrent inserts into the user table" }
+      ],
+      "correctKey": "b",
+      "explanation": "For highly skewed cardinality (e.g., 90% of rows are country='US'), the query planner may determine that a B-tree index is not selective enough — scanning 90% of the index is no better than a table scan, so the planner skips the index. This is called a 'leading column problem' in composite indexes and is why covering indexes, partial indexes, or histogram statistics exist. Low-cardinality columns (gender, country, boolean flags) are poor B-tree index candidates unless used in composite indexes with high-cardinality leading columns. Option A is wrong (index size relates to row count, not cardinality). Option C is false. Option D is unrelated to index selectivity."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between a covering index and a standard B-tree index?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A covering index includes all columns in the table; a standard index includes only the primary key column" },
+        { "id": "b", "text": "A covering index (composite index with all query columns) allows the query to be satisfied entirely from the index without touching the actual table rows — eliminating the need for a separate row lookup" },
+        { "id": "c", "text": "Covering indexes are only used for write-heavy workloads to batch multiple updates into one I/O operation" },
+        { "id": "d", "text": "There is no functional difference; a covering index is just a B-tree index with a different name" }
+      ],
+      "correctKey": "b",
+      "explanation": "A covering index (also called a composite covering index or index with included columns) includes all columns a query needs as index entries — not just the WHERE clause columns. When the query is fully covered, the database can return results from the index alone without fetching the actual rows (a 'table or heap fetch'). This dramatically speeds up queries for wide tables where reading the row is expensive. The tradeoff: larger index size, slower writes. The index columns must appear in the right order (most selective first for B-tree lookups). Option A is incorrect. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is database sharding (horizontal partitioning), and what is the main operational challenge when resharding an existing sharded database?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Sharding splits columns of a table into separate tables (vertical partitioning); the challenge is maintaining foreign key consistency across column splits" },
+        { "id": "b", "text": "Sharding splits rows of a table across multiple database servers using a shard key; the main challenge is that resharding (changing the shard key or adding shards) requires remapping and migrating a large portion of existing data with minimal downtime" },
+        { "id": "c", "text": "Sharding creates read-only copies of the database for reporting; the challenge is keeping replicas in sync with the primary" },
+        { "id": "d", "text": "Sharding automatically rebalances data across nodes when load changes; there is no manual resharding step" }
+      ],
+      "correctKey": "b",
+      "explanation": "Sharding (horizontal partitioning) distributes rows across N shards based on a shard key. The hardest operational problem is resharding — changing the number of shards or the shard key — which requires remapping existing rows and migrating data while the application continues serving traffic. Techniques to minimize this: consistent hashing (minimizes remapping), allocate-on-warn (pre-allocate shards), and online schema tools (Vitess, CockroachDB, TiDB handle this natively). Option A describes vertical partitioning. Option C describes replication. Option D is false for manual sharding strategies."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "ACID properties guarantee strong consistency for database transactions. What does the 'I' (Isolation) in ACID specifically govern?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Isolation guarantees that all nodes in a distributed database see the same committed data at the same time" },
+        { "id": "b", "text": "Isolation controls how concurrent transaction operations interact — determining which phenomena (dirty reads, non-repeatable reads, phantom reads) are permitted and invisible to each other" },
+        { "id": "c", "text": "Isolation ensures that a transaction either completes fully or rolls back entirely with no partial effects on the database" },
+        { "id": "d", "text": "Isolation is irrelevant for single-threaded in-memory databases and only matters for disk-based systems" }
+      ],
+      "correctKey": "b",
+      "explanation": "Isolation governs the visibility of concurrent operations within a transaction. Different isolation levels (Read Uncommitted, Read Committed, Repeatable Read, Serializable) permit or prevent phenomena: dirty reads (uncommitted data), non-repeatable reads (same row changes between reads), and phantom reads (new rows appear in a range scan). The Durability (D) in ACID handles crash recovery. Atomicity (A) handles all-or-nothing execution. Consistency (C) handles database rules. Option A describes linearizability, not isolation. Option C describes atomicity. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "BASE semantics (Basically Available, Soft state, Eventual consistency) are used by many NoSQL databases. What does 'Soft state' mean?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The database does not enforce schema constraints; schema is enforced at the application layer" },
+        { "id": "b", "text": "The state of the system may change over time even without new input, because replicas are converging asynchronously and replica states may differ temporarily" },
+        { "id": "c", "text": "BASE systems guarantee that reads will eventually become consistent after a fixed timeout period (e.g., 30 seconds)" },
+        { "id": "d", "text": "Soft state means the database can lose data silently during normal operation without informing the application" }
+      ],
+      "correctKey": "b",
+      "explanation": "Soft state captures the idea that replica state is 'in flux' — replicas may hold different values for the same entity at the same moment because updates are propagated asynchronously. The system's state evolves over time as replicas converge. Hard state (the opposite) would mean the stored value is the definitive committed state. Option A describes schema-on-read, not soft state. Option C misrepresents eventual consistency as having a guaranteed bounded convergence time — true convergence bounds are not guaranteed in BASE. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "A system requires financial transaction integrity where a balance cannot go negative. Should you rely on database constraints or application-level checks — and why?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Application-level checks are faster because the database constraint check adds unnecessary overhead to every transaction" },
+        { "id": "b", "text": "Database constraints (CHECK constraints, triggers) are the last line of defense — the database enforces them regardless of race conditions, application bugs, or malicious input; always enforce critical invariants at the database level in addition to application checks" },
+        { "id": "c", "text": "Database constraints are deprecated in modern systems; microservices should handle all business logic in the application layer" },
+        { "id": "d", "text": "For financial integrity, use eventual consistency — the system will reconcile discrepancies asynchronously" }
+      ],
+      "correctKey": "b",
+      "explanation": "Critical business invariants (balance >= 0, inventory >= 0, unique email) must be enforced at the database level because: (1) concurrent transactions can race past application checks; (2) bugs, compromised credentials, or direct DB access can bypass application logic; (3) constraints are enforced atomically as part of the transaction. Application checks and database constraints together form defense-in-depth. Relying solely on application code is a common source of data integrity bugs. Option A ignores race conditions. Option C is wrong. Option D is dangerous for financial data."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is denormalization, and when is it appropriate to deliberately denormalize a normalized database design?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Denormalization means dropping all tables and storing everything in a single wide table for maximum simplicity" },
+        { "id": "b", "text": "Denormalization is the intentional addition of redundant data to normalized tables to speed up read queries, and is appropriate when read performance outweighs the cost of keeping redundant data in sync across multiple write paths" },
+        { "id": "c", "text": "Denormalization should never be done — normalized databases are always faster due to smaller table sizes and efficient use of indexes" },
+        { "id": "d", "text": "Denormalization is only used in NoSQL databases; SQL databases must always remain fully normalized" }
+      ],
+      "correctKey": "b",
+      "explanation": "Denormalization adds redundant data (e.g., storing product_name in the Orders table alongside a foreign key to Products) to eliminate expensive joins for read-heavy workloads. The cost: write operations must update redundant copies — if not done atomically, data can diverge. It is appropriate when reads vastly outnumber writes, join costs are prohibitive (e.g., real-time dashboards), or the data rarely changes. Pre-join materialized views, duplicate columns for query convenience, and summary tables are all denormalization patterns. Option A is an extreme. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the primary difference between SQL (relational) and NoSQL databases in terms of data model flexibility and query capability?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SQL databases are slower than NoSQL databases for all workloads due to the overhead of join processing" },
+        { "id": "b", "text": "NoSQL databases offer flexible schemas (schema-on-read) and simpler query models (key-value, document, wide-column) at the cost of limited cross-document query capability; SQL databases enforce a fixed schema and provide powerful relational queries and joins" },
+        { "id": "c", "text": "SQL databases cannot handle JSON or semi-structured data; NoSQL databases are the only option for document storage" },
+        { "id": "d", "text": "NoSQL databases guarantee ACID transactions across multiple collections or tables; SQL databases do not support transactions" }
+      ],
+      "correctKey": "b",
+      "explanation": "NoSQL databases trade relational query power for schema flexibility and horizontal scalability. Key-value (Redis), document (MongoDB), and wide-column (Cassandra) stores let you store data without predefining structure. Cross-document joins and complex aggregations are limited or require application-side processing. SQL databases provide rich declarative queries (JOIN, GROUP BY, window functions), ACID transactions, and mature query optimizers — making them strong for transactional (OLTP) and analytical (OLAP) workloads with structured data. Option A is workload-dependent. Option C is false (PostgreSQL has JSONB). Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Your application needs to support 1 million writes per second globally with low latency. A single primary database cannot handle this. What data architecture best solves this write-scaling problem?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Add more read replicas to the primary database and route all writes to the primary — read replicas improve read throughput but not write throughput" },
+        { "id": "b", "text": "Shard the database across multiple write-capable nodes using a distributed SQL database (e.g., CockroachDB, TiDB, YugabyteDB) or a sharding middleware (Vitess) that provides transparent horizontal write scaling with ACID guarantees" },
+        { "id": "c", "text": "Upgrade the primary database server with more CPU, RAM, and NVMe SSDs — vertical scaling can handle any write throughput requirement" },
+        { "id": "d", "text": "Use an in-memory cache in front of the database to absorb write traffic and flush to disk asynchronously" }
+      ],
+      "correctKey": "b",
+      "explanation": "Write scaling requires partitioning (sharding) writes across multiple write-capable nodes. Traditional primary-replica setups only scale reads — the primary is the bottleneck. Distributed SQL databases (CockroachDB, TiDB, YugabyteDB) provide horizontal write scaling with SQL semantics, automatic resharding, and ACID transactions. Vitess (MySQL sharding middleware) and manual application-level sharding are also valid. Option A only scales reads. Option C has a hardware ceiling. Option D delays writes but doesn't scale the database itself — cache still must eventually write to DB."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between synchronous and asynchronous database replication, and when would you choose each?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Synchronous replication copies data to replicas before acknowledging writes; chosen for durability guarantees. Asynchronous replication acknowledges writes immediately and copies in the background; chosen for lower latency and higher availability" },
+        { "id": "b", "text": "Asynchronous replication is faster because it copies data to all replicas simultaneously using parallel threads; synchronous replication is sequential and therefore slower" },
+        { "id": "c", "text": "Synchronous replication is only used for read replicas; asynchronous replication is used for disaster recovery replicas" },
+        { "id": "d", "text": "There is no practical difference; both offer identical durability and performance characteristics" }
+      ],
+      "correctKey": "a",
+      "explanation": "Synchronous replication waits for replica confirmations before committing — if a replica is slow or down, the write blocks or fails. This guarantees that a committed write exists on multiple nodes. Asynchronous replication acknowledges immediately after the primary commits, propagating changes in the background — lower latency but a window of data loss if the primary fails before propagation completes. Synchronous is used for financial systems, DR in multi-DC setups. Asynchronous is used for geo-distributed read replicas where latency matters more than zero-RPO. Option B overstates the difference. Option C is false. Option D is false."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: In a multi-master database replication setup, each node can accept writes and replicate to others — this eliminates all single points of failure and provides both high availability and strong consistency.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Multi-master replication eliminates a single write-primary but introduces serious new problems: write conflicts (concurrent writes to the same row at different nodes), consistency trade-offs (must use last-writer-wins or conflict resolution), and coordination complexity. Nodes that are network-partitioned can accept conflicting writes that must be reconciled later. Multi-master provides high availability but sacrifices strong consistency — it falls under the AP side of CAP. Conflict-free Replicated Data Types (CRDTs) can help but have limited applicability. It is not a free lunch."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "True or False: SQL databases always use ACID transaction semantics, while NoSQL databases always use BASE semantics.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "This is a common misconception. The SQL/NoSQL distinction is about data model (relational vs. non-relational), not transaction guarantees. Many SQL databases support BASE (e.g., PostgreSQL's asynchronous standbys), and many NoSQL databases support ACID-like transactions (e.g., MongoDB 4.0+ supports multi-document ACID transactions, Cassandra supports tunable consistency, Cosmos DB offers strong consistency mode). ACID vs BASE describes consistency trade-offs that can exist in both SQL and NoSQL systems."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Your team is designing a multi-tenant SaaS application where each tenant's data must be completely isolated. A tenant's data must never be accessible to other tenants even during database failures or maintenance. Which multi-tenancy architecture provides the strongest isolation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Shared database, shared schema — tenant_id column in all tables with application-level access control" },
+        { "id": "b", "text": "Shared database, separate schemas — each tenant has their own schema (namespace) within a single database instance, providing schema-level isolation and separate namespace" },
+        { "id": "c", "text": "Separate database per tenant — each tenant gets their own database instance (database-per-tenant), providing complete physical isolation including separate connection pools, backup domains, and failure domains" },
+        { "id": "d", "text": "Separate database per tenant provides the strongest isolation, but separate schemas within a shared database is equally strong for most compliance requirements" }
+      ],
+      "correctKey": "c",
+      "explanation": "Database-per-tenant (separate database instance per tenant) provides the strongest isolation: each tenant has a separate connection pool, separate backup domain, separate resource allocation, and failures are fully contained. Shared-schema (tenant_id column) has the weakest isolation — a SQL injection or misconfigured query could cross tenant boundaries. Shared-schema-with-schema isolation is better but still shares the database server (resource contention, shared failure domain). For compliance-heavy workloads (healthcare, finance), database-per-tenant or even separate database servers per tenant are required. Option D's second clause is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A Cassandra cluster uses a partition key to distribute data across nodes. You discover that one partition is receiving 10x more traffic than others (a 'hot partition'). What are the consequences and what mitigation strategies exist?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hot partitions are handled automatically by Cassandra's gossip protocol; no manual intervention is required" },
+        { "id": "b", "text": "Hot partitions cause one node to become a bottleneck, saturating its resources while others sit idle; mitigations include adding a 'write path' that buffers hot data in an in-memory store (e.g., Redis), splitting the hot partition key into sub-partitions, or using request rate limiting at the coordinator node" },
+        { "id": "c", "text": "Hot partitions can be eliminated by increasing the replication factor — more replicas spread the load across more nodes" },
+        { "id": "d", "text": "Cassandra's consistent hashing automatically balances partitions evenly regardless of access patterns — hot partitions indicate a bug in the application" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cassandra distributes data by partition key — if a key maps to a frequently accessed entity (e.g., a celebrity's user profile), all reads/writes for that entity hit a single node (or replica group), creating a bottleneck. Cassandra's repair and read mechanisms can amplify this (anti-caching, read-repair). Mitigations: (1) write-behind cache (Redis in front of Cassandra) to absorb hot reads, (2) token-range splitting to add more vnodes for the hot range, (3) bucketing the partition key (userId_timestamp_bucket) to spread load across more partitions, (4) local-patch: keep the hot entity in a separate store. Option A is false. Option C only applies to replication factor for durability, not load distribution. Option D is false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Your application requires serializable isolation (the strongest isolation level) to prevent all concurrency anomalies, but PostgreSQL's serializable isolation is causing significant performance degradation. What alternative approaches can provide serializability without full serializable locking?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use READ COMMITTED isolation and add explicit row-level locks (SELECT FOR UPDATE) around all transactions — this provides serializability equivalent behavior without serializable snapshot isolation overhead" },
+        { "id": "b", "text": "Move to an optimistic concurrency control pattern: use version numbers or optimistic locks, detect conflicts at commit time, and retry conflicting transactions — this provides serializability without blocking locks at the cost of transaction retry overhead" },
+        { "id": "c", "text": "Serialized operations cannot be achieved without serializable isolation — any alternative will permit anomalies" },
+        { "id": "d", "text": "Use READ UNCOMMITTED and rely on application-level checks to prevent dirty reads — this is functionally equivalent to serializable with better performance" }
+      ],
+      "correctKey": "b",
+      "explanation": "Serializable snapshot isolation (SSI) in PostgreSQL uses a serialized execution plan but can cause significant lock contention for write-heavy workloads. Optimistic concurrency control (OCC) is an alternative: transactions read data without locking, record a version/timestamp or checksum of what they read, and at commit time verify no concurrent modification occurred. If a conflict is detected, the transaction retries. This works well for read-heavy workloads with occasional conflicts, but can cause livelock (starvation) under high write contention. Option A's explicit locking approach is serializable but uses pessimistic locking (blocking). Option C is false. Option D is dangerous and false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You need to implement a globally distributed database that can serve low-latency reads from multiple regions while tolerating region failures. Read-your-writes consistency for the same user is required. Which combination of strategies best addresses these requirements?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use a single primary region with asynchronous read replicas in other regions — serve all reads from the primary to guarantee read-your-writes consistency" },
+        { "id": "b", "text": "Use a multi-region database with read replicas in each region, and after a write, route the same user's subsequent reads to the writer region for a time window (session-level consistency), falling back to replica reads elsewhere" },
+        { "id": "c", "text": "Disable eventual consistency entirely by configuring synchronous multi-region replication with quorum consensus — all regions confirm every write before acknowledgment" },
+        { "id": "d", "text": "Store all user-specific data in a client-side local database (IndexedDB) that syncs asynchronously — read-your-writes is guaranteed locally without any server-side consistency guarantees" }
+      ],
+      "correctKey": "b",
+      "explanation": "Global multi-region databases (DynamoDB Global Tables, Cosmos DB, CockroachDB, Spanner) provide eventual consistency by default. Read-your-writes (session consistency) is achieved by routing reads to the writer region briefly after a write — known as 'sticky sessions to the writer.' This is the standard pragmatic approach: it keeps writes latency bounded by the nearest region's round-trip to the primary, while giving users consistent reads for their own data. Option A sacrifices the benefit of geo-distribution for reads. Option C (synchronous multi-region quorum) has extremely high write latency (satellite link round-trip time). Option D is a client-side pattern, not a database architecture."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "True or False: A composite index on (last_name, first_name) can be used efficiently for a query that filters only on first_name.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "In a B-tree composite index, the leading column(s) must be present in the query filter for the index to be used efficiently. An index on (last_name, first_name) supports efficient queries on (last_name) and (last_name, first_name), but a query filtering only on first_name cannot use the index — the database must scan the entire index or table because first_name appears after last_name in the index structure. This is the 'leading column rule' for composite B-tree indexes. Queries on first_name alone require a separate index on first_name. This is a common source of performance bugs in large applications."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You are designing a time-series IoT database where millions of sensor readings arrive per second. Each reading has a device_id, timestamp, and value. What indexing and partitioning strategy best supports both high ingestion throughput and efficient time-range queries per device?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Store all readings in a single table with a primary key on (timestamp) only — this enables fast time-range scans; device_id is stored as a regular column for filtering" },
+        { "id": "b", "text": "Use a composite partition key of (device_id, timestamp) — partitioning by device_id colocates each device's data on the same nodes, enabling efficient per-device time-range queries, while timestamp ordering within each partition enables efficient range scans; use bucketing within partitions for very high volume devices" },
+        { "id": "c", "text": "Create a separate database for each device to ensure complete isolation — this is the only way to handle millions of writes per second" },
+        { "id": "d", "text": "Store raw readings in a key-value store (Redis) for write throughput, and move all historical data to a SQL database for analytical queries — separate stores eliminate the need for complex indexing" }
+      ],
+      "correctKey": "b",
+      "explanation": "Time-series databases (TimescaleDB, InfluxDB, Cassandra with bucketing) use a (device_id, timestamp) composite partition key to colocate each device's data on the same nodes. This enables efficient per-device range queries (partition pruning eliminates unrelated devices) and high write throughput (each device's writes go to its own partition). Time-ordering within partitions supports efficient time-range scans. For extremely high-volume devices, sub-partition bucketing (splitting by time bucket within the partition) prevents oversized partitions. Option A causes hot spots on a single partition. Option C is operationally unmanageable at scale. Option D creates data silos and synchronization complexity."
+    }
+  ]
+}

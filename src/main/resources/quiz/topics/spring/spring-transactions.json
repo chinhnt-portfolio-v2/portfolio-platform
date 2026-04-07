@@ -1,0 +1,481 @@
+{
+  "topicSlug": "spring-transactions",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @Transactional do in Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It creates a new database connection for every method call" },
+        { "id": "b", "text": "It wraps the method execution in a transaction — Spring acquires a connection from the DataSource, binds it to the current thread, and manages commit/rollback based on success or exception" },
+        { "id": "c", "text": "It locks the database table to prevent concurrent modifications" },
+        { "id": "d", "text": "It automatically commits after every SQL statement" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Transactional creates a transaction boundary around the annotated method (or all public methods of a class). Spring uses a PlatformTransactionManager to begin a transaction, holds a connection from the DataSource pool, and either commits on normal completion or rolls back on any RuntimeException or Error (unchecked exceptions by default). It does NOT create new connections — it uses the existing pool and simply manages the transaction state. Key requirement: the caller must be inside a Spring-managed bean call chain for the proxy to intercept — self-invocation (this.method()) bypasses the proxy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default rollback behavior for a @Transactional method that throws a checked Exception?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Rolls back automatically for all exceptions including checked exceptions" },
+        { "id": "b", "text": "Does NOT roll back by default for checked exceptions — only for RuntimeException and Error; checked exceptions require explicit rollbackFor configuration" },
+        { "id": "c", "text": "Never rolls back for checked exceptions even with rollbackFor configured" },
+        { "id": "d", "text": "Always commits regardless of exception type" }
+      ],
+      "correctKey": "b",
+      "explanation": "By default, @Transactional only rolls back for unchecked exceptions (RuntimeException, Error). Checked exceptions are considered business exceptions — the transaction is expected to handle them and commit. To rollback on checked exceptions, use @Transactional(rollbackFor = IOException.class) or @Transactional(noRollbackFor = CustomBizException.class) to prevent rollback for specific exceptions. The rule: if the transaction infrastructure code (proxy) catches a Throwable and it is NOT in the rollBackFor list, it commits. This distinction is important for API design: checked exceptions in your domain model should usually trigger rollback if they represent fatal failures."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does propagation level REQUIRED mean (the default)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "REQUIRES_NEW always creates a new transaction, suspending any existing one" },
+        { "id": "b", "text": "REQUIRED joins the existing transaction if one is active; if none exists, creates a new transaction" },
+        { "id": "c", "text": "MANDATORY requires an existing transaction or throws an exception" },
+        { "id": "d", "text": "NEVER throws an exception if a transaction exists" }
+      ],
+      "correctKey": "b",
+      "explanation": "REQUIRED is the default propagation. If a transaction already exists (e.g., a controller calling a transactional service), the annotated method joins that existing transaction — they share the same connection and rollback scope. If no transaction exists, Spring creates a new one. This is the most common propagation and is correct for most use cases. Note: joining an existing transaction means both methods roll back together if one throws an exception. Use REQUIRES_NEW when you want the inner method's work to commit independently regardless of the outer method's outcome."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does REQUIRES_NEW propagation do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Joins the existing transaction if one is active" },
+        { "id": "b", "text": "Suspends the existing transaction (if any) and creates an entirely new, independent transaction for the annotated method — the outer and inner transactions commit/rollback independently" },
+        { "id": "c", "text": "Fails with an exception if any transaction already exists" },
+        { "id": "d", "text": "Creates a read-only transaction for the annotated method" }
+      ],
+      "correctKey": "b",
+      "explanation": "REQUIRES_NEW always creates a new transaction, suspending the existing outer transaction if one is running. The inner and outer transactions are completely independent: the inner commits (or rolls back) on its own, and the outer resumes after the inner completes. Use it for operations that must always persist regardless of the outer method's success — e.g., audit logging that should survive a rollback of the main business operation. Downside: it is expensive (two connections used) and can cause data inconsistency if not carefully designed (inner commits while outer rolls back)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the difference between @Transactional on a class vs on a method?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Class-level @Transactional applies to all public methods; method-level overrides the class-level setting for that specific method" },
+        { "id": "b", "text": "Method-level @Transactional only applies to the annotated method; class-level applies to all public methods — Spring's transaction proxy applies the most specific annotation" },
+        { "id": "c", "text": "Class-level @Transactional applies only to private methods; method-level applies to all methods" },
+        { "id": "d", "text": "There is no difference — both behave identically" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Transactional at the class level applies to all public methods. A method-level @Transactional overrides the class-level for that specific method. This allows you to set a class-level default (e.g., readOnly = true) and override specific methods (e.g., save() → readOnly = false). However, @Transactional on private methods has NO effect — Spring's proxy-based AOP cannot intercept private method calls. Also, self-invocation (calling a @Transactional method on this from within the same class) bypasses the proxy — the transaction is NOT started."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does readOnly = true do on @Transactional?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Prevents the method from executing any SQL statements" },
+        { "id": "b", "text": "Hints to the JPA provider/Hibernate that the transaction is read-only — enabling optimizations such as skipping the flush mode and allowing the persistence context to skip dirty checks" },
+        { "id": "c", "text": "Prevents concurrent reads of the same data" },
+        { "id": "d", "text": "Makes the database connection read-only at the JDBC level" }
+      ],
+      "correctKey": "b",
+      "explanation": "readOnly = true is a hint (not a guarantee) to the transaction manager and JPA provider. Hibernate may skip dirty checking (comparing entity state changes) and set the JDBC connection to read-only mode, allowing the DB to apply read-only optimizations. For large read operations, this can improve performance. Note: if you try to execute an INSERT/UPDATE/DELETE in a readOnly transaction, most databases allow it silently (MySQL) while others throw an exception (Oracle). Spring's JPA transaction manager ignores this for actual writes — they proceed regardless. Use it to signal intent and for potential optimizations, not as a write blocker."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Can Spring's @Transactional work on private methods?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Yes, @Transactional works on any method regardless of visibility" },
+        { "id": "b", "text": "No, private methods cannot be intercepted by Spring's proxy-based AOP — @Transactional on a private method has no effect" },
+        { "id": "c", "text": "Only if the class is configured with AspectJ weaving (load-time or compile-time), not with proxy-based AOP" },
+        { "id": "d", "text": "Private methods work if @EnableTransactionManagement(mode = ASPECTJ) is set" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring's default transaction management uses JDK dynamic proxy or CGLIB proxy — both intercept method calls through the proxy wrapper. Private methods are never exposed through the proxy (only public methods are). Only AspectJ weaving (compile-time or load-time weaving via @EnableTransactionManagement(mode = AspectJ)) can intercept private methods. In practice, this is rarely needed — just make the method public and call it from a public entry point. The proxy limitation is a common source of bugs: developers annotate a private helper method with @Transactional expecting it to run in a transaction, but it runs outside one."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is self-invocation in the context of Spring transactions?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Calling a @Transactional method from the same class via this.someMethod() — bypassing the Spring proxy, so the transaction is not started" },
+        { "id": "b", "text": "Calling a @Transactional method from a different class in the same package" },
+        { "id": "c", "text": "Calling a private method within the same class" },
+        { "id": "d", "text": "Calling the same method twice in a test" }
+      ],
+      "correctKey": "a",
+      "explanation": "Self-invocation means calling a method on the same object (this.method()). Since Spring's @Transactional works via proxy, the call goes directly to the target method without passing through the proxy — the proxy's transaction interceptor is never invoked. The call runs without a transaction. Solutions: (1) Extract to a separate bean and @Autowire it (best practice), (2) Use AspectJ weaving (compile-time or LTW) — complex, rarely needed, (3) Inject the bean into itself (self-injection) — anti-pattern. The cleanest solution is always to extract to a separate service bean."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does MANDATORY propagation do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Creates a new transaction if none exists; joins if one exists" },
+        { "id": "b", "text": "MANDATORY requires an existing active transaction — if one does not exist, it throws IllegalTransactionStateException" },
+        { "id": "c", "text": "Does not start a transaction; executes without any transaction context" },
+        { "id": "d", "text": "Creates a nested transaction using a savepoint" }
+      ],
+      "correctKey": "b",
+      "explanation": "MANDATORY enforces that the method MUST be called within an existing transaction context. If called outside a transaction, it throws IllegalTransactionStateException. This is useful for methods that are not useful standalone — they must be part of a larger transactional operation. A typical use: a domain operation method that should only be called as part of a parent business transaction. MANDATORY is the opposite of REQUIRED from the caller's perspective: REQUIRED (caller) vs MANDATORY (callee) creates a contractual relationship where the caller must provide the transaction."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between NESTED and REQUIRED propagation in Spring transactions?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "NESTED creates a JDBC savepoint within the existing transaction — the outer and inner transactions share the same connection; the inner can roll back to its savepoint independently without affecting the outer transaction" },
+        { "id": "b", "text": "REQUIRED creates a savepoint; NESTED always starts a new transaction" },
+        { "id": "c", "text": "NESTED and REQUIRED are identical in behavior — the naming is purely stylistic" },
+        { "id": "d", "text": "NESTED requires JPA provider support; REQUIRED does not" }
+      ],
+      "correctKey": "a",
+      "explanation": "NESTED uses JDBC savepoints to create a nested transaction within the existing one. If the inner (nested) transaction rolls back, only its work is undone — the outer transaction continues with its other operations. If the outer rolls back, the nested is rolled back too. This is different from REQUIRES_NEW which uses completely separate transactions. NESTED requires the JDBC driver to support savepoints (most do). JPA's EntityTransaction does NOT support nested transactions — NESTED works with JpaTransactionManager using JDBC-level savepoints. Use cases: partial rollback within a complex transaction where one sub-operation fails but others should succeed."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does isolation level READ_COMMITTED prevent that READ_UNCOMMITTED does not?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "READ_COMMITTED prevents dirty reads — a transaction cannot read uncommitted data written by another transaction" },
+        { "id": "b", "text": "READ_COMMITTED prevents non-repeatable reads — the same row read twice returns the same value" },
+        { "id": "c", "text": "READ_COMMITTED prevents phantom reads — new rows inserted by other transactions cannot be seen" },
+        { "id": "d", "text": "READ_COMMITTED prevents all concurrency problems including serializable anomalies" }
+      ],
+      "correctKey": "a",
+      "explanation": "READ_COMMITTED solves dirty reads: a transaction cannot see uncommitted changes from other transactions. READ_UNCOMMITTED allows dirty reads (the lowest isolation). The next level up, REPEATABLE_READ, prevents non-repeatable reads: if you read a row twice in the same transaction, it stays the same even if another transaction updates it. SERIALIZABLE prevents all anomalies including phantom reads (new rows appearing in range queries). Increasing isolation reduces concurrency (more locks) and can hurt performance. The default for most databases (PostgreSQL, SQL Server, Oracle) is READ_COMMITTED. MySQL's default is REPEATABLE_READ."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does NOT_SUPPORTED propagation do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Executes the method without any transaction context — suspends the existing transaction if one is active, executes the method, then resumes the suspended transaction" },
+        { "id": "b", "text": "Executes the method within the existing transaction if one exists" },
+        { "id": "c", "text": "Creates a new read-only transaction regardless of existing transactions" },
+        { "id": "d", "text": "Always throws an exception if a transaction exists" }
+      ],
+      "correctKey": "a",
+      "explanation": "NOT_SUPPORTED suspends any existing transaction, executes the method with no transaction at all, then resumes the suspended transaction. This is useful for operations that should NEVER run in a transaction — e.g., sending an email or writing to a log that must succeed even if the main business transaction rolls back. The suspended transaction is not paused — it is physically detached from the thread. If the non-transactional method takes a long time, the DB connection is held during suspension, potentially exhausting the connection pool. Use REQUIRES_NEW if you need a separate transaction for the non-transactional work."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the relationship between @Transactional and the EntityManager's persistence context?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Transactional and EntityManager are unrelated — @Transactional manages JDBC connections; EntityManager manages JPA entities" },
+        { "id": "b", "text": "@Transactional creates the transaction boundary within which the EntityManager operates — the persistence context is flushed (synced to DB) at commit time, and entities are managed within the same transaction" },
+        { "id": "c", "text": "The EntityManager creates transactions; @Transactional merely annotates them" },
+        { "id": "d", "text": "The persistence context flushes after every query regardless of transaction boundaries" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring's JpaTransactionManager (or JtaTransactionManager) binds an EntityManager (actually a SharedEntityManagerCreator proxy) to the thread (via ThreadLocal). Within a @Transactional boundary, every @PersistenceContext injection gets the same EntityManager instance. The persistence context (first-level cache) holds managed entities. Changes are flushed at commit time (or on query execution if FlushMode.AUTO). Outside a transaction, the EntityManager is not bound — accessing it throws an exception (in container-managed persistence). This is why repository methods must be transactional: without @Transactional, there is no EntityManager context."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a read-only transaction hint and does it guarantee that no writes will occur?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "readOnly = true guarantees that no writes can occur — the transaction manager rejects any INSERT, UPDATE, or DELETE" },
+        { "id": "b", "text": "readOnly = true is a hint to the JPA provider and DB driver — it may enable optimizations but does NOT prevent writes from executing if the code attempts them" },
+        { "id": "c", "text": "readOnly = true automatically sets the database connection to SERIALIZABLE isolation" },
+        { "id": "d", "text": "readOnly = true prevents Hibernate from executing any SQL queries" }
+      ],
+      "correctKey": "b",
+      "explanation": "readOnly = true is a performance hint, not a write blocker. Hibernate may skip dirty checking (comparing entity snapshot with current state), but if your code calls entityManager.persist() or entityManager.merge(), the write proceeds. Some databases (e.g., Oracle) reject writes in read-only transactions at the SQL level, but most (PostgreSQL, MySQL) allow them silently. For enforcement at the application level, use Spring Security (method-level security with @PreAuthorize) or AOP to prevent write operations. The best practice: separate read and write repository methods and mark the read methods with @Transactional(readOnly = true)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between REQUIRED and NESTED propagation in Spring transactions?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "REQUIRED joins the existing transaction or creates a new one; NESTED creates a JDBC savepoint within the existing transaction, allowing partial rollback" },
+        { "id": "b", "text": "Both create a new transaction — NESTED just has a shorter timeout" },
+        { "id": "c", "text": "NESTED uses a completely separate database transaction; REQUIRED uses a savepoint within the existing transaction" },
+        { "id": "d", "text": "REQUIRED can only be used with JPA; NESTED works with both JDBC and JPA" }
+      ],
+      "correctKey": "a",
+      "explanation": "REQUIRED shares the existing transaction (joins) or creates a new one. If it joins, both outer and inner are in the same transaction — rollback of either affects both. NESTED creates a JDBC savepoint within the existing transaction — the inner can roll back to the savepoint without affecting the outer transaction's other operations. If the outer rolls back, the nested is also rolled back. NESTED is more lightweight than REQUIRES_NEW (no new connection needed) but only works with JpaTransactionManager (not JTA). NESTED is ideal for 'try-catch with partial rollback' scenarios within a single transaction."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Spring's @Transactional annotation works on private methods because the proxy intercepts all method calls within the class.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Spring's proxy-based @Transactional cannot intercept private methods. Private methods are not exposed through the proxy interface — only public methods are. Calling a private @Transactional method from within the same class (self-invocation) bypasses the proxy entirely. The transaction is never started. This is a common misconception. For truly private method transactions, use AspectJ weaving (compile-time or load-time). In practice, extract the private method's logic to a separate bean."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Calling a @Transactional method on `this` from another method in the same class does NOT start a transaction due to proxy self-invocation bypass.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Self-invocation bypasses Spring's proxy. The call `this.someTransactionalMethod()` goes directly to the target object, not through the proxy wrapper that holds the transaction interceptor. The transaction is never started. This is a fundamental limitation of Spring's proxy-based AOP. The fix: inject the bean into itself (anti-pattern) or, better, extract to a separate service bean and inject it normally."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of TransactionSynchronization in Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It provides callbacks before and after transaction commit, flush, or rollback — useful for operations that must execute after the transaction succeeds (e.g., sending an event or cleaning up resources)" },
+        { "id": "b", "text": "It synchronizes two parallel transactions to ensure they commit in the same order" },
+        { "id": "c", "text": "It creates nested transactions using database savepoints" },
+        { "id": "d", "text": "It automatically retries a transaction that fails due to a deadlock" }
+      ],
+      "correctKey": "a",
+      "explanation": "TransactionSynchronization allows you to register callbacks that run at specific points in the transaction lifecycle: afterCommit(), afterCompletion(), beforeFlush(), afterFlush(). Use cases: send application events after a successful transaction (ApplicationEventPublisher + TransactionSynchronizationAdapter), close resources after the transaction ends, or trigger side effects only if the transaction succeeds. Call TransactionSynchronizationManager.registerSynchronization(new YourCallback()). The key difference from regular @PostPersist/@PostUpdate callbacks: TransactionSynchronization runs in the same thread after the transaction commits, while entity callbacks run during the flush (before commit). Both are valid at different layers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does JtaTransactionManager differ from DataSourceTransactionManager/JpaTransactionManager in Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JpaTransactionManager manages JPA EntityManagers; DataSourceTransactionManager manages JDBC connections; JtaTransactionManager coordinates distributed transactions across multiple resources (e.g., DB + message queue) using a JTA provider" },
+        { "id": "b", "text": "DataSourceTransactionManager is for JPA; JpaTransactionManager is for JDBC; JtaTransactionManager is for REST APIs" },
+        { "id": "c", "text": "All three are identical — they are aliases for the same implementation" },
+        { "id": "d", "text": "JpaTransactionManager supports distributed transactions; DataSourceTransactionManager does not" }
+      ],
+      "correctKey": "a",
+      "explanation": "DataSourceTransactionManager: single JDBC DataSource, local transaction. JpaTransactionManager: single JPA EntityManager (uses DataSource under the hood), local transaction. JtaTransactionManager: Java Transaction API — coordinates multiple resources (multiple DBs, DB + JMS, DB + external service) in a single distributed transaction using a JTA provider (e.g., Atomikos, Bitronix, or a Java EE container's transaction manager). JTA uses a two-phase commit protocol. In Spring Boot with a single datasource, JpaTransactionManager is used automatically. For microservices with distributed transactions, JtaTransactionManager + a JTA implementation is required — but the better architectural pattern is to avoid distributed transactions entirely using the Saga pattern or outbox pattern."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between @Transactional.timeout and the transaction manager's default timeout?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "timeout overrides the transaction manager's default timeout for this specific transaction — if the transaction exceeds the timeout, it is rolled back automatically" },
+        { "id": "b", "text": "The transaction manager's default timeout applies to all transactions; timeout has no effect" },
+        { "id": "c", "text": "timeout is measured in seconds; the default is measured in milliseconds" },
+        { "id": "d", "text": "@Transactional.timeout only works with JTA; it is ignored by JpaTransactionManager" }
+      ],
+      "correctKey": "a",
+      "explanation": "The timeout attribute (in seconds) on @Transactional sets a per-transaction timeout that overrides the PlatformTransactionManager's default. If the transaction exceeds this timeout (e.g., a long-running query), Spring rolls it back automatically with TransactionTimedOutException. The transaction manager's default timeout (set via Properties on the transaction manager bean) applies to all transactions that don't specify an explicit timeout. Use per-method timeouts to prevent long-running operations (like external API calls within a transaction) from holding locks indefinitely. Note: timeout works with JpaTransactionManager; some JTA providers require timeout configuration at the JTA level as well."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a distributed transaction and why is the Saga pattern preferred over 2PC (two-phase commit) in microservices?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Distributed transactions span multiple databases; Saga orchestrates them via a sequence of local transactions with compensating actions, avoiding the blocking and coordinator failure risks of 2PC" },
+        { "id": "b", "text": "Saga uses a central coordinator to commit all databases simultaneously like 2PC" },
+        { "id": "c", "text": "2PC is preferred over Saga because it guarantees atomicity across all services" },
+        { "id": "d", "text": "Distributed transactions are not needed in microservices — each service has its own database" }
+      ],
+      "correctKey": "a",
+      "explanation": "A distributed transaction spans multiple databases or services (e.g., Order DB + Payment DB + Inventory DB). Two-Phase Commit (2PC) uses a central coordinator that asks all participants to prepare, then either commits or rollsbacks all. Problems: coordinator is a single point of failure, participants hold locks during the 'prepared' phase (blocking), and any failure during commit requires recovery. The Saga pattern avoids distributed transactions by orchestrating a sequence of local transactions — each step succeeds or triggers a compensating transaction (e.g., cancel order if payment fails). Saga is eventually consistent rather than ACID — but it avoids the complexity and failure modes of distributed ACID transactions. It is the recommended pattern for choreography-based or orchestration-based microservices."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Can @Transactional be used at the interface level (e.g., on a repository interface)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Yes, @Transactional on the interface is equivalent to placing it on every method" },
+        { "id": "b", "text": "No, Spring's proxy-based AOP for @Transactional does NOT proxy interface-level @Transactional annotations — the proxy is created on the class, not the interface, so interface-level @Transactional is ignored for JDK dynamic proxy targets" },
+        { "id": "c", "text": "@Transactional on interfaces only works with CGLIB proxy, not JDK dynamic proxy" },
+        { "id": "d", "text": "@Transactional on interfaces is the recommended approach for Spring Data JPA repositories" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring's @Transactional uses the proxy that wraps the class — not the interface. For JDK dynamic proxy (interface-based), Spring creates a proxy implementing the interface but does NOT inherit interface annotations. For CGLIB proxy (class-based), subclassing allows @Transactional on the class to be picked up. Therefore, @Transactional on an interface method is unreliable — it may be ignored depending on proxy type. The recommended practice: always put @Transactional on the class (or method), not the interface. For Spring Data JPA repositories, @Transactional is typically placed on the service layer that calls the repository, not on the repository interface itself."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "The SERIALIZABLE isolation level guarantees that concurrent transactions produce the same result as running them sequentially.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "SERIALIZABLE is the highest isolation level — it guarantees that the result of running concurrent transactions is identical to running them sequentially (one after another, in some order). It achieves this by placing range locks on read data, preventing other transactions from inserting phantom rows in the queried range. However, SERIALIZABLE has severe performance implications: it reduces concurrency dramatically, causes more lock waits and deadlocks, and can lead to significant throughput degradation. Most applications use READ_COMMITTED or REPEATABLE_READ and handle the remaining anomalies at the application level. Spring's @Transactional(isolation = Isolation.SERIALIZABLE) sets the isolation level on the connection."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does @Transactional(rollbackFor = Exception.class) change compared to the default?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It prevents any rollback from occurring for checked exceptions" },
+        { "id": "b", "text": "It adds checked exceptions (Exception) to the rollback set — now both checked and unchecked exceptions trigger rollback" },
+        { "id": "c", "text": "It changes the isolation level to READ_COMMITTED" },
+        { "id": "d", "text": "It makes the transaction read-only regardless of other settings" }
+      ],
+      "correctKey": "b",
+      "explanation": "By default, @Transactional rolls back only for unchecked exceptions (RuntimeException, Error). Adding rollbackFor = Exception.class means the transaction also rolls back for checked exceptions (e.g., IOException, SQLException). This is useful when checked exceptions represent fatal errors in your business logic and should not leave partial data committed. Note: you can also use noRollbackFor to exclude specific exceptions from rollback."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the default propagation level for @Transactional?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "REQUIRES_NEW" },
+        { "id": "b", "text": "MANDATORY" },
+        { "id": "c", "text": "REQUIRED" },
+        { "id": "d", "text": "SUPPORTS" }
+      ],
+      "correctKey": "c",
+      "explanation": "REQUIRED is the default propagation level. If there is an existing transaction, the method joins it; if there is none, a new one is created. This is the most commonly used propagation — it works correctly for most service methods that need transactional behavior. Understanding propagation levels is essential when composing transactional services."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does SUPPORTS propagation mean in Spring transactions?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Executes within an existing transaction if one is present; does not create a new transaction if none exists — the method runs non-transactionally when called outside a transaction" },
+        { "id": "b", "text": "Always creates a new transaction regardless of existing ones" },
+        { "id": "c", "text": "Throws an exception if no transaction is active" },
+        { "id": "d", "text": "Suspends the existing transaction and runs non-transactionally" }
+      ],
+      "correctKey": "a",
+      "explanation": "SUPPORTS is a passive propagation: if a transaction exists, the method joins it; if no transaction exists, the method runs non-transactionally. Use this for read-only operations that can benefit from an existing transaction but don't require one — e.g., a reporting method that can run inside a transaction for consistency but also needs to run as a standalone job without a transaction."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the key difference between REQUIRES_NEW and REQUIRED propagation in terms of commit/rollback independence?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "REQUIRED joins the outer transaction — both commit together or roll back together; REQUIRES_NEW always starts a new independent transaction — its commit/rollback does not affect the outer transaction" },
+        { "id": "b", "text": "Both propagation levels behave identically in terms of commit/rollback behavior" },
+        { "id": "c", "text": "REQUIRED always rolls back independently; REQUIRES_NEW always commits independently" },
+        { "id": "d", "text": "REQUIRES_NEW shares the same connection as the outer transaction" }
+      ],
+      "correctKey": "a",
+      "explanation": "REQUIRED: the method joins the existing outer transaction — they share one connection and rollback scope. If the inner method commits but the outer rolls back, the inner's work is also rolled back. REQUIRES_NEW: completely independent transaction — it gets its own connection, commits or rolls back on its own. The outer transaction is suspended during the REQUIRES_NEW execution. This independence is useful for audit logs: the audit record should persist even if the main business transaction rolls back."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a phantom read and which isolation level prevents it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A phantom read occurs when a transaction reads rows that were inserted by another committed transaction in the same range query — prevented only by SERIALIZABLE isolation level" },
+        { "id": "b", "text": "A phantom read is when the same row is read twice and returns different values — prevented by READ_COMMITTED" },
+        { "id": "c", "text": "A phantom read occurs when a transaction updates a row that was deleted by another transaction — prevented by REPEATABLE_READ" },
+        { "id": "d", "text": "Phantom reads cannot be prevented by any isolation level" }
+      ],
+      "correctKey": "a",
+      "explanation": "Phantom read: Transaction A executes a query, gets N rows. Transaction B inserts new rows and commits. Transaction A re-executes the same query and gets N+M rows (new 'phantom' rows appeared). This is prevented by SERIALIZABLE — it locks the entire range, preventing inserts. Non-repeatable read (different from phantom read): Transaction A reads row R. Transaction B updates row R and commits. Transaction A reads row R again — different value. Prevented by REPEATABLE_READ."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between checked and unchecked exceptions in the context of Spring transaction rollback?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Checked exceptions extend Exception (but not RuntimeException) — Spring rolls them back by default; unchecked exceptions extend RuntimeException or Error — Spring also rolls them back" },
+        { "id": "b", "text": "Checked exceptions extend Exception (but not RuntimeException) — Spring does NOT roll back by default; unchecked exceptions extend RuntimeException or Error — Spring rolls them back by default" },
+        { "id": "c", "text": "Both exception types are treated identically by Spring's transaction manager" },
+        { "id": "d", "text": "Unchecked exceptions are never rolled back by Spring; checked exceptions are always rolled back" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring's transaction infrastructure treats checked and unchecked exceptions differently. Unchecked exceptions (RuntimeException, Error) trigger automatic rollback — this is the default. Checked exceptions (e.g., IOException, SQLException) do NOT trigger rollback by default — Spring assumes the application handles them and commits. This distinction reflects the Spring team's philosophy: checked exceptions are 'business exceptions' that should be recoverable; unchecked exceptions represent programming errors or system failures. Override with rollbackFor/noRollbackFor attributes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "When should you avoid using REQUIRES_NEW propagation in Spring transactions?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "When the inner and outer transactions need to be committed atomically — if the outer rolls back after the inner has already committed, data inconsistency results" },
+        { "id": "b", "text": "When performance is critical — REQUIRES_NEW uses an additional database connection (suspending the outer), which can exhaust the connection pool under high load" },
+        { "id": "c", "text": "When the inner transaction must always succeed regardless of the outer transaction's outcome — audit logging is a valid use case" },
+        { "id": "d", "text": "When the method is called from a non-transactional context — SUPPORTS is more appropriate" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "REQUIRES_NEW is expensive (two connections, suspended outer transaction) and can cause data inconsistency if the outer transaction rolls back after the inner has committed. Use it sparingly: only when the inner operation must persist independently (e.g., audit log, notification). For most use cases, REQUIRED (join existing or create new) is the correct choice. Avoid REQUIRES_NEW in performance-critical paths with high concurrency."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the TransactionSynchronizationManager do in Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It manages distributed transactions across multiple databases using two-phase commit" },
+        { "id": "b", "text": "It provides a ThreadLocal-based API for registering callbacks that execute after the transaction commits or rolls back — useful for flushing resources, publishing events, or cleaning up after the transaction completes" },
+        { "id": "c", "text": "It synchronizes two concurrent transactions to prevent deadlock" },
+        { "id": "d", "text": "It automatically retries failed transactions based on a configurable retry policy" }
+      ],
+      "correctKey": "b",
+      "explanation": "TransactionSynchronizationManager is Spring's low-level API for transaction-aware callbacks. Register callbacks via TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() { afterCommit(() -> {}) }). Callbacks run afterCommit() (only if committed), afterCompletion() (any status), beforeFlush(). This is the correct hook for: sending application events after successful commit (not before — the transaction might roll back), flushing search indexes, or triggering external notifications. Use it when @Transactional alone isn't enough to express the lifecycle you need."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between TransactionSynchronizationAdapter and @TransactionalEventListener in Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "TransactionSynchronizationAdapter is a low-level callback API for in-process operations; @TransactionalEventListener is a Spring Framework annotation that binds an application event listener to the transaction phase — @TransactionalEventListener is the preferred approach for event publishing within transactions" },
+        { "id": "b", "text": "Both are identical — @TransactionalEventListener is the annotation-based form of TransactionSynchronizationAdapter" },
+        { "id": "c", "text": "@TransactionalEventListener only works with JPA; TransactionSynchronizationAdapter works with JDBC" },
+        { "id": "d", "text": "TransactionSynchronizationAdapter requires Spring Boot; @TransactionalEventListener works with plain Spring Framework" }
+      ],
+      "correctKey": "a",
+      "explanation": "TransactionSynchronizationAdapter is the low-level programmatic API: you register it with TransactionSynchronizationManager inside a transactional method. @TransactionalEventListener (Spring 4.2+) is the annotation-based, declarative approach: annotate a regular @EventListener method with @TransactionalEventListener — it only fires at the specified transaction phase (BEFORE_COMMIT, AFTER_COMMIT, AFTER_ROLLBACK). @TransactionalEventListener is cleaner and more testable — it doesn't require programmatic registration inside the transactional method. Use @TransactionalEventListener for event-driven patterns within transactions."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of the @TransactionalEventListener annotation and when should you use it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@TransactionalEventListener binds an event listener to a transaction phase — it fires during the specified phase (AFTER_COMMIT is most common), ensuring the event is only published if the transaction commits successfully" },
+        { "id": "b", "text": "@TransactionalEventListener replaces @EventListener and is the standard way to handle all Spring application events" },
+        { "id": "c", "text": "@TransactionalEventListener suspends the current transaction until all listeners finish processing" },
+        { "id": "d", "text": "@TransactionalEventListener only works with @Async methods" }
+      ],
+      "correctKey": "a",
+      "explanation": "@TransactionalEventListener allows an @EventListener to participate in the transaction lifecycle. By default, if the transaction rolls back, the event is NOT published (AFTER_ROLLBACK phase). Only in AFTER_COMMIT (the default) does the listener fire after successful commit. This prevents events from being published for rolled-back operations — the recipient won't act on data that never persisted. Use this pattern to decouple domain logic: the service publishes a domain event in a @Transactional method; the event handler runs only if the transaction succeeds."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What are the implications of using @Transactional on a public method in a class called from another method in the same class (self-invocation)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The transaction starts correctly because Spring's proxy intercepts all method calls within the class" },
+        { "id": "b", "text": "Self-invocation bypasses the Spring proxy — the transaction is NOT started because the call goes directly to the target method without passing through the proxy wrapper that holds the transaction interceptor" },
+        { "id": "c", "text": "Self-invocation throws an exception because Spring detects circular transaction calls" },
+        { "id": "d", "text": "Self-invocation creates a nested transaction using a savepoint" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring's @Transactional uses proxy-based AOP. When a method annotated with @Transactional is called from another method in the same class (this.method()), the call goes directly to the target object — bypassing the proxy. The transaction interceptor on the proxy is never invoked. The outer transaction (if any) continues, but the inner method runs without a new transaction context. This is a well-known Spring limitation. Fix: extract to a separate bean and inject it. AspectJ weaving (compile-time or LTW) also fixes this, but at significant complexity cost."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the relationship between @Transactional and isolation level settings?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Transactional(isolation = Isolation.SERIALIZABLE) sets the database connection isolation level to SERIALIZABLE for this transaction — overriding the database's default — this affects all queries within the transaction and can dramatically reduce concurrency" },
+        { "id": "b", "text": "Isolation level in @Transactional is ignored by most JDBC drivers" },
+        { "id": "c", "text": "Isolation level can only be set at the DataSource level, not per-transaction" },
+        { "id": "d", "text": "SERIALIZABLE isolation is the default for all @Transactional methods in Spring" }
+      ],
+      "correctKey": "a",
+      "explanation": "The isolation attribute on @Transactional sets the connection's isolation level for the duration of that transaction. This overrides whatever the database or connection pool defaults to. Setting SERIALIZABLE isolation: all reads in the transaction see a consistent snapshot as of the transaction start — no phantoms, no non-repeatable reads. Trade-off: it acquires more locks and dramatically reduces concurrency. Use a specific isolation level when your business logic requires it — e.g., financial calculations may need SERIALIZABLE to prevent phantom reads. Most applications use the database's default (READ_COMMITTED)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of TransactionTemplate in Spring and when should you use it over @Transactional?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "TransactionTemplate is a programmatic alternative to @Transactional for explicit transaction management — use it when you need fine-grained control: multiple operations in one transaction, conditional commits, or when AOP-based @Transactional is not available (e.g., within a callback)" },
+        { "id": "b", "text": "TransactionTemplate is faster than @Transactional because it avoids proxy overhead" },
+        { "id": "c", "text": "TransactionTemplate replaces @Transactional in Spring Boot 3.x applications" },
+        { "id": "d", "text": "TransactionTemplate can only be used in @Controller classes, not in services" }
+      ],
+      "correctKey": "a",
+      "explanation": "TransactionTemplate (org.springframework.transaction.support.TransactionTemplate) is a programmatic transaction management API. Execute: template.execute(status -> { /* your transactional code */ }); The callback runs within a transaction. Use TransactionTemplate over @Transactional when: (1) you need conditional transaction management (commit/rollback based on result), (2) you need multiple transaction boundaries in one method, (3) you are in a context where proxy-based AOP doesn't reach (e.g., inside a lambda callback). @Transactional is preferred for declarative, method-level transactions — simpler and more readable. TransactionTemplate is for advanced programmatic scenarios."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does Spring handle transaction timeout when a query takes longer than expected?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Spring's transaction infrastructure tracks the elapsed time and throws TransactionTimedOutException if the timeout is exceeded — the transaction is rolled back automatically" },
+        { "id": "b", "text": "Spring waits indefinitely for queries to complete regardless of timeout setting" },
+        { "id": "c", "text": "Query timeouts are configured at the JDBC driver level, not the Spring transaction level" },
+        { "id": "d", "text": "Timeout only applies to REQUIRES_NEW propagation; REQUIRED ignores timeout" }
+      ],
+      "correctKey": "a",
+      "explanation": "@Transactional(timeout = 30) (in seconds) sets a per-transaction timeout. Spring's transaction infrastructure starts a timer when the transaction begins. If the transaction exceeds the timeout, TransactionTimedOutException is thrown and the transaction rolls back. Note: timeout works with JpaTransactionManager but may require additional configuration for JTA. Set timeout at the PlatformTransactionManager level as a default, or per-method with @Transactional(timeout = ...). Use it to prevent long-running queries from holding locks indefinitely."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is a deadlock in the context of database transactions, and how does Spring/JPA handle it?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A deadlock occurs when two transactions hold locks on resources the other needs and neither can proceed — the database detects it and rolls back one transaction (Spring receives DataAccessException); applications should implement retry logic for deadlock exceptions" },
+        { "id": "b", "text": "Deadlocks are prevented by Spring's transaction management automatically — no application code needed" },
+        { "id": "c", "text": "Deadlocks only occur with pessimistic locking; optimistic locking never causes deadlocks" },
+        { "id": "d", "text": "Spring automatically retries transactions that fail due to deadlock" }
+      ],
+      "correctKey": "a",
+      "explanation": "Deadlock: Transaction A holds lock on X and waits for Y; Transaction B holds lock on Y and waits for X. The database detects the cycle and rolls back one transaction (throwing an exception). Spring wraps database exceptions in DataAccessException or its subclass. The application must handle this: either retry the transaction or propagate the error. Spring Retry (@Retryable) can automate retry on deadlock exceptions. Mitigation strategies: always access resources in a consistent order across transactions, use shorter transactions, minimize lock duration, and consider optimistic locking for read-heavy workloads."
+    }
+  ]
+}

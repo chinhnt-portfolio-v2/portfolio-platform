@@ -1,0 +1,247 @@
+{
+  "topicSlug": "react-state",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is 'prop drilling' in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A performance optimization technique that pre-loads props before rendering" },
+        { "id": "b", "text": "Passing data through multiple layers of intermediate components that don't need the data, just to reach a deeply nested child that does" },
+        { "id": "c", "text": "A TypeScript error that occurs when props are not properly typed" },
+        { "id": "d", "text": "A React DevTools feature that shows the prop flow through the component tree" }
+      ],
+      "correctKey": "b",
+      "explanation": "Prop drilling occurs when you pass props through multiple component layers — components in the middle receive props they don't use, just to forward them down to a child that needs them. This creates tight coupling and makes components less reusable. Solutions include React Context, composition (children), or state management libraries."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is 'lifting state up' in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Moving state from a child component to its parent so both can share it, making the parent the single source of truth" },
+        { "id": "b", "text": "Moving all state to global state management so components never hold local state" },
+        { "id": "c", "text": "Converting class components to functional components to use hooks" },
+        { "id": "d", "text": "Moving state from global state to local useState to improve performance" }
+      ],
+      "correctKey": "a",
+      "explanation": "Lifting state up means moving shared state to the lowest common ancestor of the components that need it. The parent holds the state and passes it down via props (or callbacks to update it). This is React's core pattern for co-locating state with the components that own and use it. Option B describes a different architecture. Option C describes a migration pattern. Option D describes the opposite refactoring."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "When a parent component re-renders, all its child components re-render by default.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "React's default behavior is that when a parent re-renders, all its children re-render regardless of whether their props changed. This is why uncontrolled components re-render unnecessarily. To prevent this, use React.memo on children, or ensure state is colocalized so unrelated components don't re-render together."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the primary purpose of React Context?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "To replace useState for managing local component state" },
+        { "id": "b", "text": "To allow data to be passed through the component tree without prop drilling, without requiring data to flow through every intermediate component" },
+        { "id": "c", "text": "To cache expensive computed values across renders" },
+        { "id": "d", "text": "To provide a way to share event handlers between sibling components" }
+      ],
+      "correctKey": "b",
+      "explanation": "Context provides a way to pass data through the component tree without manually threading props through every intermediate level. Use cases include themes, locale, auth state, and feature flags. However, Context is NOT a state management tool — it broadcasts a value to all consumers and re-renders all of them on any change, which can be a performance issue for frequently changing values."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is 'state colocation' in React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Placing all application state in a single global store" },
+        { "id": "b", "text": "Keeping state as close as possible to where it is used — moving it down the component tree rather than keeping it high up just in case a descendant needs it" },
+        { "id": "c", "text": "Organizing component files in a single folder by feature" },
+        { "id": "d", "text": "Using useState instead of useRef for all mutable values" }
+      ],
+      "correctKey": "b",
+      "explanation": "State colocation means placing state at the lowest necessary level in the component tree — not higher. This reduces unnecessary re-renders and keeps logic close to where it's used. If only one component uses a piece of state, keep it in that component, not in a parent. Only lift state up when multiple siblings genuinely need to share it. This principle directly reduces prop drilling."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does this component render?\n\nfunction ThemeProvider({ children }: { children: React.ReactNode }) {\n  const [theme, setTheme] = useState('light');\n  return (\n    <ThemeContext.Provider value={{ theme, setTheme }}>\n      {children}\n    </ThemeContext.Provider>\n  );\n}\n\n// Is this safe?\nfunction App() {\n  return (\n    <ThemeProvider>\n      <Dashboard />\n    </ThemeProvider>\n  );\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Yes — children is typed as React.ReactNode and will render correctly" },
+        { "id": "b", "text": "No — ThemeProvider must also export a useTheme hook for consumers to access the context" },
+        { "id": "c", "text": "Yes — as long as Dashboard (or any child) uses useContext to consume the theme" },
+        { "id": "d", "text": "No — ThemeContext.Provider cannot be used directly inside a component" }
+      ],
+      "correctKey": "c",
+      "explanation": "The ThemeProvider pattern is idiomatic — it wraps children with a Context.Provider, passing the state (theme, setTheme) as the value. Any descendant of ThemeProvider can call `useContext(ThemeContext)` to access those values. Option B is a best practice (encapsulating the context behind a `useTheme()` hook) but not required for the pattern to work. Option D is wrong — Provider is a JSX component you render inside a function component."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the main performance problem with React Context?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context values are serialized to JSON and sent over the network" },
+        { "id": "b", "text": "Any change to a Context value re-renders ALL components consuming that context, regardless of whether they use the changed piece" },
+        { "id": "c", "text": "Context cannot hold values larger than 1KB" },
+        { "id": "d", "text": "Context only works in class components, not function components" }
+      ],
+      "correctKey": "b",
+      "explanation": "Context uses reference equality — when the Provider's value changes, all useContext consumers re-render. Even if a consumer only reads `theme` and the value changed was `setTheme`, it still re-renders. This can be costly in large trees. Solutions: split into multiple narrower contexts, memoize the value with useMemo, or use a subscription-based state manager like Zustand or Jotai that is more granular."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which pattern correctly optimizes a Context Provider to prevent unnecessary re-renders of all consumers?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Wrap the Provider value with useMemo to ensure referential stability when the value object reference doesn't actually change" },
+        { "id": "b", "text": "Split the context into multiple smaller contexts so each one only broadcasts the specific slice that changes" },
+        { "id": "c", "text": "Both A and B are valid optimization strategies for Context" },
+        { "id": "d", "text": "Context re-renders cannot be optimized — switch to Redux" }
+      ],
+      "correctKey": "c",
+      "explanation": "Both patterns are valid. Option A uses `useMemo({ theme, setTheme }, [theme])` to prevent a new value object on every render. Option B splits one large context into multiple focused contexts (e.g., ThemeContext, AuthContext, NotificationsContext) so changing the theme doesn't re-render auth consumers. Option D is false — Redux uses the same Provider pattern and has similar re-render concerns unless you use selectors carefully."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does Zustand's `create` function return?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A Context Provider component that must be rendered in the component tree" },
+        { "id": "b", "text": "A hook (useStore) and optionally a Provider — the store does not require a Provider to work" },
+        { "id": "c", "text": "A Redux-like store that requires middleware to be added manually" },
+        { "id": "d", "text": "A class-based store that extends React.Component" }
+      ],
+      "correctKey": "b",
+      "explanation": "Zustand's `create` returns a hook directly — no Provider required. You call `const useStore = create((set) => ({ count: 0, inc: () => set(s => ({ count: s.count + 1 })) }))` and then `useStore(state => state.count)` inside any component. The lack of a Provider tree makes Zustand simpler than Context for global state. Option A describes Context, not Zustand."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output of this Zustand store?\n\nconst useCounterStore = create<CounterState>()(\n  devtools(\n    persist(\n      (set) => ({\n        count: 0,\n        increment: () => set(s => ({ count: s.count + 1 })),\n        reset: () => set({ count: 0 }),\n      }),\n      { name: 'counter-storage' }\n    )\n  )\n);\n\n// Component A\nfunction CounterA() {\n  const { count, increment } = useCounterStore();\n  return <button onClick={increment}>{count}</button>;\n}\n\n// Component B\nfunction CounterB() {\n  const count = useCounterStore(s => s.count);\n  return <div>{count}</div>;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "CounterB re-renders only when count changes; CounterA re-renders on every store change because it destructures the full state" },
+        { "id": "b", "text": "Both components re-render on every store change regardless of which slice they use" },
+        { "id": "c", "text": "CounterA re-renders only when count changes; CounterB re-renders on every store change because it uses the full store" },
+        { "id": "d", "text": "Both components only re-render when increment is called" }
+      ],
+      "correctKey": "a",
+      "explanation": "Zustand uses subscription-based updates — components only re-render when their selected slice changes. CounterA destructures the full state object on every render, but because `useCounterStore()` with no selector returns the entire store, it re-renders on ANY change. CounterB uses a selector `s => s.count`, so it only re-renders when count changes. This illustrates the importance of using selectors for performance in Zustand."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a common mistake when using useState with an object or array?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Objects and arrays cannot be used as useState initial values" },
+        { "id": "b", "text": "Mutating the state object directly (e.g., `state.count += 1`) instead of creating a new object — React won't detect the change" },
+        { "id": "c", "text": "Using objects as keys in useState causes TypeScript errors" },
+        { "id": "d", "text": "Objects must be serialized to JSON before being passed to useState" }
+      ],
+      "correctKey": "b",
+      "explanation": "React state must be treated as immutable. Directly mutating `state.count += 1` does not trigger a re-render because the reference to the state object is unchanged (React uses reference equality). You must create a new object: `setState(prev => ({ ...prev, count: prev.count + 1 }))`. This is the same principle for arrays: `setItems(prev => [...prev, newItem])` not `items.push(newItem)`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between ' colocating state' and 'lifting state up'?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Colocating state means placing it in a global store; lifting means keeping it in the root component" },
+        { "id": "b", "text": "Colocating state means keeping it at the lowest possible level in the component tree; lifting means moving it up when multiple siblings need it — they are complementary principles" },
+        { "id": "c", "text": "They are the same thing — both terms describe moving state to the parent component" },
+        { "id": "d", "text": "Lifting is for props; colocating is for refs" }
+      ],
+      "correctKey": "b",
+      "explanation": "Colocation is the starting point: put state low in the tree. Lifting is the adjustment when multiple siblings need the same data. Start with colocation (put state where it's used), then lift only when needed (when two+ siblings genuinely need to share state). These principles work together: lift only when necessary, keep state as low as possible otherwise."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "React Context is primarily a dependency injection mechanism, not a state management solution.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Context delivers a value to descendants — that IS dependency injection. It doesn't manage state; it distributes it. True state management (Zustand, Redux, Jotai) uses subscription models with selectors so components only re-render when their specific slice changes. Context is synchronous and re-renders ALL consumers on any change. For frequently-changing state (form inputs, API responses), Context is a poor fit compared to a subscription-based store."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the primary advantage of using Zustand selectors over using the store hook without a selector?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Selectors prevent TypeScript type errors in the store definition" },
+        { "id": "b", "text": "Selectors allow components to subscribe to only the specific state slice they need, preventing unnecessary re-renders when unrelated state changes" },
+        { "id": "c", "text": "Selectors are required — using the store without a selector causes a TypeScript error" },
+        { "id": "d", "text": "Selectors automatically persist the selected slice to localStorage" }
+      ],
+      "correctKey": "b",
+      "explanation": "Without a selector, `useStore()` re-renders the component on any state change in the store. A selector `useStore(s => s.count)` subscribes only to that slice, so the component only re-renders when count changes. This is the key performance advantage of Zustand over Context — fine-grained subscriptions without a Provider."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does this component render?\n\nfunction UserProvider({ children }: { children: React.ReactNode }) {\n  const [user, setUser] = useState<User | null>(null);\n  const value = useMemo(() => ({ user, setUser }), [user]);\n  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "The Provider creates a stable value object that never changes — consumers never re-render after the first render" },
+        { "id": "b", "text": "The Provider creates a stable value reference — setUser is always the same function reference; user changes trigger re-renders of consumers who use the user slice" },
+        { "id": "c", "text": "This pattern causes a memory leak because useMemo doesn't work inside a Context Provider" },
+        { "id": "d", "text": "The Provider returns undefined because UserContext is not defined in this scope" }
+      ],
+      "correctKey": "b",
+      "explanation": "The `useMemo([user])` creates a stable object reference as long as `user` hasn't changed. Crucially, `setUser` is also stable in the memoized object because it's not in the dependency array (it is set once and never recreated). This means consumers that only use `setUser` (e.g., a logout button) won't re-render when `user` changes, and vice versa. This is the Context splitting pattern — put the changing value in its own context to avoid broadcasting unrelated changes."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between Redux and Zustand in terms of re-render behavior?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Redux uses a Provider that re-renders all connected components on any dispatch; Zustand uses selectors so only subscribed components re-render" },
+        { "id": "b", "text": "Zustand re-renders all components by default; Redux uses selectors to prevent unnecessary re-renders" },
+        { "id": "c", "text": "Both Zustand and Redux re-render all components on every state change by default" },
+        { "id": "d", "text": "Redux never re-renders components; Zustand always re-renders all components" }
+      ],
+      "correctKey": "a",
+      "explanation": "The original Redux `connect` / `useSelector` pattern (React-Redux) uses selector-based subscriptions, just like Zustand. The key difference is boilerplate: Redux requires a Provider, reducers, actions, and middleware; Zustand achieves the same fine-grained subscriptions with a single `create()` call. Both re-render only subscribed components. The re-render behavior difference historically was between Context (broadcasts to all) and subscription stores (selective)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "When is it appropriate to use React Context over a subscription-based state manager like Zustand?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context is better for data that changes frequently (e.g., mouse position, scroll position)" },
+        { "id": "b", "text": "Context is better for truly global values that change infrequently (theme, auth status, locale) and where the component tree is not extremely large" },
+        { "id": "c", "text": "Context is always better because it is built into React" },
+        { "id": "d", "text": "Context should be used for all application state" }
+      ],
+      "correctKey": "b",
+      "explanation": "Context is appropriate for infrequent, truly global values. The re-render cost is proportional to the number of consumers and how often the value changes. Theme changes (rare), auth state (changes on login/logout), and locale (changes on language switch) are good fits. Zustand or Jotai are better when state is more granular, frequently updated, or the component tree is large and selective subscriptions matter more than simplicity."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Jotai uses an atomic model where each piece of state is an independent 'atom'. What is the main advantage of this over a single-store model?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Atoms are automatically persisted to localStorage without configuration" },
+        { "id": "b", "text": "Components can subscribe to only the specific atoms they need, and React re-renders only when those atoms change — similar to Zustand selectors but with a more composable atom composition model" },
+        { "id": "c", "text": "Atoms run on a separate thread from the main React render cycle" },
+        { "id": "d", "text": "Atoms are automatically deduplicated, preventing duplicate API calls" }
+      ],
+      "correctKey": "b",
+      "explanation": "Jotai's atomic model lets you compose atoms: `const priceAtom = atom((get) => get(basePriceAtom) * get(quantityAtom))`. Each component subscribing to `priceAtom` only re-renders when `basePriceAtom` or `quantityAtom` changes. This fine-grained reactivity is Jotai's main advantage over a single store — you get granular subscriptions without manual selector functions. The model is also simpler to understand than Redux reducers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "You have a form with 10 controlled input fields managed by useState. What is the recommended state structure to minimize unnecessary re-renders?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Use a single state object: `useState({ field1: '', field2: '', ... })` and a single onChange handler — all fields update in one batch" },
+        { "id": "b", "text": "Use separate useState for each field so that changing one field doesn't re-render components depending on other fields" },
+        { "id": "c", "text": "Use useRef for each field to avoid re-renders on every keystroke" },
+        { "id": "d", "text": "Use a single state object for all fields but call the setter on every keystroke with a memoized handler — but useReducer is preferable for complex forms to centralize logic" }
+      ],
+      "correctKey": "d",
+      "explanation": "A single state object for a form groups related data, which is semantically correct. Each keystroke calls the setter and triggers one re-render (not 10). A memoized `handleChange` with `useCallback` prevents creating a new handler function on every render. `useReducer` is preferred for complex forms (many fields, validation, dependent fields) because it centralizes the update logic in one reducer function, making the code more maintainable than multiple individual `setX` calls."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "In a large form with multiple dependent fields (e.g., shipping address that changes when billing address checkbox is toggled), useState with individual setters produces cleaner code than useReducer.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "For complex forms with interdependent fields, `useReducer` is actually cleaner — a single dispatch function handles all updates, and a reducer function can implement complex logic (cross-field validation, conditional updates) without multiple useEffect hooks or scattered setState calls. Individual useState setters for dependent fields require useEffect to sync them, which is fragile and verbose."
+    }
+  ]
+}

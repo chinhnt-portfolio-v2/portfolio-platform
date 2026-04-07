@@ -130,6 +130,544 @@
       ],
       "correctKey": "a",
       "explanation": "Media queries respond to the viewport size — a component cannot adapt to being placed in a sidebar vs main content if they share the same viewport. Container queries let a component query its own containing element (requires `container-type` on the parent), making it truly portable: the same component renders differently in a 300px sidebar vs a 600px main column. This is the key use case for design systems and CMS-driven sites. Option B is a performance myth. Option C is false. Option D is false — container queries don't query the viewport (that's what media queries do)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property controls how wide an element can grow, given `width: min(100%, 600px)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The element is always exactly 600px wide" },
+        { "id": "b", "text": "The element fills 100% of its container but is capped at 600px maximum" },
+        { "id": "c", "text": "The element is always 100% wide regardless of container size" },
+        { "id": "d", "text": "The element grows to 600px minimum and never shrinks below that" }
+      ],
+      "correctKey": "b",
+      "explanation": "min(A, B) resolves to whichever value is smaller. With 100% and 600px, the browser picks the smaller one — on narrow containers (under 600px) it uses 100%, on wide containers (over 600px) it caps at 600px. This is the standard responsive max-width pattern without media queries."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS unit is relative to the viewport height, where 1vh equals 1% of the full viewport height?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "vw" },
+        { "id": "b", "text": "vmin" },
+        { "id": "c", "text": "vh" },
+        { "id": "d", "text": "dvh" }
+      ],
+      "correctKey": "c",
+      "explanation": "vh (viewport height) equals 1% of the viewport height. 100vh is the full height of the viewport. vw is viewport width. vmin is the smaller of vw or vh. dvh (dynamic viewport height) accounts for mobile browser chrome that expands/collapses — use dvh instead of vh for full-height mobile layouts to avoid content jumping when the URL bar hides."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `calc(100% - 40px)` compute in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A fixed value of 60px regardless of context" },
+        { "id": "b", "text": "A fluid value: 100% of the parent's dimension minus 40px" },
+        { "id": "c", "text": "An error — calc() cannot subtract a pixel value from a percentage" },
+        { "id": "d", "text": "Only works with CSS Grid, not with regular block elements" }
+      ],
+      "correctKey": "b",
+      "explanation": "calc(100% - 40px) subtracts 40px from 100% of the parent's content width. This is useful for creating elements that fill their container but leave a fixed gap (e.g., a container minus sidebar). calc() supports +, -, *, / with mixed units. The space around operators must be explicit: calc(100% - 40px) NOT calc(100%-40px)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS property controls whether text wraps when it reaches the edge of its container, or overflows?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-wrap" },
+        { "id": "b", "text": "overflow-wrap (word-wrap)" },
+        { "id": "c", "text": "white-space" },
+        { "id": "d", "text": "word-break" }
+      ],
+      "correctKey": "b",
+      "explanation": "overflow-wrap (also known as word-wrap) controls whether the browser breaks long words that would otherwise overflow. overflow-wrap: break-word only breaks words that overflow — normal words stay intact. word-break: break-all breaks at any character boundary. The recommended general pattern: overflow-wrap: break-word with hyphens: auto for graceful long-word handling."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `box-shadow: 0 4px 6px rgba(0,0,0,0.3)` create?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A red shadow offset 4px right and 6px down" },
+        { "id": "b", "text": "A soft shadow: 0px horizontal offset, 4px vertical offset, 6px blur, no spread, semi-transparent black" },
+        { "id": "c", "text": "A 4px solid black border with 6px blur radius" },
+        { "id": "d", "text": "An inset shadow that appears inside the element" }
+      ],
+      "correctKey": "b",
+      "explanation": "box-shadow syntax: offset-x offset-y blur-radius spread-radius color. 0 4px 6px rgba(0,0,0,0.3) means: 0 horizontal offset, 4px vertical offset, 6px blur, no spread, 30% opacity black. Adding inset as the first value creates an inset shadow. Multiple shadows can be comma-separated. box-shadow does not affect layout — it is drawn outside the element's border box."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `object-fit: cover` do on an image?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The image fills the element and overflows if it is larger" },
+        { "id": "b", "text": "The image fills the element while preserving aspect ratio, cropping any overflow" },
+        { "id": "c", "text": "The image scales down to fit inside the element without cropping" },
+        { "id": "d", "text": "object-fit only works on video elements, not images" }
+      ],
+      "correctKey": "b",
+      "explanation": "object-fit: cover scales the image to fill the element while preserving its aspect ratio, cropping any excess. This is essential for responsive image cards where images must fill a fixed-size container without distortion. object-fit: contain preserves the full image (may have letterboxing). object-fit: fill stretches to fill (distorts). Always combine with object-position to control the crop anchor point."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS feature lets you define a named animation sequence to be applied with the `animation` property?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@media" },
+        { "id": "b", "text": "@keyframes" },
+        { "id": "c", "text": "@layer" },
+        { "id": "d", "text": "@supports" }
+      ],
+      "correctKey": "b",
+      "explanation": "@keyframes defines the intermediate states of an animation sequence using percentage stops (0%-100%) or from/to keywords. The animation is then applied to an element with animation-name referencing the keyframe name. Example: @keyframes fade { from { opacity: 0; } to { opacity: 1; } } applied with animation: fade 1s ease."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which CSS pseudo-class selects an element that is the last child of its parent?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": ":last" },
+        { "id": "b", "text": ":last-of-type" },
+        { "id": "c", "text": ":last-child" },
+        { "id": "d", "text": ":n-last-child(1)" }
+      ],
+      "correctKey": "c",
+      "explanation": ":last-child selects an element only if it is the last child of its parent (no siblings after it). :last-of-type selects the last element of its type among siblings. Common use: removing the last item's border-bottom in a list with `.item:last-child { border-bottom: none; }`. Also useful for removing gaps (last item in grid/flex row needs no margin)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the purpose of `clip-path` in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It clips the file extension from image URLs" },
+        { "id": "b", "text": "It clips the visible area of an element to a defined shape (circle, polygon, ellipse) without affecting its layout space" },
+        { "id": "c", "text": "It removes the element from the document flow when scrolling" },
+        { "id": "d", "text": "clip-path is only valid on <canvas> elements, not HTML elements" }
+      ],
+      "correctKey": "b",
+      "explanation": "clip-path defines a clipping region — only the area inside the shape is visible, the rest is hidden. Common values: circle(), ellipse(), polygon(), inset(). Unlike overflow: hidden (which clips to a rectangle), clip-path allows complex shapes. clip-path: polygon(50% 0, 100% 100%, 0 100%) creates a triangle. The element's layout space is unchanged — only its visual area is clipped. clip-path is GPU-accelerated and animatable."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `user-select: none` prevent?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Prevents the element from receiving any mouse or keyboard events" },
+        { "id": "b", "text": "Prevents users from selecting/highlighting text within the element" },
+        { "id": "c", "text": "Prevents the element from being rendered by screen readers" },
+        { "id": "d", "text": "Prevents the element from being copied to the clipboard" }
+      ],
+      "correctKey": "b",
+      "explanation": "user-select: none prevents text selection/highlighting within the element. It does not prevent the element from receiving events, nor does it prevent copying via keyboard shortcuts or dev tools. Common use: preventing accidental text selection on button icons, game UIs, and drag handles. Other values: user-select: all (select all on first click), user-select: text (only text is selectable), auto/inherit per usual."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the primary purpose of `contain` property in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "To contain text within a fixed-size box" },
+        { "id": "b", "text": "To isolate layout, paint, and style calculations of a component so they don't affect the rest of the page — improving browser performance" },
+        { "id": "c", "text": "To prevent flex items from wrapping to new lines" },
+        { "id": "d", "text": "contain is a deprecated property replaced by CSS Grid" }
+      ],
+      "correctKey": "b",
+      "explanation": "contain tells the browser that an element's internal layout/paint/style changes should not affect the rest of the page. Values: layout (layout isolation), paint (paint isolation), style (style isolation for counters/lists), size (size containment). This is a performance optimization for complex widgets — it allows the browser to skip recalculating the rest of the page when a contained component changes. The layout keyword prevents a child's margin from collapsing with the parent's."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `appearance: none` do, and when is it commonly used?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Removes the element from the DOM entirely" },
+        { "id": "b", "text": "Removes browser-native styling (like default select dropdown arrows or checkbox appearance) so custom styles can be applied" },
+        { "id": "c", "text": "Hides the element visually while keeping it in the accessibility tree" },
+        { "id": "d", "text": "appearance: none is the default — browser-native styles are always suppressed" }
+      ],
+      "correctKey": "b",
+      "explanation": "appearance: none removes the browser's default appearance for form controls (select, checkbox, radio, input). Without it, styling these elements across browsers is nearly impossible because the native control sits on top of styled elements. After setting appearance: none, the element becomes a regular div-like box you can style freely. Note: requires vendor prefixes in some browsers (-webkit-appearance: none)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `cursor: pointer` and `cursor: grab`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "They are identical — both show a pointing hand cursor" },
+        { "id": "b", "text": "pointer shows a hand on links/buttons; grab shows an open hand for draggable elements, grab: active shows a closed hand during the drag" },
+        { "id": "c", "text": "grab is only available on mobile touch devices; pointer is for desktop" },
+        { "id": "d", "text": "cursor only affects mouse cursors, not keyboard navigation" }
+      ],
+      "correctKey": "b",
+      "explanation": "cursor: pointer signals 'this element is clickable/interactive'. cursor: grab signals 'this element is draggable'. During active dragging, use cursor: grabbing (closed hand). These cursor cues communicate affordance — users infer behavior from cursor shape. Always use the appropriate cursor for drag-and-drop interfaces, resizable elements, and copyable content."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `inherit`, `initial`, and `unset` mean as values for any CSS property?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "inherit follows the cascade from parent; initial resets to the user agent default; unset falls back to inherited value if inherited, otherwise to initial" },
+        { "id": "b", "text": "They are all synonyms that reset any CSS property to its default value" },
+        { "id": "c", "text": "inherit only works on inherited properties; initial and unset work on all properties" },
+        { "id": "d", "text": "unset removes the property value entirely from the cascade" }
+      ],
+      "correctKey": "a",
+      "explanation": "inherit: use the parent's computed value. initial: use the property's user-agent default (the browser's initial value). unset: acts as inherit for inherited properties, initial for non-inherited properties. This is useful for resets: `color: unset` on a button inside a dark-themed container → inherits the dark text color rather than the browser's default black."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the `BFC` (Block Formatting Context) represent, and what CSS properties create one?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A BFC is a type of flex container created with display: flex" },
+        { "id": "b", "text": "A BFC is an isolated layout context where the box's internal layout does not affect boxes outside it — created by overflow, display, position, float, or contain" },
+        { "id": "c", "text": "A BFC is the browser's default layout algorithm for block elements — no CSS creates it, it exists by default" },
+        { "id": "d", "text": "A BFC is a grid layout created with display: grid" }
+      ],
+      "correctKey": "b",
+      "explanation": "A Block Formatting Context is an isolated layout context. Inside a BFC: margins don't collapse with parent/children, floats don't escape, and overflow: hidden clips floats from siblings. Creating a BFC: overflow: hidden/auto (not visible), display: flow-root/inline-block/block, float: left/right, position: absolute/fixed, contain: layout. display: flow-root is the cleanest BFC creator (no side effects)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `writing-mode: horizontal-tb` mean?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Text flows horizontally, lines go from top to bottom (the default for most scripts)" },
+        { "id": "b", "text": "Text flows vertically from top to bottom, lines go left to right" },
+        { "id": "c", "text": "Text flows from bottom to top in a horizontal direction" },
+        { "id": "d", "text": "writing-mode only affects the first letter of each paragraph" }
+      ],
+      "correctKey": "a",
+      "explanation": "horizontal-tb is the default writing mode — text flows horizontally (left to right in LTR), lines stack vertically from top to bottom. Combined with logical properties (margin-inline-start instead of margin-left), writing-mode-aware CSS adapts to vertical modes for CJK languages without extra CSS."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the purpose of the `cursor` property in CSS beyond the default arrow?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "cursor only changes the mouse pointer appearance and has no effect on accessibility or UX" },
+        { "id": "b", "text": "cursor communicates affordance — different cursors signal different interactions (pointer=clickable, grab=draggable, wait=loading, not-allowed=disabled)" },
+        { "id": "c", "text": "cursor only works on elements with display: block" },
+        { "id": "d", "text": "cursor: none hides the pointer but the element still receives hover events" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cursor shapes communicate what action is possible — they are a critical accessibility and UX signal. pointer (hand) = links/buttons. grab/grabbing = drag-and-drop. crosshair = precision selection. wait/progress = loading. not-allowed/no-drop = disabled/invalid. help = question mark overlay. Using the right cursor on interactive elements helps users predict behavior without reading labels."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which CSS property lets you change the cursor to a custom image?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "cursor: url('custom.cur'), auto" },
+        { "id": "b", "text": "cursor-image: url('custom.png')" },
+        { "id": "c", "text": "pointer-image: custom.png" },
+        { "id": "d", "text": "Custom cursors require JavaScript — CSS cannot use custom images" }
+      ],
+      "correctKey": "a",
+      "explanation": "cursor: url(path/to/image.png), fallback-value. Always provide a fallback keyword after the URL in case the image fails to load. Recommended sizes: 32x32px for modern displays. Cursor images are treated as hotspots — by default the top-left corner is the hotspot, use cursor: url(image.png) 4 4, auto to set a specific hotspot (x, y offset). SVG cursors are supported in modern browsers."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `background-clip: text` do?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Clips the background to the padding box of the element" },
+        { "id": "b", "text": "Clips the background to the text foreground, creating gradient text effects — the background is only visible where the text appears" },
+        { "id": "c", "text": "Removes the background from the element entirely and applies it to text only" },
+        { "id": "d", "text": "background-clip is only valid on elements with display: inline" }
+      ],
+      "correctKey": "b",
+      "explanation": "background-clip: text (requires -webkit-background-clip: text) clips the background image/gradient to the shape of the text — creating gradient text, image text, and pattern text effects. The text itself must be transparent or semi-transparent (color: transparent) for the background to show through. Combine with background-image: linear-gradient(...) for gradient text."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which CSS property controls the stacking order of positioned elements, and what is the key constraint on its usage?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "stack-index; only works inside flex containers" },
+        { "id": "b", "text": "z-index; only works on elements with position: relative, absolute, fixed, or sticky" },
+        { "id": "c", "text": "layer-order; works on any element regardless of position value" },
+        { "id": "d", "text": "z-index is automatic — it cannot be manually set" }
+      ],
+      "correctKey": "b",
+      "explanation": "z-index controls stacking order within a stacking context. Critically: it only affects positioned elements (relative, absolute, fixed, sticky) — z-index on static elements has no effect. Without position: relative, setting z-index: 9999 has zero effect. auto creates no new stacking context; any z-index value (even 0) creates a new stacking context."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the difference between `:nth-child(odd)` and `:nth-of-type(odd)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "They are identical — both select odd-numbered elements among all siblings" },
+        { "id": "b", "text": ":nth-child(odd) counts ALL children; :nth-of-type(odd) counts only siblings of the same element type" },
+        { "id": "c", "text": ":nth-of-type only works inside <ul> elements; :nth-child works everywhere" },
+        { "id": "d", "text": ":nth-child ignores the element's own type; :nth-of-type ignores all other element types in the count" }
+      ],
+      "correctKey": "b",
+      "explanation": ":nth-child(odd) counts all children regardless of type. :nth-of-type(odd) counts only siblings of the same element type. In a container with <p>, <p>, <div>, <p>, <p>: :nth-of-type(odd) selects the 1st and 3rd <p> elements (not the div). Use :nth-of-type when you want to select every other paragraph, not every other child element."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of `CSS Layers` (@layer) in managing large-scale CSS specificity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@layer creates a new stacking context for z-index management; use z-index values to control which layer appears above" },
+        { "id": "b", "text": "@layer establishes a cascade hierarchy at the layer level — rules in later layers win over rules in earlier layers regardless of specificity within each layer, enabling predictable override systems" },
+        { "id": "c", "text": "@layer is a performance optimization that isolates CSS rendering into separate GPU-accelerated layers" },
+        { "id": "d", "text": "@layer is a replacement for CSS Modules, scoping styles to component boundaries" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS Layers solve specificity wars by establishing an explicit cascade priority independent of specificity. Declare layers: @layer reset, base, components, utilities. Within each layer, normal specificity rules apply. Between layers, later layers beat earlier layers. This means a reset's high-specificity rule can be overridden by a lower-specificity rule in a later layer. Unlayered CSS always wins over layered CSS."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "How does CSS `::marker` interact with `counter-reset` and `counter-increment` for custom numbering?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "::marker replaces counter() entirely; you never need counter-reset/counter-increment" },
+        { "id": "b", "text": "counter() generates the numeric/string value; ::marker styles its appearance — they are complementary: counter-reset defines the counter, counter-increment updates it, counter() outputs it, and ::marker styles the output" },
+        { "id": "c", "text": "::marker only works with predefined counter names; custom counters cannot be used" },
+        { "id": "d", "text": "::marker cannot be combined with CSS counters — it only styles list-style-type values" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS counters work in layers: counter-reset declares the counter, counter-increment updates it, counter() outputs the value, and ::marker styles the marker box with that value. ::marker gives you font control, color, and spacing on the marker itself. This replaces old list-style image hacks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the cascade origin priority order from LOWEST to HIGHEST in CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "User agent styles → Author styles → User styles" },
+        { "id": "b", "text": "Author styles → User agent styles → User styles" },
+        { "id": "c", "text": "User agent styles → User styles → Author styles → Author !important → User !important" },
+        { "id": "d", "text": "Author !important → Author styles → User styles → User agent styles" }
+      ],
+      "correctKey": "c",
+      "explanation": "Cascade origin order (lowest to highest): user agent (browser defaults) < user (user stylesheet) < author (your CSS) < author !important < user !important. The user !important layer being highest is intentional — accessibility user styles must win. Within each origin, specificity + source order decide."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3))` do differently from `box-shadow`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "drop-shadow clips the shadow to a box shape; box-shadow applies to the element's border box" },
+        { "id": "b", "text": "drop-shadow follows the alpha/transparency mask of the element's content (including text and PNG cutouts); box-shadow only creates a rectangular shadow around the border box" },
+        { "id": "c", "text": "They are functionally identical — drop-shadow is just the older syntax" },
+        { "id": "d", "text": "box-shadow only works on block elements; drop-shadow works on all elements" }
+      ],
+      "correctKey": "b",
+      "explanation": "box-shadow creates a rectangular shadow around the border box — it ignores the element's content. A PNG with a transparent cutout gets a solid rectangular shadow. filter: drop-shadow() follows the alpha channel — the shadow follows the actual shape of the element and its transparent regions. For non-rectangular elements (text, icons, PNGs), drop-shadow produces natural-looking shadows."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `scroll-behavior: smooth` accomplish, and what is its key limitation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Smoothly scrolls to anchor links and programmatically scrolled elements over ~300ms; its limitation is that it cannot be applied per-link and affects all scroll navigation globally" },
+        { "id": "b", "text": "Adds inertia-based momentum scrolling to the entire page; only works on touch devices" },
+        { "id": "c", "text": "scroll-behavior is a JavaScript library that replaces native scrolling; CSS-only solutions require scroll-snap" },
+        { "id": "d", "text": "scroll-behavior smooths scrolling only when triggered by clicking anchor links, not by JavaScript scrollIntoView()" }
+      ],
+      "correctKey": "a",
+      "explanation": "html { scroll-behavior: smooth; } enables smooth scrolling for all anchor links and scroll-related CSS features site-wide. It also affects scrollIntoView({ behavior: 'smooth' }) if the element's scroll-behavior is set. The limitation: it applies globally. For per-element control, use scrollIntoView({ behavior: 'smooth' }) in JavaScript. Accessibility note: prefers-reduced-motion users may be sensitive to smooth scrolling — always include @media (prefers-reduced-motion: no-preference)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does `clip-path: fill-box` vs `clip-path: view-box` control?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "fill-box clips to the element's border box; view-box clips to the SVG viewBox coordinate system" },
+        { "id": "b", "text": "fill-box clips to the element's inflated box model; view-box clips to the viewport" },
+        { "id": "c", "text": "They are synonyms for clip-path — both clip to the CSS border box of the element" },
+        { "id": "d", "text": "fill-box is for HTML elements; view-box is only valid inside SVG <clipPath> elements" }
+      ],
+      "correctKey": "a",
+      "explanation": "clip-path reference box values: fill-box uses the element's own bounding box (default). stroke-box uses the stroke bounding box (important for SVG strokes that extend outside the fill). view-box uses the SVG viewBox coordinate system as the clipping region. For HTML elements, fill-box is the default and usually the correct choice."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between CSS `@layer` and `@scope`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@layer and @scope are identical — both manage cascade priority and scoping" },
+        { "id": "b", "text": "@layer controls cascade priority between CSS origins; @scope controls which elements a selector applies to (scope proximity / style containment)" },
+        { "id": "c", "text": "@scope is deprecated in favor of @layer for style containment" },
+        { "id": "d", "text": "@layer applies only to grid layouts; @scope applies only to flex layouts" }
+      ],
+      "correctKey": "b",
+      "explanation": "@layer manages cascade priority (which CSS rule wins over another). @scope manages style scope (which elements a selector targets). @scope (.card) { .title { ... } } scopes .title to elements inside .card, preventing cross-scope leaking. CSS Scoping Level 1 (with @scope) is the CSS-native module system — it doesn't require a build step or class-name hashing to achieve style isolation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "The `content` property can only be used with `::before` and `::after` pseudo-elements.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "The content property is only valid on ::before, ::after, ::marker, and other pseudo-elements. It cannot be applied to regular elements. It is required on ::before/::after (even if empty: content: '') — without it, the pseudo-element does not render at all. The content value can be a string, URL (for images), attr() (for attribute values), or counter()."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "In CSS, `vh` units change when the browser URL bar shows or hides on mobile, while `dvh` (dynamic viewport height) does not.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "dvh changes when the browser URL bar shows or hides — it reflects the dynamic viewport state. vh uses the full viewport height (address bar visible), which causes layout jumps when the bar hides/shows. svh (small viewport height) uses the smallest viewport state (address bar always visible). For reliable full-height layouts on mobile, dvh is the correct choice."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "CSS `mask` and `clip-path` are functionally identical — both clip the visible area of an element.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "clip-path clips to a geometric shape — it is binary (inside/outside). mask clips using an image's alpha channel — it can create soft, feathered, semi-transparent edges that clip partially. A mask image with 50% opacity regions creates 50% opacity on the masked element. clip-path creates hard edges only. mask also supports multiple mask layers, mask-composite, and gradient masks."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The z-index of a child element is always relative to its siblings, never to elements in a parent stacking context.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Within a stacking context, all z-index values are relative — a child with z-index: 9999 inside a parent with z-index: 1 can never appear above an element in a different stacking context with z-index: 2. The parent's z-index 'locks' the children into a specific stacking level. This is the source of the common bug: a modal inside a low-z-index parent can't appear above a sibling with higher z-index."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "CSS variables (custom properties) are evaluated once at definition time and cannot react to property changes.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "CSS custom properties are live — they follow the cascade and recalculate whenever their value changes (via CSS transitions, media queries, :hover, or JavaScript). The var() reference is re-evaluated on every paint. Example: .card { --bg: red; } and .card:hover { --bg: blue; } — the background color updates live on hover because the custom property change triggers a repaint."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`appearance: none` removes an element from the accessibility tree, making it invisible to screen readers.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "appearance: none removes the browser's native UI appearance (the OS-level form control), but the element remains in the DOM and accessibility tree. It only affects visual styling, not semantic meaning. A <select> with appearance: none is still a select element to screen readers — it just looks like a div. For true accessibility tree removal, use aria-hidden='true'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "The CSS property `all: unset` resets all CSS properties on an element to their initial (user-agent) values simultaneously.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "all: unset resets every CSS property (including inherited ones) to their initial values. Note: 'unset' as a value acts as inherit for inherited properties and initial for non-inherited ones — effectively a full reset to defaults. However, all: unset does NOT reset CSS custom properties — those are handled separately. Useful for component library isolation: start with all: unset on a component root, then apply your own styles."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`display: flow-root` is the cleanest way to create a BFC without side effects like overflow clipping or float clearing.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "display: flow-root creates a new Block Formatting Context without changing overflow behavior or affecting floats. overflow: hidden also creates a BFC (and clips content), which is often an unintended side effect. float + clear hacks also create BFC-adjacent behavior. flow-root is the semantic, purpose-built BFC creator — it says 'I want this element to be a formatting context' without accidentally changing overflow visibility."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS `@layer` can be used to make third-party CSS libraries always lose to your own styles, without using high-specificity selectors.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "By wrapping third-party CSS in an early layer: @layer third-party { /* normalize.css */ }, and placing your own styles in a later layer: @layer site { /* your styles */ }, your site styles will always win over third-party styles — regardless of selector specificity. This is the canonical use case for @layer. Unlayered CSS always wins over all layers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A `position: fixed` element inside a parent with `transform: scale(0.9)` will be positioned relative to the scaled parent, not the viewport.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "A non-none transform on an ancestor establishes a new containing block, changing what position: fixed is fixed relative to. A fixed element inside a transformed parent 'fixes' to that transformed coordinate system, not the viewport. This breaks fixed overlays, sticky headers, and modal backdrops when a parent has transform applied. Fix: move the fixed element outside the transformed container."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS `@property` (Houdini) with `inherits: false` means children of an element cannot use the custom property via var().",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "inherits: false means the custom property does NOT cascade down through inheritance — child elements don't inherit the property value from their parent. However, children can still USE the property via var() if they have their own definition or if there's a fallback. inherits: false only prevents the cascade inheritance mechanism, not var() resolution."
+    },
+    {
+      "levelTag": "MULTIPLE_ANSWER",
+      "questionText": "Which CSS properties create a new stacking context? (Select ALL that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "position: relative + z-index: 0" },
+        { "id": "b", "text": "position: fixed (without z-index)" },
+        { "id": "c", "text": "opacity: 0.9" },
+        { "id": "d", "text": "transform: scale(1)" },
+        { "id": "e", "text": "display: flex" }
+      ],
+      "correctKey": "a,c,d",
+      "explanation": "position: relative + any z-index (even 0) creates a stacking context. opacity < 1 creates a stacking context. Any non-none transform creates a stacking context. position: fixed WITHOUT z-index does NOT create a stacking context (unless combined with z-index). display: flex by itself does NOT create a stacking context (but flex items with z-index do)."
+    },
+    {
+      "levelTag": "MULTIPLE_ANSWER",
+      "questionText": "Which CSS features require the parent element to be explicitly defined as a container before they work? (Select ALL that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Container queries (@container)" },
+        { "id": "b", "text": "Media queries" },
+        { "id": "c", "text": "Container query units (cqw, cqh, cqi, cqb, cqmin, cqmax)" },
+        { "id": "d", "text": "aspect-ratio on the parent itself" },
+        { "id": "e", "text": "CSS Grid implicit tracks (grid-auto-rows)" }
+      ],
+      "correctKey": "a,c",
+      "explanation": "Container queries and container query units (cqw, cqh, etc.) require the parent to have container-type: inline-size (or size) set. Media queries query the viewport — no container setup needed. Container query units (cqw = 1% of container width) also require the container context. aspect-ratio on the parent applies to the parent's own dimensions — no container query context needed."
+    },
+    {
+      "levelTag": "MULTIPLE_ANSWER",
+      "questionText": "Which of the following are valid values for `font-variant-ligatures`? (Select ALL that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "common-ligatures" },
+        { "id": "b", "text": "discretionary-ligatures" },
+        { "id": "c", "text": "historical-ligatures" },
+        { "id": "d", "text": "no-discretionary-ligatures" },
+        { "id": "e", "text": "smart-ligatures" }
+      ],
+      "correctKey": "a,b,c,d",
+      "explanation": "font-variant-ligatures supports: common-ligatures, no-common-ligatures, discretionary-ligatures, no-discretionary-ligatures, historical-ligatures, no-historical-ligatures, and contextual (which controls whether context-specific ligatures apply). 'smart-ligatures' is not a valid CSS value for font-variant-ligatures."
+    },
+    {
+      "levelTag": "MULTIPLE_ANSWER",
+      "questionText": "Which of the following selectors create a new stacking context? (Select ALL that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": ".card { z-index: 0; position: relative; }" },
+        { "id": "b", "text": ".modal { z-index: 9999; position: fixed; }" },
+        { "id": "c", "text": ".widget { opacity: 0.5; }" },
+        { "id": "d", "text": ".dropdown { position: absolute; } (no z-index)" },
+        { "id": "e", "text": ".card { transform: translateZ(0); }" }
+      ],
+      "correctKey": "a,b,c,e",
+      "explanation": "A stacking context is created by: any positioned element with z-index + any value (even 0) (a, b both), opacity < 1 (c), transform != none (e). position: absolute alone without z-index does NOT create a stacking context (d). position: fixed without z-index does NOT create a stacking context."
+    },
+    {
+      "levelTag": "MULTIPLE_ANSWER",
+      "questionText": "Which CSS values for `white-space` preserve line breaks from the source HTML? (Select ALL that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "pre" },
+        { "id": "b", "text": "pre-wrap" },
+        { "id": "c", "text": "pre-line" },
+        { "id": "d", "text": "nowrap" },
+        { "id": "e", "text": "normal" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "white-space: pre preserves all whitespace AND line breaks — no wrapping. pre-wrap preserves whitespace and line breaks, but ALSO wraps at line breaks (unlike pre which can overflow). pre-line collapses sequences of whitespace but preserves line breaks. nowrap collapses whitespace but does NOT preserve line breaks (it prevents wrapping). normal collapses whitespace and wraps normally."
+    },
+    {
+      "levelTag": "MULTIPLE_ANSWER",
+      "questionText": "Which CSS functions return a value that can be used as any CSS length? (Select ALL that apply)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "calc()" },
+        { "id": "b", "text": "clamp()" },
+        { "id": "c", "text": "min()" },
+        { "id": "d", "text": "attr()" },
+        { "id": "e", "text": "counter()" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "calc(), clamp(), and min() return numeric values that can be used anywhere a length is accepted. attr() with a non-string syntax (like <color>) returns that type, but plain attr() in non-content properties returns a string. counter() and counters() return counter values usable only in content: property. Outside of content:, counter() is not valid."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does this CSS produce?\n\n```css\n.box {\n  width: min(100%, calc(50% + 200px));\n  max-width: 600px;\n  margin: 0 auto;\n  background: #eee;\n}\n/* Parent width: 1200px */",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Width: 600px — max-width clamps the result of min() which equals 50% + 200px = 800px" },
+        { "id": "b", "text": "Width: 600px — min(100%, calc(50%+200px)) = min(1200px, 800px) = 800px, then max-width: 600px reduces it to 600px" },
+        { "id": "c", "text": "Width: 800px — max-width only applies if min() returns a value larger than 600px" },
+        { "id": "d", "text": "Width: 100% — calc(50%+200px) is invalid because percentages can't be added to pixels" }
+      ],
+      "correctKey": "b",
+      "explanation": "min(100%, calc(50% + 200px)) at 1200px parent: 100% = 1200px; calc(50% + 200px) = 600px + 200px = 800px. min(1200px, 800px) = 800px. max-width: 600px is applied AFTER min() — since 800px > 600px, it gets clamped to 600px. Result: 600px. The order of operations: min() constrains the upper bound first, then max-width applies as an additional constraint."
     }
   ]
 }

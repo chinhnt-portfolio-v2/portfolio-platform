@@ -54,6 +54,175 @@
       "explanation": "The complete list of falsy values is: false, 0, -0, 0n, '', \"\", ``, null, undefined, NaN, and document.all. The string 'false' (a non-empty string, even with word 'false') is truthy — it's the word 'false', not the boolean false. Options A, B, and D are all on the falsy list. Option C is the only truthy value."
     },
     {
+      "levelTag": "JUNIOR",
+      "questionText": "What does the `typeof` operator return for `null`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "\"null\"" },
+        { "id": "b", "text": "\"undefined\"" },
+        { "id": "c", "text": "\"object\"" },
+        { "id": "d", "text": "\"boolean\"" }
+      ],
+      "correctKey": "c",
+      "explanation": "typeof null returns 'object' — this is a long-standing bug (originates from the original JavaScript implementation in 1995). null is a primitive value, not an object, but typeof misreports it. This is NOT fixed to avoid breaking legacy code. To reliably check for null, use `value === null` (strict equality). typeof 'object' for null is one of the most infamous JS gotchas."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nconsole.log(typeof []);\nconsole.log(Array.isArray([]));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "\"array\" then true" },
+        { "id": "b", "text": "\"object\" then true" },
+        { "id": "c", "text": "\"object\" then false" },
+        { "id": "d", "text": "\"array\" then false" }
+      ],
+      "correctKey": "b",
+      "explanation": "typeof [] returns 'object' because arrays are objects in JavaScript (they inherit from Object.prototype). Array.isArray([]) is the reliable way to check if a value is an array — it returns true for any array, and false for everything else. Never use typeof to check for arrays."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which keyword declares a block-scoped variable that cannot be reassigned after its initial value is set?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "var" },
+        { "id": "b", "text": "const" },
+        { "id": "c", "text": "let" },
+        { "id": "d", "text": "static" }
+      ],
+      "correctKey": "b",
+      "explanation": "const declares a block-scoped constant — its binding cannot be reassigned. However, if the value is an object or array, the variable binding is constant but the contents are mutable (you can still push to an array or add properties to an object). let is block-scoped but can be reassigned. var is function-scoped and can be reassigned. static is used in classes for static methods/properties, not variable declaration."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `NaN === NaN` evaluate to?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true" },
+        { "id": "b", "text": "false" },
+        { "id": "c", "text": "NaN" },
+        { "id": "d", "text": "Throws a ReferenceError" }
+      ],
+      "correctKey": "b",
+      "explanation": "NaN === NaN is false — NaN is the only JavaScript value that is not equal to itself. This is because NaN represents an undefined result from a numeric operation, and two undefined results are not considered equal. Use Number.isNaN(NaN) or Object.is(NaN, NaN) to reliably check for NaN. Number.isNaN() is preferred because it doesn't coerce the argument (global isNaN() coerces strings, returning true for 'abc')."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which method adds one or more elements to the END of an array?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "unshift()" },
+        { "id": "b", "text": "push()" },
+        { "id": "c", "text": "pop()" },
+        { "id": "d", "text": "shift()" }
+      ],
+      "correctKey": "b",
+      "explanation": "push() adds elements to the end of an array and returns the new length. unshift() adds to the beginning. pop() removes from the end. shift() removes from the beginning. Remember: push/pop = END (like a stack), unshift/shift = FRONT."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nconst a = [1, 2, 3];\nconst b = a;\nb.push(4);\nconsole.log(a);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[1, 2, 3]" },
+        { "id": "b", "text": "[1, 2, 3, 4]" },
+        { "id": "c", "text": "ReferenceError: Cannot assign to constant variable" },
+        { "id": "d", "text": "[4]" }
+      ],
+      "correctKey": "b",
+      "explanation": "Objects (including arrays) are assigned by reference in JavaScript. const a = [1,2,3] creates an array in memory; a holds a reference to it. const b = a copies the reference — both a and b point to the SAME array object. Modifying the object through b (push) mutates the shared object, so a sees the change too. This is a common source of bugs when copying arrays/objects — use spread [...a] or Array.from(a) for a shallow copy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which statement about arrow functions is correct?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Arrow functions have their own `this` binding, just like regular functions" },
+        { "id": "b", "text": "Arrow functions cannot be used as methods inside objects because they don't bind their own `this`" },
+        { "id": "c", "text": "Arrow functions hoisted just like regular functions" },
+        { "id": "d", "text": "Arrow functions must always have a return statement" }
+      ],
+      "correctKey": "b",
+      "explanation": "Arrow functions don't have their own `this` — they lexically inherit `this` from the enclosing scope. This makes them unsuitable as object methods (where you need `this` to refer to the object). They are NOT hoisted (unlike function declarations). They don't have their own arguments object. Single-expression arrow functions have implicit return (no braces needed). Multiple statements require explicit return."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nconsole.log('5' + 3);\nconsole.log('5' - 3);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "\"53\" then 2" },
+        { "id": "b", "text": "8 then 8" },
+        { "id": "c", "text": "\"53\" then \"53\"" },
+        { "id": "d", "text": "8 then 2" }
+      ],
+      "correctKey": "a",
+      "explanation": "The + operator triggers string concatenation if either operand is a string: '5' + 3 → '53'. The - operator triggers numeric coercion: '5' - 3 → 2 (both operands converted to numbers). This is a classic type coercion gotcha. Use strict + explicit coercion (Number() or +x) to avoid surprises."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which method is used to attach an event listener in modern JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "element.onclick = handler" },
+        { "id": "b", "text": "element.addEventListener('click', handler)" },
+        { "id": "c", "text": "element.attachEvent('click', handler)" },
+        { "id": "d", "text": "element.listen('click', handler)" }
+      ],
+      "correctKey": "b",
+      "explanation": "addEventListener() is the modern standard for attaching event handlers. It allows multiple handlers for the same event, supports event phases (capture/bubble), and can use the options object for passive listeners. onclick = handler (A) replaces any existing handler and doesn't support multiple handlers. attachEvent (C) was IE-only and is deprecated."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What is the output?\n\nconsole.log(Boolean(' '));\nconsole.log(Boolean(''));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true then true" },
+        { "id": "b", "text": "false then false" },
+        { "id": "c", "text": "true then false" },
+        { "id": "d", "text": "false then true" }
+      ],
+      "correctKey": "c",
+      "explanation": "A non-empty string (even a single space ' ') is truthy, so Boolean(' ') is true. An empty string '' is falsy. This distinction matters when checking if user input is present — '' + ' ' can cause subtle bugs if not handled correctly."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "What does `document.getElementById('app')` return if no element with that ID exists?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "null" },
+        { "id": "b", "text": "undefined" },
+        { "id": "c", "text": "An empty HTMLCollection" },
+        { "id": "d", "text": "Throws a DOMException" }
+      ],
+      "correctKey": "a",
+      "explanation": "getElementById returns null when no matching element is found — it never returns undefined or an empty collection. Always guard against null: `const el = document.getElementById('app'); if (el) { ... }`. Note: IDs must be unique in the document; browsers enforce this. Using duplicate IDs results in unspecified behavior."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which of the following are valid ways to create an array?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "const a = []" },
+        { "id": "b", "text": "const b = new Array(5) — creates an array of length 5 with empty slots" },
+        { "id": "c", "text": "const c = Array.from({ length: 3 }, (_, i) => i)" },
+        { "id": "d", "text": "const d = Array.of(1, 2, 3)" }
+      ],
+      "correctKey": "a,b,c,d",
+      "explanation": "All are valid. [] is array literal syntax. new Array(5) creates a sparse array of length 5 (empty slots, not undefined values). Array.from() creates an array from an iterable or array-like object (useful for converting NodeLists or creating filled arrays). Array.of() creates an array from its arguments — unlike new Array(n), Array.of(5) creates [5], not an empty array of length 5."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Which array method would you use to keep only items with a price greater than 100?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "array.find(fn)" },
+        { "id": "b", "text": "array.some(fn)" },
+        { "id": "c", "text": "array.filter(fn)" },
+        { "id": "d", "text": "array.every(fn)" }
+      ],
+      "correctKey": "c",
+      "explanation": "filter() returns a new array containing only elements for which the callback returns true. find() returns the FIRST matching element (or undefined). some() returns true if ANY element matches. every() returns true if ALL elements match. The 'F' in filter stands for 'filtering in' the matching ones."
+    },
+    {
       "levelTag": "MIDDLE",
       "questionText": "What is a closure in JavaScript, and when is it created?",
       "questionType": "MULTIPLE_CHOICE",
@@ -93,6 +262,214 @@
       "explanation": "JavaScript uses prototypal inheritance. Property lookup starts on the object itself (own properties). If not found, it follows [[Prototype]] to the prototype object, and continues recursively up the chain until either the property is found or null is reached (then undefined). This chain is dynamic — you can mutate it at runtime via Object.setPrototypeOf() or __proto__. Option B reverses the lookup order. Option C is wrong (chain is dynamic). Option D is wrong (it's recursive, not single-level)."
     },
     {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100);\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0, 1, 2" },
+        { "id": "b", "text": "3, 3, 3" },
+        { "id": "c", "text": "undefined, undefined, undefined" },
+        { "id": "d", "text": "0, 1, 2, then 3" }
+      ],
+      "correctKey": "b",
+      "explanation": "Using var (function-scoped), the three setTimeout callbacks all close over the SAME `i` variable. By the time the callbacks run (after 100ms), the for loop has completed and `i` is 3. All three callbacks log 3. Fix: use `let` (block-scoped) in the loop — each iteration creates a new `i` binding, so each callback captures its own value."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the `this` keyword refer to inside a regular (non-arrow) function used as an event handler?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The global window object in all cases" },
+        { "id": "b", "text": "The DOM element that dispatched the event" },
+        { "id": "c", "text": "The function's lexical this from its enclosing scope" },
+        { "id": "d", "text": "undefined in strict mode" }
+      ],
+      "correctKey": "b",
+      "explanation": "When a regular function is used as an event handler (attached via addEventListener), `this` inside the handler refers to the DOM element that fired the event. This is how you access the element: `btn.addEventListener('click', function() { this.style.color = 'red'; })`. Arrow functions don't rebind `this` — they inherit it from the enclosing scope. Note: in strict mode at the top level, `this` in a normal function would be undefined, but addEventListener explicitly sets `this` to the element."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which statement correctly describes the `call`, `apply`, and `bind` methods?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "call and apply invoke the function immediately with a specified `this`; bind returns a new function with bound `this` but does not invoke it" },
+        { "id": "b", "text": "call and bind invoke the function immediately; apply returns a new function" },
+        { "id": "c", "text": "All three methods are identical — they only differ in syntax style" },
+        { "id": "d", "text": "bind is used to invoke immediately with a specified `this`; call and apply return a new function" }
+      ],
+      "correctKey": "a",
+      "explanation": "call() invokes a function immediately with a specified `this` and individual arguments. apply() does the same but takes arguments as an array. bind() returns a NEW function with `this` permanently bound — it does not invoke the original function. Use bind for callbacks: `const boundFn = fn.bind(context); setTimeout(boundFn, 100)`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nconst obj = { a: 1 };\nconst handler = {\n  get(target, prop) {\n    return prop in target ? target[prop] : 42;\n  }\n};\nconst proxy = new Proxy(obj, handler);\nconsole.log(proxy.a, proxy.b);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1 then 42" },
+        { "id": "b", "text": "1 then undefined" },
+        { "id": "c", "text": "undefined then 42" },
+        { "id": "d", "text": "42 then 42" }
+      ],
+      "correctKey": "a",
+      "explanation": "A Proxy wraps a target object and intercepts operations via handler traps. The get trap is called when accessing properties. Here, for 'a' it returns target.a (1); for 'b' (not in target) it returns 42 (the fallback). Proxy enables powerful metaprogramming — validation, lazy evaluation, logging, and data binding."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which statement about `async/await` is correct?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "async/await replaces Promises — they are completely different execution models" },
+        { "id": "b", "text": "async/await allows writing asynchronous code in a synchronous style; `await` pauses execution within the async function until the Promise resolves" },
+        { "id": "c", "text": "An async function always returns a value synchronously" },
+        { "id": "d", "text": "`await` can be used outside of an async function" }
+      ],
+      "correctKey": "b",
+      "explanation": "async/await is syntactic sugar over Promises — an async function automatically returns a Promise. await pauses the async function's execution (yielding control back to the event loop) until the awaited Promise settles, then resumes. await must be inside an async function (or at the top level of a module). async functions always return a Promise (even if you return a plain value, it gets wrapped)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nconsole.log([...[1, 2], ...[3, 4]]);\nconsole.log([...[1, 2], 5]);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[1, 2, 3, 4] then [1, 2, 5]" },
+        { "id": "b", "text": "[[1, 2], [3, 4]] then [[1, 2], 5]" },
+        { "id": "c", "text": "SyntaxError then [1, 2, 5]" },
+        { "id": "d", "text": "[1, 2, 3, 4] then [[1, 2, 5]]" }
+      ],
+      "correctKey": "a",
+      "explanation": "The spread operator ... unpacks an iterable (like an array) into individual elements. `[...[1,2], ...[3,4]]` spreads both arrays, producing [1,2,3,4]. `[...[1,2], 5]` spreads [1,2] then appends 5, producing [1,2,5]. Spread in array literals performs concatenation (shallow, not deep)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does `Object.freeze()` prevent?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "It prevents any modifications to the object and its nested objects" },
+        { "id": "b", "text": "It prevents adding, deleting, or modifying existing properties of the object at the first level — but nested objects can still be modified" },
+        { "id": "c", "text": "It deletes all properties from the object" },
+        { "id": "d", "text": "It prevents the object from being garbage collected" }
+      ],
+      "correctKey": "b",
+      "explanation": "Object.freeze() makes an object immutable at the top level — you cannot add, delete, or change existing property values. However, if the object contains nested objects (or arrays), those are still mutable (freeze is shallow). For deep immutability, use a deep freeze utility or immutable libraries like Immer. frozen objects can still have their prototype changed — use Object.seal() + freeze for stricter immutability."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which statement about Promise.all() is correct?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Promise.all() runs all promises in parallel and resolves when ALL have resolved successfully, or rejects as soon as ANY one rejects" },
+        { "id": "b", "text": "Promise.all() runs promises sequentially, in the order they are passed" },
+        { "id": "c", "text": "Promise.all() always resolves, even if some promises reject" },
+        { "id": "d", "text": "Promise.allSettled() is faster than Promise.all() because it doesn't wait for all promises" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.all() takes an array of promises and returns a new promise that resolves with an array of results when all input promises resolve — or rejects immediately upon the first rejection (fail-fast behavior). Promise.allSettled() waits for all promises to settle (resolve or reject) before resolving, collecting both successes and failures. Use allSettled when you want results from all promises regardless of individual outcomes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which array method is most appropriate to compute a single summary value (e.g., sum) from an array?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "array.find(fn)" },
+        { "id": "b", "text": "array.map(fn)" },
+        { "id": "c", "text": "array.reduce(fn, initialValue)" },
+        { "id": "d", "text": "array.flatMap(fn)" }
+      ],
+      "correctKey": "c",
+      "explanation": "reduce() applies a callback with an accumulator and each element, returning a single value (sum, max, count, group, etc.). The signature is reduce(callback, initialValue) — always provide an initial value. map() returns an array of the same length. find() returns one element. reduce is the most versatile array method — many others (map, filter, flat) can be expressed via reduce."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the following code output?\n\nlet x = 10;\nfunction outer() {\n  let x = 20;\n  function inner() {\n    console.log(x);\n  }\n  return inner;\n}\nconst fn = outer();\nfn();",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "10" },
+        { "id": "b", "text": "20" },
+        { "id": "c", "text": "undefined" },
+        { "id": "d", "text": "ReferenceError: x is not defined" }
+      ],
+      "correctKey": "b",
+      "explanation": "inner() is a closure that captures the variable `x` from its lexical scope — specifically from `outer()`, not the global scope. When fn() executes (after outer() has returned), the innermost scope for `x` that inner() can see is the `let x = 20` in outer. This is lexical scoping: the variable lookup happens based on where the function is defined (textually), not where it's called."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nconst p = new Promise((resolve, reject) => {\n  reject(new Error('oops'));\n  resolve('ok');\n});\np.catch(e => console.log(e.message));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "'ok'" },
+        { "id": "b", "text": "'oops'" },
+        { "id": "c", "text": "Both 'ok' and 'oops'" },
+        { "id": "d", "text": "Neither — an unhandled rejection error is thrown" }
+      ],
+      "correctKey": "b",
+      "explanation": "A Promise executor runs synchronously. reject() is called first (queuing a rejection), then resolve() is called. However, once a Promise is settled (fulfilled or rejected), its state is immutable — calling resolve() after reject() has no effect. The promise settles as rejected with 'oops'. The .catch() handler logs 'oops'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is a potential issue with closures inside loops using `var`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "var is block-scoped, so each loop iteration creates a new variable binding — closures capture different values per iteration" },
+        { "id": "b", "text": "var is function-scoped — all closures in the loop share the same `var` variable, which retains the final loop value when callbacks execute" },
+        { "id": "c", "text": "Closures cannot be created inside loops at all — JavaScript throws a SyntaxError" },
+        { "id": "d", "text": "var hoists the variable but closures ignore hoisted variables" }
+      ],
+      "correctKey": "b",
+      "explanation": "Because `var` is function-scoped (not block-scoped), a single `i` is shared across all iterations. When the setTimeout callbacks execute, they all reference the same `i`, which has its final value (3 or whatever the loop ended with). This is a classic closure-in-loop bug. Fix: replace `var` with `let` (block-scoped — each iteration gets its own binding), or use an IIFE to capture the current value."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which of the following are features of ES6 modules (ESM)?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "ESM runs in strict mode by default" },
+        { "id": "b", "text": "ESM is statically analyzed — imports are resolved at load time, before any code executes, enabling tree-shaking" },
+        { "id": "c", "text": "ESM imports are live bindings to the exported value — re-exporting a value reflects updates made by other modules" },
+        { "id": "d", "text": "ESM and CommonJS (require/module.exports) are fully interchangeable at runtime" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "ESM is strict by default (no with, accidental global variables). ESM is statically analyzable — imports/exports cannot be conditional, enabling dead-code elimination (tree-shaking). ESM exports are live bindings — if module A imports from B and B's exported let changes, A sees the update. Option D is false — ESM and CommonJS are different module systems; you cannot require() an ESM module directly in Node without experimental flags or transpilation."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What does the following code log?\n\nconst arr = [3, 1, 2];\narr.sort();\nconsole.log(arr);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[1, 2, 3]" },
+        { "id": "b", "text": "[3, 1, 2]" },
+        { "id": "c", "text": "[1, 2, 3] — elements are coerced to strings and sorted lexicographically" },
+        { "id": "d", "text": "TypeError: sort requires a comparator function for numbers" }
+      ],
+      "correctKey": "c",
+      "explanation": "Array.sort() without a comparator converts elements to strings and sorts lexicographically. Since elements are coerced to strings: '3', '1', '2' → sorted as ['1', '2', '3'] (because '1' < '2' < '3' alphabetically). For numeric sorting, use `arr.sort((a, b) => a - b)`. sort() mutates the array in-place and returns it."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "What is the output?\n\nconst obj = { x: 1, y: 2 };\nconst { x, ...rest } = obj;\nconsole.log(x, rest);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1 then { x: 1, y: 2 }" },
+        { "id": "b", "text": "1 then { y: 2 }" },
+        { "id": "c", "text": "1 then { x: 1 }" },
+        { "id": "d", "text": "TypeError: rest element must be last in destructuring" }
+      ],
+      "correctKey": "b",
+      "explanation": "Object destructuring with rest pattern (`...rest`) collects all remaining properties not explicitly named. Here, `x` is destructured as 1, and `rest` collects everything else: { y: 2 }. The rest element must come last in destructuring. This is useful for excluding specific fields or passing remaining properties to functions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Which of the following statements about `null` and `undefined` are correct?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "null represents an intentional absence of a value — often set explicitly by the developer" },
+        { "id": "b", "text": "undefined represents an uninitialized or missing value — the language assigns it when a variable is declared but not assigned" },
+        { "id": "c", "text": "null == undefined is true (loose equality), but null === undefined is false (strict equality)" },
+        { "id": "d", "text": "typeof null === 'object' is true, while typeof undefined === 'undefined' is also true" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "null is explicit absence set by code; undefined is the language's default for uninitialized/missing values. typeof null is 'object' (the famous bug). typeof undefined is 'undefined'. Option C is wrong: null === undefined is also false — strict equality checks type, and null and undefined are different types. null == undefined is true (loose equality treats them as equivalent absent values)."
+    },
+    {
       "levelTag": "SENIOR",
       "questionText": "What is the Event Loop's role in JavaScript's concurrency model, and how does it interact with microtasks and macrotasks?",
       "questionType": "MULTIPLE_CHOICE",
@@ -130,6 +507,162 @@
       ],
       "correctKey": "a",
       "explanation": "Web Workers run in an isolated background thread with their own event loop and no DOM access — they communicate with the main thread via postMessage (structured clone) or SharedArrayBuffer. They are ideal for heavy computation (JSON parsing large datasets, image processing, complex calculations) that would otherwise block the UI. Option B is false — the main thread still owns the DOM and UI rendering. Option C describes SharedArrayBuffer (used with Worker postMessage for high-performance scenarios), not the standard Worker model. Option D is false — fetch and setTimeout are asynchronous APIs provided by the main thread; Workers are for compute, not I/O."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which of the following can cause memory leaks in JavaScript applications?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Accidental global variables created by omitting var/let/const (e.g., assigning to an undeclared variable in non-strict mode)" },
+        { "id": "b", "text": "Detached DOM nodes — a DOM tree node is removed from the page but a JavaScript reference to it still exists, preventing garbage collection" },
+        { "id": "c", "text": "Closures that capture large objects and keep them alive beyond their useful scope, especially in event handlers or callbacks" },
+        { "id": "d", "text": "Creating and discarding many temporary objects in a tight loop without reusing them, if the GC is generational and efficient" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Options A, B, C are well-known leak patterns. Accidental globals (A) bind large objects to the window object, which is never collected. Detached DOM nodes (B) are classic in single-page apps — always remove event listeners before dropping DOM references. Closures (C) can retain large objects in scope indefinitely. Option D is generally NOT a leak — modern generational GCs handle transient allocations efficiently; the churn overhead is a performance concern, not a memory leak."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which statement about generator functions is correct?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A generator function pauses execution at each `yield` and resumes from that point when .next() is called — it maintains its state across invocations" },
+        { "id": "b", "text": "Generator functions execute to completion like regular functions — yield is just a return value marker" },
+        { "id": "c", "text": "Generators are instances of the Array constructor and can be indexed like arrays" },
+        { "id": "d", "text": "Generator functions cannot be used with for...of loops" }
+      ],
+      "correctKey": "a",
+      "explanation": "A generator function (declared with `function*`) returns a Generator object. Each call to .next() resumes execution from the last yield until the next yield or return. The generator preserves its state between .next() calls. Generators are iterables — they work with for...of, spread, and Array.from(). Use generators for lazy evaluation, infinite sequences, and state machines."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What does the following code output?\n\nasync function fetchData() {\n  console.log('1');\n  await Promise.resolve();\n  console.log('2');\n  await new Promise(r => setTimeout(r, 0));\n  console.log('3');\n}\nfetchData();\nconsole.log('4');",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1, 2, 3, 4" },
+        { "id": "b", "text": "1, 4, 2, 3" },
+        { "id": "c", "text": "1, 4, 3, 2" },
+        { "id": "d", "text": "4, 1, 2, 3" }
+      ],
+      "correctKey": "b",
+      "explanation": "fetchData() starts and logs '1'. await Promise.resolve() (microtask) yields — the async function pauses, control returns to the synchronous '4' (logged immediately). After the synchronous code finishes, the event loop picks up the resumed async function — logs '2'. Another await with setTimeout (macrotask) yields. After that macrotask fires, logs '3'. Order: 1 (sync in async fn) → 4 (sync, outside) → 2 (microtask resume) → 3 (macrotask resume)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the purpose of `queueMicrotask()` and when would you prefer it over `setTimeout(fn, 0)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "queueMicrotask schedules work BEFORE the next rendering update but AFTER the current synchronous code and microtasks finish — use it for scheduling work that must not cause layout thrashing or extra macrotask delays" },
+        { "id": "b", "text": "queueMicrotask and setTimeout(fn, 0) are functionally identical — use whichever reads better" },
+        { "id": "c", "text": "queueMicrotask always runs before the current call stack is empty" },
+        { "id": "d", "text": "setTimeout(fn, 0) has higher priority than queueMicrotask" }
+      ],
+      "correctKey": "a",
+      "explanation": "queueMicrotask queues a callback in the microtask queue (same queue as Promise callbacks). It runs after the current synchronous code and all existing microtasks, but before the next macrotask (including rendering). Use it for scheduling work that must happen after the current batch of sync code but before the browser renders — reducing unnecessary frames or layout recalculations. setTimeout(fn, 0) is a macrotask — it always yields to rendering and other microtasks, making it less predictable for urgent post-sync work."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the difference between WeakMap and Map in JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "WeakMap allows only objects as keys and automatically removes entries when those objects are no longer referenced elsewhere — enabling memory-safe, key-specific cleanup" },
+        { "id": "b", "text": "WeakMap is identical to Map but uses a weaker hash function for security" },
+        { "id": "c", "text": "Map allows any value as a key, while WeakMap only allows non-object keys (primitives)" },
+        { "id": "d", "text": "WeakMap entries are never garbage collected regardless of references" }
+      ],
+      "correctKey": "a",
+      "explanation": "WeakMap is a Map-like structure where: (1) keys MUST be objects (not primitives), (2) if an object used as a key has no other references, it AND its value are eligible for garbage collection. This makes WeakMap ideal for associating metadata with objects without preventing GC (e.g., tracking DOM node data, caching). Map keeps keys alive as long as the map exists. WeakMap also has no .size, .keys(), .entries() — it's not iterable."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nconsole.log(0.1 + 0.2 === 0.3);\nconsole.log((0.1 + 0.2).toFixed(2));\nconsole.log(Number.EPSILON);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true, '0.30', 2.220446049250313e-16" },
+        { "id": "b", "text": "false, '0.30', 2.220446049250313e-16" },
+        { "id": "c", "text": "false, '0.3', 1e-15" },
+        { "id": "d", "text": "true, '0.3', 2.220446049250313e-16" }
+      ],
+      "correctKey": "b",
+      "explanation": "0.1 + 0.2 === 0.3 is false due to IEEE 754 double-precision floating point representation. 0.1 (in binary) is a repeating fraction, so 0.1 + 0.2 produces a value slightly above 0.3. Number.EPSILON is the smallest representable difference between two IEEE 754 doubles (~2.22e-16). toFixed(2) rounds to 2 decimal places, producing '0.30'. Use Number.EPSILON for reliable floating-point comparisons: `(Math.abs(a - b) < Number.EPSILON)`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the primary difference between `Object.create()` and the class syntax for inheritance?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Object.create() creates a direct prototypal link without classes — more primitive and explicit than class syntax which desugars to the same prototype chain under the hood" },
+        { "id": "b", "text": "class syntax is purely syntactic sugar and compiles to identical code as Object.create() — there is no runtime difference" },
+        { "id": "c", "text": "Object.create() is faster than class syntax in all JavaScript engines" },
+        { "id": "d", "text": "class syntax supports multiple prototype chains while Object.create() does not" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.create(proto) sets the prototype of a new object in one call — it's the direct, low-level prototypal inheritance primitive. ES6 class syntax is syntactic sugar over this: `class Foo extends Bar` compiles to a constructor function + Object.setPrototypeOf(). Both build prototype chains. Object.create is more explicit and flexible (you can set any arbitrary prototype). class is more readable and provides constructor, static methods, super keyword, and extends."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which statements about JavaScript's garbage collection are correct?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "JavaScript engines use generational (or '分代') collection — most objects die young, so young generations are collected more frequently" },
+        { "id": "b", "text": "Objects are garbage collected when no live references to them remain — circular references between two objects with no external references are collectable" },
+        { "id": "c", "text": "Setting an object reference to null immediately frees its memory before the next GC cycle" },
+        { "id": "d", "text": "WeakMap and WeakSet hold weak references to their keys — values are eligible for GC when keys are no longer referenced elsewhere" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Generational GC (A) — most objects become unreachable quickly (infant mortality); V8 uses young/old generations. Circular references (B) — modern GC algorithms use mark-and-sweep, so isolated cycles are collectable. Nulling a reference (C) doesn't immediately free memory — it only makes the object eligible for GC at the next collection cycle. WeakMap/WeakSet (D) hold weak references — if the key is only held by the WeakMap, it doesn't prevent GC."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nconst arr = [1, [2, [3, [4]]]];\nconsole.log(arr.flat(2));\nconsole.log(arr.flat(Infinity));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[1, 2, [3, [4]]] then [1, 2, 3, 4]" },
+        { "id": "b", "text": "[1, 2, [3, [4]]] then [1, [2, [3, [4]]]]" },
+        { "id": "c", "text": "[1, 2, 3, [4]] then [1, 2, 3, 4]" },
+        { "id": "d", "text": "[1, 2, 3, 4] then [1, 2, 3, 4]" }
+      ],
+      "correctKey": "a",
+      "explanation": "flat(depth) flattens an array to the specified depth. flat(2) flattens two levels: [1, [2, [3, [4]]]] → [1, 2, [3, [4]]]. flat(Infinity) flattens all levels regardless of nesting depth, fully flattening the array to a single level: [1, 2, 3, 4]. flat() with no argument defaults to depth 1."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nconst [first, ...rest] = [1, 2, 3, 4];\nconsole.log(first, rest);\nfunction f(...args) {\n  console.log(args.length);\n}\nf(1, 2, 3);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1 then [2, 3, 4]; 3" },
+        { "id": "b", "text": "1 then 2; 4" },
+        { "id": "c", "text": "[1] then [2, 3, 4]; 3" },
+        { "id": "d", "text": "1 then [2, 3, 4]; 4" }
+      ],
+      "correctKey": "a",
+      "explanation": "The rest parameter in destructuring `...rest` collects remaining elements into an array. Here, first=1 and rest=[2,3,4]. In function f(...args), the rest parameter collects all arguments into an array: args=[1,2,3], so args.length=3. The rest element must be last in both destructuring patterns and function parameters — it collects 'the rest' of the values."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "What is the output?\n\nconsole.log(2 ** 3 ** 2);\nconsole.log((2 ** 3) ** 2);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "64 then 64" },
+        { "id": "b", "text": "512 then 64" },
+        { "id": "c", "text": "64 then 512" },
+        { "id": "d", "text": "512 then 512" }
+      ],
+      "correctKey": "b",
+      "explanation": "The exponentiation operator ** is right-associative: `2 ** 3 ** 2` is `2 ** (3 ** 2)` = 2 ** 9 = 512. `(2 ** 3) ** 2` = 8 ** 2 = 64. This differs from most other operators which are left-associative. Watch out: `(-2) ** 2` is a SyntaxError (unary minus binds tighter than **) — write `-(2 ** 2)` for negation after exponentiation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Which statement correctly describes the temporal dead zone (TDZ)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "The TDZ is the period between entering block scope and executing the declaration line — let/const variables exist but cannot be accessed; any reference throws ReferenceError" },
+        { "id": "b", "text": "The TDZ only applies to hoisted function declarations" },
+        { "id": "c", "text": "The TDZ means let/const variables are not hoisted at all" },
+        { "id": "d", "text": "The TDZ only affects variables inside try/catch blocks" }
+      ],
+      "correctKey": "a",
+      "explanation": "let and const are hoisted like var, but unlike var, they are NOT initialized. The period between the start of the block scope and the actual execution of the declaration is the TDZ — any reference to the variable before its declaration line throws ReferenceError. This is a deliberate safety feature. typeof on a let-variable that was never declared also throws ReferenceError (unlike typeof on an undeclared variable, which returns 'undefined')."
     }
   ]
 }
