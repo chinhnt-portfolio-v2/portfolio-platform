@@ -10,6 +10,9 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -33,6 +36,9 @@ public class QuestionBankService {
 
     private final QuizQuestionRepository questionRepository;
     private final ObjectMapper objectMapper;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     public QuestionBankService(QuizQuestionRepository questionRepository, ObjectMapper objectMapper) {
         this.questionRepository = questionRepository;
@@ -165,6 +171,8 @@ public class QuestionBankService {
         log.info("Manual re-seed triggered (current: {} questions). Deleting all and re-seeding...", existing);
         try {
             questionRepository.deleteAll();
+            entityManager.flush();
+            entityManager.clear();
             seedIfEmpty();
         } catch (Exception e) {
             log.error("Seed failed: {}", e.getMessage(), e);
