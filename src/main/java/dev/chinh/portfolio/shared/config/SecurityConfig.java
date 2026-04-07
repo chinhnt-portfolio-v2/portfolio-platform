@@ -70,6 +70,8 @@ public class SecurityConfig {
                                 "/api/v1/.well-known/**",
                                 "/api/v1/github/contributions", // GitHub contributions proxy — unauthenticated
                                 "/api/v1/project-health",
+                                "/api/v1/quiz/seed",      // quiz admin — re-seed question bank (no user data)
+                                "/api/v1/quiz/seed/status", // quiz admin — check seed status
                                 "/api-docs/**",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
