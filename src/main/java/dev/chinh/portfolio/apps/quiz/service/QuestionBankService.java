@@ -14,12 +14,22 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class QuestionBankService {
 
     private static final Logger log = LoggerFactory.getLogger(QuestionBankService.class);
     private static final String SEED_PATH = "quiz/topics";
+    private static final Map<String, String[]> TOPIC_SUBPATHS = Map.of(
+            "java-core", new String[]{"java"},
+            "spring-boot", new String[]{"spring"},
+            "reactjs-ts", new String[]{"react"},
+            "javascript", new String[]{"javascript"},
+            "css", new String[]{"css"},
+            "dsa", new String[]{"dsa"},
+            "system-design", new String[]{"system-design"}
+    );
 
     private final QuizQuestionRepository questionRepository;
     private final ObjectMapper objectMapper;
@@ -31,7 +41,7 @@ public class QuestionBankService {
 
     /**
      * Seed the question bank if the DB is empty.
-     * Called via ApplicationRunner after Flyway migrations run.
+     * Loads both top-level topic JSONs and all sub-topic JSONs in parallel.
      */
     @Transactional
     public void seedIfEmpty() {
@@ -42,55 +52,107 @@ public class QuestionBankService {
         }
 
         log.info("Seeding quiz question bank...");
-        String[] topics = {"java-core", "spring-boot", "reactjs-ts",
-                           "javascript", "css", "dsa", "system-design"};
         int total = 0;
-        for (String topic : topics) {
+        for (String topicSlug : TOPIC_SUBPATHS.keySet()) {
             try {
-                int count = loadTopic(topic);
-                if (count > 0) {
-                    log.info("  Loaded {} questions for topic '{}'", count, topic);
-                    total += count;
-                }
+                int count = loadTopLevel(topicSlug);
+                if (count > 0) log.info("  Loaded {} questions from top-level '{}'", count, topicSlug);
+                total += count;
             } catch (Exception e) {
-                log.warn("  Could not load topic '{}': {}", topic, e.getMessage());
+                log.warn("  Could not load top-level '{}': {}", topicSlug, e.getMessage());
+            }
+            String[] subDirs = TOPIC_SUBPATHS.get(topicSlug);
+            if (subDirs != null) {
+                for (String subDir : subDirs) {
+                    try {
+                        int subCount = loadSubTopics(subDir, topicSlug);
+                        if (subCount > 0) log.info("  Loaded {} questions from sub-dir '{}' (parent: '{}')", subCount, subDir, topicSlug);
+                        total += subCount;
+                    } catch (Exception e) {
+                        log.warn("  Could not load sub-dir '{}': {}", subDir, e.getMessage());
+                    }
+                }
             }
         }
         log.info("Quiz seed complete: {} total questions.", total);
     }
 
-    private int loadTopic(String topicSlug) throws IOException {
+    private int loadTopLevel(String topicSlug) throws IOException {
         ClassPathResource resource = new ClassPathResource(SEED_PATH + "/" + topicSlug + ".json");
         if (!resource.exists()) return 0;
-
         try (InputStream is = resource.getInputStream()) {
-            JsonNode root = objectMapper.readTree(is);
-            JsonNode questionsNode = root.get("questions");
-            if (questionsNode == null || !questionsNode.isArray()) return 0;
-
-            int saved = 0;
-            for (JsonNode qNode : questionsNode) {
-                QuizQuestion q = new QuizQuestion();
-                q.setTopicSlug(topicSlug);
-                q.setLevelTag(qNode.has("levelTag") ? qNode.get("levelTag").asText() : "JUNIOR");
-                q.setQuestionText(qNode.has("questionText") ? qNode.get("questionText").asText() : "");
-                q.setQuestionType(qNode.has("questionType") ? qNode.get("questionType").asText() : "MULTIPLE_CHOICE");
-                if (qNode.has("options")) {
-                    List<Option> opts = new ArrayList<>();
-                    for (JsonNode o : qNode.get("options")) {
-                        opts.add(new Option(
-                                o.has("id") ? o.get("id").asText() : "",
-                                o.has("text") ? o.get("text").asText() : ""));
-                    }
-                    q.setOptions(objectMapper.writeValueAsString(opts));
-                }
-                q.setCorrectKey(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
-                q.setExplanation(qNode.has("explanation") ? qNode.get("explanation").asText() : null);
-                questionRepository.save(q);
-                saved++;
-            }
-            return saved;
+            return parseAndSave(is, topicSlug);
         }
+    }
+
+    private int loadSubTopics(String subDir, String parentSlug) throws IOException {
+        ClassPathResource dirResource = new ClassPathResource(SEED_PATH + "/" + subDir);
+        if (!dirResource.exists()) return 0;
+
+        int saved = 0;
+        // Walk through known sub-topic JSON filenames per sub-directory
+        String[] knownFiles = subDir.equals("java") ? new String[]{
+                    "java-collections.json", "java-oop.json"} :
+                    subDir.equals("spring") ? new String[]{
+                            "spring-auto.json", "spring-di.json", "spring-jpa.json",
+                            "spring-mvc.json", "spring-security.json", "spring-testing.json", "spring-transactions.json"} :
+                    subDir.equals("react") ? new String[]{
+                            "react-components.json", "react-ecosystem.json", "react-hooks.json",
+                            "react-perf.json", "react-rendering.json", "react-state.json", "react-ts.json"} :
+                    subDir.equals("javascript") ? new String[]{
+                            "js-async.json", "js-dom.json", "js-es6.json", "js-functions.json",
+                            "js-fundamentals.json", "js-modules.json", "js-prototype.json"} :
+                    subDir.equals("css") ? new String[]{
+                            "css-advanced.json", "css-animation.json", "css-flexbox.json",
+                            "css-fundamentals.json", "css-grid.json", "css-responsive.json", "css-typography.json"} :
+                    subDir.equals("dsa") ? new String[]{
+                            "dsa-arrays.json", "dsa-dp.json", "dsa-hash.json", "dsa-linked-lists.json",
+                            "dsa-sorting.json", "dsa-stacks-queues.json", "dsa-trees.json"} :
+                    subDir.equals("system-design") ? new String[]{
+                            "sd-caching.json", "sd-databases.json", "sd-messaging.json",
+                            "sd-microservices.json", "sd-scalability.json", "sd-security.json"} :
+                    new String[]{};
+
+            for (String file : knownFiles) {
+                ClassPathResource fileRes = new ClassPathResource(SEED_PATH + "/" + subDir + "/" + file);
+                if (fileRes.exists()) {
+                    try (InputStream fis = fileRes.getInputStream()) {
+                        saved += parseAndSave(fis, parentSlug);
+                    } catch (Exception e) {
+                        log.warn("    Failed to parse '{}': {}", file, e.getMessage());
+                    }
+                }
+            }
+        return saved;
+    }
+
+    private int parseAndSave(InputStream is, String topicSlug) throws IOException {
+        JsonNode root = objectMapper.readTree(is);
+        JsonNode questionsNode = root.get("questions");
+        if (questionsNode == null || !questionsNode.isArray()) return 0;
+
+        int saved = 0;
+        for (JsonNode qNode : questionsNode) {
+            QuizQuestion q = new QuizQuestion();
+            q.setTopicSlug(topicSlug);
+            q.setLevelTag(qNode.has("levelTag") ? qNode.get("levelTag").asText() : "JUNIOR");
+            q.setQuestionText(qNode.has("questionText") ? qNode.get("questionText").asText() : "");
+            q.setQuestionType(qNode.has("questionType") ? qNode.get("questionType").asText() : "MULTIPLE_CHOICE");
+            if (qNode.has("options")) {
+                List<Option> opts = new ArrayList<>();
+                for (JsonNode o : qNode.get("options")) {
+                    opts.add(new Option(
+                            o.has("id") ? o.get("id").asText() : "",
+                            o.has("text") ? o.get("text").asText() : ""));
+                }
+                q.setOptions(objectMapper.writeValueAsString(opts));
+            }
+            q.setCorrectKey(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
+            q.setExplanation(qNode.has("explanation") ? qNode.get("explanation").asText() : null);
+            questionRepository.save(q);
+            saved++;
+        }
+        return saved;
     }
 
     public SeedStatus getSeedStatus() {
