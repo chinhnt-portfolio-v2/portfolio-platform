@@ -153,6 +153,8 @@ public class QuestionBankService {
         JsonNode questionsNode = root.get("questions");
         if (questionsNode == null || !questionsNode.isArray()) return 0;
 
+        log.debug("parseAndSave: topic={}, questionCount={}", topicSlug, questionsNode.size());
+
         int saved = 0;
         int batchSize = 50;
         for (JsonNode qNode : questionsNode) {
@@ -173,6 +175,13 @@ public class QuestionBankService {
             q.setCorrectKey(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
             q.setExplanation(qNode.has("explanation") ? qNode.get("explanation").asText() : null);
             entityManager.persist(q);
+            Long id = q.getId();
+            if (saved < 3) { // log first 3 to confirm ID assignment
+                log.debug("persist: topic={} saved={} id={}", topicSlug, saved + 1, id);
+            }
+            if (id == null) {
+                throw new IllegalStateException("ID still null after persist for question in topic: " + topicSlug);
+            }
             saved++;
             if (saved % batchSize == 0) {
                 entityManager.flush();
