@@ -153,6 +153,7 @@ public class QuestionBankService {
         if (questionsNode == null || !questionsNode.isArray()) return 0;
 
         int saved = 0;
+        int batchSize = 50;
         for (JsonNode qNode : questionsNode) {
             QuizQuestion q = new QuizQuestion();
             q.setTopicSlug(topicSlug);
@@ -170,9 +171,15 @@ public class QuestionBankService {
             }
             q.setCorrectKey(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
             q.setExplanation(qNode.has("explanation") ? qNode.get("explanation").asText() : null);
-            questionRepository.save(q);
+            entityManager.persist(q);
             saved++;
+            if (saved % batchSize == 0) {
+                entityManager.flush();
+                entityManager.clear();
+            }
         }
+        entityManager.flush();
+        entityManager.clear();
         return saved;
     }
 
