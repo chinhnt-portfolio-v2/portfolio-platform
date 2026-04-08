@@ -2,6 +2,14 @@
 -- Parent: V12__create_quiz_schema.sql
 -- Total questions: 1365
 
+-- Clean any corrupted rows from the broken @PostConstruct seed that ran before V13
+-- (had wrong level_tag values from copy-paste errors in JSON)
+TRUNCATE TABLE quiz_questions RESTART IDENTITY CASCADE;
+
+-- Re-add constraints (replaced after truncate since CASCADE dropped them)
+ALTER TABLE quiz_questions ADD CONSTRAINT chk_level_tag CHECK (level_tag IN ('JUNIOR', 'MIDDLE', 'SENIOR'));
+ALTER TABLE quiz_questions ADD CONSTRAINT chk_question_type CHECK (question_type IN ('MULTIPLE_CHOICE', 'TRUE_FALSE', 'MULTIPLE_ANSWER'));
+
 INSERT INTO quiz_questions (topic_slug, level_tag, question_text, question_type, options, correct_key, explanation)
 VALUES
 ('java-core','JUNIOR','What is the correct way to ensure proper encapsulation in a Java class?','MULTIPLE_CHOICE','[{"id":"a","text":"Declare all fields as public so other classes can access them directly"},{"id":"b","text":"Declare fields as private and provide public getter/setter methods"},{"id":"c","text":"Declare fields as protected to restrict access to the same package only"},{"id":"d","text":"Avoid using any access modifiers so fields default to public"}]','b','Encapsulation hides internal state and requires all access through well-defined interfaces. Private fields with public accessors are the standard Java idiom. Option A exposes internals directly, breaking the abstraction. Option C''s protected modifier allows package-wide access, not full encapsulation. Option D relies on default (package-private) access, which is neither explicit nor safe.'),
