@@ -573,7 +573,7 @@
       "explanation": "inherits: false means the custom property does NOT cascade down through inheritance — child elements don't inherit the property value from their parent. However, children can still USE the property via var() if they have their own definition or if there's a fallback. inherits: false only prevents the cascade inheritance mechanism, not var() resolution."
     },
     {
-      "levelTag": "MULTIPLE_ANSWER",
+      "levelTag": "SENIOR",
       "questionText": "Which CSS properties create a new stacking context? (Select ALL that apply)",
       "questionType": "MULTIPLE_ANSWER",
       "options": [
@@ -587,7 +587,7 @@
       "explanation": "position: relative + any z-index (even 0) creates a stacking context. opacity < 1 creates a stacking context. Any non-none transform creates a stacking context. position: fixed WITHOUT z-index does NOT create a stacking context (unless combined with z-index). display: flex by itself does NOT create a stacking context (but flex items with z-index do)."
     },
     {
-      "levelTag": "MULTIPLE_ANSWER",
+      "levelTag": "SENIOR",
       "questionText": "Which CSS features require the parent element to be explicitly defined as a container before they work? (Select ALL that apply)",
       "questionType": "MULTIPLE_ANSWER",
       "options": [
@@ -601,7 +601,7 @@
       "explanation": "Container queries and container query units (cqw, cqh, etc.) require the parent to have container-type: inline-size (or size) set. Media queries query the viewport — no container setup needed. Container query units (cqw = 1% of container width) also require the container context. aspect-ratio on the parent applies to the parent's own dimensions — no container query context needed."
     },
     {
-      "levelTag": "MULTIPLE_ANSWER",
+      "levelTag": "SENIOR",
       "questionText": "Which of the following are valid values for `font-variant-ligatures`? (Select ALL that apply)",
       "questionType": "MULTIPLE_ANSWER",
       "options": [
@@ -615,7 +615,7 @@
       "explanation": "font-variant-ligatures supports: common-ligatures, no-common-ligatures, discretionary-ligatures, no-discretionary-ligatures, historical-ligatures, no-historical-ligatures, and contextual (which controls whether context-specific ligatures apply). 'smart-ligatures' is not a valid CSS value for font-variant-ligatures."
     },
     {
-      "levelTag": "MULTIPLE_ANSWER",
+      "levelTag": "SENIOR",
       "questionText": "Which of the following selectors create a new stacking context? (Select ALL that apply)",
       "questionType": "MULTIPLE_ANSWER",
       "options": [
@@ -629,7 +629,7 @@
       "explanation": "A stacking context is created by: any positioned element with z-index + any value (even 0) (a, b both), opacity < 1 (c), transform != none (e). position: absolute alone without z-index does NOT create a stacking context (d). position: fixed without z-index does NOT create a stacking context."
     },
     {
-      "levelTag": "MULTIPLE_ANSWER",
+      "levelTag": "SENIOR",
       "questionText": "Which CSS values for `white-space` preserve line breaks from the source HTML? (Select ALL that apply)",
       "questionType": "MULTIPLE_ANSWER",
       "options": [
@@ -643,7 +643,7 @@
       "explanation": "white-space: pre preserves all whitespace AND line breaks — no wrapping. pre-wrap preserves whitespace and line breaks, but ALSO wraps at line breaks (unlike pre which can overflow). pre-line collapses sequences of whitespace but preserves line breaks. nowrap collapses whitespace but does NOT preserve line breaks (it prevents wrapping). normal collapses whitespace and wraps normally."
     },
     {
-      "levelTag": "MULTIPLE_ANSWER",
+      "levelTag": "SENIOR",
       "questionText": "Which CSS functions return a value that can be used as any CSS length? (Select ALL that apply)",
       "questionType": "MULTIPLE_ANSWER",
       "options": [

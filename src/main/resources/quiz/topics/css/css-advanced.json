@@ -725,7 +725,7 @@
       "explanation": "@property registered custom properties work with BOTH @keyframes AND transition. With @property --size { syntax: '<number>'; initial-value: 100; }, you can use: (1) transition: --size 0.5s — transitioning the custom property on state change. (2) @keyframes { to { --size: 200; } } — animating it in a keyframe. The @property registration enables both mechanisms by providing the type information needed for interpolation."
     },
     {
-      "levelTag": "MULTIPLE_ANSWER",
+      "levelTag": "SENIOR",
       "questionText": "Which CSS features require the browser to support CSS Houdini APIs? (Select ALL that apply)",
       "questionType": "MULTIPLE_ANSWER",
       "options": [
