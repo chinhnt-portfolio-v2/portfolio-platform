@@ -34,6 +34,7 @@ spring:
   flyway:
     out-of-order: true
     validate-on-migrate: false               # Disable checksum validation — V6/V7 checksums mismatch due to BOM history
+    placeholder-replacement: false          # Disable — SQL text may contain ${...} sequences (e.g. Spring banner-mode docs)
 
   jpa:
     show-sql: false  # Never log SQL in production
