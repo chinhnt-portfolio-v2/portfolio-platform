@@ -44,4 +44,15 @@ public interface QuizAttemptRepository extends JpaRepository<QuizAttempt, Long> 
      * How many times has this user answered this question correctly?
      */
     long countByUserIdAndQuestionIdAndIsCorrectTrue(UUID userId, Long questionId);
+
+    /**
+     * How many times has this user attempted this question (any result)?
+     */
+    long countByUserIdAndQuestionId(UUID userId, Long questionId);
+
+    /**
+     * All question IDs this user has ever attempted (any result).
+     */
+    @Query("SELECT a.questionId FROM QuizAttempt a WHERE a.userId = :userId")
+    List<Long> findAttemptedQuestionIds(@Param("userId") UUID userId);
 }

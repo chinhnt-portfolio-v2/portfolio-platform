@@ -85,7 +85,7 @@ public class QuizService {
 
     // ── GET /questions/next ─────────────────────────────────────────────────
     @Transactional(readOnly = true)
-    public QuizQuestionResponse getNextQuestion(UUID userId, List<String> topicSlugs, int limit) {
+    public QuizQuestionResponse getNextQuestion(UUID userId, List<String> topicSlugs, int limit, List<Long> exclude) {
         if (topicSlugs == null || topicSlugs.isEmpty()) {
             throw new TopicNotFoundException("At least one topic must be selected");
         }
@@ -98,10 +98,18 @@ public class QuizService {
                     coverage(userId, slug, "SENIOR")));
         }
 
+        // Exclude question IDs passed from FE (already answered in this session).
+        // This is authoritative — avoids DB transaction timing issues.
+        Set<Long> excludedIds = (exclude != null) ? new HashSet<>(exclude) : Collections.emptySet();
+
         List<QuizQuestion> questions = questionRepository.findByTopicSlugIn(topicSlugs);
         if (questions.isEmpty()) {
             throw new TopicNotFoundException("No questions found for topics: " + topicSlugs);
         }
+
+        // Fetch all question IDs this user has attempted (any result) across all topics.
+        // Questions NOT in this set get NEVER_SEEN_BONUS → always served first.
+        Set<Long> attemptedIds = new HashSet<>(attemptRepository.findAttemptedQuestionIds(userId));
 
         Map<String, UserQuizProgress> topicProg = progressRepository
                 .findByUserIdAndTopicSlugIn(userId, topicSlugs).stream()
@@ -109,15 +117,17 @@ public class QuizService {
 
         List<WeightedQuestion> weighted = new ArrayList<>();
         for (QuizQuestion q : questions) {
+            // Skip questions already answered in this session (FE-passed).
+            if (excludedIds.contains(q.getId())) continue;
             UserQuizProgress prog = topicProg.get(q.getTopicSlug());
-            double w = computeWeight(q, prog, levels.get(q.getTopicSlug()));
+            double w = computeWeight(q, prog, levels.get(q.getTopicSlug()), attemptedIds.contains(q.getId()));
             weighted.add(new WeightedQuestion(q, w));
         }
 
         weighted.sort((a, b) -> Double.compare(b.weight, a.weight));
         List<QuizQuestion> selected = weighted.stream().limit(limit).map(wq -> wq.question).toList();
 
-        if (selected.isEmpty()) throw new TopicNotFoundException("No questions available");
+        if (selected.isEmpty()) throw new TopicNotFoundException("No questions available for the selected topics");
         return toResponse(selected.getFirst());
     }
 
@@ -287,10 +297,16 @@ public class QuizService {
 
     // ── Question Selection ───────────────────────────────────────────────────
 
-    private double computeWeight(QuizQuestion q, UserQuizProgress prog, String userLevel) {
+    /** Never-seen questions get this bonus — always served before any repeated question. */
+    private static final double NEVER_SEEN_BONUS = 1000.0;
+
+    private double computeWeight(QuizQuestion q, UserQuizProgress prog, String userLevel, boolean hasBeenAttempted) {
+        // Never-seen questions always get maximum priority — they appear before any repeat.
+        if (!hasBeenAttempted) return NEVER_SEEN_BONUS;
+
         double overdueDays;
         if (prog == null || prog.getNextReviewAt() == null) {
-            overdueDays = 30; // Never seen
+            overdueDays = 30; // No SRS data
         } else {
             overdueDays = Math.max(0,
                     Duration.between(prog.getNextReviewAt(), Instant.now()).toDays());

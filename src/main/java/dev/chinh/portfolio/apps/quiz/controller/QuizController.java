@@ -34,8 +34,9 @@ public class QuizController {
     public ResponseEntity<QuizQuestionResponse> getNextQuestion(
             @CurrentUser UUID userId,
             @RequestParam List<String> topics,
-            @RequestParam(defaultValue = "1") int limit) {
-        return ResponseEntity.ok(quizService.getNextQuestion(userId, topics, limit));
+            @RequestParam(defaultValue = "1") int limit,
+            @RequestParam(required = false) List<Long> exclude) {
+        return ResponseEntity.ok(quizService.getNextQuestion(userId, topics, limit, exclude));
     }
 
     @PostMapping("/attempts")
