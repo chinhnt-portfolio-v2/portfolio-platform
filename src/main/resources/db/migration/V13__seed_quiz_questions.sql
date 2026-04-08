@@ -6,7 +6,9 @@
 -- (had wrong level_tag values from copy-paste errors in JSON)
 TRUNCATE TABLE quiz_questions RESTART IDENTITY CASCADE;
 
--- Re-add constraints (replaced after truncate since CASCADE dropped them)
+-- Re-add constraints (drop first in case they already exist from V12)
+ALTER TABLE quiz_questions DROP CONSTRAINT IF EXISTS chk_level_tag;
+ALTER TABLE quiz_questions DROP CONSTRAINT IF EXISTS chk_question_type;
 ALTER TABLE quiz_questions ADD CONSTRAINT chk_level_tag CHECK (level_tag IN ('JUNIOR', 'MIDDLE', 'SENIOR'));
 ALTER TABLE quiz_questions ADD CONSTRAINT chk_question_type CHECK (question_type IN ('MULTIPLE_CHOICE', 'TRUE_FALSE', 'MULTIPLE_ANSWER'));
 
