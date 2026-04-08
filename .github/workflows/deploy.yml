@@ -75,8 +75,9 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          # Use heredoc to avoid YAML escaping issues with special chars in secret values
-          cat > /tmp/env.yaml << 'ENVEOF'
+          # Use heredoc with quoted delimiter to write env vars to temp file
+          # Values are already substituted by GitHub Actions (no shell expansion needed)
+          cat > /tmp/env.yaml << 'EOF'
           SPRING_PROFILES_ACTIVE: prod
           SPRING_DATASOURCE_URL: "${{ secrets.SPRING_DATASOURCE_URL }}"
           SPRING_DATASOURCE_USERNAME: "${{ secrets.SPRING_DATASOURCE_USERNAME }}"
@@ -85,13 +86,17 @@ jobs:
           GOOGLE_CLIENT_SECRET: "${{ secrets.GOOGLE_CLIENT_SECRET }}"
           JWT_SECRET_KEY: "${{ secrets.JWT_SECRET_KEY }}"
           CORS_ALLOWED_ORIGINS: "${{ secrets.CORS_ALLOWED_ORIGINS }}"
-          ENVEOF
+          EOF
+          echo "=== ENV FILE CONTENT ===" && cat /tmp/env.yaml && echo "=== END ==="
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image=${{ needs.build-and-push.outputs.image }} \
             --region=${{ env.REGION }} \
             --platform=managed \
             --allow-unauthenticated \
-            --env-vars-file=/tmp/env.yaml
+            --env-vars-file=/tmp/env.yaml \
+            2>&1 | tee /tmp/deploy.log
+          echo "=== DEPLOY EXIT CODE: $? ==="
+          cat /tmp/deploy.log
 
       - name: Verify Deployment
         run: |
