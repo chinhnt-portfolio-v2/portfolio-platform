@@ -157,35 +157,47 @@ public class QuestionBankService {
 
         int saved = 0;
         for (JsonNode qNode : questionsNode) {
-            QuizQuestion q = new QuizQuestion();
-            // Assign ID manually via PostgreSQL sequence to avoid IDENTITY pitfalls
-            Long nextId = ((Number) entityManager
-                    .createNativeQuery("SELECT nextval('quiz_questions_id_seq')")
-                    .getSingleResult()).longValue();
-            q.setId(nextId);
-            q.setTopicSlug(topicSlug);
-            q.setLevelTag(qNode.has("levelTag") ? qNode.get("levelTag").asText() : "JUNIOR");
-            q.setQuestionText(qNode.has("questionText") ? qNode.get("questionText").asText() : "");
-            q.setQuestionType(qNode.has("questionType") ? qNode.get("questionType").asText() : "MULTIPLE_CHOICE");
+            String levelTag = qNode.has("levelTag") ? qNode.get("levelTag").asText() : "JUNIOR";
+            String questionText = escapeString(qNode.has("questionText") ? qNode.get("questionText").asText() : "");
+            String questionType = qNode.has("questionType") ? qNode.get("questionType").asText() : "MULTIPLE_CHOICE";
+            String options = "null";
             if (qNode.has("options")) {
-                List<Option> opts = new ArrayList<>();
-                for (JsonNode o : qNode.get("options")) {
-                    opts.add(new Option(
-                            o.has("id") ? o.get("id").asText() : "",
-                            o.has("text") ? o.get("text").asText() : ""));
-                }
-                q.setOptions(objectMapper.writeValueAsString(opts));
+                options = "'" + escapeString(objectMapper.writeValueAsString(mapJsonOptions(qNode.get("options")))) + "'";
             }
-            q.setCorrectKey(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
-            q.setExplanation(qNode.has("explanation") ? qNode.get("explanation").asText() : null);
-            entityManager.persist(q); // no flush needed — ID already assigned
-            entityManager.detach(q);  // keep context lean
+            String correctKey = escapeString(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
+            String explanation = qNode.has("explanation")
+                    ? "'" + escapeString(qNode.get("explanation").asText()) + "'"
+                    : "null";
+
+            String sql = String.format(
+                    "INSERT INTO quiz_questions (id, topic_slug, level_tag, question_text, " +
+                    "question_type, options, correct_key, explanation, created_at, updated_at) " +
+                    "VALUES (nextval('quiz_questions_id_seq'), '%s', '%s', '%s', '%s', %s, '%s', %s, NOW(), NOW())",
+                    topicSlug, levelTag, questionText, questionType, options, correctKey, explanation);
+
+            entityManager.createNativeQuery(sql).executeUpdate();
             saved++;
             if (saved % 50 == 0) {
+                entityManager.flush();
                 log.info("  parseAndSave batch: topic={} savedSoFar={}", topicSlug, saved);
             }
         }
+        entityManager.flush();
         return saved;
+    }
+
+    private List<Option> mapJsonOptions(JsonNode optionsNode) {
+        List<Option> opts = new ArrayList<>();
+        for (JsonNode o : optionsNode) {
+            opts.add(new Option(
+                    o.has("id") ? o.get("id").asText() : "",
+                    o.has("text") ? o.get("text").asText() : ""));
+        }
+        return opts;
+    }
+
+    private String escapeString(String s) {
+        return s.replace("'", "''");
     }
 
     public SeedStatus getSeedStatus() {
