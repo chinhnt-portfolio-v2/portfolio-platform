@@ -75,23 +75,21 @@ jobs:
 
       - name: Deploy to Cloud Run
         run: |
-          # Write env vars to file to avoid = separator conflicts in CORS_ALLOWED_ORIGINS
-          cat > /tmp/env.yaml << 'ENVEOF'
-          SPRING_PROFILES_ACTIVE: prod
-          SPRING_DATASOURCE_URL: ${{ secrets.SPRING_DATASOURCE_URL }}
-          SPRING_DATASOURCE_USERNAME: ${{ secrets.SPRING_DATASOURCE_USERNAME }}
-          SPRING_DATASOURCE_PASSWORD: ${{ secrets.SPRING_DATASOURCE_PASSWORD }}
-          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
-          CORS_ALLOWED_ORIGINS: ${{ secrets.CORS_ALLOWED_ORIGINS }}
-          ENVEOF
+          # Escape newlines in secret values before passing to --set-env-vars
+          # Values with colons (e.g. jdbc:postgres://...) must be passed as-is, not in YAML
           gcloud run deploy ${{ env.SERVICE_NAME }} \
             --image=${{ needs.build-and-push.outputs.image }} \
             --region=${{ env.REGION }} \
             --platform=managed \
             --allow-unauthenticated \
-            --env-vars-file=/tmp/env.yaml
+            --set-env-vars="SPRING_PROFILES_ACTIVE=prod" \
+            --set-env-vars="SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}" \
+            --set-env-vars="SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}" \
+            --set-env-vars="SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}" \
+            --set-env-vars="GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" \
+            --set-env-vars="GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" \
+            --set-env-vars="JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" \
+            --set-env-vars="CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}"
 
       - name: Verify Deployment
         run: |
