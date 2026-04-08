@@ -156,9 +156,13 @@ public class QuestionBankService {
         log.info("parseAndSave: topic={}, questionCount={}", topicSlug, questionsNode.size());
 
         int saved = 0;
-        int batchSize = 50;
         for (JsonNode qNode : questionsNode) {
             QuizQuestion q = new QuizQuestion();
+            // Assign ID manually via PostgreSQL sequence to avoid IDENTITY pitfalls
+            Long nextId = ((Number) entityManager
+                    .createNativeQuery("SELECT nextval('quiz_questions_id_seq')")
+                    .getSingleResult()).longValue();
+            q.setId(nextId);
             q.setTopicSlug(topicSlug);
             q.setLevelTag(qNode.has("levelTag") ? qNode.get("levelTag").asText() : "JUNIOR");
             q.setQuestionText(qNode.has("questionText") ? qNode.get("questionText").asText() : "");
@@ -174,15 +178,11 @@ public class QuestionBankService {
             }
             q.setCorrectKey(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
             q.setExplanation(qNode.has("explanation") ? qNode.get("explanation").asText() : null);
-            questionRepository.saveAndFlush(q); // flush → assigns DB ID immediately via getGeneratedKeys
-            Long id = q.getId();
-            if (id == null) {
-                throw new IllegalStateException("ID still null after saveAndFlush for topic: " + topicSlug);
-            }
-            entityManager.detach(q); // remove from persistence context to prevent memory bloat
+            entityManager.persist(q); // no flush needed — ID already assigned
+            entityManager.detach(q);  // keep context lean
             saved++;
-            if (saved % batchSize == 0) {
-                log.info("  parseAndSave batch flushed: topic={} savedSoFar={}", topicSlug, saved);
+            if (saved % 50 == 0) {
+                log.info("  parseAndSave batch: topic={} savedSoFar={}", topicSlug, saved);
             }
         }
         return saved;
