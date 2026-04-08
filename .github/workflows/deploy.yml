@@ -34,7 +34,10 @@ jobs:
           cache-dependency-path: pom.xml
 
       - name: Build JAR
-        run: mvn package -DskipTests -q
+        run: |
+          # Always build fresh: pom.xml hasn't changed (V13 SQL did), so Maven cache
+          # would reuse the old JAR with broken V13 seed SQL
+          mvn package -DskipTests -q -ntp
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
