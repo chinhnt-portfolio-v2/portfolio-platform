@@ -50,8 +50,9 @@ public class QuestionBankService {
         long existing = questionRepository.count();
         log.info("Manual re-seed triggered (current: {} questions). Deleting all and re-seeding...", existing);
         try {
-            // Native DELETE bypasses JPA cascade logic — no orphaned entities in persistence context
-            entityManager.createNativeQuery("TRUNCATE TABLE quiz_questions RESTART IDENTITY CASCADE").executeUpdate();
+            // DELETE is transaction-safe (won't abort on FK contention like TRUNCATE can).
+            // CASCADE: quiz_attempts rows referencing quiz_questions are deleted by FK ON DELETE CASCADE.
+            entityManager.createNativeQuery("DELETE FROM quiz_questions").executeUpdate();
             seedIfEmpty();
         } catch (Exception e) {
             log.error("Seed failed: {}", e.getMessage(), e);
