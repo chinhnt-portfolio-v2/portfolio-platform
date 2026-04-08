@@ -153,7 +153,7 @@ public class QuestionBankService {
         JsonNode questionsNode = root.get("questions");
         if (questionsNode == null || !questionsNode.isArray()) return 0;
 
-        log.debug("parseAndSave: topic={}, questionCount={}", topicSlug, questionsNode.size());
+        log.info("parseAndSave: topic={}, questionCount={}", topicSlug, questionsNode.size());
 
         int saved = 0;
         int batchSize = 50;
@@ -174,22 +174,17 @@ public class QuestionBankService {
             }
             q.setCorrectKey(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
             q.setExplanation(qNode.has("explanation") ? qNode.get("explanation").asText() : null);
-            entityManager.persist(q);
+            questionRepository.saveAndFlush(q); // flush → assigns DB ID immediately via getGeneratedKeys
             Long id = q.getId();
-            if (saved < 3) { // log first 3 to confirm ID assignment
-                log.debug("persist: topic={} saved={} id={}", topicSlug, saved + 1, id);
-            }
             if (id == null) {
-                throw new IllegalStateException("ID still null after persist for question in topic: " + topicSlug);
+                throw new IllegalStateException("ID still null after saveAndFlush for topic: " + topicSlug);
             }
+            entityManager.detach(q); // remove from persistence context to prevent memory bloat
             saved++;
             if (saved % batchSize == 0) {
-                entityManager.flush();
-                entityManager.clear();
+                log.info("  parseAndSave batch flushed: topic={} savedSoFar={}", topicSlug, saved);
             }
         }
-        entityManager.flush();
-        entityManager.clear();
         return saved;
     }
 
