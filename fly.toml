@@ -1,0 +1,31 @@
+app = "chinhnt-portfolio-platform"
+primary_region = "sin"  # Singapore — gần VN nhất
+
+[build]
+  image = "ghcr.io/chinhnt-portfolio-v2/portfolio-platform:latest"
+
+[env]
+  PORT = "8080"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"   # Tự tắt khi không có traffic → tiết kiệm chi phí
+  auto_start_machines = true    # Tự bật khi có request
+  min_machines_running = 0      # 0 = tắt hoàn toàn khi idle
+
+  [[http_service.checks]]
+    grace_period = "30s"
+    interval = "15s"
+    method = "GET"
+    path = "/actuator/health"
+    timeout = "10s"
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 20
+    hard_limit = 25
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
