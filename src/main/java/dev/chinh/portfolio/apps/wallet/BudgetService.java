@@ -20,6 +20,7 @@ public class BudgetService {
         this.transactionRepository = transactionRepository;
     }
 
+    @Transactional(readOnly = true)
     public List<BudgetResponse> getBudgets(UUID userId, String period) {
         List<Budget> budgets = budgetRepository.findByUserIdAndPeriod(userId, period);
         List<BudgetResponse> result = new ArrayList<>();
