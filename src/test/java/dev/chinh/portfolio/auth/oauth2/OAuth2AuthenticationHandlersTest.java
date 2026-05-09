@@ -111,12 +111,11 @@ class OAuth2AuthenticationHandlersTest {
         // When
         handler.onAuthenticationSuccess(request, response, authentication);
 
-        // Then
-        String content = response.getContentAsString();
-        assertThat(content).contains("accessToken");
-        assertThat(content).contains("refreshToken");
-        assertThat(content).contains("tokenType");
-        assertThat(content).contains("Bearer");
+        // Then — handler redirects to frontend with tokens in URL params (not response body)
+        String redirectUrl = response.getRedirectedUrl();
+        assertThat(redirectUrl).contains("accessToken=test-access-token");
+        assertThat(redirectUrl).contains("refreshToken=test-refresh-token");
+        assertThat(redirectUrl).contains("tokenType=Bearer");
     }
 
     @Test
