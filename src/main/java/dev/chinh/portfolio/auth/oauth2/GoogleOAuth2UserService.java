@@ -27,10 +27,15 @@ public class GoogleOAuth2UserService extends DefaultOAuth2UserService {
         this.userRepository = userRepository;
     }
 
+    // Extracted for testability — allows spying without reflection on Spring Security internals
+    protected OAuth2User fetchFromProvider(OAuth2UserRequest userRequest) {
+        return super.loadUser(userRequest);
+    }
+
     @Override
     @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        OAuth2User oAuth2User = super.loadUser(userRequest);
+        OAuth2User oAuth2User = fetchFromProvider(userRequest);
 
         // Extract user info from Google
         Map<String, Object> attributes = oAuth2User.getAttributes();

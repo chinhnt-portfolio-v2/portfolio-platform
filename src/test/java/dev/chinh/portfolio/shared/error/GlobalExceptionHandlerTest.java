@@ -17,7 +17,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(
         controllers = TestStubController.class,
-        excludeAutoConfiguration = {SecurityAutoConfiguration.class, org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration.class}
+        excludeAutoConfiguration = {
+                SecurityAutoConfiguration.class,
+                org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientAutoConfiguration.class,
+                org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientWebSecurityAutoConfiguration.class
+        }
 )
 @Import(GlobalExceptionHandler.class)
 class GlobalExceptionHandlerTest {
