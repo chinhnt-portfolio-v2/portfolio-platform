@@ -61,6 +61,28 @@ public class WalletController {
         return ResponseEntity.ok(walletService.listCategories(userId));
     }
 
+    @PostMapping("/categories")
+    public ResponseEntity<?> createCategory(
+            @CurrentUser UUID userId,
+            @Valid @RequestBody CreateCategoryRequest req) {
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(walletService.createCategory(userId, req));
+    }
+
+    @PutMapping("/categories/{id}")
+    public ResponseEntity<?> updateCategory(
+            @CurrentUser UUID userId,
+            @PathVariable Long id,
+            @Valid @RequestBody CreateCategoryRequest req) {
+        return ResponseEntity.ok(walletService.updateCategory(userId, id, req));
+    }
+
+    @DeleteMapping("/categories/{id}")
+    public ResponseEntity<Void> deleteCategory(@CurrentUser UUID userId, @PathVariable Long id) {
+        walletService.deleteCategory(userId, id);
+        return ResponseEntity.noContent().build();
+    }
+
     // ── Dashboard ──────────────────────────────────────────
 
     @GetMapping("/dashboard/summary")

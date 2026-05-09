@@ -96,6 +96,41 @@ public class WalletService {
         return categoryRepo.findByUserIdAndIsActiveTrueOrderByIsDefaultDescNameAsc(userId);
     }
 
+    @Transactional
+    public Category createCategory(UUID userId, CreateCategoryRequest req) {
+        Category c = new Category();
+        c.setUserId(userId);
+        c.setName(req.name());
+        c.setIcon(req.icon() != null && !req.icon().isBlank() ? req.icon() : "📦");
+        c.setColor(req.color() != null && !req.color().isBlank() ? req.color() : "#94A3B8");
+        c.setType(req.type());
+        c.setIsDefault(false);
+        return categoryRepo.save(c);
+    }
+
+    @Transactional
+    public Category updateCategory(UUID userId, Long id, CreateCategoryRequest req) {
+        Category c = categoryRepo.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new java.util.NoSuchElementException("Category not found"));
+        c.setName(req.name());
+        if (req.icon() != null && !req.icon().isBlank()) c.setIcon(req.icon());
+        if (req.color() != null && !req.color().isBlank()) c.setColor(req.color());
+        // type & isDefault are immutable post-creation
+        return categoryRepo.save(c);
+    }
+
+    @Transactional
+    public void deleteCategory(UUID userId, Long id) {
+        Category c = categoryRepo.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new java.util.NoSuchElementException("Category not found"));
+        if (Boolean.TRUE.equals(c.getIsDefault())) {
+            throw new IllegalArgumentException("Cannot delete default category");
+        }
+        // Soft delete — preserves transaction history references
+        c.setIsActive(false);
+        categoryRepo.save(c);
+    }
+
     // ── Dashboard Summary ──────────────────────────────────
 
     public WalletResponse.Summary getSummary(UUID userId) {
