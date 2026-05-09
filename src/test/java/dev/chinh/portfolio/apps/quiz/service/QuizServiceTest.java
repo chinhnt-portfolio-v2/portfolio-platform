@@ -664,7 +664,7 @@ class QuizServiceTest {
         @Test
         @DisplayName("throws TopicNotFoundException when no topics selected")
         void getNextQuestion_noTopics_throws() {
-            assertThatThrownBy(() -> service.getNextQuestion(USER_ID, List.of(), 1, List.of()))
+            assertThatThrownBy(() -> service.getNextQuestion(USER_ID, List.of(), 1, List.of(), (jakarta.servlet.http.HttpServletRequest) null))
                     .isInstanceOf(TopicNotFoundException.class)
                     .hasMessageContaining("At least one topic");
         }
@@ -674,7 +674,7 @@ class QuizServiceTest {
         void getNextQuestion_noQuestions_throws() {
             when(questionRepository.findByTopicSlugIn(List.of("java-core"))).thenReturn(List.of());
 
-            assertThatThrownBy(() -> service.getNextQuestion(USER_ID, List.of("java-core"), 1, List.of()))
+            assertThatThrownBy(() -> service.getNextQuestion(USER_ID, List.of("java-core"), 1, List.of(), (jakarta.servlet.http.HttpServletRequest) null))
                     .isInstanceOf(TopicNotFoundException.class)
                     .hasMessageContaining("No questions found");
         }
@@ -693,7 +693,7 @@ class QuizServiceTest {
                     .thenReturn(0L);
             when(attemptRepository.findAttemptedQuestionIds(USER_ID)).thenReturn(List.of());
 
-            QuizQuestionResponse resp = service.getNextQuestion(USER_ID, List.of("java-core"), 1, List.of());
+            QuizQuestionResponse resp = service.getNextQuestion(USER_ID, List.of("java-core"), 1, List.of(), (jakarta.servlet.http.HttpServletRequest) null);
 
             assertThat(resp.id()).isEqualTo(1L);
             assertThat(resp.topicSlug()).isEqualTo("java-core");

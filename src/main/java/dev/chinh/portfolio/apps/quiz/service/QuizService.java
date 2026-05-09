@@ -7,6 +7,10 @@ import dev.chinh.portfolio.apps.quiz.*;
 import dev.chinh.portfolio.apps.quiz.dto.*;
 import dev.chinh.portfolio.apps.quiz.exception.QuestionNotFoundException;
 import dev.chinh.portfolio.apps.quiz.exception.TopicNotFoundException;
+
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -85,50 +89,11 @@ public class QuizService {
 
     // ── GET /questions/next ─────────────────────────────────────────────────
     @Transactional(readOnly = true)
-    public QuizQuestionResponse getNextQuestion(UUID userId, List<String> topicSlugs, int limit, List<Long> exclude) {
-        if (topicSlugs == null || topicSlugs.isEmpty()) {
-            throw new TopicNotFoundException("At least one topic must be selected");
-        }
-
-        Map<String, String> levels = new HashMap<>();
-        for (String slug : topicSlugs) {
-            levels.put(slug, deriveLevel(
-                    coverage(userId, slug, "JUNIOR"),
-                    coverage(userId, slug, "MIDDLE"),
-                    coverage(userId, slug, "SENIOR")));
-        }
-
-        // Exclude question IDs passed from FE (already answered in this session).
-        // This is authoritative — avoids DB transaction timing issues.
-        Set<Long> excludedIds = (exclude != null) ? new HashSet<>(exclude) : Collections.emptySet();
-
-        List<QuizQuestion> questions = questionRepository.findByTopicSlugIn(topicSlugs);
-        if (questions.isEmpty()) {
-            throw new TopicNotFoundException("No questions found for topics: " + topicSlugs);
-        }
-
-        // Fetch all question IDs this user has attempted (any result) across all topics.
-        // Questions NOT in this set get NEVER_SEEN_BONUS → always served first.
-        Set<Long> attemptedIds = new HashSet<>(attemptRepository.findAttemptedQuestionIds(userId));
-
-        Map<String, UserQuizProgress> topicProg = progressRepository
-                .findByUserIdAndTopicSlugIn(userId, topicSlugs).stream()
-                .collect(Collectors.toMap(UserQuizProgress::getTopicSlug, p -> p));
-
-        List<WeightedQuestion> weighted = new ArrayList<>();
-        for (QuizQuestion q : questions) {
-            // Skip questions already answered in this session (FE-passed).
-            if (excludedIds.contains(q.getId())) continue;
-            UserQuizProgress prog = topicProg.get(q.getTopicSlug());
-            double w = computeWeight(q, prog, levels.get(q.getTopicSlug()), attemptedIds.contains(q.getId()));
-            weighted.add(new WeightedQuestion(q, w));
-        }
-
-        weighted.sort((a, b) -> Double.compare(b.weight, a.weight));
-        List<QuizQuestion> selected = weighted.stream().limit(limit).map(wq -> wq.question).toList();
-
-        if (selected.isEmpty()) throw new TopicNotFoundException("No questions available for the selected topics");
-        return toResponse(selected.getFirst());
+    public QuizQuestionResponse getNextQuestion(UUID userId, List<String> topicSlugs,
+                                                  int limit, List<Long> exclude,
+                                                  HttpServletRequest request) {
+        String lang = (request != null) ? detectLang(request) : null;
+        return getNextQuestionInternal(userId, topicSlugs, limit, exclude, null, lang);
     }
 
     // ── POST /attempts ───────────────────────────────────────────────────────
@@ -196,6 +161,100 @@ public class QuizService {
             ));
         }
         return result;
+    }
+
+    // ── GET /attempts (paginated history) ──────────────────────────────────
+    @Transactional(readOnly = true)
+    public Page<AttemptHistoryResponse> getAttemptHistory(
+            UUID userId, String topic, Boolean isCorrect,
+            Instant from, Instant to, Pageable pageable) {
+        Page<QuizAttempt> attempts = attemptRepository.findByUserIdWithFilters(
+                userId, topic, isCorrect, from, to, pageable);
+        return attempts.map(a -> {
+            QuizQuestion q = questionRepository.findById(a.getQuestionId()).orElse(null);
+            if (q == null) {
+                return new AttemptHistoryResponse(
+                        null, null, null, null,
+                        a.getGivenKey(), null,
+                        false, a.getResponseMs(), a.getAttemptedAt());
+            }
+            return new AttemptHistoryResponse(
+                    q.getId(),
+                    q.getTopicSlug(),
+                    q.getLevelTag(),
+                    q.getQuestionText(),
+                    a.getGivenKey(),
+                    q.getCorrectKey(),
+                    Boolean.TRUE.equals(a.getIsCorrect()),
+                    a.getResponseMs(),
+                    a.getAttemptedAt()
+            );
+        });
+    }
+
+    // ── DELETE /progress/:topicSlug ─────────────────────────────────────────
+    @Transactional
+    public void resetProgress(UUID userId, String topicSlug) {
+        attemptRepository.deleteByUserIdAndTopicSlug(userId, topicSlug);
+        progressRepository.deleteByUserIdAndTopicSlug(userId, topicSlug);
+    }
+
+    // ── GET /questions/next (with optional level filter) ──────────────────
+    @Transactional(readOnly = true)
+    public QuizQuestionResponse getNextQuestion(
+            UUID userId, List<String> topicSlugs, int limit,
+            List<Long> exclude, String level) {
+        return getNextQuestionInternal(userId, topicSlugs, limit, exclude, level, null);
+    }
+
+    private QuizQuestionResponse getNextQuestionInternal(
+            UUID userId, List<String> topicSlugs, int limit,
+            List<Long> exclude, String level, String lang) {
+        if (topicSlugs == null || topicSlugs.isEmpty()) {
+            throw new TopicNotFoundException("At least one topic must be selected");
+        }
+
+        Map<String, String> levels = new HashMap<>();
+        for (String slug : topicSlugs) {
+            levels.put(slug, deriveLevel(
+                    coverage(userId, slug, "JUNIOR"),
+                    coverage(userId, slug, "MIDDLE"),
+                    coverage(userId, slug, "SENIOR")));
+        }
+
+        Set<Long> excludedIds = (exclude != null) ? new HashSet<>(exclude) : Collections.emptySet();
+
+        List<QuizQuestion> questions;
+        if (level != null && !level.isBlank()) {
+            questions = questionRepository.findByTopicSlugInAndLevelTag(topicSlugs, level);
+        } else if (lang != null && !lang.isBlank()) {
+            questions = questionRepository.findByTopicSlugInAndLang(topicSlugs, lang);
+        } else {
+            questions = questionRepository.findByTopicSlugIn(topicSlugs);
+        }
+        if (questions.isEmpty()) {
+            throw new TopicNotFoundException("No questions found for topics: " + topicSlugs);
+        }
+
+        Set<Long> attemptedIds = new HashSet<>(attemptRepository.findAttemptedQuestionIds(userId));
+
+        Map<String, UserQuizProgress> topicProg = progressRepository
+                .findByUserIdAndTopicSlugIn(userId, topicSlugs).stream()
+                .collect(Collectors.toMap(UserQuizProgress::getTopicSlug, p -> p));
+
+        List<WeightedQuestion> weighted = new ArrayList<>();
+        for (QuizQuestion q : questions) {
+            if (excludedIds.contains(q.getId())) continue;
+            UserQuizProgress prog = topicProg.get(q.getTopicSlug());
+            double w = computeWeight(q, prog, levels.get(q.getTopicSlug()), attemptedIds.contains(q.getId()));
+            weighted.add(new WeightedQuestion(q, w));
+        }
+
+        weighted.sort((a, b) -> Double.compare(b.weight, a.weight));
+        List<QuizQuestion> selected = weighted.stream().limit(limit).map(wq -> wq.question).toList();
+
+        if (selected.isEmpty()) throw new TopicNotFoundException("No questions available for the selected topics");
+        return toResponse(selected.getFirst());
     }
 
     // ── GET /progress/:topicSlug ─────────────────────────────────────────────
@@ -373,6 +432,21 @@ public class QuizService {
     private void ensureTopicExists(String topicSlug) {
         if (!questionRepository.findAllDistinctTopicSlugs().contains(topicSlug))
             throw new TopicNotFoundException(topicSlug);
+    }
+
+    /** Parses Accept-Language header, returns primary language tag or "en" as default. */
+    private String detectLang(HttpServletRequest request) {
+        if (request == null) return "en";
+        String header = request.getHeader("Accept-Language");
+        if (header == null || header.isBlank()) return "en";
+        // e.g. "vi-VN,en-US;q=0.9" → take first token before ';'
+        String primary = header.split(",")[0].split(";")[0].trim();
+        // e.g. "vi-VN" → take first part
+        if (primary.contains("-")) {
+            primary = primary.split("-")[0];
+        }
+        if (primary.length() == 2) return primary;
+        return "en";
     }
 
     private record WeightedQuestion(QuizQuestion question, double weight) {}

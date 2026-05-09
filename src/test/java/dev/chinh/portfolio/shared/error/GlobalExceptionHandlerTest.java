@@ -1,12 +1,19 @@
 package dev.chinh.portfolio.shared.error;
 
+import dev.chinh.portfolio.auth.jwt.JwtService;
+import dev.chinh.portfolio.shared.ratelimit.RateLimitService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,6 +38,17 @@ class GlobalExceptionHandlerTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @MockBean
+    private JwtService jwtService;
+
+    @MockBean
+    private RateLimitService rateLimitService;
+
+    @BeforeEach
+    void setUp() {
+        when(rateLimitService.tryGeneral(any())).thenReturn(true);
+    }
 
     @Test
     void entityNotFound_returns404WithStructuredError() throws Exception {

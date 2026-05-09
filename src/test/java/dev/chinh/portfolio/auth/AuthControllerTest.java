@@ -11,6 +11,7 @@ import dev.chinh.portfolio.auth.user.AuthProvider;
 import dev.chinh.portfolio.auth.user.User;
 import dev.chinh.portfolio.auth.user.UserRole;
 import dev.chinh.portfolio.auth.user.UserService;
+import dev.chinh.portfolio.shared.ratelimit.RateLimitService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -61,11 +62,15 @@ class AuthControllerTest {
     @MockBean
     private SessionService sessionService;
 
+    @MockBean
+    private RateLimitService rateLimitService;
+
     private User testUser;
 
     @BeforeEach
     void setUp() {
         testUser = createTestUser("test@example.com");
+        when(rateLimitService.tryGeneral(any())).thenReturn(true);
     }
 
     @Nested
