@@ -1,105 +1,78 @@
-name: Deploy to Cloud Run
+name: Deploy to fly.io
 
 on:
   push:
     branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/chinhnt-portfolio-v2/portfolio-platform
 
 jobs:
-  build-and-push:
+  test:
+    name: Test
     runs-on: ubuntu-latest
-    env:
-      PROJECT_ID: portfolio-v2-489714
-      REGION: asia-southeast1
-      SERVICE_NAME: portfolio-platform
-      REGISTRY: asia-southeast1-docker.pkg.dev/portfolio-v2-489714/github-actions
-    outputs:
-      image: ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
+
     steps:
       - uses: actions/checkout@v4
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-
-      - name: Configure Docker for GCP
-        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev --quiet
-
-      - name: Set up JDK 21
+      - name: Set up Java 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
           java-version: '21'
-          cache: 'maven'
+          distribution: temurin
+          cache: maven
+          cache-dependency-path: pom.xml
+
+      - name: Run tests
+        run: mvn test -B
+
+  build-and-deploy:
+    name: Build & Deploy
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: temurin
+          cache: maven
           cache-dependency-path: pom.xml
 
       - name: Build JAR
-        run: mvn package -DskipTests -q
+        run: mvn package -DskipTests -B
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-        with:
-          driver-opts: |
-            image=moby/buildkit:latest
-            network=host
 
-      - name: Build without cache
+      - name: Build and push Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
           push: true
           tags: |
-            ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:${{ github.run_number }}
-            ${{ env.REGISTRY }}/${{ env.SERVICE_NAME }}:latest
-          build-args: |
-            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            ${{ env.IMAGE_NAME }}:latest
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
 
-  deploy:
-    needs: build-and-push
-    runs-on: ubuntu-latest
-    permissions:
-      id-token: 'write'
-      contents: 'read'
-    env:
-      PROJECT_ID: portfolio-v2-489714
-      REGION: asia-southeast1
-      SERVICE_NAME: portfolio-platform
-    steps:
-      - uses: actions/checkout@v4
+      - name: Deploy to fly.io
+        uses: superfly/flyctl-actions/setup-flyctl@master
 
-      - id: 'auth'
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
-
-      - name: Deploy to Cloud Run
-        run: |
-          # Use heredoc with quoted delimiter to write env vars to temp file
-          # Values are already substituted by GitHub Actions (no shell expansion needed)
-          cat > /tmp/env.yaml << 'EOF'
-          SPRING_PROFILES_ACTIVE: prod
-          SPRING_DATASOURCE_URL: "${{ secrets.SPRING_DATASOURCE_URL }}"
-          SPRING_DATASOURCE_USERNAME: "${{ secrets.SPRING_DATASOURCE_USERNAME }}"
-          SPRING_DATASOURCE_PASSWORD: "${{ secrets.SPRING_DATASOURCE_PASSWORD }}"
-          GOOGLE_CLIENT_ID: "${{ secrets.GOOGLE_CLIENT_ID }}"
-          GOOGLE_CLIENT_SECRET: "${{ secrets.GOOGLE_CLIENT_SECRET }}"
-          JWT_SECRET_KEY: "${{ secrets.JWT_SECRET_KEY }}"
-          CORS_ALLOWED_ORIGINS: "${{ secrets.CORS_ALLOWED_ORIGINS }}"
-          EOF
-          echo "=== ENV FILE CONTENT ===" && cat /tmp/env.yaml && echo "=== END ==="
-          gcloud run deploy ${{ env.SERVICE_NAME }} \
-            --image=${{ needs.build-and-push.outputs.image }} \
-            --region=${{ env.REGION }} \
-            --platform=managed \
-            --allow-unauthenticated \
-            --env-vars-file=/tmp/env.yaml \
-            2>&1 | tee /tmp/deploy.log
-          echo "=== DEPLOY EXIT CODE: $? ==="
-          cat /tmp/deploy.log
-
-      - name: Verify Deployment
-        run: |
-          sleep 15
-          URL=$(gcloud run services describe ${{ env.SERVICE_NAME }} --region=${{ env.REGION }} --format="value(status.url)")
-          echo "Deployed to: $URL"
+      - name: Run fly deploy
+        run: flyctl deploy --remote-only
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

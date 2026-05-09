@@ -1,18 +1,18 @@
 package dev.chinh.portfolio.apps.quiz;
 
 import dev.chinh.portfolio.apps.quiz.service.QuestionBankService;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.annotation.PostConstruct;
-
 /**
- * Triggers question bank seeding once on application startup,
- * after Flyway migrations have been applied.
+ * Triggers question bank seeding once on application startup.
+ * Uses ApplicationRunner (not @PostConstruct) so the embedded HTTP server
+ * starts and health checks pass BEFORE potentially slow seeding runs.
  */
 @Component
-public class QuizSeedRunner {
+public class QuizSeedRunner implements ApplicationRunner {
 
     private final QuestionBankService questionBankService;
 
@@ -20,9 +20,9 @@ public class QuizSeedRunner {
         this.questionBankService = questionBankService;
     }
 
-    @PostConstruct
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
-    public void seed() {
+    @Override
+    @Transactional
+    public void run(ApplicationArguments args) {
         questionBankService.seedIfEmpty();
     }
 }

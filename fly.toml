@@ -15,7 +15,7 @@ primary_region = "sin"  # Singapore — gần VN nhất
   min_machines_running = 0      # 0 = tắt hoàn toàn khi idle
 
   [[http_service.checks]]
-    grace_period = "30s"
+    grace_period = "2m"
     interval = "15s"
     method = "GET"
     path = "/actuator/health"
