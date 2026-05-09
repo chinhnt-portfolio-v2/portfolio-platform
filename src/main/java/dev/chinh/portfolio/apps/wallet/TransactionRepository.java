@@ -45,4 +45,27 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findByUserIdAndCategoryIdOrderByDateDesc(UUID userId, Long categoryId,
                                                              org.springframework.data.domain.Pageable pageable);
+
+    /**
+     * Monthly income excluding transfers (categoryId IS NULL) and debt txns (txnType IS NOT NULL).
+     */
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
+           "WHERE t.userId = :userId AND t.type = 'INCOME' " +
+           "AND t.categoryId IS NOT NULL AND t.txnType IS NULL " +
+           "AND t.date >= :from AND t.date < :to")
+    BigDecimal sumMonthlyIncome(@Param("userId") UUID userId,
+                                @Param("from") Instant from,
+                                @Param("to") Instant to);
+
+    /**
+     * Monthly expense for a set of category IDs, excluding debt txns (txnType IS NOT NULL).
+     */
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
+           "WHERE t.userId = :userId AND t.type = 'EXPENSE' " +
+           "AND t.categoryId IN :categoryIds AND t.txnType IS NULL " +
+           "AND t.date >= :from AND t.date < :to")
+    BigDecimal sumExpenseForCategories(@Param("userId") UUID userId,
+                                       @Param("categoryIds") java.util.Set<Long> categoryIds,
+                                       @Param("from") Instant from,
+                                       @Param("to") Instant to);
 }

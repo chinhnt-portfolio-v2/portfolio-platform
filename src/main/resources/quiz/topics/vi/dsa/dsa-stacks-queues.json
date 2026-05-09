@@ -1,0 +1,197 @@
+{
+  "topicSlug": "dsa-stacks-queues",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian của thao tác push và pop trên stack triển khai bằng danh sách liên kết là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n) cho push và O(1) cho pop" },
+        { "id": "b", "text": "O(1) cho cả push và pop" },
+        { "id": "c", "text": "O(n) cho cả hai" },
+        { "id": "d", "text": "O(log n) cho cả hai" }
+      ],
+      "correctKey": "b",
+      "explanation": "Stack (LIFO) triển khai bằng danh sách liên kết với head là top: push = chèn vào head (newNode.next = head, head = newNode) → O(1). Pop = xóa từ head (temp = head, head = head.next, free temp) → O(1). Không cần duyệt — head luôn accessible. Điều này làm stack dùng linked list rất hiệu quả."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính FIFO của queue là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "First-In-First-Out — phần tử vào trước được ra trước" },
+        { "id": "b", "text": "First-In-First-Out — phần tử vào sau được ra trước" },
+        { "id": "c", "text": "Last-In-First-Out — phần tử mới nhất được ra trước" },
+        { "id": "d", "text": "FIFO nghĩa là các phần tử được xử lý theo thứ tự giá trị" }
+      ],
+      "correctKey": "a",
+      "explanation": "FIFO (First-In-First-Out) nghĩa là phần tử cũ nhất (vào trước) được ra trước. Ví dụ thực tế: hàng đợi ở quán cà phê. Ứng dụng: BFS, task scheduling, print job queues, message queues. Phương án B đảo ngược. Phương án C mô tả stack (LIFO). Phương án D không phải thuộc tính của queue."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\nstack = []\nstack.append(1)\nstack.append(2)\nstack.append(3)\nprint(stack.pop())\nprint(stack.pop())\nstack.append(4)\nprint(stack.pop())\nprint(stack.pop())",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Stack trace: push(1) → [1]; push(2) → [1,2]; push(3) → [1,2,3]; pop() → xóa 3 (LIFO) → [1,2]; pop() → xóa 2 → [1]; push(4) → [1,4]; pop() → xóa 4 → [1]; pop() → xóa 1 → []. Output: 3, 2, 4, 1."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian của enqueue và dequeue trên queue triển khai bằng circular buffer là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n) — phần tử phải được dịch khi enqueue vào front" },
+        { "id": "b", "text": "O(1) cho cả hai" },
+        { "id": "c", "text": "O(log n) — tìm kiếm nhị phân dùng để xác định queue head" },
+        { "id": "d", "text": "O(1) cho enqueue và O(n) cho dequeue" }
+      ],
+      "correctKey": "b",
+      "explanation": "Circular queue (ring buffer): mảng kích thước cố định với hai con trỏ (front và rear). Enqueue: thêm vào rear, tăng con trỏ rear (modulo capacity). Dequeue: xóa ở front, tăng con trỏ front (modulo capacity). Cả hai đều O(1) — không cần dịch phần tử."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Ứng dụng chính của stack trong thiết kế thuật toán là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Breadth-first search — queue được dùng để duyệt theo level" },
+        { "id": "b", "text": "Depth-first search — call stack hoặc stack rõ ràng theo dõi node tiếp theo để khám phá" },
+        { "id": "c", "text": "Tìm đường đi ngắn nhất" },
+        { "id": "d", "text": "Sắp xếp" }
+      ],
+      "correctKey": "b",
+      "explanation": "DFS tự nhiên dùng stack (LIFO): đẩy các neighbor vào stack, pop và khám phá. DFS đệ quy dùng call stack ngầm; DFS iterative dùng stack rõ ràng. Thuộc tính LIFO tạo ra khám phá theo chiều sâu (đi sâu nhất trước rồi quay lại). BFS dùng queue (FIFO) để khám phá theo từng level."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Monotonic stack là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Stack giữ các phần tử theo thứ tự tăng dần hoặc giảm dần; dùng để tìm phần tử lớn hơn/nhỏ hơn tiếp theo trong O(n)" },
+        { "id": "b", "text": "Stack dùng hàm monotonic để xác định push/pop" },
+        { "id": "c", "text": "Stack tăng gấp đôi khi đầy" },
+        { "id": "d", "text": "Stack chỉ cho phép một phần tử mỗi level" }
+      ],
+      "correctKey": "a",
+      "explanation": "Monotonic stack giữ stack với các phần tử tăng hoặc giảm đều. Khi duyệt, pop các phần tử nhỏ hơn (hoặc lớn hơn) và ghi nhận phần tử hiện tại là 'next greater' (hoặc 'next smaller'). Điều này chuyển O(n²) thành O(n) vì mỗi phần tử được push và pop tối đa một lần. Bài toán cổ điển: Next Greater Element, Daily Temperatures, Largest Rectangle in Histogram."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Queue được dùng cho duyệt đồ thị nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Queue dùng cho depth-first search" },
+        { "id": "b", "text": "Queue dùng cho breadth-first search (BFS) — enqueue neighbor, xử lý theo thứ tự FIFO, đảm bảo duyệt theo từng level" },
+        { "id": "c", "text": "Queue phát hiện chu trình bằng cách kiểm tra node đã trong queue" },
+        { "id": "d", "text": "Queue thay thế đệ quy cho tìm kiếm nhị phân" }
+      ],
+      "correctKey": "b",
+      "explanation": "BFS dùng queue: bắt đầu từ đỉnh nguồn, dequeue đỉnh, enqueue tất cả neighbor chưa thăm. Thuộc tính FIFO đảm bảo các đỉnh được phát hiện sớm hơn được khám phá trước — duyệt theo level. BFS tìm đường đi ngắn nhất trong đồ thị không trọng số. Phương án A là DFS (stack). Phương án C không phải mục đích chính của BFS."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef next_greater(nums):\n    stack, result = [], [-1] * len(nums)\n    for i, num in enumerate(nums):\n        while stack and nums[stack[-1]] < num:\n            result[stack.pop()] = num\n        stack.append(i)\n    return result\n\nprint(next_greater([2, 1, 2, 4, 3]))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Monotonic stack trên [2,1,2,4,3]: i=0, stack=[0]; i=1, nums[0]=2>1 → stack stays [0,1]; i=2, nums[1]=1<2 → result[1]=2, pop 1; nums[0]=2<2? Không (2<2 false) → stack=[0,2]; i=3, nums[2]=2<4 → result[2]=4, pop 2; nums[0]=2<4 → result[0]=4, pop 0; stack=[3]; i=4, nums[3]=4>3 → no pop; stack=[3,4]. Result: [4,2,4,-1,-1]."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Stack overflow là gì và khi nào nó xảy ra?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Stack overflow xảy ra khi heap hết bộ nhớ" },
+        { "id": "b", "text": "Stack overflow xảy ra khi call stack vượt quá giới hạn bộ nhớ, thường từ đệ quy không giới hạn" },
+        { "id": "c", "text": "Stack overflow xảy ra khi circular buffer quay quá N lần" },
+        { "id": "d", "text": "Stack overflow chỉ xảy ra trong ngôn ngữ không có garbage collection" }
+      ],
+      "correctKey": "b",
+      "explanation": "Call stack có kích thước cố định (1-8 MB). Mỗi lần gọi đệ quy đẩy một stack frame (return address, biến local, tham số). Đệ quy không giới hạn (không có base case) đẩy frame cho đến khi stack tràn → RecursionError. Tail call optimization (TCO) có thể giảm thiểu trong một số ngôn ngữ."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\nfrom collections import deque\n\nqueue = deque()\nqueue.append(1)\nqueue.append(2)\nqueue.append(3)\nprint(queue.popleft())\nprint(queue.popleft())\nqueue.append(4)\nprint(queue.popleft())\nprint(queue.popleft())",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Queue operations (FIFO): enqueue 1 → [1]; enqueue 2 → [1,2]; enqueue 3 → [1,2,3]; dequeue → xóa 1 → [2,3]; dequeue → xóa 2 → [3]; enqueue 4 → [3,4]; dequeue → xóa 3 → [4]; dequeue → xóa 4 → []. Output: 1, 2, 3, 4."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Độ phức tạp thời gian của BFS trên đồ thị với V đỉnh và E cạnh, biểu diễn bằng adjacency list là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(V)" },
+        { "id": "b", "text": "O(E)" },
+        { "id": "c", "text": "O(V + E)" },
+        { "id": "d", "text": "O(V × E)" }
+      ],
+      "correctKey": "c",
+      "explanation": "BFS: mỗi đỉnh được enqueue và dequeue đúng một lần → O(V). Với mỗi đỉnh được dequeue, tất cả cạnh ra được kiểm tra (adjacency list scan) → O(degree(v)) mỗi đỉnh, tổng O(E). Kết hợp: O(V+E)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Deque (double-ended queue) là gì và nó hỗ trợ thao tác gì hiệu quả?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Deque là priority queue với O(log n) insert và extract-max" },
+        { "id": "b", "text": "Deque là queue hai đầu hỗ trợ O(1) chèn và xóa ở cả hai đầu" },
+        { "id": "c", "text": "Deque là stack chỉ với hai phần tử" },
+        { "id": "d", "text": "Deque tương đương hai stack nối đuôi" }
+      ],
+      "correctKey": "b",
+      "explanation": "Deque (double-ended queue): O(1) chèn/xóa ở cả hai đầu (appendleft, popleft, append, pop). Điều này thống nhất stack (push/pop ở một đầu) và queue (enqueue/dequeue ở hai đầu khác nhau). Ứng dụng: sliding window maximum (monotonic deque), undo/redo buffers, palindrome checking."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Stack có thể dùng để đánh giá biểu thức postfix (Reverse Polish). Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Đánh giá postfix: quét token từ trái sang phải. Với mỗi toán hạng, push vào stack. Với mỗi toán tử, pop hai toán hạng, tính, push kết quả. Khi xong, stack có một phần tử — kết quả. Ví dụ: '3 4 + 2 *' = ((3+4)*2) = 14."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Call stack dùng bởi các lời gọi hàm đệ quy tuân theo thứ tự LIFO. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Mỗi lần gọi đệ quy đẩy một frame mới lên call stack. Lời gọi trong cùng (mới nhất) ở trên cùng của stack và phải hoàn thành trước các lời gọi bên ngoài. Đây là lý do thuật toán đệ quy tự nhiên mô hình hóa duyệt theo chiều sâu."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef is_balanced(s):\n    stack = []\n    pairs = {')': '(', ']': '[', '}': '{'}\n    for ch in s:\n        if ch in '([{':\n            stack.append(ch)\n        elif ch in ')]}':\n            if not stack or stack[-1] != pairs[ch]:\n                return False\n            stack.pop()\n    return len(stack) == 0\n\nprint(is_balanced(\"({[]})\"), is_balanced(\"([)]\"), is_balanced(\"{}\"))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "'({[]}')': '{'→push, '('→push, '['→push, ']'→pop '[' khớp, ')'→pop '(' khớp, '}'→pop '{' khớp. Stack rỗng → True. '([)]': '('→push, '['→push, ')'→pop '('? Stack top là '[' ≠ ')' → return False. '{}': '{'→push, '}'→pop '{' khớp, stack rỗng → True. Output: True, False, True."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Số phần tử tối đa có thể lưu trong circular queue kích thước N triển khai với quy ước (rear + 1) % N == front là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "N" },
+        { "id": "b", "text": "N - 1" },
+        { "id": "c", "text": "N + 1" },
+        { "id": "d", "text": "2N" }
+      ],
+      "correctKey": "b",
+      "explanation": "Circular queue với N slot: dùng quy ước (rear+1) % N == front để phát hiện 'full', queue chứa tối đa N-1 phần tử. Khi front == rear, queue rỗng. Để phân biệt rỗng và đầy, một slot phải không sử dụng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sliding window maximum problem là gì và monotonic deque giải nó trong O(n) như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Sliding window maximum tìm phần tử lớn nhất trong mỗi cửa sổ kích thước k; deque đơn điệu giữ chỉ mục giảm dần, pop phần tử nhỏ hơn, O(n) tổng" },
+        { "id": "b", "text": "Sliding window maximum dùng queue thường và dequeues front khi cửa sổ trượt, O(n×k)" },
+        { "id": "c", "text": "Sliding window maximum sắp xếp mỗi cửa sổ và trả về trung vị" },
+        { "id": "d", "text": "Sliding window maximum chỉ giải được bằng kiểm tra tất cả cặp O(n²)" }
+      ],
+      "correctKey": "a",
+      "explanation": "Monotonic deque: với mỗi phần tử mới: (1) xóa chỉ mục hết hiệu lực khỏi front, (2) xóa chỉ mục có giá trị ≤ phần tử hiện tại khỏi back, (3) thêm chỉ mục hiện tại. Front của deque luôn là maximum của cửa sổ hiện tại. Mỗi phần tử được push và pop tối đa một lần → O(n) tổng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Dùng hai stack, có thể triển khai queue hỗ trợ enqueue và dequeue đều O(1) amortized. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Two-stack queue: stack_in (cho enqueue) và stack_out (cho dequeue). Enqueue: push vào stack_in (O(1)). Dequeue: nếu stack_out rỗng, chuyển tất cả từ stack_in sang stack_out (đảo ngược thứ tự, cho FIFO). Mỗi phần tử được push và pop tối đa hai lần. Amortized O(1) mỗi thao tác."
+    }
+  ]
+}

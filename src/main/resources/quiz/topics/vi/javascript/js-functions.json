@@ -1,0 +1,235 @@
+{
+  "topicSlug": "js-functions",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Cú pháp arrow function nào sau đây là đúng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "const add = (a, b) => a + b; — implicit return cho single expressions" },
+        { "id": "b", "text": "const add = (a, b) => { a + b }; — returns undefined vì thiếu return statement" },
+        { "id": "c", "text": "const greet = name => { console.log('Hi', name) }; — in ra console nhưng returns undefined" },
+        { "id": "d", "text": "Tất cả các mô tả trên đều đúng về hành vi của arrow function" }
+      ],
+      "correctKey": "d",
+      "explanation": "Arrow functions có hai chế độ return: implicit (không có dấu ngoặc nhọn, single expression — trả về giá trị đó) và explicit (có dấu ngoặc nhọn — phải dùng return). Option A cho thấy implicit return (đúng). Option B cho thấy block body không có return (returns undefined). Option C cho thấy block body với side effect nhưng không có return (returns undefined). Cả ba đều là mô tả đúng về hành vi của arrow function."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Closure trong JavaScript là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một function ghi nhớ lexical scope của nó và có thể truy cập các biến từ outer scopes ngay cả khi được thực thi bên ngoài scope đó" },
+        { "id": "b", "text": "Một cách để gọi function ngay sau khi định nghĩa bằng dấu ngoặc đơn" },
+        { "id": "c", "text": "Một phương pháp ngăn không cho function được gọi nhiều hơn một lần" },
+        { "id": "d", "text": "Một JavaScript pattern thay thế prototype chain cho inheritance" }
+      ],
+      "correctKey": "a",
+      "explanation": "Closure là một function bundled cùng với references đến surrounding lexical environment (scope chain). Khi một function được định nghĩa bên trong another function, inner function vẫn giữ quyền truy cập các biến của outer function ngay cả sau khi outer function đã return. Đây là nền tảng của module patterns, data privacy, và factories."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconsole.log(x);\nvar x = 5;",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "5" },
+        { "id": "b", "text": "undefined" },
+        { "id": "c", "text": "ReferenceError: x is not defined" },
+        { "id": "d", "text": "null" }
+      ],
+      "correctKey": "b",
+      "explanation": "Khai báo var được hoisted lên đầu scope và được khởi tạo với undefined. Code được interpret như: `var x; console.log(x); x = 5;`. Vậy x tồn tại nhưng chưa được gán khi log — trả về undefined. Khác với let (TDZ và throw ReferenceError) hoặc const (throw ReferenceError)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`this` bên trong một regular function được gọi như một standalone function (không phải method) trỏ đến đâu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Object đã định nghĩa function đó" },
+        { "id": "b", "text": "Global object (window trong browsers, global trong Node.js)" },
+        { "id": "c", "text": "undefined (trong strict mode)" },
+        { "id": "d", "text": "Tham số đầu tiên được truyền vào function" }
+      ],
+      "correctKey": "c",
+      "explanation": "Trong strict mode, `this` là undefined khi một regular function được gọi như standalone function. Trong non-strict mode, nó mặc định là global object — nguy hiểm và là nguồn bugs phổ biến. Arrow functions không có `this` riêng — chúng inherit `this` từ enclosing lexical scope."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "IIFE là gì và tại sao nó được sử dụng trước ES6 modules?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Immediately Invoked Function Expression — được dùng để tạo một private scope cho biến, trước khi có block-scoped let/const và ES6 module syntax" },
+        { "id": "b", "text": "Immediately Invoked Function dùng để export modules ra global scope" },
+        { "id": "c", "text": "IIFE là một syntax error trong JavaScript hiện đại và không bao giờ là một pattern hợp lệ" },
+        { "id": "d", "text": "Immediately Invoked Function hoists tất cả biến lên global scope" }
+      ],
+      "correctKey": "a",
+      "explanation": "IIFE là một function được bọc trong ngoặc đơn và được gọi ngay: `(function() { ... })()`. Mục đích là tạo một private function scope — biến bên trong là local và không bị expose ra global scope. Trước let/const (ES6) và ES6 modules, nó là cách chính để encapsulate variable names và tránh global namespace pollution."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Higher-order functions là các functions nhận functions khác làm đối số hoặc trả về functions.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Higher-order functions (HOFs) nhận functions làm đối số hoặc trả về functions. Array methods như map, filter, và reduce là các ví dụ kinh điển: `arr.filter(x => x > 0)` nhận một callback function. Functions như `once(fn)` trả về một phiên bản chỉ gọi được một lần của function khác cũng là HOFs."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst arr = [1, 2, 3];\narr.forEach(n => console.log(n * 2));\nconst doubled = arr.map(n => n * 2);\nconsole.log(doubled);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "2, 4, 6 được in ba lần" },
+        { "id": "b", "text": "2, 4, 6 được in một lần; [2, 4, 6] được log" },
+        { "id": "c", "text": "[2, 4, 6] được in một lần; [2, 4, 6] được log" },
+        { "id": "d", "text": "undefined, undefined, undefined; [2, 4, 6] được log" }
+      ],
+      "correctKey": "b",
+      "explanation": "forEach() gọi callback cho mỗi element và trả về undefined — chỉ tạo side effects (logging), in ra 2, 4, 6. map() trả về một array mới với mỗi element được transform — trả về [2, 4, 6]. arr gốc không bị thay đổi bởi cả hai lần gọi."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Arrow functions có `this` binding riêng được xác định bởi surrounding lexical context.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Arrow functions KHÔNG có `this` binding riêng — đây là điểm khác biệt quan trọng với regular functions. Arrow functions lexically capture `this` từ enclosing scope. Điều này có nghĩa `this` bên trong arrow function vĩnh viễn bound vào giá trị của `this` trong surrounding code tại thời điểm arrow function được định nghĩa. Nó không thể thay đổi bằng .call(), .apply(), .bind(), hoặc như một object method."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\nfor (let j = 0; j < 3; j++) {\n  setTimeout(() => console.log(j), 0);\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0, 1, 2 rồi 0, 1, 2" },
+        { "id": "b", "text": "3, 3, 3 rồi 0, 1, 2" },
+        { "id": "c", "text": "0, 1, 2 rồi 3, 3, 3" },
+        { "id": "d", "text": "3, 3, 3 rồi 3, 3, 3" }
+      ],
+      "correctKey": "b",
+      "explanation": "Đây là bài toán closure-in-loop kinh điển. Với var, chỉ có MỘT biến i được chia sẻ giữa ba setTimeout callbacks. Khi callbacks chạy (sau khi loop kết thúc), i đã là 3. Với let, mỗi iteration tạo MỘT binding mới của j (block scope), nên mỗi callback capture một j khác nhau. Kết quả: var log 3, 3, 3; let log 0, 1, 2."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": ".bind() khác với .call() và .apply() như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "bind() trả về một function mới với `this` được bind vĩnh viễn; call() và apply() gọi function ngay lập tức với `this` đã cho" },
+        { "id": "b", "text": "Cả ba methods làm giống nhau — gọi function với `this` đã cho" },
+        { "id": "c", "text": "bind() gọi ngay lập tức như call(); call() trả về một bound function mới như bind()" },
+        { "id": "d", "text": "bind() và apply() giống nhau; call() khác" }
+      ],
+      "correctKey": "a",
+      "explanation": "call() và apply() gọi function ngay với `this` và arguments đã chỉ định (apply nhận array, call nhận spread list). bind() KHÔNG gọi — nó trả về MỘT function MỚI với `this` được bind vĩnh viễn, và có thể pre-fill arguments (partial application). Function mới có thể được gọi sau."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction greet(name, greeting) {\n  return `${greeting}, ${name}!`;\n}\nconst sayHi = greet.bind(null, 'Alice');\nconsole.log(sayHi('Good morning'));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Good morning, Alice!" },
+        { "id": "b", "text": "Alice, Good morning!" },
+        { "id": "c", "text": "Alice, undefined!" },
+        { "id": "d", "text": "Good morning, undefined!" }
+      ],
+      "correctKey": "a",
+      "explanation": "bind() thực hiện partial application bằng cách pre-fill arguments từ trái sang phải. greet.bind(null, 'Alice') tạo một function mới với tham số đầu tiên (name) được set cố định là 'Alice'. Khi gọi sayHi('Good morning'), 'Good morning' trở thành tham số thứ hai (greeting). Template literal là `${greeting}, ${name}!` — kết quả: 'Good morning, Alice!'"
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Pure function là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một function luôn trả về cùng output cho cùng input và không có side effects (không mutations, không I/O)" },
+        { "id": "b", "text": "Một function chỉ dùng từ khóa var và tránh let/const" },
+        { "id": "c", "text": "Một function trả về Promise và có thể xử lý async operations" },
+        { "id": "d", "text": "Một function được khai báo với từ khóa `pure` trong JavaScript" }
+      ],
+      "correctKey": "a",
+      "explanation": "Pure function: (1) với cùng arguments, luôn trả về cùng result (deterministic), và (2) không tạo side effects — không mutation external state, không I/O, không console.log, không network requests. Pure functions có thể predict, test, và cache (memoize) được. JavaScript không có từ khóa `pure`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Arrow functions có thể được dùng như constructor functions với từ khóa `new`.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Arrow functions không thể dùng làm constructors — chúng không có internal method [[Construct]]. Gọi `new ArrowFunc()` throws TypeError: 'ArrowFunc is not a constructor'. Arrow functions được thiết kế lightweight và lexically bind `this`, không phù hợp với prototype-based constructor pattern. Dùng regular functions (hoặc classes) khi cần constructors."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction outer() {\n  let count = 0;\n  return function inner() {\n    count++;\n    return count;\n  };\n}\nconst counter = outer();\nconsole.log(counter());\nconsole.log(counter());\nconsole.log(counter());",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1, 2, 3" },
+        { "id": "b", "text": "0, 1, 2" },
+        { "id": "c", "text": "1, 1, 1" },
+        { "id": "d", "text": "ReferenceError: count is not defined" }
+      ],
+      "correctKey": "a",
+      "explanation": "Đây là module/closure pattern cho data privacy. outer() tạo biến local count và trả về inner, close over count. counter function giữ quyền truy cập count ngay cả sau khi outer() return. Mỗi lần gọi counter() tăng shared count. count không có trong global scope, không thể truy cập từ bên ngoài. Output: 1, 2, 3."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "arguments object bên trong một arrow function tham chiếu đến arguments được truyền cho chính arrow function đó.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Arrow functions KHÔNG có `arguments` object riêng. Nếu truy cập `arguments` bên trong arrow function, nó tham chiếu đến arguments object của enclosing non-arrow function (lexical scoping). Nếu không có enclosing non-arrow function, đó là ReferenceError trong strict mode. Dùng rest parameters (`...args`) thay thế, hoạt động trong arrow functions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Array method nào là một higher-order function giảm tất cả elements thành một giá trị duy nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Array.prototype.reduce(callback, initialValue)" },
+        { "id": "b", "text": "Array.prototype.flat(depth)" },
+        { "id": "c", "text": "Array.prototype.splice(start, deleteCount)" },
+        { "id": "d", "text": "Array.prototype.fill(value, start, end)" }
+      ],
+      "correctKey": "a",
+      "explanation": "reduce() áp dụng callback function với một accumulator, giảm array thành một giá trị. Signature: reduce(callback, initialValue) với callback nhận (accumulator, currentValue, index, array). Ví dụ: `[1,2,3].reduce((acc, n) => acc + n, 0)` trả về 6."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction curriedAdd(a) {\n  return function(b) {\n    return function(c) {\n      return a + b + c;\n    };\n  };\n}\nconsole.log(curriedAdd(1)(2)(3));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "6" },
+        { "id": "b", "text": "123 (string concatenation)" },
+        { "id": "c", "text": "NaN" },
+        { "id": "d", "text": "TypeError: not a function" }
+      ],
+      "correctKey": "a",
+      "explanation": "Currying biến một function có nhiều arguments thành một chuỗi functions, mỗi nhận một argument. curriedAdd(1) trả function expecting (b); gọi với (2) trả function expecting (c); gọi với (3) thực thi và trả về a + b + c = 1 + 2 + 3 = 6."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Function composition là gì và tại sao nó hữu ích trong functional JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Kết hợp các pure functions nhỏ bằng cách truyền output của một function như input của function tiếp theo để xây dựng các transformations phức tạp — cho phép reusable, declarative, và testable pipelines" },
+        { "id": "b", "text": "Sử dụng spread operator bên trong function parameters để nhận variable arguments" },
+        { "id": "c", "text": "Overloading một function để nhận các số lượng arguments khác nhau" },
+        { "id": "d", "text": "Memoizing kết quả của một function để tránh recomputation khi gọi lại" }
+      ],
+      "correctKey": "a",
+      "explanation": "Function composition: cho f và g, composing tạo h(x) = f(g(x)). Output của một function trở thành input của function tiếp theo. Ví dụ: `const pipe = (...fns) => x => fns.reduce((v, f) => f(v), x)`; `const compute = pipe(double, addOne, square)`. Điều này xây dựng logic phức tạp từ các pure functions đơn giản, declarative và dễ test."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Tail call optimization (TCO) cho phép JavaScript engines reuse stack frames cho recursive calls ở tail position, ngăn stack overflow cho deep recursions.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Proper Tail Call (PTC) được giới thiệu trong ES2015 (chỉ strict mode). Khi function's last action là call đến function khác, engine có thể reuse current stack frame thay vì thêm mới — cho phép infinite recursion mà không stack overflow. Lưu ý: TCO không được hỗ trợ trong tất cả engines và đã bị loại khỏi spec."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Trampoline là gì và khi nào nên sử dụng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một kỹ thuật chuyển đổi recursive calls thành iterative loops bằng cách bọc results trong thunk objects, tránh stack buildup khi TCO không có sẵn trong JS engine" },
+        { "id": "b", "text": "Một debugging tool log mọi function call và return value trong chương trình JavaScript" },
+        { "id": "c", "text": "Một cách đảm bảo functions chạy đúng thứ tự bằng cách dùng setTimeout giữa các calls" },
+        { "id": "d", "text": "Một pattern để memoize các recursive calculations tốn kém" }
+      ],
+      "correctKey": "a",
+      "explanation": "Trampoline bọc recursive calls sao cho thay vì gọi recursive call tiếp (mọc stack), nó trả về một thunk (function) mà khi gọi sản sinh bước tiếp theo. Trampoline loop liên tục gọi các thunks này cho đến khi trả về non-function result. Điều này chuyển recursion sang iteration ở application level."
+    }
+  ]
+}

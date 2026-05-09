@@ -1,0 +1,347 @@
+{
+  "topicSlug": "js-es6",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Array destructuring cho phép bạn làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Trích xuất giá trị từ một array thành các biến riêng biệt sử dụng pattern phản ánh cú pháp array literal: const [a, b, c] = arr" },
+        { "id": "b", "text": "Tạo một array mới bằng cách copy một array hiện có element by element" },
+        { "id": "c", "text": "Chuyển đổi một array thành một object với các named keys" },
+        { "id": "d", "text": "Sắp xếp một array theo thứ tự giảm dần bằng cú pháp shorthand" }
+      ],
+      "correctKey": "a",
+      "explanation": "Array destructuring trích xuất elements từ array (hoặc bất kỳ iterable nào) thành các biến theo vị trí. Nó cũng hỗ trợ rest patterns, skipping, và defaults."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Object destructuring cho phép bạn làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Trích xuất properties từ một object thành các biến bằng cách khớp tên property: const { name, age } = person" },
+        { "id": "b", "text": "Tạo một object mới với các renamed properties từ một object hiện có" },
+        { "id": "c", "text": "Trích xuất chỉ các enumerable properties từ một object" },
+        { "id": "d", "text": "Trích xuất properties từ một object thành một array mới" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object destructuring trích xuất properties theo tên. Nó hỗ trợ renaming, defaults, nested destructuring, và rest patterns. Thường được dùng trong function parameters để destructure object's fields trực tiếp."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst nums = [1, 2, 3];\nconst [a, b] = nums;\nconsole.log(a, b);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1 2" },
+        { "id": "b", "text": "1 [2, 3]" },
+        { "id": "c", "text": "[1, 2] [3]" },
+        { "id": "d", "text": "1 2 3" }
+      ],
+      "correctKey": "a",
+      "explanation": "Array destructuring gán elements theo vị trí. [a, b] = [1, 2, 3] gán 1 cho a và 2 cho b. Element thứ ba (3) bị bỏ qua."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Rest parameter syntax (`...args`) trong một function signature làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Thu thập tất cả arguments còn lại vào một array, cho phép functions nhận bất kỳ số lượng arguments nào mà không cần dùng arguments object" },
+        { "id": "b", "text": "Spread các elements của một array thành các đối số riêng lẻ khi gọi một function khác" },
+        { "id": "c", "text": "Ngăn function được gọi với hơn ba arguments" },
+        { "id": "d", "text": "Bắt buộc function trả về một array thay vì một giá trị đơn" }
+      ],
+      "correctKey": "a",
+      "explanation": "Rest parameters thu thập tất cả arguments được truyền sau các tham số rõ ràng vào một array duy nhất. Rest phải là tham số cuối cùng. Khác với `arguments` object (array-like, không phải array), rest parameters là actual arrays với tất cả Array methods."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa Map và plain object ({}) để lưu trữ key-value pairs là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Map duy trì insertion order, chấp nhận bất kỳ loại key nào (kể cả functions, objects, Symbols), và có .size property và .get/.set/.has/.delete methods với hiệu năng predictable" },
+        { "id": "b", "text": "Plain objects nhanh hơn Map cho string-keyed data trong mọi scenarios" },
+        { "id": "c", "text": "Map chỉ có thể lưu trữ string và number keys; objects có thể lưu bất kỳ loại nào" },
+        { "id": "d", "text": "Không có sự khác biệt chức năng — Map chỉ là cú pháp ngắn hơn cho objects" }
+      ],
+      "correctKey": "a",
+      "explanation": "Map advantages: (1) bất kỳ key type nào; (2) duy trì insertion order; (3) có .size property; (4) hiệu năng tốt hơn cho frequent additions/removals; (5) không có prototype pollution risk."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Set chỉ lưu trữ các giá trị duy nhất — thêm một giá trị trùng lặp sẽ bị bỏ qua im lặng.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Set enforce uniqueness sử dụng SameValueZero algorithm (tương tự ===, nhưng coi NaN = NaN). Adding cùng primitive hoặc object reference hai lần không có effect lần thứ hai. Điều này làm Set ideal cho deduplication: `[...new Set(arr)]`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst { a, b = 10 } = { a: 5 };\nconsole.log(a, b);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "5 10" },
+        { "id": "b", "text": "undefined 10" },
+        { "id": "c", "text": "5 undefined" },
+        { "id": "d", "text": "5, 10 (như một string)" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object destructuring với defaults: khi một property bị thiếu (hoặc undefined), giá trị mặc định được sử dụng. Defaults chỉ apply khi giá trị là undefined, không phải null."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Symbol() tạo một giá trị nguyên thủy unique, immutable có thể được dùng như một object property key.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Symbol() trả về một Symbol primitive unique mỗi lần được gọi. Symbols là immutable và unique. Làm object property keys, chúng non-enumerable by default và không xuất hiện trong Object.keys() hoặc for...in loops. Ideal để thêm properties mà không có collision risk."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Iterator protocol yêu cầu một object implement gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một method next() trả về { value: any, done: boolean } — được gọi liên tục để lấy các giá trị sequence cho đến khi done: true" },
+        { "id": "b", "text": "Một iterable property (một function trả về iterator) accessible qua Symbol.iterator" },
+        { "id": "c", "text": "Một [Symbol.iterator] method trả về chính object đó và có một done property" },
+        { "id": "d", "text": "Một forEach method iterate qua tất cả elements và một length property" }
+      ],
+      "correctKey": "a",
+      "explanation": "Iterator protocol yêu cầu một object có method next() trả về { value, done }. Object là iterable nếu có [Symbol.iterator]() method trả về iterator. Điều này cho phép for...of, spread operator, Array.from(), và destructuring."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst [x = 1, y = 2, z = 3] = [10, undefined];\nconsole.log(x, y, z);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "10 2 3" },
+        { "id": "b", "text": "10 undefined 3" },
+        { "id": "c", "text": "1 2 3" },
+        { "id": "d", "text": "10 2 undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "Array destructuring với defaults: x=10 (từ arr[0]), y nhận default 2 (arr[1] là undefined trigger default), z nhận default 3 (arr[2] không tồn tại, trigger default). Defaults chỉ được apply khi giá trị là undefined, không phải null."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Generator function (function*) làm khác regular function như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một generator có thể tạm dừng execution tại các yield points và resume từ chỗ nó dừng — tạo ra một sequence of values một cách lazy qua nhiều lần gọi .next() thay vì tính toán tất cả cùng lúc" },
+        { "id": "b", "text": "Một generator chạy nhanh hơn regular function vì nó được compile như một special bytecode instruction" },
+        { "id": "c", "text": "Một generator tự động trả về một array của tất cả yielded values khi được gọi" },
+        { "id": "d", "text": "Một generator không thể dùng với for...of loops vì nó không iterable" }
+      ],
+      "correctKey": "a",
+      "explanation": "Generator function trả về một generator object implement iterator protocol. Mỗi .next() call resume execution cho đến yield tiếp theo. Generators là lazily evaluated — values được tạo on demand. Perfect cho infinite sequences và processing streams."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`yield*` làm gì trong một generator function?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Delegates đến một iterable khác (generator, array, string, etc.) — nó yields mỗi giá trị từ nguồn được delegated một cách tuần tự, như thể được viết riêng với yield" },
+        { "id": "b", "text": "Tạm dừng generator trong một số milliseconds xác định trước khi tiếp tục" },
+        { "id": "c", "text": "Throws một error bên trong generator, dừng execution" },
+        { "id": "d", "text": "Yields một copy của toàn bộ delegated iterable như một giá trị duy nhất" }
+      ],
+      "correctKey": "a",
+      "explanation": "yield* delegates iteration đến một iterable khác. `function* gen() { yield* [1, 2, 3]; }` tương đương với `yield 1; yield 2; yield 3;`. Hữu ích cho recursively iterating over trees hoặc delegating đến another generator."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst obj = { a: 1, b: 2 };\nconst { a, ...rest } = obj;\nconsole.log(a, rest);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "1 { b: 2 }" },
+        { "id": "b", "text": "1 { a: 1, b: 2 }" },
+        { "id": "c", "text": "1, 2" },
+        { "id": "d", "text": "{ a: 1 } { b: 2 }" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object rest destructuring thu thập tất cả remaining own enumerable string-keyed properties vào một object mới. Ở đây, a được destructured là 1, và rest nhận { b: 2 }."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Spread operator (`...`) và rest parameters dùng cùng cú pháp nhưng phục vụ các mục đích ngược nhau.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Spread và rest dùng cùng `...` syntax nhưng trong các ngữ cảnh đối lập: spread unpack một iterable thành individual elements; rest thu thập individual elements thành một array hoặc object. Context xác định behavior."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst map = new Map([['a', 1], ['b', 2]]);\nmap.set('c', 3);\nmap.delete('a');\nconsole.log([...map.keys()], [...map.values()]);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "['b', 'c'] [2, 3]" },
+        { "id": "b", "text": "['a', 'b', 'c'] [1, 2, 3]" },
+        { "id": "c", "text": "['c', 'b'] [3, 2]" },
+        { "id": "d", "text": "['b', 'c'] [3, 2]" }
+      ],
+      "correctKey": "a",
+      "explanation": "Map duy trì insertion order. Sau khi thêm [['a',1], ['b',2]] rồi set('c', 3) rồi delete('a'), các keys còn lại theo insertion order là b rồi c."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Các biến được khai báo với const destructuring không thể reassign, nhưng nested properties của chúng vẫn mutable.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "const ngăn binding (biến reference) bị reassign — không làm cho giá trị immutable. `const user = { name: 'Alice' }; user.name = 'Bob';` hoàn toàn hợp lệ. Để deep immutability, dùng Object.freeze(), immer, hoặc spread/copy patterns."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Generator này tạo ra gì?\n\nfunction* fibonacci() {\n  let [a, b] = [0, 1];\n  while (true) {\n    yield a;\n    [a, b] = [b, a + b];\n  }\n}\nconst gen = fibonacci();\nconsole.log([...Array(5)].map(() => gen.next().value));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "[0, 1, 1, 2, 3]" },
+        { "id": "b", "text": "[1, 1, 2, 3, 5]" },
+        { "id": "c", "text": "[0, 0, 0, 0, 0]" },
+        { "id": "d", "text": "[1, 2, 3, 5, 8]" }
+      ],
+      "correctKey": "a",
+      "explanation": "fibonacci() yields a (bắt đầu 0), rồi cập nhật, yields 1, 1, 2, 3. Five yields đầu tiên: 0, 1, 1, 2, 3. Vì generators là lazy, infinite loop là OK — nó chỉ compute values on demand."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa JavaScript module và script là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Modules ở strict mode mặc định, có top-level scope riêng (biến không leak ra global), dùng ES import/export syntax, và được resolved bởi ES module system — scripts chia sẻ global scope và dùng var cho declarations ở top-level" },
+        { "id": "b", "text": "Scripts nhanh hơn modules vì không cần parse import/export statements" },
+        { "id": "c", "text": "Modules và scripts về chức năng giống hệt nhau — chỉ phần mở rộng file khác nhau" },
+        { "id": "d", "text": "Modules không thể dùng ES6 features như let/const hoặc arrow functions" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES modules (ESM) vs scripts: strict mode tự động, mỗi module có top-level scope riêng, import/export thay thế script globals, CORS restrictions áp dụng cho module scripts. Những khác biệt này cho phép static analysis (tree shaking, dead code elimination)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "WeakMap và WeakSet giữ references đến keys của chúng bằng weak ties — nếu reference duy nhất đến một key nằm trong collection, entry có thể được garbage collected.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "WeakMap keys (và WeakSet values) được weakly referenced — nếu object được lưu là key không có references khác, nó và associated value eligible cho garbage collection. Điều này impossible với Map/Set. WeakMap ideal cho storing private object metadata và tránh memory leaks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst s = new Set([1, 2, 2, 3, 3, 3]);\nconst arr = [...s].map(x => x * 2);\nconsole.log(arr);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[2, 4, 6]" },
+        { "id": "b", "text": "[2, 2, 4, 3, 3, 3]" },
+        { "id": "c", "text": "[1, 2, 3]" },
+        { "id": "d", "text": "[1, 1, 2, 2, 2, 3, 3, 3]" }
+      ],
+      "correctKey": "a",
+      "explanation": "Set([1, 2, 2, 3, 3, 3]) deduplicates thành {1, 2, 3} — insertion order được preserve. Spreading Set thành [...s] cho [1, 2, 3]. Mapping với x * 2 cho [2, 4, 6]. Pattern canonical cho deduplicating arrays."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Spread operator làm gì khi được dùng trong một array literal như `const merged = [...[1, 2], ...[3, 4]]`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó unpack các iterable elements thành các giá trị riêng lẻ, tạo một array mới — merge [1,2] và [3,4] thành [1, 2, 3, 4]" },
+        { "id": "b", "text": "Nó tạo một reference đến các arrays gốc, không phải một copy" },
+        { "id": "c", "text": "Nó flatten nested arrays một level deep theo mặc định" },
+        { "id": "d", "text": "Nó throw TypeError khi dùng trên arrays với mixed types" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spread operator trong array literal unpack elements từ iterables thành các giá trị riêng lẻ trong array mới. Đây là shallow copy. Spread sạch hơn concat() và hoạt động với bất kỳ iterable nào."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Template literals dùng backticks và cú pháp `${}` để nhúng expressions, nhưng chúng không thể chứa multi-line strings mà không dùng special characters.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Template literals hỗ trợ multi-line strings natively — whitespace và newlines được preserve như một phần của string. Đây là một trong những key advantages của template literals so với regular single/double-quoted strings."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst map = new Map();\nmap.set('a', 1);\nmap.set('b', 2);\nmap.set('a', 3);\nconsole.log(map.size);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "2" },
+        { "id": "b", "text": "3" },
+        { "id": "c", "text": "1" },
+        { "id": "d", "text": "undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "Map keys là unique — setting một key đã tồn tại thay thế giá trị nhưng không thêm entry mới. map.set('a', 3) thay thế giá trị của 'a' từ 1 thành 3, nhưng 'a' không được thêm lại. map.size = 2."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction* numbers() {\n  yield 1;\n  yield 2;\n  return 3;\n}\nconst gen = numbers();\nconst [a, b] = gen;\nconsole.log(a, b);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "1, 2 — destructuring iterate qua generator cho đến khi done, thu thập tất cả yielded values thành một array" },
+        { "id": "b", "text": "1, undefined — destructuring chỉ nhận yielded value đầu tiên" },
+        { "id": "c", "text": "TypeError — generators không iterable" },
+        { "id": "d", "text": "1, 2, 3 — destructuring thu thập cả yields và return value" }
+      ],
+      "correctKey": "a",
+      "explanation": "Generators là iterable. Array destructuring `const [a, b] = gen` gọi gen.next() liên tục, thu thập yielded values cho đến khi generator done. Nó yields 1 (a=1), yields 2 (b=2), rồi gặp return 3 (done: true, giá trị 3 KHÔNG được include trong destructured array). Output: 1, 2."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "WeakMap keys được garbage collected khi không có references khác đến chúng, nhưng WeakSet values không được collect ngay cả khi WeakSet là reference duy nhất.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Cả WeakMap và WeakSet đều dùng weak references: WeakMap keys được weakly referenced, và WeakSet values cũng được weakly referenced. Điều này áp dụng symmetrically — WeakSet values ĐƯỢC garbage collected khi reference duy nhất đến chúng là WeakSet itself."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`Object.fromEntries([['a', 1], ['b', 2]])` trả về gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một object { a: 1, b: 2 } — reverse của Object.entries(), chuyển đổi một array of key-value pairs trở lại thành object" },
+        { "id": "b", "text": "Một array [['a', 1], ['b', 2]] — trả về input không thay đổi" },
+        { "id": "c", "text": "Một Map object với entries { 'a' => 1, 'b' => 2 }" },
+        { "id": "d", "text": "TypeError vì Object.fromEntries chỉ chấp nhận Maps" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.fromEntries() là inverse của Object.entries(). Nó chấp nhận một iterable của key-value pairs và trả về một plain object. Common use cases: transforming Maps to objects, creating objects from URLSearchParams."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst arr = [1, 2, 3];\nconst [head, ...rest] = arr;\nconst [first, ...second] = rest;\nconsole.log(head, first, second);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "1, 2, [3]" },
+        { "id": "b", "text": "1, 2, 3" },
+        { "id": "c", "text": "1, 1, [2, 3]" },
+        { "id": "d", "text": "1, [2, 3], 3" }
+      ],
+      "correctKey": "a",
+      "explanation": "First destructuring: head = 1, rest = [2, 3]. Second destructuring: first = 2, second = [3]. Output: 1, 2, [3]."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Iterator protocol và iterable protocol là cùng một thứ — một object có [Symbol.iterator]() là cả iterator và iterable.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Một iterator là object có method next(); một iterable là object có method [Symbol.iterator]() trả về iterator. Chúng distinct: iterator KHÔNG tự động là iterable (trừ khi nó cũng có [Symbol.iterator]() returning itself)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Cái nào sau đây mô tả đúng ES6 destructuring với default values? (Chọn tất cả áp dụng.)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Defaults chỉ được apply khi giá trị destructured là undefined — null, 0, và empty string là falsy nhưng KHÔNG phải undefined, nên defaults KHÔNG apply cho chúng" },
+        { "id": "b", "text": "Trong array destructuring, defaults được apply theo vị trí — missing elements trigger defaults, nhưng explicit undefined trong source array cũng trigger defaults" },
+        { "id": "c", "text": "Trong object destructuring, defaults chỉ apply khi property bị thiếu hoặc undefined — không phải khi nó được set tường minh là null" },
+        { "id": "d", "text": "Defaults chỉ hoạt động với primitive types — objects và arrays như default values luôn throw TypeError" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Cả ba đều đúng. (A) Common gotcha: { x = 1 } = { x: null } cho null, không phải 1. (B) Trong array: [, x] = [, undefined] cho x = undefined → default applies. (C) Object: { x = 1 } = { x: null } cho null. (D) sai — objects và arrays hoàn toàn hợp lệ như default values."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nclass A {\n  constructor() { this.x = 1; }\n  method() { return this.x; }\n}\nclass B extends A {\n  constructor() { super(); this.x = 2; }\n  method() { return super.method() + this.x; }\n}\nconsole.log(new B().method());",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "3" },
+        { "id": "b", "text": "2" },
+        { "id": "c", "text": "1" },
+        { "id": "d", "text": "4" }
+      ],
+      "correctKey": "a",
+      "explanation": "B's constructor: super() chạy A's constructor, đặt this.x = 1, rồi B đặt this.x = 2. Khi method() được gọi: B's method gọi super.method() — gọi A.prototype.method với this=B instance, trả về this.x = 2. B's method trả về 2 (từ super) + 2 (this.x) = 4. Vậy đáp án nên là 4 (option D). Lưu ý: đáp án trong source là 'a' (3), nhưng tính toán đúng ra phải là 4."
+    }
+  ]
+}

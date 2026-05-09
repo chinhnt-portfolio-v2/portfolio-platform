@@ -1,0 +1,240 @@
+{
+  "topicSlug": "dsa-trees",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Số lượng node tối đa ở level k của cây nhị phân là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "k" },
+        { "id": "b", "text": "2^k" },
+        { "id": "c", "text": "k²" },
+        { "id": "d", "text": "2^(k-1)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Level 0 (root): 2⁰ = 1 node. Level 1: 2¹ = 2 nodes. Level 2: 2² = 4 nodes. Mỗi node ở level k-1 có 2 con, cho 2 × 2^(k-1) = 2^k nodes. Tổng node trong complete binary tree chiều cao h là 2^(h+1) - 1."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Cây nhị phân chiều cao h (chiều cao = số cạnh trên đường dài nhất từ root đến leaf) có tối đa bao nhiêu node?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "h + 1" },
+        { "id": "b", "text": "h² + 1" },
+        { "id": "c", "text": "2^(h+1) - 1" },
+        { "id": "d", "text": "2^h" }
+      ],
+      "correctKey": "c",
+      "explanation": "Cây nhị phân đầy đủ (full binary tree) có tối đa 2^(h+1) - 1 nodes. Level 0: 1, level 1: 2, ..., level h: 2^h. Tổng = geometric series = 2^(h+1) - 1."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính cơ bản của Binary Search Tree (BST) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cây tự cân bằng" },
+        { "id": "b", "text": "Mỗi node có tối đa 2 con; giá trị bên trái nhỏ hơn node, giá trị bên phải lớn hơn node" },
+        { "id": "c", "text": "Tất cả các node lá có cùng độ sâu" },
+        { "id": "d", "text": "Cây nhị phân lưu trữ dữ liệu theo thứ tự tuyến tính" }
+      ],
+      "correctKey": "b",
+      "explanation": "BST: mỗi node có tối đa 2 con, với thuộc tính cây tìm kiếm: left subtree chứa giá trị nhỏ hơn, right subtree chứa giá trị lớn hơn. Điều này cho phép tìm kiếm, chèn, xóa trong O(h) với h là chiều cao cây."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi nào In-order traversal trên BST trả về các giá trị theo thứ tự tăng dần?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Khi duyệt từ phải sang trái" },
+        { "id": "b", "text": "Khi duyệt theo thứ tự Left → Node → Right trên BST" },
+        { "id": "c", "text": "Khi duyệt Level-order" },
+        { "id": "d", "text": "Chỉ trên cây cân bằng" }
+      ],
+      "correctKey": "b",
+      "explanation": "In-order (Left → Node → Right) trên BST: vì tất cả giá trị bên trái nhỏ hơn node hiện tại và bên phải lớn hơn, duyệt theo thứ tự này trả về các giá trị được sắp xếp tăng dần."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuật toán tìm LCA (Lowest Common Ancestor) trong cây nhị phân hai node p và q?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Di chuyển từ root xuống, tìm node đầu tiên nằm giữa p và q" },
+        { "id": "b", "text": "Đệ quy: nếu root bằng p hoặc q, trả về root; nếu p, q nằm khác nhau bên trái/phải, đây là LCA; nếu cùng bên, đệ quy vào bên đó" },
+        { "id": "c", "text": "Dùng BFS để tìm cả hai node rồi tính intersection" },
+        { "id": "d", "text": "Tìm đường đi từ root đến mỗi node rồi tìm node chung cuối" }
+      ],
+      "correctKey": "b",
+      "explanation": "Thuật toán LCA đệ quy: từ root, nếu p và q nằm ở hai nhánh khác nhau (hoặc root bằng p/q), root là LCA. Nếu cùng nhánh, đệ quy vào nhánh đó. O(h) time."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa BFS và DFS trên cây?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "BFS dùng stack, DFS dùng queue" },
+        { "id": "b", "text": "BFS dùng queue và duyệt theo level; DFS dùng stack (hoặc đệ quy) và duyệt theo chiều sâu trước" },
+        { "id": "c", "text": "BFS nhanh hơn DFS" },
+        { "id": "d", "text": "DFS không thể duyệt cây" }
+      ],
+      "correctKey": "b",
+      "explanation": "BFS (Breadth-First Search): queue → duyệt theo từng level. DFS (Depth-First Search): stack hoặc đệ quy → duyệt một nhánh đến cuối trước. Cả hai đều O(V+E) time, O(V) space trong trường hợp xấu nhất."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef inorder(root):\n    return inorder(root.left) + [root.val] + inorder(root.right) if root else []\n\ninorder(build_tree([1, None, 2, None, None, 3]))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "In-order trên cây có root=1, right=2, 2's left=3: duyệt left=None → [], node=1 → [1], duyệt right subtree (2 với left=3): left=3 → [3], node=2 → [3,2], kết quả [1,3,2]."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "AVL tree và Red-Black tree đều là cây tự cân bằng. Điểm khác biệt chính là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "AVL nghiêm ngặt hơn (chênh lệch độ cao ≤ 1) → tìm kiếm nhanh hơn; Red-Black linh hoạt hơn → chèn/xóa nhanh hơn" },
+        { "id": "b", "text": "Red-Black cân bằng hơn AVL" },
+        { "id": "c", "text": "AVL dùng màu đỏ-đen; Red-Black dùng chiều cao" },
+        { "id": "d", "text": "Không có khác biệt" }
+      ],
+      "correctKey": "a",
+      "explanation": "AVL tree: chênh lệch chiều cao giữa hai subtree của mỗi node ≤ 1 → tìm kiếm nhanh hơn. Red-Black: ít nghiêm ngặt hơn → cho phép chèn/xóa nhanh hơn với ít rotations. AVL dùng trong database; Red-Black trong Linux kernel, Java TreeMap."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Cây nhị phân có chiều cao cân bằng đảm bảo độ phức tạp thao tác nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1)" },
+        { "id": "b", "text": "O(log n)" },
+        { "id": "c", "text": "O(n)" },
+        { "id": "d", "text": "O(n log n)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cây cân bằng (AVL, Red-Black) đảm bảo chiều cao O(log n), cho phép tìm kiếm, chèn, xóa trong O(log n). Đây là lý do chính dùng cây tự cân bằng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "BFS trên cây có n node sử dụng bao nhiêu space?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(log n)" },
+        { "id": "b", "text": "O(n)" },
+        { "id": "c", "text": "O(1)" },
+        { "id": "d", "text": "O(width của cây, tối đa O(n))" }
+      ],
+      "correctKey": "d",
+      "explanation": "BFS dùng queue. Trong trường hợp xấu nhất (cây rộng), queue chứa tất cả node của một level → O(width). Wide tree (VD: linked list dạng cây) → width = O(n). Space = O(n) trong trường hợp xấu nhất."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Độ phức tạp thời gian duyệt cây nhị phân (in-order, pre-order, post-order) là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(log n)" },
+        { "id": "b", "text": "O(n)" },
+        { "id": "c", "text": "O(n log n)" },
+        { "id": "d", "text": "O(n²)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Mỗi node được visit đúng một lần trong mỗi traversal → O(n). Không phụ thuộc loại traversal. Space phụ thuộc implementation: đệ quy O(h) call stack, iterative O(width) queue."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Cây nhị phân lưu trữ 15 giá trị. Chiều cao tối thiểu (balanced) là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "3" },
+        { "id": "b", "text": "4" },
+        { "id": "c", "text": "5" },
+        { "id": "d", "text": "15" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cây cân bằng hoàn hảo: 2^(h+1) - 1 = 15 → h+1 = log₂(16) = 4 → h = 3. Nhưng nếu balanced không hoàn hảo, chiều cao = ⌈log₂(n+1)⌉ - 1 = ⌈log₂(16)⌉ - 1 = 4 - 1 = 3. Thực tế, 15 nodes cần ít nhất 4 levels (chiều cao 3)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Segment tree dùng để làm gì và độ phức tạp của nó là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tìm kiếm trong mảng — O(log n)" },
+        { "id": "b", "text": "Range query (VD: sum, min, max) và range update trên mảng — query và update đều O(log n)" },
+        { "id": "c", "text": "Sắp xếp — O(n log n)" },
+        { "id": "d", "text": "Trie — O(m)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Segment tree: cây nhị phân lưu aggregated values (sum, min, max) cho các segment của mảng. Build O(n), query O(log n), update O(log n). Ứng dụng: range sum queries, RMQ (range minimum query). Space O(4n). Fenwick tree cũng giải quyết range query sum trong O(log n) nhưng chỉ cho commutative operations."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "B-Tree (cây B) được dùng chủ yếu ở đâu và tại sao?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Trong bộ nhớ RAM — để truy cập nhanh các giá trị" },
+        { "id": "b", "text": "Trong database indexes và file systems — thiết kế giảm I/O bằng cách có nhiều keys mỗi node, giảm chiều cao cây và số lần disk access" },
+        { "id": "c", "text": "Trong compiler — để phân tích cú pháp" },
+        { "id": "d", "text": "Trong mạng — để định tuyến" }
+      ],
+      "correctKey": "b",
+      "explanation": "B-Tree có nhiều keys mỗi node (fan-out cao), giảm chiều cao cây. Điều này quan trọng cho disk-based storage vì mỗi disk I/O đọc cả block/node. B+Tree (biến thể) lưu tất cả data ở leaves, internal nodes chỉ lưu keys — tối ưu cho range queries."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef is_balanced(root):\n    def dfs(node):\n        if not node: return 0\n        left = dfs(node.left)\n        if left == -1: return -1\n        right = dfs(node.right)\n        if right == -1: return -1\n        if abs(left - right) > 1: return -1\n        return max(left, right) + 1\n    return dfs(root) != -1\n\n# Cây: root=1, left=2, right=3 (tất cả lá)\nis_balanced(root)",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Cây có root=1, left=2, right=3: mỗi node lá có chiều cao 0, root có chiều cao 1. abs(0 - 0) = 0 ≤ 1 ở root → cân bằng → True."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Số lượng node lá tối thiểu trong cây nhị phân chiều cao h là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "h + 1" },
+        { "id": "b", "text": "2^h" },
+        { "id": "c", "text": "h" },
+        { "id": "d", "text": "2^(h+1) - 1" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trong cây nhị phân cân bằng hoàn hảo, số node lá = 2^h (level h có 2^h nodes). Số node lá tối thiểu trong cây nhị phân chiều cao h cũng là F(h+2) - 1 (liên quan Fibonacci), nhưng câu hỏi này hỏi cho cây cân bằng: 2^h. Cách khác: F(n) ≥ 2^(n/2) cho n ≥ 2."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Trie (cây tiền tố) có độ phức tạp tìm kiếm phụ thuộc vào yếu tố nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Số lượng keys được lưu trữ" },
+        { "id": "b", "text": "Chiều dài của key được tìm kiếm" },
+        { "id": "c", "text": "Chiều cao của cây" },
+        { "id": "d", "text": "Số lượng node trong cây" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trie: mỗi thao tác (tìm kiếm, chèn) có độ phức tạp O(m) trong đó m = độ dài của key, không phụ thuộc vào số lượng keys. Điều này lý tưởng cho prefix search và autocomplete. Space O(Σ m × alphabet size)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuật toán xây dựng cây từ In-order và Pre-order (hoặc Post-order) có độ phức tạp bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n log n)" },
+        { "id": "b", "text": "O(n²)" },
+        { "id": "c", "text": "O(n)" },
+        { "id": "d", "text": "O(log n)" }
+      ],
+      "correctKey": "c",
+      "explanation": "Xây dựng cây từ In-order và Pre-order (hoặc Post-order): root = phần tử đầu tiên của Pre-order (hoặc cuối của Post-order). Chia In-order theo root → left subtree và right subtree. Đệ quy. Mỗi phần tử được xử lý một lần → O(n) time, O(H) space cho recursion stack."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuật toán serialize/deserialize cây nhị phân dùng Pre-order và Null markers có độ phức tạp bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Serialize O(n), Deserialize O(n)" },
+        { "id": "b", "text": "Serialize O(n), Deserialize O(n²)" },
+        { "id": "c", "text": "Serialize O(n²), Deserialize O(n)" },
+        { "id": "d", "text": "Serialize O(n log n), Deserialize O(n log n)" }
+      ],
+      "correctKey": "a",
+      "explanation": "Serialize (Pre-order với null markers): mỗi node visit một lần → O(n). Deserialize: đọc pre-order, tạo node, đệ quy vào left/right → mỗi phần tử xử lý một lần → O(n). Cả hai đều O(n)."
+    }
+  ]
+}

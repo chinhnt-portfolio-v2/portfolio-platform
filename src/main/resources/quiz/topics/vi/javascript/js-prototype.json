@@ -1,0 +1,353 @@
+{
+  "topicSlug": "js-prototype",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Prototype chain cho phép điều gì trong JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Objects kế thừa properties và methods từ các objects khác, tạo thành một chain từ object lên Object.prototype (rồi null)" },
+        { "id": "b", "text": "Functions được gọi recursively mà không bị stack overflow" },
+        { "id": "c", "text": "Classes được định nghĩa sử dụng class keyword thay vì function constructors" },
+        { "id": "d", "text": "Arrays lưu trữ nhiều data types đồng thời" }
+      ],
+      "correctKey": "a",
+      "explanation": "JavaScript sử dụng prototypal inheritance — objects có thể kế thừa từ objects khác. Mỗi object có internal [[Prototype]] link đến object khác (hoặc null). Khi truy cập property, JavaScript đi lên chain này."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mối quan hệ giữa constructor function và prototype của nó là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Mỗi function tự động có .prototype property trỏ đến một object có constructor property trỏ ngược về function — được dùng làm [[Prototype]] cho objects được tạo với new" },
+        { "id": "b", "text": "Constructor functions không có quan hệ với prototypes — chúng là các khái niệm hoàn toàn riêng biệt" },
+        { "id": "c", "text": ".prototype property chỉ tồn tại trên arrow functions, không phải regular functions" },
+        { "id": "d", "text": "Constructor functions thay thế nhu cầu về prototypes và lưu trữ tất cả methods trực tiếp trên function object" }
+      ],
+      "correctKey": "a",
+      "explanation": "Khi định nghĩa constructor function, JavaScript tự động tạo .prototype property trên function, trỏ đến một object. Khi gọi `new Person('Alice')`, new object's [[Prototype]] được set là Person.prototype."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`__proto__` là gì và khi nào nên sử dụng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "__proto__ là accessor công khai cho [[Prototype]] — dùng nó để debug hoặc đọc prototypes, nhưng ưu tiên Object.getPrototypeOf() / Object.setPrototypeOf() trong production code" },
+        { "id": "b", "text": "__proto__ là cách hiện đại để set prototypes trong production — luôn ưu tiên nó thay vì Object.create()" },
+        { "id": "c", "text": "__proto__ đã deprecated và throw error trong strict mode" },
+        { "id": "d", "text": "__proto__ tạo một prototype chain mới từ đầu" }
+      ],
+      "correctKey": "a",
+      "explanation": "__proto__ là legacy accessor cho [[Prototype]]. Nó có performance implications. Các alternatives hiện đại được khuyến nghị: Object.getPrototypeOf(obj) và Object.setPrototypeOf(obj, prototype)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Từ khóa `class` trong JavaScript thực sự compile thành gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Classes là syntactic sugar trên prototype-based constructor functions — chúng vẫn sử dụng prototype chain, nhưng cung cấp cú pháp sạch hơn cho định nghĩa constructors, methods, và inheritance" },
+        { "id": "b", "text": "Classes tạo hoàn toàn new language constructs không liên quan gì đến prototype chain" },
+        { "id": "c", "text": "Classes nhanh hơn constructor functions vì chúng được interpret bởi một class interpreter riêng" },
+        { "id": "d", "text": "Classes cho phép private fields không thể có với constructor functions" }
+      ],
+      "correctKey": "a",
+      "explanation": "JavaScript classes là syntactic sugar — bên dưới, class compile thành constructor function với methods đặt trên prototype. Class syntax cũng enable extends và super với semantic guarantees."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction Animal(name) {\n  this.name = name;\n}\nAnimal.prototype.speak = function() {\n  return this.name + ' makes a sound';\n};\nconst dog = new Animal('Dog');\nconsole.log(dog.speak());",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dog makes a sound" },
+        { "id": "b", "text": "undefined makes a sound" },
+        { "id": "c", "text": "[object Object] makes a sound" },
+        { "id": "d", "text": "TypeError: speak is not a function" }
+      ],
+      "correctKey": "a",
+      "explanation": "new Animal('Dog') tạo object có [[Prototype]] là Animal.prototype. speak() được định nghĩa trên Animal.prototype, nên dog.speak() được tìm qua prototype chain. this.name là 'Dog'. Output: 'Dog makes a sound'."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Object.create(null) tạo một object không có prototype.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Object.create(null) tạo 'pure dictionary object' với [[Prototype]] là null. Nó không có inherited methods như .toString(), .hasOwnProperty(). Hữu ích cho clean hash maps và bảo mật (ngăn prototype pollution)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction Car(model) {\n  this.model = model;\n}\nconst tesla = Object.create(Car.prototype);\ntesla.model = 'Model 3';\nconsole.log(tesla instanceof Car);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "true" },
+        { "id": "b", "text": "false" },
+        { "id": "c", "text": "ReferenceError" },
+        { "id": "d", "text": "undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.create(Car.prototype) tạo object có [[Prototype]] là Car.prototype. instanceof kiểm tra Car.prototype có trong prototype chain của tesla không — có, nên instanceof Car là true."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Static methods trong một class được gọi trên class instances, không phải trên class.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Static methods được gọi trên class constructor, KHÔNG phải instances. Chúng là properties của class, không phải prototype. Gọi: MathHelper.add(1, 2), không phải instance.add()."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction Parent() { this.x = 1; }\nParent.prototype.getX = function() { return this.x; };\nfunction Child() {\n  Parent.call(this);\n  this.y = 2;\n}\nChild.prototype = Object.create(Parent.prototype);\nChild.prototype.constructor = Child;\nconst c = new Child();\nconsole.log(c.getX());",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1" },
+        { "id": "b", "text": "undefined" },
+        { "id": "c", "text": "TypeError: getX is not a function" },
+        { "id": "d", "text": "2" }
+      ],
+      "correctKey": "a",
+      "explanation": "Parasitic Combination Inheritance pattern. Child.prototype = Object.create(Parent.prototype) set up prototype chain. Parent.call(this) initializes this.x on Child instance. c.getX() được tìm trên Parent.prototype qua chain, và this.x resolves đến 1."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Object.getPrototypeOf(obj) trả về gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[[Prototype]] trực tiếp của obj (tương đương với obj.__proto__ trong legacy)" },
+        { "id": "b", "text": "Một object mới là bản copy của prototype của obj" },
+        { "id": "c", "text": "Một array của tất cả prototypes trong chain lên Object.prototype" },
+        { "id": "d", "text": "Constructor function dùng để tạo obj" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.getPrototypeOf(obj) trả về [[Prototype]] của obj. Đây là standard, preferred alternative cho __proto__."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nclass Animal {\n  constructor(name) {\n    this.name = name;\n  }\n  speak() {\n    return `${this.name} speaks`;\n  }\n}\nclass Dog extends Animal {\n  speak() {\n    return `${this.name} barks`;\n  }\n}\nconsole.log(new Dog('Rex').speak());",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Rex barks" },
+        { "id": "b", "text": "Rex speaks" },
+        { "id": "c", "text": "undefined barks" },
+        { "id": "d", "text": "TypeError: Dog is not a function" }
+      ],
+      "correctKey": "a",
+      "explanation": "extends keyword set Dog's prototype to Animal.prototype. Dog overrides speak(). Output: 'Rex barks'. Without extends, Dog would not be an Animal subclass."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Method shadowing (method overriding) trong ngữ cảnh prototype chain là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Định nghĩa một property hoặc method trên child object có cùng tên với một trên prototype — child's own property 'shadows' prototype's, được tìm thấy trước trong lookup" },
+        { "id": "b", "text": "Một kỹ thuật permanently removes methods khỏi prototype chain" },
+        { "id": "c", "text": "Một design pattern định nghĩa private methods không thể truy cập từ prototype chain" },
+        { "id": "d", "text": "Shadowing xảy ra khi tên function được reuse trong các scopes khác nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "Khi một property tồn tại trên cả object và prototype của nó, object's own property chiếm quyền — nó 'shadows' prototype's property. Setting obj.prop = 'x' không xóa prototype's prop — nó tạo own property shadowing nó."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Từ khóa `super` chỉ có thể được sử dụng bên trong các class methods dùng từ khóa `extends`.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "super chỉ hoạt động trong ES6 classes extends class khác. Nó tham chiếu parent class's prototype. Gọi super() trong constructor và super.methodName() để gọi parent methods."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa Object.create() và new Constructor() là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Object.create(proto) tạo object với [[Prototype]] set thành proto mà KHÔNG gọi constructor; new Constructor() tạo object VÀ gọi constructor function" },
+        { "id": "b", "text": "Object.create() nhanh hơn new Constructor() trong mọi trường hợp" },
+        { "id": "c", "text": "new Constructor() chỉ có thể dùng với ES6 classes; Object.create() hoạt động với cả classes và constructor functions" },
+        { "id": "d", "text": "Không có sự khác biệt chức năng — cả hai tạo objects với cùng prototype" }
+      ],
+      "correctKey": "a",
+      "explanation": "Key difference: Object.create() set prototype và KHÔNG invoke constructor. new Constructor() làm hai điều: tạo object với Constructor.prototype và gọi Constructor function với this."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "hasOwnProperty kiểm tra gì, và tại sao Object.hasOwn() được ưu tiên trong JavaScript hiện đại?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "hasOwnProperty kiểm tra own properties only (không inherited); Object.hasOwn() (ES2022+) an toàn hơn vì không phụ thuộc vào hasOwnProperty có thể bị override trên chính object đó" },
+        { "id": "b", "text": "hasOwnProperty kiểm tra inherited properties; Object.hasOwn() kiểm tra cả own và inherited" },
+        { "id": "c", "text": "Cả hai methods làm đúng cùng một việc — Object.hasOwn() chỉ là alias ngắn hơn" },
+        { "id": "d", "text": "Object.hasOwn() kiểm tra object có phải là property của prototype của nó không" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.hasOwn() (ES2022) là cách hiện đại, recommended để kiểm tra own properties mà không phụ thuộc vào object's own hasOwnProperty method."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi dùng ES6 class extends, subclass constructor phải gọi super() trước khi truy cập `this`.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Trong ES6 class constructors, `this` không có sẵn cho đến sau khi super() được gọi. Gọi super() initializes parent class. Attempting to use `this` trước super() throws ReferenceError."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Prototype pollution là gì và nó xảy ra như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một security vulnerability khi attacker manipulate prototype chain (qua __proto__ hoặc constructor.prototype) để inject malicious properties vào tất cả JavaScript objects" },
+        { "id": "b", "text": "Một performance issue gây ra bởi tạo quá nhiều objects với shared prototypes, gây memory exhaustion" },
+        { "id": "c", "text": "Một bug trong JavaScript engine khi prototype chain đi vào infinite loop" },
+        { "id": "d", "text": "Một anti-pattern khi methods accidentally được định nghĩa trên Object.prototype thay vì class prototypes" }
+      ],
+      "correctKey": "a",
+      "explanation": "Prototype pollution xảy ra khi attacker-controlled input được merge vào objects không sanitization, cho phép paths như __proto__ được viết. Phòng ngừa: Object.freeze(Object.prototype), use Object.create(null), validate merge keys."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction F() {}\nF.prototype = { value: 42 };\nconst f = new F();\nconsole.log(f.constructor === F);\nconsole.log(f.value);\nconsole.log(f instanceof F);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "false, 42, true" },
+        { "id": "b", "text": "true, 42, true" },
+        { "id": "c", "text": "false, undefined, true" },
+        { "id": "d", "text": "false, 42, false" }
+      ],
+      "correctKey": "a",
+      "explanation": "Khi thay thế F.prototype bằng một object mới, .constructor property không còn trên F.prototype (nó trên old F.prototype object). f.constructor falls through đến Object.prototype.constructor (=== Object). f.value = 42 (trên new F.prototype). f instanceof F = true."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mixin pattern trong JavaScript liên quan đến copying properties từ một object sang object khác để simulate multiple inheritance.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Mixins giải quyết JavaScript's single-prototype inheritance limitation bằng cách copying (own) properties từ source object đến target object. Ví dụ: Object.assign(Dog.prototype, Animal.prototype). Caveats: methods copied không dùng được super."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Object.getOwnPropertyDescriptors(obj) trả về gì và tại sao nó hữu ích hơn Object.keys()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Trả về một object map tất cả own property names đến property descriptor objects (configurable, enumerable, writable, value/accessor) — khác với Object.keys() chỉ trả về enumerable string keys, nó trả về TẤT CẢ own properties bao gồm non-enumerable" },
+        { "id": "b", "text": "Chỉ trả về prototype properties của obj, không phải own properties" },
+        { "id": "c", "text": "Trả về một boolean cho biết obj có bất kỳ own properties nào không" },
+        { "id": "d", "text": "Trả về property descriptors của inherited properties only" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.getOwnPropertyDescriptors() trả về complete map của tất cả own properties. Essential cho proper cloning giữ nguyên property attributes (writable, configurable, enumerable) mà Object.assign() mất."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction Person(name) { this.name = name; }\nPerson.prototype.greet = function() { return `Hello, I'm ${this.name}`; };\nconst alice = new Person('Alice');\nconst bob = new Person('Bob');\nbob.greet = function() { return 'Hi!'; };\nconsole.log(alice.greet());\nconsole.log(bob.greet());",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Hello, I'm Alice; Hi!" },
+        { "id": "b", "text": "Hello, I'm Alice; Hello, I'm Bob" },
+        { "id": "c", "text": "Hi!; Hi!" },
+        { "id": "d", "text": "Hello, I'm Alice; Hello, I'm Alice" }
+      ],
+      "correctKey": "a",
+      "explanation": "alice.greet() looks up greet on Person.prototype → found → 'Hello, I'm Alice'. bob.greet là own property trên bob instance — nó shadows Person.prototype.greet. bob.greet() → 'Hi!'. This is property shadowing."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "ES6 private class fields (prefixed with #) được implement sử dụng WeakMap pattern bên dưới.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "ES6 private fields (#field) là syntactic sugar trên WeakMap pattern: mỗi class với private fields có một private WeakMap map instances đến private field values."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mối quan hệ giữa `instanceof` và prototype chain là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "instanceof kiểm tra Constructor.prototype có xuất hiện bất kỳ đâu trong prototype chain của object không" },
+        { "id": "b", "text": "instanceof kiểm tra object có tất cả cùng properties với constructor" },
+        { "id": "c", "text": "instanceof kiểm tra object có được tạo literal bằng từ khóa new trên constructor cụ thể đó không" },
+        { "id": "d", "text": "instanceof chỉ hoạt động với ES6 classes, không với constructor functions" }
+      ],
+      "correctKey": "a",
+      "explanation": "obj instanceof C kiểm tra C.prototype === prototype chain của obj. Nếu thay C.prototype bằng object mới, instanceof sẽ return false cho old instances."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction A() { this.x = 1; }\nA.prototype.x = 10;\nfunction B() { this.x = 2; }\nB.prototype = Object.create(A.prototype);\nB.prototype.constructor = B;\nconst b = new B();\nconsole.log(b.x, b instanceof B, b instanceof A);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "2, true, true" },
+        { "id": "b", "text": "10, true, false" },
+        { "id": "c", "text": "1, false, false" },
+        { "id": "d", "text": "2, true, false" }
+      ],
+      "correctKey": "a",
+      "explanation": "new B() sets this.x = 2 (B's constructor). b.x resolves to 2 (own property on b shadows A's prototype.x=10). b instanceof B = true. b instanceof A = true (A.prototype is in b's chain)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Object.assign() copies own enumerable properties từ source objects đến target object. Nó bảo toàn những property attributes nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Object.assign() chỉ copy VALUE và enumerable flag — nó KHÔNG preserve getters, setters, writable, configurable, hoặc non-enumerable properties" },
+        { "id": "b", "text": "Object.assign() fully preserves tất cả property descriptors bao gồm getters, setters, và non-enumerable" },
+        { "id": "c", "text": "Object.assign() chỉ copy Symbol-keyed properties và bỏ qua string keys" },
+        { "id": "d", "text": "Object.assign() tương đương Object.create() và preserves tất cả metadata" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.assign() chỉ thực hiện simple property assignment. Nó không preserve getters/setters (chúng trở thành data properties), non-enumerable properties, hoặc descriptors."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nclass Animal {\n  constructor(name) { this.name = name; }\n  speak() { return `${this.name} makes a sound`; }\n}\nclass Cat extends Animal {\n  constructor(name, color) {\n    super(name);\n    this.color = color;\n  }\n  speak() { return `${this.name} meows`; }\n}\nconst cat = new Cat('Whiskers', 'orange');\nconsole.log(cat.speak(), cat instanceof Animal);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Whiskers meows, true" },
+        { "id": "b", "text": "Whiskers makes a sound, true" },
+        { "id": "c", "text": "Whiskers meows, false" },
+        { "id": "d", "text": "undefined meows, true" }
+      ],
+      "correctKey": "a",
+      "explanation": "Cat extends Animal. Cat overrides speak(). cat.speak() gọi Cat's version → 'Whiskers meows'. super(name) chạy Animal's constructor, set this.name = 'Whiskers'. instanceof Animal = true."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi thực hiện `class Dog extends null`, `new Dog()` trả về gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một object hợp lệ với prototype là null — Dog.prototype's [[Prototype]] là null, và instanceof Object là false cho Dog instances" },
+        { "id": "b", "text": "TypeError vì một class không thể extends null" },
+        { "id": "c", "text": "Một object giống Object.create(null) nhưng với Dog là constructor" },
+        { "id": "d", "text": "Một Dog instance với tất cả standard Object methods available" }
+      ],
+      "correctKey": "a",
+      "explanation": "class Dog extends null tạo class có prototype là null. Dog.prototype's [[Prototype]] là null. instanceof Object = false. Tương đương Object.create(null) nhưng với Dog constructor."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Object.prototype.hasOwnProperty.call(obj, 'prop') là cách an toàn để kiểm tra own properties, được ưu tiên hơn obj.hasOwnProperty('prop') trong untrusted environments.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Một object có thể có named own property `hasOwnProperty` shadowing Object.prototype.hasOwnProperty. Dùng Object.prototype.hasOwnProperty.call() luôn dùng original Object.prototype method."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nfunction Base() {}\nBase.prototype.value = 1;\nconst protoHandler = {\n  get(target, prop) { return prop in target ? target[prop] : target.value; }\n};\nconst ProxyBase = new Proxy(Base, protoHandler);\nconst instance = new ProxyBase();\ninstance.value = 5;\nconsole.log(instance.value, instance instanceof Base);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "5, true" },
+        { "id": "b", "text": "1, true" },
+        { "id": "c", "text": "5, false" },
+        { "id": "d", "text": "1, false" }
+      ],
+      "correctKey": "a",
+      "explanation": "ProxyBase wraps Base (constructor). instance = new ProxyBase() calls construct trap, delegates to Base. instance.value = 5 (own property set). instance.value = 5 (own property wins). instanceof Base: Proxy intercepts [[GetPrototypeOf]] để report Base.prototype, nên instanceof Base = true."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Cái nào sau đây là những cách hợp lệ để implement inheritance trong JavaScript? (Chọn tất cả áp dụng.)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Constructor function: định nghĩa Parent, set Child.prototype = Object.create(Parent.prototype), restore Child.prototype.constructor" },
+        { "id": "b", "text": "ES6 class: class Child extends Parent { constructor() { super(); } }" },
+        { "id": "c", "text": "Object.create: const child = Object.create(Parent.prototype); child.constructor = Child; Child.prototype = child" },
+        { "id": "d", "text": "Prototype chain manipulation đã deprecated và nên luôn dùng ES6 class syntax" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Tất cả ba (A, B, C) đều là valid inheritance patterns. (A) là Parasitic Combination Inheritance pattern. (B) là ES6 syntactic sugar over (A). (C) là những gì class extends làm bên dưới. (D) sai — prototype manipulation không deprecated."
+    }
+  ]
+}

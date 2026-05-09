@@ -21,4 +21,6 @@ public interface UserQuizProgressRepository extends JpaRepository<UserQuizProgre
         @Param("userId") UUID userId,
         @Param("topicSlugs") List<String> topicSlugs
     );
+
+    void deleteByUserIdAndTopicSlug(UUID userId, String topicSlug);
 }

@@ -1,0 +1,252 @@
+{
+  "topicSlug": "js-dom",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `getElementById` và `querySelector` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "getElementById tìm element bằng ID attribute (trả về Element hoặc null); querySelector tìm bằng CSS selector bất kỳ (trả về Element hoặc null)" },
+        { "id": "b", "text": "querySelector nhanh hơn getElementById trong mọi trường hợp" },
+        { "id": "c", "text": "getElementById trả về một NodeList; querySelector trả về một Element" },
+        { "id": "d", "text": "Cả hai giống nhau về chức năng" }
+      ],
+      "correctKey": "a",
+      "explanation": "getElementById tìm bằng ID, là method của document. querySelector dùng CSS selector syntax. getElementById là live reference (cập nhật nếu DOM thay đổi), querySelector trả về static snapshot."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `textContent` và `innerText` trên một DOM element là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "textContent trả về TẤT CẢ text bao gồm hidden elements và script/style content; innerText cố gắng render như visual và bỏ qua hidden text, trigger reflow để tính toán styles" },
+        { "id": "b", "text": "innerText trả về tất cả text bao gồm hidden elements" },
+        { "id": "c", "text": "textContent trigger reflow khi đọc" },
+        { "id": "d", "text": "Cả hai giống nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "textContent là raw, nhanh hơn, bao gồm hidden elements. innerText-aware về CSS visual rendering, trigger reflow (đắt), bỏ qua hidden elements. Dùng textContent khi cần tất cả text, innerText khi cần what user thấy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Event bubbling là gì và propagation phases liên quan như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Khi một event xảy ra trên một element, nó bubbles UP qua ancestor chain từ target → parents → document. Ba phases: capture (window → target), target, bubbling (target → window). addEventListener với capture: true chạy trong capture phase" },
+        { "id": "b", "text": "Event bubbling xảy ra khi một event được trigger nhiều lần trên cùng element" },
+        { "id": "c", "text": "Bubbling chỉ xảy ra cho click events" },
+        { "id": "d", "text": "Bubbling không liên quan đến capture phase" }
+      ],
+      "correctKey": "a",
+      "explanation": "Event phases: capture (từ root xuống target), target (tại element), bubbling (từ target lên root). Dùng event.stopPropagation() để ngăn bubbling. event.stopImmediatePropagation() ngăn cả handlers khác trên cùng element."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Bạn có thể ngăn event mặc định (default action) bằng method nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "event.preventDefault() — ngăn default action (ví dụ: ngăn link navigate, ngăn form submit). event.stopPropagation() ngăn bubbling, không ngăn default action" },
+        { "id": "b", "text": "event.stopPropagation() ngăn default action" },
+        { "id": "c", "text": "return false trong event listener ngăn tất cả event behavior" },
+        { "id": "d", "text": "event.cancel() là cách chính để ngăn default" }
+      ],
+      "correctKey": "a",
+      "explanation": "preventDefault() ngăn browser's default action. return false trong jQuery ngăn cả propagation và default, nhưng trong vanilla JS chỉ ngăn default khi handler là onXXX attribute."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Khi nào nên dùng `addEventListener` thay vì inline event handlers (onclick=\"...\")?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "addEventListener: cho phép nhiều handlers cho cùng event, có capture/bubbling control, closure access, và dễ remove; inline handlers: khó bảo trì, chỉ một handler, leo thang XSS risk" },
+        { "id": "b", "text": "Inline handlers nhanh hơn addEventListener" },
+        { "id": "c", "text": "addEventListener không hoạt động trên touch devices" },
+        { "id": "d", "text": "Không có sự khác biệt giữa hai cách" }
+      ],
+      "correctKey": "a",
+      "explanation": "addEventListener là cách chuẩn: nhiều handlers, control propagation phase, remove listener khi không cần, closure access, tách biệt markup và logic. Inline handlers là anti-pattern."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Reflow (layout recalculation) xảy ra khi nào và làm sao để tránh nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Reflow xảy ra khi DOM changes ảnh hưởng đến layout (thay đổi kích thước, position, content). Tránh: batch DOM reads với writes, dùng CSS transforms/opacity (composited layers không trigger reflow), dùng requestAnimationFrame, cache layout values" },
+        { "id": "b", "text": "Reflow chỉ xảy ra khi thay đổi CSS class" },
+        { "id": "c", "text": "Reflow không ảnh hưởng đến hiệu năng" },
+        { "id": "d", "text": "Không thể tránh reflow" }
+      ],
+      "correctKey": "a",
+      "explanation": "Reflow là expensive. Batch reads trước writes. CSS transforms và opacity được GPU-accelerated và không trigger reflow (chỉ repaint). Đọc layout properties (offsetHeight, etc.) sau khi ghi trong cùng frame gây forced synchronous layout."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Event delegation là gì và tại sao nó hiệu quả?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Event delegation đặt một event listener trên ancestor thay vì mỗi child — dùng event.target để xác định element thực sự. Hiệu quả: giảm số listeners, tự động handle dynamically added children, tốt cho lists/dynamic content" },
+        { "id": "b", "text": "Event delegation dùng nhiều listeners để xử lý cùng event" },
+        { "id": "c", "text": "Event delegation không hoạt động với bubbling" },
+        { "id": "d", "text": "Event delegation chỉ hoạt động cho click events" }
+      ],
+      "correctKey": "a",
+      "explanation": "Bằng cách tận dụng event bubbling, một listener trên parent xử lý events từ tất cả descendants. Benefits: less memory, handles dynamic elements, simpler code for large lists."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `innerHTML`, `textContent` và `innerText` khi set content là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "innerHTML parse HTML string (risk XSS nếu untrusted), trigger DOM parsing và reflows; textContent set raw text (an toàn, không parse); innerText set text với CSS awareness và trigger reflow" },
+        { "id": "b", "text": "innerHTML và textContent giống nhau khi set content" },
+        { "id": "c", "text": "textContent parse HTML tags" },
+        { "id": "d", "text": "innerText an toàn hơn innerHTML về XSS" }
+      ],
+      "correctKey": "a",
+      "explanation": "Luôn dùng textContent thay vì innerHTML khi chỉ cần set text (an toàn XSS). innerHTML parse HTML — hữu ích khi cần insert elements nhưng sanitize input trước."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "DocumentFragment là gì và khi nào nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "DocumentFragment là một lightweight container cho DOM nodes không thuộc active DOM tree — thay đổi trên fragment không trigger reflow. Append fragment vào DOM di chuyển nodes, không copy. Dùng để batch DOM insertions hiệu quả" },
+        { "id": "b", "text": "DocumentFragment là một hidden div" },
+        { "id": "c", "text": "DocumentFragment không thể được append vào DOM" },
+        { "id": "d", "text": "DocumentFragment trigger reflow cho mỗi node được thêm" }
+      ],
+      "correctKey": "a",
+      "explanation": "DocumentFragment là virtual DOM node container. Khi append fragment vào DOM, chỉ fragment's children được di chuyển (không phải fragment itself), trigger một lần reflow thay vì N lần."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst div = document.createElement('div');\ndiv.textContent = '<script>alert(\"XSS\")</script>';\ndocument.body.appendChild(div);\nconsole.log(document.body.innerHTML);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Script không được execute — textContent treat content như text literal, không parse HTML" },
+        { "id": "b", "text": "Alert hiện lên ngay lập tức" },
+        { "id": "c", "text": "Script được inject vào DOM nhưng không chạy" },
+        { "id": "d", "text": "TypeError được throw" }
+      ],
+      "correctKey": "a",
+      "explanation": "textContent luôn treat input như text literal, không parse HTML. Script tag được escaped thành text, không được execute. Đây là cách an toàn để set user-provided text content."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`dataset` property trên một DOM element là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "dataset trả về một DOMStringMap chứa tất cả data-* attributes trên element — camelCase: data-user-name → dataset.userName. Dùng để store custom data without writing fragile attribute parsing" },
+        { "id": "b", "text": "dataset chỉ hoạt động với data-id attribute" },
+        { "id": "c", "text": "dataset là một method để query data attributes" },
+        { "id": "d", "text": "dataset trả về một array" }
+      ],
+      "correctKey": "a",
+      "explanation": "dataset là cách tiện lợi đọc/ghi data-* attributes. attribute: data-user-name → element.dataset.userName. Converted qua hyphenation-to-camelCase."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Shadow DOM khác với regular DOM như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Shadow DOM tạo một encapsulated DOM tree gắn với element — styles và nodes bên trong shadow root bị cô lập khỏi main DOM, không bị global CSS ảnh hưởng và không leak styles ra ngoài. Dùng trong Web Components" },
+        { "id": "b", "text": "Shadow DOM là DOM elements với visibility: hidden" },
+        { "id": "c", "text": "Shadow DOM không có encapsulation" },
+        { "id": "d", "text": "Shadow DOM chỉ hoạt động trong Safari" }
+      ],
+      "correctKey": "a",
+      "explanation": "Shadow DOM cung cấp encapsulation cho DOM và CSS. Shadow root (attached qua element.attachShadow({mode: 'open'})) tạo một cây DOM riêng biệt. Styles bên trong scoped, external styles không leak vào."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "IntersectionObserver là gì và được dùng để làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "IntersectionObserver observe elements và async báo khi chúng intersect (vào/ra) viewport hoặc một ancestor element. Dùng cho lazy loading images, infinite scroll, analytics scroll tracking — hiệu năng tốt hơn rất nhiều so với scroll event listeners" },
+        { "id": "b", "text": "IntersectionObserver là một animation API" },
+        { "id": "c", "text": "IntersectionObserver chỉ hoạt động với fixed positioned elements" },
+        { "id": "d", "text": "IntersectionObserver là một polling mechanism" }
+      ],
+      "correctKey": "a",
+      "explanation": "IntersectionObserver là async observer pattern — không fire synchronously như scroll events. Threshold options, rootMargin cho phép observe trước khi element actually visible. Perfect cho lazy loading và performance monitoring."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Web Components bao gồm những công nghệ nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Custom Elements (tự định nghĩa HTML elements), Shadow DOM (encapsulated DOM/CSS), HTML Templates (<template> và <slot>), HTML Imports (deprecated, dùng ES modules thay thế)" },
+        { "id": "b", "text": "Chỉ có Custom Elements" },
+        { "id": "c", "text": "Web Components chỉ là một spec đơn lẻ" },
+        { "id": "d", "text": "Web Components yêu cầu React" }
+      ],
+      "correctKey": "a",
+      "explanation": "Web Components là một suite of APIs: Custom Elements API định nghĩa elements, Shadow DOM encapsulation, <template> và <slot> cho composition, HTML Imports (deprecated) đã được thay bằng ES modules."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "MutationObserver là gì và được dùng để làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "MutationObserver observe DOM mutations (node additions/removals, attribute changes, text content changes) và callback khi mutations xảy ra — dùng cho React-like diffing, monitoring DOM changes, auto-saving editors, accessibility testing" },
+        { "id": "b", "text": "MutationObserver là một performance profiling tool" },
+        { "id": "c", "text": "MutationObserver trigger một lần khi DOM được load" },
+        { "id": "d", "text": "MutationObserver chỉ observe CSS changes" }
+      ],
+      "correctKey": "a",
+      "explanation": "MutationObserver là async và batched — nhiều mutations trong cùng tick được combined. Options: childList, attributes, characterData, subtree. Thay thế deprecated Mutation Events."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "addEventListener options bao gồm những gì và `once: true` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Options: capture (phase), once (tự động remove sau lần đầu invoke), passive (không gọi preventDefault), mozSystemGroup, once: true auto-removes listener sau khi được gọi một lần" },
+        { "id": "b", "text": "once: true ngăn event từ bubbling" },
+        { "id": "c", "text": "passive: true ngăn default action" },
+        { "id": "d", "text": "capture: true ngăn default action" }
+      ],
+      "correctKey": "a",
+      "explanation": "once: true rất hữu ích cho click handlers cần fire một lần. passive: true cho scroll event listeners cải thiện scrolling performance (cannot call preventDefault)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `contains()` và `querySelectorAll()` khi kiểm tra element relationship là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "contains(node) trả về boolean kiểm tra element có chứa node (là ancestor hoặc chính nó); querySelectorAll() trả về NodeList của matching descendants — contains là O(1) traversal, querySelectorAll có thể O(n)" },
+        { "id": "b", "text": "querySelectorAll nhanh hơn contains" },
+        { "id": "c", "text": "contains() chỉ kiểm tra direct children" },
+        { "id": "d", "text": "Cả hai trả về cùng loại kết quả" }
+      ],
+      "correctKey": "a",
+      "explanation": "element.contains(other) kiểm tra DOM relationship (element có chứa other hay không). querySelectorAll('.class') tìm descendants matching selector. contains là O(depth), querySelectorAll có thể O(n) với selector matching."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "`<template>` element khác với regular HTML elements như thế nào và khi nào nên dùng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "<template> chứa HTML không được parsed và không render — nội dung inert cho đến khi được activate bằng JavaScript (cloneNode hoặc importNode). Dùng để define reusable component markup, performance (không trigger rendering khi parsing)" },
+        { "id": "b", "text": "<template> là một hidden div" },
+        { "id": "c", "text": "<template> auto-renders khi page load" },
+        { "id": "d", "text": "<template> không có use case trong JavaScript hiện đại" }
+      ],
+      "correctKey": "a",
+      "explanation": "<template> là inert — HTML bên trong không parsed, scripts không chạy, resources không load. Content được activate bằng cloneNode. Dùng trong Web Components và component libraries."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Custom Elements lifecycle callbacks nào được gọi và khi nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "connectedCallback: khi element được thêm vào DOM; disconnectedCallback: khi removed; attributeChangedCallback: khi observed attribute changed; adoptedCallback: khi adopted vào new document; observedAttributes: static get chỉ định attributes để observe" },
+        { "id": "b", "text": "Custom Elements không có lifecycle callbacks" },
+        { "id": "c", "text": "Chỉ có connectedCallback" },
+        { "id": "d", "text": "attributeChangedCallback fire cho mọi attribute change" }
+      ],
+      "correctKey": "a",
+      "explanation": "Custom Elements API cung cấp 4 lifecycle callbacks. observedAttributes static getter xác định attributes nào được observe (performance optimization). attributeChangedCallback nhận name, oldValue, newValue."
+    }
+  ]
+}

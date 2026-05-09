@@ -1,0 +1,241 @@
+{
+  "topicSlug": "js-fundamentals",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Từ khóa nào khai báo một biến block-scoped mà không thể được gán lại sau khi khởi tạo?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "var" },
+        { "id": "b", "text": "let" },
+        { "id": "c", "text": "const" },
+        { "id": "d", "text": "static" }
+      ],
+      "correctKey": "c",
+      "explanation": "const khai báo một block-scoped binding phải được khởi tạo tại thời điểm khai báo và không thể gán lại. Lưu ý: với objects/arrays được khai báo bằng const, binding là cố định nhưng nội dung vẫn có thể mutate. let (B) là block-scoped nhưng có thể gán lại. var (A) có function scope, không phải block scope."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`typeof null` trả về giá trị gì trong JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "'null'" },
+        { "id": "b", "text": "'undefined'" },
+        { "id": "c", "text": "'object'" },
+        { "id": "d", "text": "'void'" }
+      ],
+      "correctKey": "c",
+      "explanation": "typeof null trả về 'object' — đây là một legacy bug trong JavaScript từ phiên bản đầu tiên và chưa bao giờ được sửa để tương thích ngược. null đại diện cho sự vắng mặt có chủ đích của giá trị, không phải một object. Kiểm tra null thường làm với `value === null` hoặc `!value && value !== 0`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Loại dữ liệu nguyên thủy nào trong JavaScript bao gồm Symbol?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Array" },
+        { "id": "b", "text": "Function" },
+        { "id": "c", "text": "Symbol" },
+        { "id": "d", "text": "Date" }
+      ],
+      "correctKey": "c",
+      "explanation": "JavaScript có 7 primitive types: string, number, bigint, boolean, undefined, symbol, và null. Symbol là một primitive — mỗi lần gọi Symbol() tạo một giá trị unique, immutable dùng làm object property keys. Arrays (A), Functions (B), và Dates (D) đều là objects (reference types)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconsole.log(1 + '2');\nconsole.log(1 - '2');",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "'12' và -1" },
+        { "id": "b", "text": "12 và -1" },
+        { "id": "c", "text": "'12' và 1" },
+        { "id": "d", "text": "12 và 1" }
+      ],
+      "correctKey": "a",
+      "explanation": "JavaScript thực hiện type coercion. Với `+`, nếu một operand là string, operand kia được coerce thành string và concatenation xảy ra: 1 + '2' = '12'. Với `-`, JavaScript coerce cả hai thành numbers: 1 - '2' = 1 - 2 = -1."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của `Boolean('0')` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "false" },
+        { "id": "b", "text": "true" },
+        { "id": "c", "text": "undefined" },
+        { "id": "d", "text": "null" }
+      ],
+      "correctKey": "b",
+      "explanation": "String '0' (một string không rỗng) là truthy, nên Boolean('0') trả về true. Chỉ có những giá trị này là falsy: false, 0, -0, 0n, '' (empty string), null, undefined, NaN, và document.all. String '0' không phải số 0 — nó là string chứa ký tự '0', vẫn là truthy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Toán tử nào sử dụng short-circuit evaluation và trả về giá trị cuối cùng được đánh giá khi tất cả operands là truthy?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "&& (logical AND)" },
+        { "id": "b", "text": "|| (logical OR)" },
+        { "id": "c", "text": "?? (nullish coalescing)" },
+        { "id": "d", "text": "?. (optional chaining)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Toán tử || short-circuit: nếu left operand là truthy, nó trả về giá trị đó mà không đánh giá right. Nếu left là falsy, nó trả về right operand. Điều này có nghĩa `a || b` trả về a khi truthy (kể cả khi a là falsy value như 0 hoặc ''). && short-circuit bằng cách trả về left khi falsy, hoặc right khi cả hai là truthy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Spread operator (`...`) làm gì khi được dùng với một array như `[...arr1, ...arr2]`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tạo một deep copy của cả hai arrays và merge chúng thành một array mới" },
+        { "id": "b", "text": "Trích xuất elements từ cả hai arrays và đặt chúng như các giá trị được phân tách bằng dấu phẩy trong một array literal mới" },
+        { "id": "c", "text": "Mutates arr1 bằng cách append elements của arr2 vào" },
+        { "id": "d", "text": "Tạo một reference đến cả hai arrays dưới một biến duy nhất" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spread operator mở rộng (unpack) một iterable thành các elements riêng lẻ. `[...arr1, ...arr2]` tạo một array mới chứa tất cả elements của arr1 theo sau là tất cả elements của arr2. Nó chỉ làm shallow copy — nested objects/arrays vẫn được reference, không được clone."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "JavaScript có 6 primitive data types.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "JavaScript có 7 primitive types: string, number, bigint, boolean, undefined, symbol, và null. Nhiều developers quên bigint (added in ES2020) và null. Tổng cộng là 7, không phải 6."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nlet a = [1, 2, 3];\nlet b = a;\nb.push(4);\nconsole.log(a.length);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "3" },
+        { "id": "b", "text": "4" },
+        { "id": "c", "text": "undefined" },
+        { "id": "d", "text": "ReferenceError" }
+      ],
+      "correctKey": "b",
+      "explanation": "Arrays là reference types trong JavaScript. `let b = a` không tạo copy — cả a và b đều trỏ đến cùng một array object trong heap. Gọi b.push(4) mutate shared array. Check a.length cho thấy 4. Để tạo copy, dùng `[...a]` (spread), `a.slice()`, hoặc `Array.from(a)`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconsole.log(0 == false);\nconsole.log('' == false);\nconsole.log([] == false);\nconsole.log([1] == true);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true, true, true, true" },
+        { "id": "b", "text": "true, true, true, false" },
+        { "id": "c", "text": "true, true, false, true" },
+        { "id": "d", "text": "true, false, true, false" }
+      ],
+      "correctKey": "a",
+      "explanation": "Dùng == (loose equality) với false trigger type coercion. 0 == false: ToNumber(false) = 0, nên 0 == 0 = true. '' == false: ToNumber(false) = 0, ToNumber('') = 0, nên 0 == 0 = true. [] == false: [] coerce thành '' rồi 0; false coerce thành 0; 0 == 0 = true. [1] == true: [1] coerce thành '1' rồi 1; true coerce thành 1; 1 == 1 = true. Đây là lý do nên luôn dùng ===."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`Object.freeze()` thực sự ngăn chặn điều gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Chỉ ngăn chặn thêm hoặc xóa properties; giá trị của existing property values vẫn có thể thay đổi" },
+        { "id": "b", "text": "Ngăn chặn tất cả modifications trên object: thêm, xóa, và thay đổi properties ở mọi độ sâu" },
+        { "id": "c", "text": "Ngăn chặn thêm, xóa, và thay đổi own properties — nhưng nested objects vẫn mutable" },
+        { "id": "d", "text": "Ngăn chặn object bị garbage collected và đánh dấu nó là immutable" }
+      ],
+      "correctKey": "c",
+      "explanation": "Object.freeze() là shallow — nó ngăn chặn modifications trên own properties của object (thêm/xóa/thay đổi) nhưng nested objects (arrays hoặc object properties) vẫn mutable trừ khi chúng cũng được freeze. Object.isFrozen() kiểm tra freeze status. Option A mô tả Object.seal() behavior."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconst obj = { a: 1 };\nconst arr = [obj, obj, obj];\narr[0].b = 2;\nconsole.log(arr[1].b);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "undefined" },
+        { "id": "b", "text": "1" },
+        { "id": "c", "text": "2" },
+        { "id": "d", "text": "ReferenceError: Cannot add property b to const object" }
+      ],
+      "correctKey": "c",
+      "explanation": "Arrays giữ references đến objects, không phải copies. Tất cả ba elements trong arr reference cùng `obj`. Thêm property `b` vào `arr[0]` mutate shared object. Vì `arr[1]` trỏ đến cùng object đó, `arr[1].b` là 2. const trên obj chỉ ngăn reassign obj thành reference khác — không ngăn mutation object's properties."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`undefined == null` đánh giá thành giá trị gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "false — chúng là các types khác nhau" },
+        { "id": "b", "text": "true — JavaScript coi chúng tương đương trong loose equality" },
+        { "id": "c", "text": "undefined — comparison short-circuits" },
+        { "id": "d", "text": "null — null được promote lên type của undefined" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trong loose equality (==), undefined và null được coi là bằng nhau. `undefined == null` là true. Tuy nhiên, `===` phân biệt chúng: `undefined === null` là false (different types). Đây là lý do `value == null` tiện lợi để kiểm tra cả null và undefined."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Method nào tạo một array mới với kết quả của việc gọi một function trên mỗi element?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Array.prototype.filter()" },
+        { "id": "b", "text": "Array.prototype.reduce()" },
+        { "id": "c", "text": "Array.prototype.map()" },
+        { "id": "d", "text": "Array.prototype.forEach()" }
+      ],
+      "correctKey": "c",
+      "explanation": "Array.prototype.map() gọi callback function trên mỗi element và trả về một array mới (cùng độ dài) với các giá trị đã được transform. filter() (A) trả về array mới chỉ chứa elements đã pass test. reduce() (B) tích lũy tất cả elements thành một giá trị. forEach() (D) thực thi callback cho mỗi element nhưng trả về undefined."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Trong JavaScript, `null` và `undefined` có thể hoán đổi cho nhau và hoạt động giống nhau trong mọi ngữ cảnh.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Trong khi `null == undefined` là true (loose equality), chúng khác nhau theo cách quan trọng. null đại diện cho sự vắng mặt có chủ đích của giá trị. undefined đại diện cho giá trị chưa được khởi tạo hoặc thiếu. typeof null trả về 'object' (bug), typeof undefined trả về 'undefined'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nlet x = 10;\nfunction test(y) {\n  y = 5;\n  return y + x;\n}\nconsole.log(test(x));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "5" },
+        { "id": "b", "text": "15" },
+        { "id": "c", "text": "10" },
+        { "id": "d", "text": "NaN" }
+      ],
+      "correctKey": "b",
+      "explanation": "Primitives (numbers) được truyền by value trong JavaScript. Function nhận một bản sao của x (10), gán 5 cho tham số local y, rồi trả về y + x. Vì x (biến outer) không bị modify (chỉ có bản sao local y bị thay đổi), x vẫn là 10. Return: 5 + 10 = 15."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Toán tử `in` kiểm tra cả own properties và prototype chain properties.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Toán tử `in` trả về true nếu property tồn tại trên object hoặc prototype chain của nó. Ví dụ, 'toString' in {} trả về true vì toString được inherit từ Object.prototype. Nếu chỉ muốn own properties (không inherit), dùng Object.hasOwn() (ES2022+) hoặc Object.prototype.hasOwnProperty.call()."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nlet a = { x: 1 };\nlet b = { x: 1 };\nconsole.log(a === b);\nconsole.log(a == b);\nconsole.log(Object.is(a, b));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "false, false, false" },
+        { "id": "b", "text": "false, true, false" },
+        { "id": "c", "text": "true, true, true" },
+        { "id": "d", "text": "false, false, true" }
+      ],
+      "correctKey": "a",
+      "explanation": "Objects được so sánh by reference, không phải by value. a và b là hai object literals được lưu tại các memory addresses khác nhau, nên cả ba comparisons đều trả về false. Object.is() sử dụng SameValue algorithm — không như ===, nó coi NaN bằng NaN và phân biệt +0 từ -0, nhưng vẫn so sánh references cho objects."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Method nào cung cấp một deep, recursive freeze của một object's own và inherited properties?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Object.freeze() — nó freeze tất cả nested objects recursively" },
+        { "id": "b", "text": "Object.seal() — nó ngăn chặn additions và deletions recursively" },
+        { "id": "c", "text": "Không có — JavaScript không có built-in deep freeze; cần một custom recursive function" },
+        { "id": "d", "text": "JSON.stringify() kết hợp với JSON.parse() tạo một deep frozen copy" }
+      ],
+      "correctKey": "c",
+      "explanation": "Object.freeze() chỉ là shallow. Để deeply freeze một object, phải recursively traverse tất cả nested objects và arrays và freeze từng cái. Không có method built-in. Option D (JSON round-trip) tạo một deep copy nhưng KHÔNG phải frozen one — kết quả là một object tree không bị frozen."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sử dụng `Object.assign(target, source)` luôn tạo một deep copy của source object.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Object.assign() chỉ thực hiện shallow copy — nó copy references đến nested objects, không phải chính nested objects. Cả target và source sẽ share references đến cùng nested objects. Để deep copy, dùng structuredClone() (built-in, xử lý circular references), JSON.parse(JSON.stringify()) (mất functions, undefined, Symbols, và circular refs), hoặc cloneDeep() của Lodash."
+    }
+  ]
+}

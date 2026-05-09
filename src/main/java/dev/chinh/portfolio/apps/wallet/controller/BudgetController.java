@@ -1,5 +1,6 @@
-package dev.chinh.portfolio.apps.wallet;
+package dev.chinh.portfolio.apps.wallet.controller;
 
+import dev.chinh.portfolio.apps.wallet.BudgetService;
 import dev.chinh.portfolio.apps.wallet.dto.*;
 import dev.chinh.portfolio.auth.annotation.CurrentUser;
 import jakarta.validation.Valid;

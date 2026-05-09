@@ -1,0 +1,228 @@
+{
+  "topicSlug": "sd-messaging",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt cơ bản giữa message queue và publish-subscribe (pub/sub) system là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Message queue và pub/sub giống hệt nhau — các thuật ngữ có thể thay thế cho nhau trong các distributed systems hiện đại" },
+        { "id": "b", "text": "Message queue deliver mỗi message tới đúng một consumer (point-to-point); pub/sub deliver mỗi message tới tất cả subscribed consumers (fan-out) — điểm khác biệt chính là delivery semantics" },
+        { "id": "c", "text": "Pub/sub system lưu messages vĩnh viễn; message queue xóa messages sau khi delivery" },
+        { "id": "d", "text": "Message queue yêu cầu producers và consumers online đồng thời; pub/sub thì không" }
+      ],
+      "correctKey": "b",
+      "explanation": "Message queues (SQS, RabbitMQ classic queue mode) implement point-to-point: mỗi message được consume bởi đúng một consumer — một khi consumed, nó được remove hoặc marked consumed. Pub/sub (Kafka topics, RabbitMQ fanout/exchange, Google Pub/Sub) implement fan-out: mỗi message được delivered tới tất cả active subscribers. Một payment processing system dùng queue (một processor xử lý mỗi payment). Một notification system dùng pub/sub (email, SMS, push đều nhận cùng event). Phương án A sai. Phương án C nhầm lẫn delivery với persistence. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Một order service publish OrderCreated event tới một message broker. Payment service và inventory service cả hai đều cần process event này independently. Messaging pattern nào best supports requirement này?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một message queue — broker delivers event tới một consumer; consumer đó sau đó forward event tới cả hai services tuần tự" },
+        { "id": "b", "text": "Một fan-out exchange hoặc pub/sub topic — mỗi subscriber (payment service, inventory service) nhận một independent copy của OrderCreated event để process independently" },
+        { "id": "c", "text": "Một direct point-to-point channel giữa order service và mỗi consumer — order service phải duy trì separate connections tới mỗi consumer" },
+        { "id": "d", "text": "Một message queue với competing consumers — cả hai services compete để consume cùng event, và cái đầu tiên grab nó wins" }
+      ],
+      "correctKey": "b",
+      "explanation": "Fan-out pub/sub: OrderCreated event được publish một lần tới một topic/exchange, và mỗi subscriber nhận own independent subscription và copy. Payment service và inventory service mỗi cái process own copy — không competition, không coordination needed. Đây là core pattern cho event-driven architectures nơi nhiều independent services cần react tới cùng business event. Phương án A (queue) delivers tới một consumer — service khác sẽ không bao giờ thấy event. Phương án C không phải messaging pattern. Phương án D (competing consumers) là queue model — chỉ một wins."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Dead-letter queue (DLQ) trong một message queue system là gì, và khi nào nó được sử dụng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dead-letter queue là main queue nơi unprocessed messages accumulate — nó được dùng để track messages cần manual review" },
+        { "id": "b", "text": "Dead-letter queue captures messages fail processing repeatedly (exceed max delivery attempts) để chúng không block main queue; failed messages được inspected, retried with backoff, hoặc routed tới alerting system cho manual resolution" },
+        { "id": "c", "text": "Dead-letter queue được dùng để store messages trước khi chúng được publish — acting as a staging area để control message throughput" },
+        { "id": "d", "text": "Dead-letter queues chỉ cần cho batch processing systems, không phải real-time event streaming" }
+      ],
+      "correctKey": "b",
+      "explanation": "Dead-letter queue (DLQ) là designated queue nhận messages fail processing sau một configurable number of retry attempts (maxDeliveries). Không có DLQ, failed messages sẽ được re-queued infinitely (poison message) hoặc silently dropped. DLQ enables: (1) isolating toxic messages can't be processed (malformed payload, business rule change), (2) alerting và manual inspection, (3) manual replay after fixing downstream issues. Best practice: set max attempts (vd: 3), dùng exponential backoff giữa retries, và always DLQ. Phương án A mô tả sai main queue. Phương án C mô tả staging queue. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "System của bạn cần at-least-once delivery semantics — mỗi message phải được processed ít nhất một lần, nhưng duplicates acceptable. Kỹ thuật nào consumer dùng để achieve điều này safely?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "At-least-once yêu cầu synchronous acknowledgment của mỗi message trước khi message tiếp theo được consume — điều này guarantee mỗi message được processed exactly once" },
+        { "id": "b", "text": "Consumer dùng idempotency keys (message ID + deduplication check in DB) để safely process cùng message multiple times — downstream operation là idempotent nên duplicates harmless" },
+        { "id": "c", "text": "At-least-once delivery impossible để implement reliably trong asynchronous systems — bạn chỉ có thể guarantee at-most-once" },
+        { "id": "d", "text": "Dùng consumer-side TTL discard messages sau 1 giây — nếu không processed in time, message considered lost" }
+      ],
+      "correctKey": "b",
+      "explanation": "At-least-once delivery nghĩa là broker redelivers messages nếu consumer fails trước khi acknowledging. Điều này có thể gây duplicates. Consumer's job là make operations idempotent: (1) check nếu message ID đã được process (deduplication table in DB), (2) dùng database unique constraints on message_id reject duplicates, (3) design downstream operation to be naturally idempotent (vd: 'set value to X' idempotent, 'increment by 1' không). Exactly-once semantics requires distributed transactions — expensive. Phương án A mô tả synchronous processing. Phương án C sai. Phương án D at-most-once behavior."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Apache Kafka dùng một log-based storage model. Điều gì xảy ra khi một consumer group processes messages, và Kafka's offset management how support điều này?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Kafka stores messages trong một queue và deletes chúng after acknowledgment — consumers compete for messages như trong traditional message queues" },
+        { "id": "b", "text": "Kafka retains messages trong một persistent append-only log partitioned by topic; consumers track their own offset (position in the log) và có thể replay messages from any offset — enabling replay of historical events, backfilling, và flexible consumer group scaling without message loss" },
+        { "id": "c", "text": "Kafka delivers mỗi message tới tất cả consumers đồng thời — không có consumer group concept" },
+        { "id": "d", "text": "Consumer offsets được stored in the database bởi application — Kafka itself does not track consumer position" }
+      ],
+      "correctKey": "b",
+      "explanation": "Kafka's log-based model khác fundamentally từ queue-based systems. Messages được stored partitioned và committed to an append-only log (persisted to disk, configurable retention). Consumers in a consumer group share partitions: mỗi partition được assigned tới một consumer in the group. Mỗi consumer tracks its own offset (committing after successful processing). Vì offsets tracked separately, consumers có thể: replay from any offset, consume at their own pace, và re-read old messages for debugging. Phương án A mô tả queue semantics. Phương án C sai. Phương án D chỉ partially true."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa Amazon SQS Standard Queue và SQS FIFO Queue về delivery guarantees và ordering semantics là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cả SQS Standard và FIFO cung cấp exactly-once delivery với strict ordering — difference chỉ là throughput capacity" },
+        { "id": "b", "text": "SQS Standard Queue cung cấp at-least-once delivery với best-effort ordering (messages có thể delivered out of order); SQS FIFO Queue cung cấp exactly-once processing với strict FIFO ordering của messages within a message group ID" },
+        { "id": "c", "text": "SQS FIFO Queue cung cấp at-least-once delivery; SQS Standard Queue cung cấp at-most-once delivery" },
+        { "id": "d", "text": "SQS Standard Queue có higher throughput nhưng không có ordering guarantee; SQS FIFO có lower throughput và guarantees messages được delivered theo thứ tự chúng were published across ALL messages in the queue globally" }
+      ],
+      "correctKey": "b",
+      "explanation": "SQS Standard: at-least-once delivery (duplicates possible), best-effort ordering (occasional out-of-order delivery). SQS FIFO: exactly-once processing (deduplication via message deduplication ID or content-based hash), strict FIFO ordering within a message group ID. FIFO queues limit throughput tới ~300 messages/second per API call vs. near-unlimited for Standard. FIFO ordering là per message group ID — multiple groups có thể be processed concurrently trong khi maintaining FIFO within each group. Phương án A sai. Phương án C reverses guarantees. Phương án D overstates FIFO global ordering."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Event-driven architecture (EDA) decouples producers from consumers. Ưu điểm chính của loose coupling trong EDA là gì, và những thách thức mới nào nó giới thiệu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "EDA loại bỏ nhu cầu monitoring hoặc observability vì events are self-describing và always processed correctly" },
+        { "id": "b", "text": "EDA decouples producers và consumers in time (async) và space (different deployment units) — allowing independent scaling, fault isolation, và enabling new consumers react to existing events without modifying producer; challenges bao gồm debugging distributed event flows, handling out-of-order events, và managing event schema evolution" },
+        { "id": "c", "text": "Event-driven architecture fundamentally simpler hơn synchronous request-response vì nó removes need for error handling và retry logic" },
+        { "id": "d", "text": "Loose coupling trong EDA nghĩa là producers và consumers share the same data schema để tránh translation overhead" }
+      ],
+      "correctKey": "b",
+      "explanation": "EDA's temporal và spatial decoupling enables: independent service evolution, addition of new consumers without touching producers, different teams working autonomously, resilience (producer doesn't need to know if consumers are up). Challenges: (1) debugging harder — no single call stack, (2) ordering không guaranteed unless explicitly designed for, (3) schema changes must be backward-compatible, (4) eventual consistency means consumers có thể thấy different state, (5) observability requires distributed tracing across event boundaries. Phương án A sai. Phương án C sai. Phương án D mô tả tight coupling."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "'At-most-once' delivery semantics problem là gì, và tại sao nó generally undesirable cho business-critical operations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "At-most-once nghĩa là messages guaranteed arrive within 1 millisecond of being sent — đây là fastest delivery mode" },
+        { "id": "b", "text": "At-most-once delivery nghĩa là một message có thể bị lost entirely nếu consumer fails before processing — system never re-delivers; for business operations (payment, order), losing a message causes real-world consequences (money uncharged, order unfulfilled) — making at-most-once unacceptable" },
+        { "id": "c", "text": "At-most-once là default và preferred mode in Kafka và SQS; nó safer hơn at-least-once vì duplicates never sent" },
+        { "id": "d", "text": "At-most-once only applies to batch processing systems, không phải real-time event streams" }
+      ],
+      "correctKey": "b",
+      "explanation": "At-most-once: message delivered once OR not at all — nếu consumer fails after delivery nhưng before processing, message lost và not retried. For business-critical operations (charging a card, sending an email, reserving inventory), losing the message unacceptable. At-least-once (retry until acknowledged) + idempotency handling là standard for business events. Exactly-once là gold standard nhưng expensive (distributed transactions). Phương án A mô tả sai. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Consumer processes a message và sau đó crashes trước khi acknowledging it. Với SQS, điều gì xảy ra với message này?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SQS deletes message immediately upon delivery — nó lost và cannot be recovered" },
+        { "id": "b", "text": "SQS holds message invisibly cho visibility timeout window (30 seconds default); nếu no acknowledgment received, message becomes visible again in the queue và is delivered to another consumer (hoặc retried by same consumer after timeout)" },
+        { "id": "c", "text": "SQS moves message tới dead-letter queue automatically after first failure" },
+        { "id": "d", "text": "SQS immediately redelivers message tới same consumer every 5 seconds cho đến khi acknowledged" }
+      ],
+      "correctKey": "b",
+      "explanation": "SQS dùng visibility timeout mechanism: khi consumer nhận message, nó invisible tới other consumers trong visibility timeout period (default 30s, configurable 0s–12h). Nếu consumer không delete message within this window, SQS makes nó visible again cho another delivery attempt. Consumer có thể call ChangeMessageVisibility extend the window if processing takes longer. DLQ movement requires explicit configuration of maxReceiveCount. Phương án A sai. Phương án C requires explicit DLQ configuration. Phương án D không phải cách SQS hoạt động."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Trong một event-driven architecture, event bus (hoặc message broker) là một trusted component — events published tới bus luôn được processed correctly bởi tất cả consumers.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Event bus không phải trusted trust boundary trong sense rằng nó cung cấp no application-level guarantees về consumer behavior. Consumers có thể crash, throw exceptions, process events out of order, hoặc misinterpret event schemas. Bus chỉ guarantees delivery semantics (at-least-once, at-most-once, etc.) — not application correctness. Producers must design for consumer failures: use idempotency keys, version events, và handle poison messages via DLQs. Additionally, a consumer có thể be down extended period và miss events entirely."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Apache Kafka guarantees messages luôn delivered tới consumers theo exact order chúng were produced.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Kafka guarantees ordering within a single partition. Vì messages within a partition được stored in a committed append-only log, chúng delivered tới any consumer in offset order. Tuy nhiên, nếu một topic có multiple partitions, different partitions receive messages in parallel và không có global ordering across partitions. Chỉ messages với cùng partition key được guaranteed to be in order. Nếu global event ordering required, use a single-partition topic. Đây là common misconception."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Một message queue và một database table có thể được dùng interchangeably cho storing work cần được processed asynchronously — cả hai đều valid patterns for implementing a task queue.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Databases có thể implement simple work queues (polling a jobs table, SELECT FOR UPDATE SKIP LOCKED) nhưng không phải substitute cho purpose-built message brokers. Databases không được thiết kế cho high-throughput message consumption patterns, lack native push notifications tới consumers, require polling or scheduled jobs check for new work, và create contention on same tables used for application data. Purpose-built brokers (Kafka, SQS, RabbitMQ) provide delivery guarantees, DLQs, routing, fan-out, observability. Using a DB as a queue là temporary shortcut tạo polling overhead và scalability bottlenecks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn đang thiết kế một event-driven order processing system với multiple microservices: OrderService, PaymentService, InventoryService, và ShippingService. Mỗi service phải process events in correct order (vd: payment phải complete trước shipping). Làm sao design distributed saga orchestration với message queues?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng central orchestrator (saga orchestrator) sends sequential commands tới mỗi service via dedicated queues; mỗi service publishes a reply event tới orchestrator; on failure, orchestrator sends compensating transactions (vd: refund) in reverse order" },
+        { "id": "b", "text": "Let all services subscribe tới cùng topic và process events as they arrive — mỗi service responsible for detecting out-of-order events và waiting for correct sequence" },
+        { "id": "c", "text": "Dùng một global database transaction spans all services — message queues cannot participate in distributed transactions" },
+        { "id": "d", "text": "Serialize all events through a single Kafka partition with a fixed ordering key để guarantee cross-service ordering — đây là standard approach cho saga patterns" }
+      ],
+      "correctKey": "a",
+      "explanation": "Saga pattern manages distributed transactions without distributed locks (no 2PC). Hai approaches: (1) Choreography — services publish events trigger other services; events chain; compensating transactions triggered by failure events. (2) Orchestration — central saga orchestrator sends commands tới mỗi service, waits for reply events, và coordinates sequence; on failure, sends compensating transactions in reverse order. Cho multi-step order flow với strict ordering requirements, orchestration provides better visibility và control. Phương án B unreliable. Phương án C doesn't work across service boundaries. Phương án D doesn't solve saga ordering problem."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kafka có thể handle hàng triệu messages mỗi giây, nhưng consumer đang experiencing significant lag — consumer đang processing chậm hơn messages arriving. Những cách hiệu quả nhất nào giảm consumer lag?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Increase Kafka broker's disk I/O capacity — consumer lag luôn caused by broker, không phải consumer" },
+        { "id": "b", "text": "Consumer lag được giảm bởi: (1) scaling consumer group horizontally (add more consumer instances), (2) increasing consumer parallelism (more partitions), (3) optimizing consumer processing logic (batch processing, async I/O, connection pooling), (4) partitioning strategy — ensure partition key distributes load evenly" },
+        { "id": "c", "text": "Restart Kafka consumer — lag caused by in-memory state corruption và restarting clears it" },
+        { "id": "d", "text": "Consumer lag là normal và acceptable state — nó indicates system is buffering messages for later processing và poses no risk" }
+      ],
+      "correctKey": "b",
+      "explanation": "Consumer lag chỉ ra consumer can't keep up with producers. Solutions: (1) horizontal scaling — add more consumer instances; Kafka partitions là unit of parallelism. (2) Optimize consumer code: batch consume (poll N messages, process in parallel), async I/O for downstream calls, connection pooling, efficient deserialization. (3) Partitioning strategy: nếu một partition hot, nó creates a bottleneck — split or add bucket dimension to key. (4) For very slow consumers, consider offloading to pre-processing pipeline. Phương án A sai. Phương án C không phải general solution. Phương án D sai for real-time systems."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn cần implement một pattern nơi message nên được processed exactly once, even if message broker, consumer, và downstream database all have independent failure modes. Minimal architecture nào needed cho exactly-once processing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Exactly-once impossible trong distributed systems without a central coordinator — dùng at-least-once với client-side idempotency as practical equivalent" },
+        { "id": "b", "text": "Exactly-once requires coordinating producer, broker, và consumer: producer uses idempotency keys, broker deduplicates (Kafka idempotent producer + transactions), và consumer deduplicates in a database using message ID as a unique constraint — combination of these three layers achieves exactly-once semantics" },
+        { "id": "c", "text": "Dùng two-phase commit (2PC) protocol across message broker và consumer database — điều này guarantees exactly-once by atomically committing both message acknowledgment và database write" },
+        { "id": "d", "text": "Exactly-once achievable by setting message TTL to 0 và using synchronous acknowledgment" }
+      ],
+      "correctKey": "b",
+      "explanation": "Exactly-once delivery across all three layers: (1) Kafka's idempotent producer + transactional production ensures message written to log exactly once. (2) Kafka's transactional consume + commit ensures offset và database change committed atomically. (3) Consumer deduplication: DB write uses message_id as unique constraint — nếu duplicate message consumed, DB insert/update là no-op. Đây là Kafka transactional API + outbox pattern. Phương án A dismisses it as impossible. Phương án C (2PC) doesn't apply to Kafka consumer commits. Phương án D nonsense."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Một system processes 10.000 events mỗi giây. Mỗi event triggers a downstream HTTP API call. Under peak load, downstream API timeouts đang gây message processing failures và retry storms. Most effective mitigation là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Remove retries entirely — failed messages nên go directly to DLQ để prevent retry storms" },
+        { "id": "b", "text": "Implement retry queue với exponential backoff với jitter: on first failure, re-queue với 1-second delay; on second failure, 2 seconds; on third, 4 seconds; cap at maximum; dùng jitter (randomized delay) để prevent thundering herd when downstream recovers" },
+        { "id": "c", "text": "Reduce number of concurrent consumers tới 1 — sequential processing prevents API overload và ensures all retries are processed in order" },
+        { "id": "d", "text": "Increase downstream API's timeout from 1 second tới 30 seconds" }
+      ],
+      "correctKey": "b",
+      "explanation": "Exponential backoff with jitter là standard mitigation cho retry storms: mỗi retry waits longer before retrying, preventing a flood of simultaneous retries from overwhelming a recovering downstream service. Jitter (randomization added to each delay) prevents synchronized retry storms. Best practice: exponential backoff with full jitter (random value between 0 và min(cap, base * 2^attempt)) — đây là AWS architecture blog recommended approach. Phương án A (no retries) loses messages. Phương án C (sequential) kills throughput. Phương án D increases resource contention."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Event-driven system của bạn requires events consumed in order within a partition, nhưng một downstream service (vd: email service) không thể handle concurrent processing. Làm sao design cho cả ordering và sequential consumption?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng single-partition topic cho all events — điều này guarantees ordering nhưng limits throughput tới một consumer và là cách duy nhất đảm bảo sequential processing" },
+        { "id": "b", "text": "Dùng partition key that colocates events requiring sequential processing on same partition — all events for a given entity (vd: user_id) go to same partition và are processed in order by a single-threaded consumer; other entities có thể be processed concurrently in parallel partitions" },
+        { "id": "c", "text": "Sequential processing và ordering incompatible trong distributed systems — bạn phải choose một" },
+        { "id": "d", "text": "Implement distributed lock at consumer level — mỗi consumer acquires lock cho entity before processing" }
+      ],
+      "correctKey": "b",
+      "explanation": "Kafka partitions là unit of ordering và parallelism. All events với cùng partition key land in same partition và are delivered in order tới consumer assigned tới partition đó. A single-threaded consumer guarantees sequential processing cho entity đó. Multiple entities (different user_ids) go to different partitions và are processed in parallel. Đây là standard pattern: partition by business key (user_id, order_id) đảm bảo causal ordering for related events. Phương án A (single partition) quá limiting. Phương án C sai. Phương án D (distributed lock) expensive và unnecessary."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đúng hay Sai: Trong Kafka, một consumer group với 10 consumers có thể process một topic với only 3 partitions efficiently — adding more consumers than partitions provides no throughput benefit.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Kafka partitions là unit of parallelism. Mỗi partition chỉ có thể được assigned tới một consumer in a group at a time. With 3 partitions, at most 3 consumers are actively processing messages simultaneously — remaining 7 consumers sit idle. Đây là common Kafka misconfiguration: oversizing consumer groups beyond partition count wastes resources. Solution: scale consumers to match partition count, và scale partitions when scaling consumers. Partition count là upper bound on consumer parallelism for that topic."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Một e-commerce platform dùng Kafka publish OrderPlaced events. Một NotificationService mới đang được thêm để send confirmation emails. Bạn cần đảm bảo NotificationService có thể backfill và process historical events from past 7 days. Kafka configuration nào supports điều này?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Kafka topics have fixed retention of 7 days; configure retention.ms parameter tới 7 days và ensure consumer group offset reset policy is 'earliest' when new consumer first subscribes" },
+        { "id": "b", "text": "Create new Kafka topic specifically for NotificationService với 7-day retention period; replay historical events from OrderPlaced topic into new topic using Kafka Streams or Kafka Connect connector" },
+        { "id": "c", "text": "Kafka automatically retains all messages indefinitely; any new consumer can always read from beginning regardless of when deployed" },
+        { "id": "d", "text": "Configure consumer group's offset reset policy tới 'latest' để new service only processes new events as they arrive" }
+      ],
+      "correctKey": "b",
+      "explanation": "Kafka log retention is configurable (default: 7 days). Tuy nhiên, một topic configured for 7-day retention sẽ có events older than 7 days deleted. Để backfill: (1) create dedicated topic or use existing one với sufficient retention, (2) replay historical events từ source of truth (database CDC, event store, or original topic) using Kafka Connect Debezium CDC, Kafka Streams, or custom replay job. Phương án A chỉ hoạt động nếu topic was already configured for 7-day retention — events older are gone. Phương án C sai. Phương án D for new production consumers, not backfill."
+    }
+  ]
+}

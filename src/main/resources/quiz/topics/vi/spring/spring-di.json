@@ -1,0 +1,390 @@
+{
+  "topicSlug": "spring-di",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Annotation nào đánh dấu một class là Spring-managed bean phù hợp cho auto-discovery qua component scanning?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Bean" },
+        { "id": "b", "text": "@Component" },
+        { "id": "c", "text": "@Autowired" },
+        { "id": "d", "text": "@Configuration" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Component là base stereotype annotation làm một class eligible cho Spring's component scanning — Spring detect và đăng ký nó như một bean tại runtime. @Bean dùng bên trong @Configuration classes để declare beans một cách programmatic. @Autowired là một dependency injection marker, không phải stereotype. @Configuration là container cho @Bean definitions, không phải bean stereotype."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@ComponentScan làm gì mặc định trong một Spring Boot application?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Scan chỉ package chứa main class và tất cả sub-packages một cách recursive" },
+        { "id": "b", "text": "Scan toàn bộ classpath để tìm các @Component-annotated classes" },
+        { "id": "c", "text": "Scan chỉ các packages được liệt kê tường minh trong application.properties" },
+        { "id": "d", "text": "Scan chỉ các classes trong thư mục WEB-INF" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ComponentScan không có base packages rõ ràng mặc định scan package của annotated class (ví dụ: @SpringBootApplication class) và tất cả sub-packages một cách recursive. Đây là lý do đặt main class ở root của package hierarchy là một convention — nó đảm bảo tất cả components được pick up. Scanning toàn bộ classpath (B) sẽ rất chậm và không phải là hành vi mặc định."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Ưu điểm chính của constructor injection so với field injection là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Constructor injection cho phép runtime proxy injection mà field injection không hỗ trợ" },
+        { "id": "b", "text": "Constructor injection cho phép immutable dependencies, explicit contracts, và dễ dàng unit testing mà không cần Spring context" },
+        { "id": "c", "text": "Field injection nhanh hơn vì nó bỏ qua dependency resolution hoàn toàn" },
+        { "id": "d", "text": "Constructor injection được yêu cầu bởi JPA specification cho entity listeners" }
+      ],
+      "correctKey": "b",
+      "explanation": "Constructor injection tạo immutable (final) dependencies, làm required dependencies trở nên rõ ràng trong method/class signature, và cho phép plain unit tests instantiate class với mocks — không cần Spring context. Field injection ẩn dependencies đằng sau surface của class, bỏ qua final semantics, và buộc phải dùng reflection hoặc Spring test utilities trong unit tests. Spring Boot official guidance khuyến khích constructor injection cho tất cả beans."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Annotation nào là @Component derivative chuyên dụng cho data access layer?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Service" },
+        { "id": "b", "text": "@Repository" },
+        { "id": "c", "text": "@Controller" },
+        { "id": "d", "text": "@Bean" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Repository là một @Component specialization cho DAO/data access layer. Ngoài việc là một stereotype, nó còn enable Spring's DataAccessException translation: bất kỳ PersistenceException đặc thù vendor nào được throw bởi underlying JPA/Hibernate implementation được translate thành Spring's DataAccessException hierarchy, cho phép exception handling nhất quán và decoupled. @Service và @Controller là stereotypes cho service và web layers tương ứng."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@Bean annotation làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đánh dấu một class là một component cho auto-scanning" },
+        { "id": "b", "text": "Declare một method mà return value của nó nên được đăng ký như một Spring bean trong ApplicationContext" },
+        { "id": "c", "text": "Inject một bean vào một field sử dụng reflection" },
+        { "id": "d", "text": "Tạo một prototype-scoped bean mới mỗi khi được truy cập" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Bean là một method-level annotation được đặt bên trong một @Configuration class để declare rằng method's return value nên được đăng ký như một bean. Đây là phiên bản programmatic của component scanning — dùng khi cần kiểm soát fine-grained trên bean creation (ví dụ: third-party library classes không thể annotate). Mặc định, bean name là method name, nhưng có thể override với @Bean(\"customName\")."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Default scope của một Spring bean là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "prototype" },
+        { "id": "b", "text": "request" },
+        { "id": "c", "text": "singleton" },
+        { "id": "d", "text": "session" }
+      ],
+      "correctKey": "c",
+      "explanation": "Tất cả Spring beans là singletons mặc định — một instance duy nhất per Spring ApplicationContext, bất kể được inject bao nhiêu lần. Đây là ngược lại với Java's `new` operator luôn tạo một object mới. Prototype scope (A) tạo một instance mới mỗi khi bean được request. Request (B) và session (D) là web-specific scopes chỉ áp dụng trong các contexts phù hợp."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Điều gì xảy ra nếu hai beans cùng type được đăng ký và chỉ một được inject?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Spring inject bean được đánh dấu @Primary" },
+        { "id": "b", "text": "Spring throw NoUniqueBeanDefinitionException tại runtime" },
+        { "id": "c", "text": "Spring chọn ngẫu nhiên một và log một warning" },
+        { "id": "d", "text": "Spring merge cả hai thành một bean duy nhất" }
+      ],
+      "correctKey": "b",
+      "explanation": "Khi Spring không thể xác định một candidate duy nhất cho injection (ambiguous dependency), nó throw NoUniqueBeanDefinitionException tại startup. Các giải pháp gồm: @Primary trên một bean, @Qualifier để specify by name, hoặc refactor để dùng interfaces/contracts. Đây là fail-fast design — Spring prefer crash tại startup hơn là silent pick một bean ngẫu nhiên."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Annotation nào cho phép bạn specify bean nào được inject khi có nhiều candidates cùng type?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Primary" },
+        { "id": "b", "text": "@Qualifier" },
+        { "id": "c", "text": "@Autowired(required = false)" },
+        { "id": "d", "text": "@Lazy" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Qualifier cho phép disambiguate bằng cách specify exact bean name để inject. Có thể dùng trên fields, constructor parameters, hoặc setter methods: @Qualifier(\"mySpecificBean\"). @Primary (A) đánh dấu một bean như default khi không có qualifier được specify — hữu ích khi có một sensible default trong nhiều implementations. @Autowired(required=false) (C) làm injection trở nên optional. @Lazy (D) trì hoãn bean creation nhưng không resolve ambiguity."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Tại sao Spring wrap @Configuration classes trong một CGLIB proxy?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Để enable web request routing trong @Configuration classes" },
+        { "id": "b", "text": "Để intercept các @Bean method calls bên trong cùng @Configuration class và trả về cached singleton instances thay vì re-execute method" },
+        { "id": "c", "text": "Để encrypt bean definitions trước khi lưu trong ApplicationContext" },
+        { "id": "d", "text": "Để enable constructor-based dependency injection trong @Configuration classes" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring dùng CGLIB để create một subclass của mỗi @Configuration class tại runtime. Subclass này intercept các internal @Bean method calls (ví dụ: gọi userService() bên trong một @Bean method khác trong cùng class) và trả về singleton bean đã được tạo từ container — không phải một object mới. Nếu không có interception này, gọi `new UserService()` hai lần trong hai @Bean methods sẽ tạo hai instances riêng biệt, phá vỡ singleton semantics."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@Configuration(proxyBeanMethods = false) thay đổi behavior của một configuration class như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó disable CGLIB proxying, làm @Bean methods behave như plain Java methods — mỗi call tạo một instance mới" },
+        { "id": "b", "text": "Nó enable JDK dynamic proxy thay vì CGLIB cho configuration class" },
+        { "id": "c", "text": "Nó ngăn @Configuration class được đăng ký như một bean" },
+        { "id": "d", "text": "Nó enable constructor-based bean injection và disable setter injection" }
+      ],
+      "correctKey": "a",
+      "explanation": "Setting proxyBeanMethods = false disable CGLIB interceptor trên @Configuration classes. Mỗi call đến một @Bean method trở thành plain Java method call, tạo một instance mới mỗi lần. Đây là 'lite mode' cho @Configuration. Nó cải thiện startup time một chút nhưng phá vỡ singleton guarantees cho inter-@Bean method calls trong cùng class. Hữu ích trong functional bean registration hoặc khi muốn @Configuration classes behave như plain @Component classes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa @Autowired và @Inject là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Inject là Spring-specific; @Autowired là JSR-330 standard" },
+        { "id": "b", "text": "@Autowired là Spring-specific với các features bổ sung như required flag; @Inject là JSR-330 standard và yêu cầu một external dependency" },
+        { "id": "c", "text": "Không có sự khác biệt chức năng — chúng là aliases" },
+        { "id": "d", "text": "@Inject không thể dùng trên constructors, chỉ @Autowired có thể" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Autowired là Spring's proprietary annotation. @Inject là JSR-330 (javax.inject) standard equivalent. Cả hai hỗ trợ field, constructor, và setter injection. Sự khác biệt chính: @Autowired có attribute `required` để làm injection trở nên optional; @Inject không có required attribute (dùng @Nullable hoặc Java 8 Optional thay thế). @Inject yêu cầu thêm javax.inject dependency vào project. Dùng @Inject làm code portable sang các JSR-330 compliant containers khác (như Jakarta EE)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi nào setter injection được ưu tiên hơn constructor injection?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Setter injection luôn được ưu tiên trong Spring 6.x" },
+        { "id": "b", "text": "Setter injection cho phép optional dependencies và circular dependency resolution khi kết hợp với @Lazy" },
+        { "id": "c", "text": "Setter injection tạo immutable beans không thể modified sau construction" },
+        { "id": "d", "text": "Setter injection được yêu cầu cho @Configuration classes để enable CGLIB proxying" }
+      ],
+      "correctKey": "b",
+      "explanation": "Setter injection (qua @Autowired trên một setter method) hữu ích khi một dependency là optional — có thể check for null và provide a fallback. Nó cũng đóng vai trò trong circular dependency resolution: nếu A phụ thuộc B và B phụ thuộc A, Spring có thể dùng setter injection (với @Lazy ở một phía) để break cycle bằng cách inject một proxy trước và resolve actual bean chỉ khi được sử dụng. Constructor injection không resolve được circular dependencies trực tiếp — nó fail tại startup."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@Lazy ảnh hưởng đến bean initialization trong Spring như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó làm bean trở thành prototype — một instance mới được tạo trên mỗi injection" },
+        { "id": "b", "text": "Nó trì hoãn bean creation cho đến khi bean được first explicitly requested từ ApplicationContext" },
+        { "id": "c", "text": "Nó disable component scanning cho annotated class" },
+        { "id": "d", "text": "Nó thay đổi scope của bean từ singleton sang request-scoped" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Lazy tạo một CGLIB proxy chỉ resolve actual bean khi một method được gọi trên nó lần đầu. Điều này tăng tốc application startup khi một bean có expensive initialization (ví dụ: database connection pool) không cần ngay lập tức. @Lazy có thể được đặt trên @Configuration classes, @Bean methods, hoặc injection points (@Autowired fields). Nó không thay đổi scope thành prototype — mỗi lazy bean vẫn tuân theo declared scope của nó."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích của @Order trong Spring's bean registration context là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Order kiểm soát thứ tự initialization của singleton beans tại startup" },
+        { "id": "b", "text": "@Order xác định thứ tự resolution khi inject collections của matching beans (ví dụ: List<MyInterface>) và kiểm soát AspectJ aspect ordering" },
+        { "id": "c", "text": "@Order thay thế @Primary và có precedence cao hơn" },
+        { "id": "d", "text": "@Order đã deprecated trong Spring 6.x thay cho @Priority" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Order (và counterpart @Priority trên classes) kiểm soát hai thứ: (1) thứ tự beans được inject khi nhiều matching candidates tồn tại trong một collection (ví dụ: `List<MyInterface> myInterfaces` nhận beans sorted by @Order), và (2) thứ tự thực thi của @Aspect components. Nó KHÔNG kiểm soát singleton initialization order tại startup. @Order không có hiệu ứng trên single-valued injection; dùng @Qualifier hoặc @Primary cho việc đó."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa ApplicationContext và BeanFactory là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ApplicationContext extends BeanFactory và thêm các enterprise-specific features: auto-registration của bean post-processors, internationalization, event publication, và hierarchical context support" },
+        { "id": "b", "text": "BeanFactory mới hơn và thay thế ApplicationContext trong Spring Boot 3.x" },
+        { "id": "c", "text": "ApplicationContext là container cấp thấp; BeanFactory là API cấp cao" },
+        { "id": "d", "text": "Không có sự khác biệt chức năng — chúng là interchangeable names cho cùng interface" }
+      ],
+      "correctKey": "a",
+      "explanation": "BeanFactory là Spring IoC container interface cơ bản — nó cung cấp basic getBean() functionality. ApplicationContext extends BeanFactory và thêm enterprise features: BeanFactoryPostProcessor/BeanPostProcessor auto-detection, @Autowired/@JSR-330 support, internationalization (MessageSource), event publication (ApplicationEventPublisher), và hierarchical contexts. Trong thực tế, ApplicationContext luôn được dùng trong các Spring applications hiện đại. BeanFactory hiếm khi được dùng trực tiếp ngoại trừ trong các resource-constrained environments."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Điều gì xảy ra khi tồn tại một circular dependency giữa hai singleton beans sử dụng constructor injection?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Spring fails fast tại startup với BeanCurrentlyInCreationException khi hai singleton beans có một circular constructor dependency (A→B→A). Điều này xảy ra vì Spring resolve constructor arguments bằng cách build một proxy trước, nhưng constructor injection yêu cầu actual instance. Setter injection với @Lazy break cycle này bằng cách inject một proxy trước và resolve actual bean chỉ khi một method được gọi."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Một @Bean method trong một @Configuration class có thể gọi another @Bean method trong cùng class và vẫn nhận được singleton không?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Có, điều này hoạt động vì Spring wrap @Configuration classes trong một CGLIB proxy intercept các intra-class @Bean method calls và trả về cached singleton từ container thay vì re-execute method. Đây là 'full' @Configuration mode (proxyBeanMethods = true, mặc định). Không có CGLIB (proxyBeanMethods = false), mỗi call sẽ tạo một instance mới, phá vỡ singleton contract."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt cơ bản giữa Spring's dependency injection và Service Locator pattern là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cả hai patterns là tương đương — DI chỉ là một Service Locator được rebranding" },
+        { "id": "b", "text": "Service Locator yêu cầu consumer tường minh request dependencies từ một registry; DI push dependencies vào consumer mà không cần consumer request (Inversion of Control)" },
+        { "id": "c", "text": "DI an toàn ở compile-time; Service Locator chỉ ở runtime" },
+        { "id": "d", "text": "Service Locator hỗ trợ circular dependencies; DI thì không" }
+      ],
+      "correctKey": "b",
+      "explanation": "Sự khác biệt cốt lõi là Inversion of Control. Trong Service Locator pattern, consumer class tường minh gọi `locator.getService(Type.class)` để retrieve dependencies của nó — nó biết về locator và chủ động request những gì nó cần. Trong DI, container construct object và 'push' dependencies vào nó (qua constructor, setter, hoặc field) — consumer hoàn toàn thụ động và không biết gì về container. Tính thụ động này là thứ enable các DI benefits: testability, immutability, và clear contracts."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đâu mô tả đúng cách Spring resolve @Bean method arguments?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Bean method arguments bị ignore và phải được inject qua @Autowired trên method" },
+        { "id": "b", "text": "@Bean method arguments được coi như autowired dependencies — Spring resolve chúng từ ApplicationContext by type, sau đó by @Qualifier name matching parameter name" },
+        { "id": "c", "text": "@Bean method arguments phải được đánh dấu @Autowired tất cả để được resolve" },
+        { "id": "d", "text": "@Bean method arguments chỉ có thể là primitive types; complex objects phải được return qua method chaining" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring treat @Bean method parameters như autowired dependencies tự động — không cần explicit @Autowired trên parameters. Resolution theo standard Spring DI algorithm: đầu tiên by type, sau đó by @Qualifier name match (parameter name cũng được coi là fallback). Điều này cho phép viết `@Bean DataSource postgresDataSource(DataSourceProperties props)` nơi Spring tự động pass DataSourceProperties bean."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mối quan hệ giữa BeanFactoryPostProcessor và BeanPostProcessor trong Spring's lifecycle là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "BeanFactoryPostProcessor chạy trước BeanPostProcessor và operate trên bean definitions (raw metadata); BeanPostProcessor chạy sau, operate trên instantiated bean instances" },
+        { "id": "b", "text": "BeanPostProcessor chạy trước BeanFactoryPostProcessor vì instances được tạo trước definitions được modify" },
+        { "id": "c", "text": "Cả hai chạy cùng lúc và interchangeable trong các Spring applications hiện đại" },
+        { "id": "d", "text": "BeanFactoryPostProcessor đã deprecated trong Spring 6.x; chỉ BeanPostProcessor còn lại" }
+      ],
+      "correctKey": "a",
+      "explanation": "Thứ tự lifecycle của Spring: (1) load bean definitions → (2) BeanFactoryPostProcessor chạy (có thể modify raw BeanDefinition metadata — ví dụ: property placeholders resolved, bean class changes) → (3) instantiate beans → (4) BeanPostProcessor chạy (có thể modify bean instances trước và sau initialization callbacks). Ví dụ thực tế: @PropertySource và ${} placeholders được resolve bởi BeanFactoryPostProcessor trước khi beans được tạo. Custom BeanPostProcessor implementations có thể wrap beans trong proxies (đây là cách @Transactional và @Async hoạt động)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Tại sao Spring khuyến khích constructor injection cho mandatory dependencies và setter injection cho optional ones?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Constructor injection với final fields đảm bảo component được fully initialized trước khi bất kỳ method nào được gọi — mandatory dependencies được guarantee present hoặc object không bao giờ tồn tại. Đặt chúng là final buộc assignment tại construction time. Cho optional dependencies, setter injection với @Autowired(required = false) hoặc @Nullable parameters cho phép graceful degradation khi dependency absent. Kết hợp cả hai approaches (constructor cho required + setter cho optional) là một recognized best practice."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@DependsOn annotation làm gì trong Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó định nghĩa thứ tự bean initialization theo alphabetical name" },
+        { "id": "b", "text": "Nó buộc Spring initialize các specified beans trước khi annotated bean được tạo, ngay cả khi không có direct dependency relationship" },
+        { "id": "c", "text": "Nó tạo một circular dependency giữa hai beans" },
+        { "id": "d", "text": "Nó override @Autowired và inject dependencies theo thứ tự alphabetical" }
+      ],
+      "correctKey": "b",
+      "explanation": "@DependsOn tường minh báo Spring rằng annotated bean phụ thuộc vào các named beans phải được fully initialized trước. Không giống constructor/setter injection biểu hiện direct dependency, @DependsOn enforce ordering ngay cả khi không có direct injection relationship. Use cases phổ biến: một bean dùng static initializer hoặc post-processor đọc từ một bean khác, hoặc khi một bean cần một side effect từ another bean's initialization."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt chính giữa singleton-scoped và prototype-scoped Spring bean là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Singleton beans là thread-safe; prototype beans thì không" },
+        { "id": "b", "text": "Singleton beans được tạo một lần per ApplicationContext và shared; prototype beans được tạo mới trên mỗi injection hoặc getBean() call, không có shared state" },
+        { "id": "c", "text": "Prototype beans nhanh hơn vì chúng được lazily initialized mặc định" },
+        { "id": "d", "text": "Singleton beans yêu cầu constructor injection; prototype beans yêu cầu setter injection" }
+      ],
+      "correctKey": "b",
+      "explanation": "Singleton (default scope): một instance per Spring ApplicationContext, được tạo trên first use (lazy) hoặc tại startup (nếu eager), shared qua tất cả injection points. Prototype: một instance mới được tạo mỗi khi bean được request — Spring không quản lý full lifecycle sau creation (không có destruction callbacks). Điều này làm prototype phù hợp cho các stateful objects không nên được shared. Quan trọng: prototype beans KHÔNG nhận destruction callbacks từ Spring."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "FactoryBean trong Spring là gì và khi nào nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó là một factory class tạo beans sử dụng new keyword thay vì Spring's proxy mechanism" },
+        { "id": "b", "text": "Nó là một special bean hoạt động như một factory để tạo các beans khác — implementing FactoryBean<T> cho phép tùy chỉnh bean creation logic vượt quá những gì @Bean methods có thể express" },
+        { "id": "c", "text": "Nó thay thế @Configuration classes để tạo beans từ third-party libraries" },
+        { "id": "d", "text": "Nó là một alternative cho @Component để declare beans trong XML configuration" }
+      ],
+      "correctKey": "b",
+      "explanation": "FactoryBean<T> là một factory interface trong Spring. Khi đăng ký một FactoryBean trong context, Spring gọi getObject() để produce actual bean. Dùng nó khi: (1) bean creation logic quá phức tạp cho một @Bean method, (2) cần produce nhiều bean variants từ một factory class, (3) cần conditional bean creation tại runtime. Lưu ý về naming: Spring đăng ký BEAN được factory produce, không phải chính factory. Truy cập factory bean trực tiếp qua & prefix: context.getBean(\"&myFactory\")."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Spring xử lý circular dependencies như thế nào khi dùng constructor injection với @Lazy ở một phía?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Spring tạo một partial proxy cho bean đầu tiên và trì hoãn full construction cho đến khi circular reference được resolve" },
+        { "id": "b", "text": "Spring inject một CGLIB proxy cho @Lazy bean, trì hoãn resolution của actual dependency cho đến khi một method được gọi trên nó — break the cycle" },
+        { "id": "c", "text": "@Lazy bị ignore cho constructor injection; Spring luôn throw BeanCurrentlyInCreationException" },
+        { "id": "d", "text": "Spring tự động switch sang setter injection cho cặp circular" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Lazy trên một constructor parameter inject một proxy wrapper thay vì real bean. Khi Spring build bean đầu tiên, nó inject proxy ngay (satisfy constructor) mà không cần bean thứ hai được construct đầy đủ. Bean thứ hai's constructor chỉ chạy khi một method trên proxy được thực sự gọi. Điều này break circular chain vì không constructor nào thực thi đầy đủ tại thời điểm construction."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích của @Conditional trong Spring, và một số specialized annotations phổ biến của nó là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Conditional tạm dừng bean registration cho đến khi một manual trigger được issued" },
+        { "id": "b", "text": "@Conditional kiểm soát liệu một bean hoặc configuration class được đăng ký dựa trên một custom Condition implementation — các specialized annotations gồm @ConditionalOnProperty, @ConditionalOnClass, @ConditionalOnBean, @ConditionalOnMissingBean, @ConditionalOnExpression" },
+        { "id": "c", "text": "@Conditional đánh dấu một bean là read-only trong ApplicationContext" },
+        { "id": "d", "text": "@Conditional chỉ được dùng cho lazy bean initialization trong Spring Boot" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Conditional là base annotation cho conditional bean registration. Implement matches(ConditionContext, AnnotatedTypeMetadata) để return true/false. Spring Boot auto-configuration dùng nó rất nhiều qua các specialized annotations: @ConditionalOnClass — activate chỉ nếu class có trên classpath. @ConditionalOnBean — chỉ nếu một bean đã tồn tại. @ConditionalOnMissingBean — chỉ nếu một bean KHÔNG tồn tại (user preference). @ConditionalOnProperty — dựa trên environment properties. @ConditionalOnExpression — SpEL expression."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "BeanFactoryPostProcessor làm gì mà BeanPostProcessor không thể?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "BeanFactoryPostProcessor modify instantiated bean instances; BeanPostProcessor modify raw bean definition metadata" },
+        { "id": "b", "text": "BeanFactoryPostProcessor operate trên raw BeanDefinition metadata trước khi beans được instantiated — có thể modify bean class names, property values, và scope; BeanPostProcessor operate trên already-instantiated bean instances" },
+        { "id": "c", "text": "BeanFactoryPostProcessor và BeanPostProcessor interchangeable — cả hai chạy cùng lifecycle point" },
+        { "id": "d", "text": "BeanPostProcessor đã deprecated trong Spring 6.x; chỉ BeanFactoryPostProcessor còn lại" }
+      ],
+      "correctKey": "b",
+      "explanation": "BeanFactoryPostProcessor chạy sớm: nó nhận tất cả BeanDefinition objects (recipe để tạo beans) và có thể modify chúng trước instantiation — hữu ích để thay đổi bean scope, override constructor arguments, hoặc dynamically register beans. BeanPostProcessor chạy muộn hơn: nó wrap đã được tạo bean instances và có thể modify chúng trước và sau initialization callbacks. Spring Boot's @ConfigurationProperties binding và property placeholder resolution đều dựa vào BeanFactoryPostProcessor."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi nào nên dùng một prototype-scoped bean trong Spring?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Khi mỗi injection point cần instance độc lập riêng của nó với không shared state" },
+        { "id": "b", "text": "Khi bean giữ mutable request-scoped hoặc session-scoped state không nên leak giữa các requests" },
+        { "id": "c", "text": "Khi bean là stateless và cần được shared across toàn bộ application vì hiệu năng" },
+        { "id": "d", "text": "Khi bạn muốn Spring gọi một custom initialization method mỗi khi bean được sử dụng" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "Prototype scope tạo một instance mới trên mỗi getBean() call hoặc injection. Dùng nó khi: (a) mỗi use cần independent state — ví dụ: một command object hoặc DTO factory không nên share data giữa các callers. (b) bean đại diện cho một unit of work không nên survive current operation. KHÔNG dùng prototype cho stateless services — singleton đúng vì stateless services vốn shareable và singleton tránh overhead tạo object lặp đi lặp lại."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa ImportBeanDefinitionRegistrar và @Bean để programmatically registering beans trong Spring?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Bean là programmatic; ImportBeanDefinitionRegistrar là annotation-based và chỉ được dùng bên trong Spring" },
+        { "id": "b", "text": "ImportBeanDefinitionRegistrar cho phép fine-grained BeanDefinition manipulation tại runtime (trước bất kỳ bean nào được instantiate) — có thể register beans conditionally, với custom scopes, hoặc dựa trên environment checks; @Bean là một method-level declaration được process during context refresh" },
+        { "id": "c", "text": "Cả hai đăng ký beans cùng lifecycle point; sự khác biệt chỉ là syntax" },
+        { "id": "d", "text": "ImportBeanDefinitionRegistrar chỉ có thể đăng ký @Component-annotated classes, không phải plain POJOs" }
+      ],
+      "correctKey": "b",
+      "explanation": "ImportBeanDefinitionRegistrar được implement bởi các classes referenced qua @Import(MyRegistrar.class). Method registerBeanDefinitions() nhận một AnnotatedBeanDefinitionRegistry, cho phép programmatically register BeanDefinitions với full control: custom scope, lazy flags, depends-on, parent hierarchy. Nó chạy rất sớm — trước khi component scanning xảy ra — làm nó phù hợp cho meta-framework authors (ví dụ: MyBatis @MapperScan dùng điều này). @Bean methods chạy như một phần của @Configuration processing, sau khi bean definitions được load."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bean definition inheritance trong Spring là gì và được dùng như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Child beans inherit runtime values từ parent beans sau construction" },
+        { "id": "b", "text": "Bean definition inheritance cho phép một parent BeanDefinition share common property values (abstract = true) với child bean definitions override hoặc extend specific attributes — hữu ích để giảm duplication trong XML hoặc programmatic configuration" },
+        { "id": "c", "text": "Bean definition inheritance enable runtime polymorphism through Spring's application context hierarchy" },
+        { "id": "d", "text": "Child beans tự động inherit tất cả dependencies từ parent beans without explicit declaration" }
+      ],
+      "correctKey": "b",
+      "explanation": "Bean definition inheritance (set parent bean name trong BeanDefinitionBuilder hoặc dùng abstract='true' trong XML) cho phép child beans reuse common property values từ một parent definition. Parent thường được đánh dấu abstract = true — nó không được instantiate chính nó. Child beans override specific properties trong khi inherit phần còn lại. Trong Spring hiện đại (annotation-based config), pattern này ít phổ biến hơn vì shared configuration thường được extract vào một common @Configuration class với shared @Bean methods."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Component filter mechanism của Spring hoạt động như thế nào với @ComponentScan, và khi nào nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Component filters restrict which classes được registered như beans during component scanning — dùng @ComponentScan(includeFilters) và excludeFilters với FilterType (ANNOTATION, ASSIGNABLE_TYPE, REGEX, ASPECTJ)" },
+        { "id": "b", "text": "Component filters rename beans during scanning để tránh naming conflicts" },
+        { "id": "c", "text": "Component filters chỉ được dùng để filter XML bean definitions, không phải annotation-based scanning" },
+        { "id": "d", "text": "Component filters sort beans alphabetically before registration" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ComponentScan's includeFilters và excludeFilters cho phép kiểm soát which classes được auto-detected như beans. Filter types: ANNOTATION (exclude @Component nhưng include custom stereotype), ASSIGNABLE_TYPE (include tất cả subclasses/implementors của một class), REGEX (pattern match trên class name), ASPECTJ (AspectJ pointcut expression). Use cases: include một third-party library's classes không có @Component annotations bằng cách filter trên một interface, hoặc exclude specific implementations khỏi scanning."
+    }
+  ]
+}

@@ -1,0 +1,344 @@
+{
+  "topicSlug": "js-async",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Promise trong JavaScript là gì và nó giải quyết vấn đề gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Promise là một object đại diện cho eventual completion hoặc failure của một async operation và giá trị kết quả của nó — giải quyết callback hell bằng cách cung cấp .then()/.catch() chaining và loại bỏ pyramid of doom" },
+        { "id": "b", "text": "Promise là một function chạy đồng thời với main thread" },
+        { "id": "c", "text": "Promise thay thế hoàn toàn event listeners" },
+        { "id": "d", "text": "Promise chỉ hoạt động trong Node.js, không phải trong browsers" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise là một object cho async operation. States: pending → fulfilled hoặc rejected. Cung cấp .then(), .catch(), .finally() cho chaining. Giải quyết callback pyramid và handle errors đồng nhất."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa async/await và Promise (.then/.catch) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "async/await là syntactic sugar viết trên Promise — giúp viết async code nhìn giống synchronous code; .then/.catch là imperative chaining. Cả hai tạo cùng async behavior, chỉ khác syntax và readability" },
+        { "id": "b", "text": "async/await nhanh hơn Promise vì nó chạy trên engine riêng" },
+        { "id": "c", "text": "Promise là legacy API; async/await là cách hiện đại duy nhất" },
+        { "id": "d", "text": "async/await không hỗ trợ error handling" }
+      ],
+      "correctKey": "a",
+      "explanation": "async/await compile thành Promise + generator bên dưới. Không có hiệu năng khác biệt đáng kể. async/await cải thiện readability và cho phép dùng try/catch/finally tự nhiên."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Promise.all() resolve hay reject khi một trong các promises reject?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Promise.all() reject ngay khi BẤT KỲ promise nào reject — 'fail-fast' behavior. Promise.allSettled() là alternative trả về kết quả của TẤT CẢ promises dù reject hay resolve" },
+        { "id": "b", "text": "Promise.all() resolve ngay cả khi một promise reject" },
+        { "id": "c", "text": "Promise.all() chờ tất cả promises hoàn thành trước khi quyết định" },
+        { "id": "d", "text": "Promise.all() ignore rejections" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.all() là fail-fast: reject ngay khi một promise rejects. Dùng Promise.allSettled() khi cần kết quả của tất cả promises bất kể individual outcomes."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nPromise.resolve(1)\n  .then(x => x + 1)\n  .then(x => { throw new Error('Failed') })\n  .catch(e => -1)\n  .then(x => x + 1)\n  .then(x => console.log(x));",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "1" },
+        { "id": "b", "text": "0" },
+        { "id": "c", "text": "Error: Failed" },
+        { "id": "d", "text": "undefined" }
+      ],
+      "correctKey": "b",
+      "explanation": "1→(2)→Error→(-1)→(0). Throw được catch chuyển thành -1, rồi -1 + 1 = 0. .catch() return -1 trở thành resolved value, tiếp theo .then(x => x + 1) cho 0."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "await chỉ có thể được dùng bên trong async function.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "await chỉ legal ở top-level của async function (hoặc top-level của ES module). Tại top-level của regular script, await không được phép (trừ trong module context của một số bundlers). Top-level await là hợp lệ trong ES2022 modules."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa Promise.all() và Promise.race() là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Promise.all() resolve khi TẤT CẢ promises resolve, reject khi BẤT KỲ promise nào reject; Promise.race() resolve/reject với kết quả của promise Nhanh NHẤT (đầu tiên hoàn thành), bất kể resolve hay reject" },
+        { "id": "b", "text": "Cả hai giống nhau về behavior" },
+        { "id": "c", "text": "Promise.race() resolve khi promise đầu tiên resolve và ignore rejects" },
+        { "id": "d", "text": "Promise.all() chỉ hoạt động với 2 promises" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.race() trả về result của first settled promise (resolve hoặc reject). Promise.all() requires all settled successfully. Promise.any() (ES2021+) resolve với first fulfilled, ignore rejections."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nasync function f() {\n  console.log('1');\n  await Promise.resolve();\n  console.log('2');\n}\nsetTimeout(() => console.log('3'), 0);\nf();\nconsole.log('4');",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "1, 4, 2, 3" },
+        { "id": "b", "text": "1, 2, 4, 3" },
+        { "id": "c", "text": "1, 4, 3, 2" },
+        { "id": "d", "text": "1, 2, 3, 4" }
+      ],
+      "correctKey": "a",
+      "explanation": "1 (sync) → 4 (sync) → microtask queue: await resumes (2) → macrotask: setTimeout callback (3). setTimeout 0ms vẫn vào macrotask queue, chạy sau synchronous code và microtasks."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Microtask queue và macrotask queue khác nhau như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Microtask queue (Promises, queueMicrotask) được drain hoàn toàn SAU MỖI task, TRƯỚC KHI event loop kiểm tra rendering; macrotask queue (setTimeout, setInterval, I/O) chỉ một task được xử lý mỗi event loop iteration" },
+        { "id": "b", "text": "Microtasks và macrotasks chạy đồng thời" },
+        { "id": "c", "text": "Macrotasks chạy trước microtasks" },
+        { "id": "d", "text": "Microtasks chỉ chạy trong Node.js" }
+      ],
+      "correctKey": "a",
+      "explanation": "Microtasks (Promise callbacks, queueMicrotask) drain hoàn toàn sau mỗi task, trước rendering. Điều này giải thích tại sao Promise microtasks có thể block event loop không cho macrotasks chạy nếu microtasks tạo thêm microtasks liên tục."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Promise.all() với một array rỗng resolve với giá trị gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một empty array [] — resolved ngay lập tức vì vacuously true (không có promises để fail)" },
+        { "id": "b", "text": "undefined" },
+        { "id": "c", "text": "null" },
+        { "id": "d", "text": "Một TypeError" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.all([]) resolve ngay với [] vì không có promises nào để fail. Đây là vacuous truth — tất cả elements trong empty collection satisfy any condition."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`.finally()` trên một Promise chạy khi nào và có nhận được giá trị kết quả không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": ".finally() luôn chạy khi promise settles (resolve hoặc reject), KHÔNG NHẬN kết quả — giá trị được pass qua. Dùng cho cleanup logic (đóng connections, clear loading states) không phụ thuộc vào outcome" },
+        { "id": "b", "text": ".finally() chỉ chạy khi promise resolves, không phải khi reject" },
+        { "id": "c", "text": ".finally() nhận kết quả như .then()" },
+        { "id": "d", "text": ".finally() chỉ chạy khi promise reject" }
+      ],
+      "correctKey": "a",
+      "explanation": ".finally() callback luôn được gọi khi promise settles. Nó không nhận argument (hoặc nhận undefined). Kết quả/t.Exception pass qua .finally() đến handlers tiếp theo."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Error thrown bên trong một async function được wrap thành gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một rejected Promise — async functions luôn trả về Promise; thrown errors cause Promise reject với error như reason" },
+        { "id": "b", "text": "Một thrown error trong async function không được catch bởi .catch()" },
+        { "id": "c", "text": "Một resolved Promise với giá trị null" },
+        { "id": "d", "text": "Error bị silent và không có effect" }
+      ],
+      "correctKey": "a",
+      "explanation": "async functions luôn trả về Promise. Nếu function throw hoặc reject, Promise đó reject với error là reason. Dùng try/catch bên trong async function hoặc .catch() khi gọi."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa Promise.all() và Promise.allSettled() là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Promise.all() fail-fast (reject ngay khi một promise reject); Promise.allSettled() luôn resolve, trả về array of { status: 'fulfilled'|'rejected', value|reason } cho TẤT CẢ promises" },
+        { "id": "b", "text": "Cả hai giống nhau hoàn toàn" },
+        { "id": "c", "text": "Promise.allSettled() reject ngay khi một promise reject" },
+        { "id": "d", "text": "Promise.all() chỉ resolve với promises đầu tiên" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.allSettled() (ES2020) đợi tất cả promises settle, trả về kết quả của mỗi promise dù thành công hay thất bại. Hữu ích khi cần kết quả của tất cả operations."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi một Promise được settled (resolve hoặc reject), callbacks đã đăng ký sau đó bằng .then() có được gọi không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Có — Promise settling là immutable. Callbacks được đăng ký sau khi promise đã settled vẫn được gọi, queued as microtasks, với giá trị đã settled" },
+        { "id": "b", "text": "Không — chỉ callbacks đăng ký TRƯỚC KHI settled được gọi" },
+        { "id": "c", "text": "Phụ thuộc vào việc resolve hay reject" },
+        { "id": "d", "text": "Callbacks bị ignored nếu settled quá nhanh" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise callbacks được queued ngay cả khi promise đã settled — microtask queue xử lý chúng khi event loop đến lượt, với settled value/reason."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "AbortController trong JavaScript là gì và được dùng để cancel Promise như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "AbortController cung cấp một cách để signal abort: tạo AbortController, lấy signal, truyền vào Promise-based API (fetch, AbortSignal.timeout), gọi controller.abort() để reject/fail operation với AbortError. Không tự động cancel Promise — Promise-based APIs phải support signal" },
+        { "id": "b", "text": "AbortController tự động cancel tất cả pending Promises" },
+        { "id": "c", "text": "AbortController chỉ hoạt động với fetch" },
+        { "id": "d", "text": "AbortController là một Promise wrapper" }
+      ],
+      "correctKey": "a",
+      "explanation": "AbortController cung cấp signal-based cancellation. fetch() và nhiều browser APIs hỗ trợ AbortSignal. Gọi abort() làm signal aborted và operation fail với DOMException (name: 'AbortError')."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Promise.any() khác với Promise.race() như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Promise.any() resolve với kết quả của promise ĐẦU TIÊN FULFILLED; ignore rejections — aggregateError nếu TẤT CẢ reject. Promise.race() resolve HOẶC reject với promise đầu tiên settle" },
+        { "id": "b", "text": "Promise.any() và Promise.race() giống nhau" },
+        { "id": "c", "text": "Promise.any() resolve với promise cuối cùng" },
+        { "id": "d", "text": "Promise.any() reject với promise đầu tiên reject" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.any() (ES2021+) chỉ quan tâm đến first fulfilled, bỏ qua rejections. Chỉ reject với AggregateError khi tất cả fail. Khác với race (first settled, bất kể fulfilled/rejected)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "async/await có thể được dùng để thay thế hoàn toàn Promises không? Những hạn chế nào tồn tại?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text: "async/await compile thành Promises bên dưới — chúng tương đương về chức năng. Hạn chế: top-level await (chỉ trong modules), không thể dùng await trong callbacks không phải async, không thể dùng await trong .map() synchronous mà không async wrapper" },
+        { "id": "b", "text": "async/await thay thế hoàn toàn Promises và loại bỏ chúng" },
+        { "id": "c", "text": "async/await không hỗ trợ error handling" },
+        { "id": "d", "text": "async/await chỉ hoạt động trong browsers" }
+      ],
+      "correctKey": "a",
+      "explanation": "async/await là syntactic sugar. Promises vẫn tồn tại bên dưới. Hạn chế: top-level await trong modules, không thể dùng trong non-async callbacks trực tiếp. Promise.all(), Promise.race() không có async/await equivalent trực tiếp."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa `for await...of` và `for...of` khi iterate qua một async iterable là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "for...of iterate đồng bộ; for await...of (trong async function) await mỗi Promise trước khi proceed, cho phép tuần tự xử lý async sequences. Nếu một promise reject, iteration dừng với error" },
+        { "id": "b", "text": "for await...of chạy song song tất cả iterations" },
+        { "id": "c", "text": "Cả hai giống nhau khi iterate qua async iterables" },
+        { "id": "d", "text": "for await...of chỉ hoạt động với arrays" }
+      ],
+      "correctKey": "a",
+      "explanation": "for await...of (ES2018+) await từng giá trị trước khi xử lý tiếp. Yêu cầu nằm trong async function. Hữu ích để iterate qua async generator hoặc API trả về promises tuần tự."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Async generator functions là gì và được dùng khi nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text: "Async generators (async function* với yield) kết hợp generator và async — mỗi yield trả về Promise; dùng khi cần lazy, cancelable sequences của async values (streaming data, paginated API results, real-time events)" },
+        { "id": "b", "text": "Async generators là regular generators không thể throw errors" },
+        { "id": "c", "text": "Async generators tự động resolve tất cả yielded promises" },
+        { "id": "d", "text": "Async generators chỉ dùng trong Node.js" }
+      ],
+      "correctKey": "a",
+      "explanation": "async function* yields promises. Iterate bằng for await...of. Dùng cho: streaming data, paginated APIs, real-time event processing. Mỗi yield trả về promise, consumer phải await để lấy resolved value."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Scheduler.yield() (Scheduler API) là gì và khác với setTimeout(fn, 0) như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "scheduler.yield() là một cooperative yielding primitive cho main-thread tasks — nó trả về Promise và nhảy ra khỏi current task, cho phép browser/chrome xử lý urgent tasks (rendering, user input) trước khi resume. setTimeout(fn, 0) schedule fn vào macrotask queue, thường chậm hơn" },
+        { "id": "b", "text": "scheduler.yield() và setTimeout(fn, 0) giống hệt nhau" },
+        { "id": "c", "text": "scheduler.yield() là một blocking call" },
+        { "id": "d", "text": "setTimeout(fn, 0) nhanh hơn scheduler.yield() vì không tạo Promise" }
+      ],
+      "correctKey": "a",
+      "explanation": "scheduler.yield() (Chrome 129+, Origin Trial) là cooperative yielding API giúp browser kiểm soát khi nào tasks được interleaved, tốt hơn setTimeout(fn, 0). Đang được standardise trong W3C."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Error thrown bên trong một Promise executor function (new Promise((resolve, reject) => {...})) có khác với thrown bên trong .then() callback không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Thrown errors trong executor function cause Promise reject với thrown error là reason; thrown errors trong .then() callbacks được wrapped thành rejected Promise — cả hai đều dẫn đến rejection và có thể catch bằng .catch() hoặc try/catch với await" },
+        { "id": "b", "text": "Throwing trong executor không làm Promise reject" },
+        { "id": "c", "text": "Throwing trong .then() không làm gì" },
+        { "id": "d", "text": "Chỉ throwing trong .then() gây rejection" }
+      ],
+      "correctKey": "a",
+      "explanation": "Cả hai đều gây rejection. Executor errors được catch bởi Promise constructor internal try/catch. .then() callbacks ném ra bị Promise infrastructure catch và chuyển thành rejection."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "structuredClone() khác với JSON.parse(JSON.stringify()) như thế nào trong việc deep clone objects?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "structuredClone() (built-in, ES2021+) xử lý circular references, TypedArrays, Date objects, RegExp, Map, Set, và nhiều built-in types — JSON.stringify() mất functions, undefined, Symbols và không xử lý circular references" },
+        { "id": "b", "text": "JSON.parse(JSON.stringify()) mạnh hơn structuredClone()" },
+        { "id": "c", "text": "structuredClone() chỉ xử lý plain objects" },
+        { "id": "d", "text": "Cả hai giống hệt nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "structuredClone() là global function hỗ trợ nhiều types hơn và xử lý circular references. Nhanh hơn JSON round-trip. Nhưng không clone functions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Một Promise có thể transition từ pending sang fulfilled rồi sang rejected không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Không — Promise state là immutable. pending → fulfilled hoặc pending → rejected là hai đường đi duy nhất. Sau khi settled, state không thay đổi" },
+        { "id": "b", "text": "Có — Promise có thể transition theo bất kỳ thứ tự nào" },
+        { "id": "c", "text": "Có, nhưng chỉ trong một số trường hợp đặc biệt" },
+        { "id": "d", "text": "Promise state thay đổi liên tục" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise state là immutable: pending → fulfilled hoặc pending → rejected. Không có transition từ fulfilled sang rejected hoặc ngược lại. Đây là một trong những đảm bảo quan trọng của Promise."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nasync function getData() {\n  try {\n    const result = await Promise.reject(new Error('Oops'));\n    return result;\n  } catch (e) {\n    return 'Caught';\n  }\n}\ngetData().then(console.log);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Caught" },
+        { "id": "b", "text": "Error: Oops" },
+        { "id": "c", "text": "undefined" },
+        { "id": "d", "text": "pending" }
+      ],
+      "correctKey": "a",
+      "explanation": "await Promise.reject() throw Error, catch block catch và return 'Caught'. Return 'Caught' resolve Promise với giá trị đó. .then(console.log) in 'Caught'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "AsyncLocalStorage (ALS) trong Node.js được dùng để làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ALS cung cấp một async-safe store gắn với current execution context (async resource chain) — hữu ích để truyền request-scoped context (request ID, user info) qua các async boundaries (Promise callbacks, async generators) mà không cần prop drilling" },
+        { "id": "b", "text": "ALS lưu trữ dữ liệu vào file system một cách asynchronous" },
+        { "id": "c", "text": "ALS là một in-memory cache với TTL" },
+        { "id": "d", "text": "ALS thay thế AsyncContext API hoàn toàn" }
+      ],
+      "correctKey": "a",
+      "explanation": "AsyncLocalStorage (Node.js 16+, globalThis.AsyncLocalStorage) bind một store vào current async execution context. Khi async operations chained từ đó, store có thể truy cập được. Use cases: request IDs, user context, logging."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Một async function không có return statement trả về gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một resolved Promise với giá trị undefined — async functions luôn trả về Promise; nếu không có return, Promise resolve với undefined" },
+        { "id": "b", "text": "Một rejected Promise" },
+        { "id": "c", "text": "undefined trực tiếp, không phải Promise" },
+        { "id": "d", "text": "Một pending Promise vĩnh viễn" }
+      ],
+      "correctKey": "a",
+      "explanation": "Async function không có return → return undefined → Promise resolve với undefined. Giống hệt như `return Promise.resolve(undefined)`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Promise.resolve() và Promise.reject() tạo promises đã settled (resolve/reject) ngay lập tức.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Promise.resolve(value) → fulfilled immediately. Promise.reject(error) → rejected immediately. Các .then() callbacks được gọi as microtasks ngay sau synchronous code hiện tại."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Điều gì xảy ra khi return một Promise từ .then() callback?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Return Promise từ .then() callback được chain unwrapped tự động — .then() tiếp theo nhận resolved value của Promise đó, không phải Promise object. Đây là Promise flattening" },
+        { "id": "b", "text": ".then() callback không thể return Promise" },
+        { "id": "c", "text": "Return Promise gây TypeError" },
+        { "id": "d", "text": "Return Promise tạo nested Promise" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise flattening: nếu .then() return Promise, nó được 'unwrap' — .then() tiếp theo nhận resolved value, không phải Promise. Điều này cho phép chaining mà không có nested Promises."
+    }
+  ]
+}

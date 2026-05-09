@@ -1,0 +1,442 @@
+{
+  "topicSlug": "spring-jpa",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "JpaRepository extend cái gì trong Spring Data JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CrudRepository và PagingAndSortingRepository" },
+        { "id": "b", "text": "EntityManager directly" },
+        { "id": "c", "text": "DataSource interface" },
+        { "id": "d", "text": "Chỉ CrudRepository, không có paging" }
+      ],
+      "correctKey": "a",
+      "explanation": "JpaRepository extends PagingAndSortingRepository (which extends CrudRepository), thêm các JPA-specific methods như flush(), saveAndFlush(), và deleteInBatch(). Hierarchy này cho JpaRepository tất cả basic CRUD operations, pagination/sorting, và JPA-specific batch operations. Dùng JpaRepository thay vì CrudRepository trong JPA applications được khuyến khích vì nó expose các JPA operations và có performance benefits."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mục đích của annotation @Id trong một JPA entity là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đánh dấu một field như một foreign key đến entity khác" },
+        { "id": "b", "text": "Đánh dấu một field như primary key của entity" },
+        { "id": "c", "text": "Đánh dấu một field như indexed cho các queries nhanh hơn" },
+        { "id": "d", "text": "Đánh dấu một field như versioned cho optimistic locking" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Id đánh dấu field như primary key của entity. Nó là mandatory — mỗi JPA entity phải có một primary key. Field type có thể là bất kỳ basic type, UUID, hoặc embeddable class nào. @GeneratedValue (hoặc với một strategy) thường được dùng cùng @Id để specify ID được generate như thế nào."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa CrudRepository và JpaRepository là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JpaRepository cho MongoDB; CrudRepository cho relational databases" },
+        { "id": "b", "text": "JpaRepository thêm các JPA-specific methods như flush(), saveAndFlush(), và batch delete operations vượt trội hơn basic CRUD của CrudRepository" },
+        { "id": "c", "text": "CrudRepository hỗ trợ pagination; JpaRepository thì không" },
+        { "id": "d", "text": "Không có sự khác biệt — chúng là interchangeable aliases" }
+      ],
+      "correctKey": "b",
+      "explanation": "JpaRepository extends CrudRepository và thêm các JPA-specific operations: flush() (sync to DB immediately), saveAndFlush() (save và immediately flush), deleteInBatch() (batch delete không có entity lifecycle callbacks), và getReferenceById() (lazy loading of proxy). CrudRepository là interface-agnostic và làm việc cho bất kỳ store nào; JpaRepository là JPA-specific."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@Table annotation làm gì trong một JPA entity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đánh dấu entity như một database table" },
+        { "id": "b", "text": "Specify physical table name (và optionally schema, indexes, và constraints) mà entity này map đến" },
+        { "id": "c", "text": "Tạo một table mới trong database tự động" },
+        { "id": "d", "text": "Liên kết entity đến một Spring Data repository" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Table là một optional annotation cho phép bạn specify database table name (name attribute), schema, unique constraints (@UniqueConstraint), và indexes (@Index) cho entity. Mặc định, JPA dùng entity class name như table name. @Table hữu ích khi database table naming convention khác với Java naming conventions."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@GeneratedValue(strategy = GenerationType.IDENTITY) làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng một database sequence để generate primary key" },
+        { "id": "b", "text": "Delegate ID generation cho database's auto-increment column — JDBC driver return generated ID on insert" },
+        { "id": "c", "text": "Dùng UUID generator để tạo primary key trong Java" },
+        { "id": "d", "text": "Yêu cầu manual ID assignment trước khi persisting entity" }
+      ],
+      "correctKey": "b",
+      "explanation": "IDENTITY strategy delegate cho database's auto-increment mechanism (MySQL AUTO_INCREMENT, SQL Server IDENTITY). JPA/Hibernate gửi INSERT, DB generate ID, và JDBC driver return nó — không cần thêm round trip. Nhược điểm: IDENTITY disable batch inserts vì mỗi row phải được insert ngay để retrieve ID của nó."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mục đích của @Column(name = \"...\") annotation là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó định nghĩa một foreign key relationship đến một table khác" },
+        { "id": "b", "text": "Nó map field đến một specific database column name, với optional constraints như nullable, unique, length" },
+        { "id": "c", "text": "Nó tạo một index trên column tự động" },
+        { "id": "d", "text": "Nó đánh dấu field như entity's primary key" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Column map một field đến một specific DB column và cho phép tùy chỉnh: name (override column name), nullable, unique, length, precision, scale, columnDefinition. Không có nó, JPA dùng field name như column name. Common uses: @Column(nullable = false) cho NOT NULL constraints, @Column(length = 100) cho VARCHAR length limits."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@Transient annotation làm gì trong một JPA entity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đánh dấu một field như primary key" },
+        { "id": "b", "text": "Đánh dấu một field được exclude khỏi database persistence — field chỉ được giữ trong memory" },
+        { "id": "c", "text": "Đánh dấu một field như version column cho optimistic locking" },
+        { "id": "d", "text": "Đánh dấu một field như một lazy-loaded relationship" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Transient (hoặc @Column(transient = true) trong JPA cũ) báo JPA/Hibernate hoàn toàn ignore field — không column nào được tạo, không value nào được persist. Dùng nó cho computed fields, derived data, hoặc temporary UI state. Java keyword `transient` không có effect trong JPA."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Owning side của một JPA relationship là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Phía có annotation @ManyToOne" },
+        { "id": "b", "text": "Phía có foreign key column tồn tại trong database — chịu trách nhiệm persisting relationship state" },
+        { "id": "c", "text": "Phía có @JoinColumn" },
+        { "id": "d", "text": "Cả B và C — owning side là phía được specify @JoinColumn, thường là phía @ManyToOne của một bidirectional relationship" }
+      ],
+      "correctKey": "d",
+      "explanation": "Owning side là entity giữ foreign key column trong table của nó (qua @JoinColumn). Trong một unidirectional relationship, owning side là phía có @ManyToOne. Trong một bidirectional relationship, inverse side có mappedBy pointing đến owning side's field name. Chỉ có changes trên owning side được persisted."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Lazy loading trong JPA là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Data được load chỉ khi field được first accessed, outside of the persistence context" },
+        { "id": "b", "text": "Data được load chỉ khi explicitly requested qua JPQL FETCH JOIN hoặc EntityGraph — không tự động load với parent entity" },
+        { "id": "c", "text": "Data được load bằng batches cho performance optimization" },
+        { "id": "d", "text": "Data được load đồng bộ từ database trước khi entity được return" }
+      ],
+      "correctKey": "a",
+      "explanation": "Lazy loading (fetch = FetchType.LAZY) nghĩa là related data KHÔNG được load khi parent entity được queried — thay vào đó Hibernate tạo một proxy. DB query thực sự fire chỉ khi bạn first access field. Catch: nếu persistence context (transaction) closed trước khi access, bạn get LazyInitializationException."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "N+1 query problem trong JPA là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một entity có N relationships và một có one — gây ra Cartesian product trong các joins" },
+        { "id": "b", "text": "Loading N entities gây ra N additional queries — một per entity khi accessing a lazy collection: 1 query cho parent + N queries cho mỗi child" },
+        { "id": "c", "text": "Một query return N results nhưng chỉ 1 được inserted vào persistence context" },
+        { "id": "d", "text": "N JPQL queries được merge thành 1 batch insert operation" }
+      ],
+      "correctKey": "b",
+      "explanation": "N+1 xảy ra khi loading N entities với lazy-loaded @OneToMany hoặc @ManyToMany relationships. Hibernate fire 1 query để load parents, rồi N additional queries để load mỗi child's collection on access. Solutions: @EntityGraph, JPQL FETCH JOIN, fetch = FetchType.EAGER (dùng hãn chế), hoặc batch fetching."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@Query làm gì trong một Spring Data JPA repository method?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó tạo một native SQL query được validated đối với database schema tại startup" },
+        { "id": "b", "text": "Nó định nghĩa một custom JPQL hoặc native SQL query trên repository method — override Spring Data's method-name-based query derivation" },
+        { "id": "c", "text": "Nó đánh dấu method như một transaction boundary" },
+        { "id": "d", "text": "Nó enable query result caching ở Hibernate level" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Query cho phép viết custom query trên repository method dùng JPQL (mặc định) hoặc native SQL (nativeQuery = true). Spring Data vẫn validates method signature nhưng dùng query của bạn thay vì derive từ method name. Với native queries, results map đến Object[] hoặc DTOs, không trực tiếp đến entities."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa @OneToMany với lazy loading dùng List vs Set là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "List dùng ArrayList và Set dùng HashSet — Hibernate initialize cả hai giống nhau" },
+        { "id": "b", "text": "Hibernate initialize List với PersistentBag (ArrayList-like, unordered) và Set với PersistentSet — PersistentBag cho phép duplicate elements và có thể more memory-efficient cho lazy collections" },
+        { "id": "c", "text": "List hỗ trợ indexed access (get(0)); Set không — cả hai behave giống nhau cho add/remove operations" },
+        { "id": "d", "text": "Set yêu cầu @OrderColumn cho correct lazy loading behavior" }
+      ],
+      "correctKey": "b",
+      "explanation": "Hibernate dùng các persistent collection types khác nhau: List → PersistentBag (không order, cho phép duplicates), List với @OrderColumn → PersistentList, Set → PersistentSet (không duplicates, không order). PersistentBag hiệu quả (không dedup overhead) nhưng không maintain order. Dùng Set khi uniqueness matter."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Optimistic locking là gì và được implement trong JPA như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng pessimistic locks (SELECT FOR UPDATE) để ngăn concurrent modifications" },
+        { "id": "b", "text": "Thêm một @Version column — Hibernate tăng nó lên on every update. Nếu version trong DB khác với in-memory entity on update, OptimisticLockException được throw" },
+        { "id": "c", "text": "Dùng database-level serializable transactions cho tất cả operations" },
+        { "id": "d", "text": "Yêu cầu explicit lock acquisition qua EntityManager.lock() cho mọi read" }
+      ],
+      "correctKey": "b",
+      "explanation": "Optimistic locking (qua @Version) cho phép concurrent transactions proceed mà không blocking. Mỗi transaction đọc version hiện tại. On commit, nếu version trong DB khác, có nghĩa transaction khác đã modify — Hibernate throw OptimisticLockException. Phù hợp cho read-heavy workloads với rare conflicts."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa cascade = CascadeType.ALL và cascade = {CascadeType.PERSIST, CascadeType.MERGE} là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CascadeType.ALL bao gồm tất cả cascade types ngoại trừ CascadeType.DETACH" },
+        { "id": "b", "text": "CascadeType.ALL propagate TẤT CẢ entity lifecycle operations (persist, merge, remove, refresh, detach) đến child entities; explicit cascade types cho phép kiểm soát granularity, an toàn hơn" },
+        { "id": "c", "text": "Không có sự khác biệt — ALL là syntactic sugar cho cùng cascade types" },
+        { "id": "d", "text": "CascadeType.ALL chỉ cascade persist và remove; merge bị exclude vì lý do an toàn" }
+      ],
+      "correctKey": "b",
+      "explanation": "CascadeType.ALL = {PERSIST, MERGE, REMOVE, REFRESH, DETACH} — mọi operation cascade. Dùng ALL phổ biến nhưng nguy hiểm: xóa parent tự động xóa tất cả children. Explicit cascades cho bạn fine control: {PERSIST, MERGE} cascade save operations nhưng không deletes — an toàn hơn."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "orphanRemoval = true làm gì trên một @OneToMany relationship?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Khi một child được remove khỏi collection, nó tự động bị xóa khỏi database" },
+        { "id": "b", "text": "Khi một child được remove khỏi parent's collection, nó trở thành orphan — nếu không referenced bởi bất kỳ parent nào khác, nó tự động bị xóa khỏi database when the parent is flushed" },
+        { "id": "c", "text": "Nó ngăn xóa một child entity nếu nó có siblings" },
+        { "id": "d", "text": "Nó đánh dấu child entity như read-only trong persistence context" }
+      ],
+      "correctKey": "b",
+      "explanation": "orphanRemoval=true nghĩa: nếu bạn gọi parent.getChildren().remove(child), Hibernate đánh dấu child for deletion when the parent is flushed. Child trở thành 'orphan'. Hibernate issues a DELETE. Hữu ích cho composition: xóa một item khỏi invoice's line items nên delete item khỏi DB."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "JPQL dùng entity names và field names, không phải database table và column names.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "JPQL operate ở entity level, không phải SQL level. Queries dùng entity class name (User, không phải users), field names (firstName, không phải first_name), và relationship fields. Hibernate translate JPQL sang appropriate SQL cho dialect của bạn. Native SQL queries dùng actual table và column names."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Eager fetching (@Fetch(FetchType.EAGER)) luôn là chiến lược tốt nhất cho @OneToMany relationships để tránh N+1 queries.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Eager fetching trên @OneToMany gần như luôn là bad default. Nó gây N+1 problems: loading 10 orders eagerly fetches 10 collections in separate queries. Correct approach: lazy loading với explicit fetch strategies: @EntityGraph cho known access patterns, JPQL FETCH JOIN cho specific queries."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa @NamedEntityGraph và @EntityGraph trong Spring Data JPA là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@NamedEntityGraph được định nghĩa ở entity class level như một reusable, named query graph; @EntityGraph được applied ở repository method level cho one-off fetch customization" },
+        { "id": "b", "text": "@EntityGraph persistent across all repository queries; @NamedEntityGraph là method-specific" },
+        { "id": "c", "text": "@NamedEntityGraph dùng JPQL FETCH JOIN internally; @EntityGraph dùng Hibernate-specific projection APIs" },
+        { "id": "d", "text": "Không có sự khác biệt chức năng — chúng là interchangeable aliases" }
+      ],
+      "correctKey": "a",
+      "explanation": "@NamedEntityGraph là JPA 2.1 annotation đặt trên entity class, định nghĩa một named graph của attributes để fetch. @EntityGraph trên repository method là ad-hoc và inline. Dùng @NamedEntityGraph cho recurring fetch patterns; @EntityGraph cho one-off cases."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "@Modifying trên một repository query method làm gì, và yêu cầu quan trọng nào cho nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Modifying enable UPDATE và DELETE queries và tự động flushes persistence context — nó yêu cầu @Transactional present trên calling method" },
+        { "id": "b", "text": "@Modifying biến một SELECT query thành một INSERT mà không thay đổi method signature" },
+        { "id": "c", "text": "@Modifying được yêu cầu cho tất cả @Query methods bất kể chúng có modify data hay không" },
+        { "id": "d", "text": "@Modifying tự động clears EntityManager after execution để ngăn stale data" }
+      ],
+      "correctKey": "a",
+      "explanation": "@Modifying đánh dấu @Query như một bulk update/delete operation. QUAN TRỌNG: nó PHẢI được gọi trong một @Transactional context — Spring Data JPA không start một transaction tự động cho repository query methods. Không có @Transactional, bạn get TransactionRequiredException."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa PESSIMISTIC_READ và PESSIMISTIC_WRITE lock modes trong JPA là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PESSIMISTIC_READ cho phép concurrent reads nhưng blocks writes; PESSIMISTIC_WRITE blocks cả reads và writes" },
+        { "id": "b", "text": "PESSIMISTIC_READ acquires một shared lock cho phép other transactions read nhưng không write; PESSIMISTIC_WRITE acquires một exclusive lock blocking cả reads và writes" },
+        { "id": "c", "text": "PESSIMISTIC_WRITE tương đương với READ COMMITTED isolation; PESSIMISTIC_READ tương đương với SERIALIZABLE" },
+        { "id": "d", "text": "Cả hai lock modes giống nhau về behavior — naming chỉ là semantic" }
+      ],
+      "correctKey": "b",
+      "explanation": "PESSIMISTIC_READ (shared lock): other transactions có thể read row nhưng không modify nó. PESSIMISTIC_WRITE (exclusive lock): other transactions không thể read hoặc write row. Most databases implement PESSIMISTIC_READ giống PESSIMISTIC_WRITE under the hood."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Một JPA entity có thể có nhiều @Version columns cho các optimistic locking strategies khác nhau không?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "JPA specification chỉ cho phép một @Version column per entity. Có nhiều @Version fields sẽ tạo ambiguity trong detecting concurrent modifications. Nếu cần fine-grained optimistic locking cho specific fields, dùng @OptimisticLock annotation (Hibernate-specific) trên individual fields."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa @JoinTable và @JoinColumn trong JPA relationships là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@JoinColumn cho @ManyToOne (direct FK); @JoinTable cho @OneToMany requiring một intermediate join table" },
+        { "id": "b", "text": "@JoinColumn specifies một direct foreign key column trên owning entity's table; @JoinTable defines một intermediate join table (với hai FK columns) cho @ManyToMany hoặc unidirectional @OneToMany relationships" },
+        { "id": "c", "text": "@JoinTable cho @OneToOne relationships only; @JoinColumn cho @ManyToMany" },
+        { "id": "d", "text": "Cả hai specify direct FK columns nhưng @JoinTable có better performance" }
+      ],
+      "correctKey": "b",
+      "explanation": "@JoinColumn tạo một direct foreign key column trong entity's own table. @JoinTable tạo một intermediate join table với hai columns (ví dụ: USER_ADDRESS với USER_ID và ADDRESS_ID). @JoinTable required cho @ManyToMany và optional cho @OneToMany."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "CascadeType.PERSIST làm gì trong JPA?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó tự động xóa child entities khi parent được remove" },
+        { "id": "b", "text": "Nó tự động persists child entities khi parent được persisted — nếu bạn persist parent, children cũng được persisted trong cùng transaction" },
+        { "id": "c", "text": "Nó đồng bộ child's state với parent's state on every database query" },
+        { "id": "d", "text": "Nó detaches child entities khỏi persistence context khi parent được detached" }
+      ],
+      "correctKey": "b",
+      "explanation": "CascadeType.PERSIST propagate persist operation từ parent đến child. Khi bạn gọi entityManager.persist(parent), tất cả children với CascadeType.PERSIST cũng được persisted tự động. Lưu ý: CascadeType.PERSIST KHÔNG cascade on merge."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Dirty checking trong JPA/Hibernate là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó validates rằng entity field values meet @Column constraints trước khi persisting" },
+        { "id": "b", "text": "Nó tự động detects changes đến managed entities trong persistence context và generates UPDATE SQL statements at flush time — không cần explicit save() calls" },
+        { "id": "c", "text": "Nó locks rows in the database khi chúng được first read để ngăn concurrent modifications" },
+        { "id": "d", "text": "Nó compares current entity state với database và raises an exception nếu chúng khác nhau" }
+      ],
+      "correctKey": "b",
+      "explanation": "Dirty checking là Hibernate's automatic change detection mechanism. Persistence context hold một snapshot của entity at load time. At flush time, Hibernate compares current entity state với snapshot — bất kỳ changes nào generate UPDATE statements tự động. Điều này có nghĩa bạn có thể modify entity fields và gọi transaction.commit() — Hibernate tự tìm ra column nào changed."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa EntityManager.merge() và EntityManager.persist()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cả hai giống nhau — cả hai đều insert một row mới vào database" },
+        { "id": "b", "text": "persist() inserts một new entity và makes it managed; merge() copies state của một detached entity onto một managed instance và returns the managed instance — nếu entity đã tồn tại trong DB, merge() updates nó" },
+        { "id": "c", "text": "persist() updates một existing entity; merge() inserts một new entity" },
+        { "id": "d", "text": "merge() throws EntityExistsException nếu entity đã tồn tại; persist() silently overwrites" }
+      ],
+      "correctKey": "b",
+      "explanation": "persist(): thêm một new entity vào persistence context — makes it managed. Throw EntityExistsException nếu entity đã tồn tại. merge(): lấy một detached entity, tìm managed copy, copies state từ detached entity đến managed one, và returns the managed instance. Detached object không được modify."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "First-level cache trong JPA là gì và nó ảnh hưởng đến query performance như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một server-side database query cache lưu query results across multiple transactions" },
+        { "id": "b", "text": "Persistence context acts như một first-level cache — holding managed entities within a transaction; querying same entity by ID within same transaction returns cached instance without một DB round trip" },
+        { "id": "c", "text": "Một Hibernate-specific query optimization pre-loads tất cả entities referenced in the current request" },
+        { "id": "d", "text": "Một cache ở database driver level giảm network latency cho repeated queries" }
+      ],
+      "correctKey": "b",
+      "explanation": "First-level cache (persistence context) attached to EntityManager/transaction. Within one transaction, querying same entity by ID hoặc navigating relationships returns same managed instance — no DB round trip. Đây là free và automatic. Second-level cache (optional, Hibernate-specific) caches across transactions/sessions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa FetchType.EAGER và FetchType.LAZY cho @ManyToOne relationships là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "EAGER loads related entity immediately với parent; LAZY loads nó khi field được first accessed qua một proxy" },
+        { "id": "b", "text": "LAZY là mặc định cho @ManyToOne; EAGER phải always explicitly specified" },
+        { "id": "c", "text": "EAGER dùng một separate transaction để load related entity" },
+        { "id": "d", "text": "LAZY chỉ có thể dùng trên @OneToMany; EAGER là mặc định cho tất cả relationship types" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ManyToOne defaults to EAGER (không giống @OneToMany defaulting to LAZY). EAGER nghĩa là related entity được load immediately trong cùng SQL query (JOIN FETCH). LAZY load via proxy và trigger một query chỉ khi accessed. Best practice: set fetch = FetchType.LAZY explicitly và dùng @EntityGraph hoặc JPQL FETCH JOIN khi cần eager loading."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@EntityListeners làm gì trong JPA và khi nào nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó đăng ký callback methods trên một entity respond to lifecycle events — ví dụ: @PrePersist, @PreUpdate, @PostLoad — hữu ích cho auditing, auto-populating fields, và cross-cutting concerns" },
+        { "id": "b", "text": "Nó listens to database change events từ các applications khác" },
+        { "id": "c", "text": "Nó enables Hibernate's statistics listener cho query performance monitoring" },
+        { "id": "d", "text": "Nó maps JPA events đến Spring application events tự động" }
+      ],
+      "correctKey": "a",
+      "explanation": "@EntityListeners specifies callback classes listen to entity lifecycle events: @PrePersist, @PostPersist, @PreUpdate, @PostUpdate, @PreRemove, @PostRemove, @PostLoad. Common uses: Audit trail (auto-set createdAt/updatedAt timestamps), derive fields (compute fullName from firstName+lastName), domain event publishing."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa một JPQL JOIN và một JPQL JOIN FETCH là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JOIN FETCH luôn returns cartesian products; JOIN thì không" },
+        { "id": "b", "text": "JOIN chỉ fetches related entity trong một second query (partial loading); JOIN FETCH fetches nó trong cùng một query với một LEFT JOIN, eagerly loading all requested associations trong một query" },
+        { "id": "c", "text": "JOIN cho @OneToMany only; JOIN FETCH cho @ManyToOne only" },
+        { "id": "d", "text": "Không có sự khác biệt chức năng — chúng là aliases cho cùng operation" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trong JPQL, JOIN (without FETCH) chỉ tạo một alias cho use in WHERE clause — nó KHÔNG load related data. Association vẫn lazy. JOIN FETCH: SELECT o FROM Order o LEFT JOIN FETCH o.items — load orders VÀ items trong một single query. Dùng JOIN FETCH để tránh N+1 queries."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa @NamedQuery và @Query trong Spring Data JPA là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@NamedQuery là một JPA 2.0 static query defined ở entity class level; @Query là một Spring Data JPA annotation defined ở repository method level — @Query takes precedence nếu cả hai apply đến cùng method" },
+        { "id": "b", "text": "@NamedQuery runs faster vì nó pre-compiled bởi JPA provider; @Query được interpreted at runtime" },
+        { "id": "c", "text": "@NamedQuery chỉ supports native SQL; @Query chỉ supports JPQL" },
+        { "id": "d", "text": "Không có sự khác biệt — cả hai annotations interchangeable" }
+      ],
+      "correctKey": "a",
+      "explanation": "@NamedQuery (JPA annotation, đặt trên entity class) defines một static, named JPQL query. Nó pre-parsed by JPA provider at startup. @Query (Spring Data JPA annotation) defined inline trên repository method. @NamedQuery có thể referenced từ multiple repository methods; @Query là method-specific."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "@BatchFetch annotation của Hibernate là gì và nó giải quyết N+1 problem khác biệt như thế nào so với JOIN FETCH?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@BatchFetch dùng một separate query cho mỗi entity; JOIN FETCH dùng một single query cho tất cả entities" },
+        { "id": "b", "text": "@BatchFetch(n) groups N lazy-loading entity accesses into một single IN query (ví dụ: batch size 100 → 10 entities gây 1 query thay vì 10) — applied ở entity/collection level, không phải query level" },
+        { "id": "c", "text": "@BatchFetch tương đương với @EntityGraph — cả hai load associations eagerly trong cùng query" },
+        { "id": "d", "text": "@BatchFetch yêu cầu explicit JPQL FETCH JOIN trên every repository query" }
+      ],
+      "correctKey": "b",
+      "explanation": "@BatchFetch (Hibernate-specific) là một per-entity/collection fetch strategy batches multiple lazy-load accesses into một single SQL query dùng WHERE id IN (...). Không giống JOIN FETCH (query-level), @BatchFetch là một property-level annotation — nó applies everywhere association được accessed lazily."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Các trade-offs giữa optimistic locking và pessimistic locking trong JPA là gì?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Optimistic locking: không locks at read time, transactions proceed in parallel, conflict detected at commit time (version mismatch) — phù hợp cho read-heavy workloads với rare conflicts" },
+        { "id": "b", "text": "Pessimistic locking: locks rows at read time (SELECT FOR UPDATE), ngăn other transactions from reading/writing — phù hợp cho write-heavy workloads với frequent conflicts" },
+        { "id": "c", "text": "Pessimistic locking guarantees không transaction rollback bao giờ cần; optimistic locking có thể require retry logic" },
+        { "id": "d", "text": "Optimistic locking performs better in high-contention scenarios vì nó avoids lock overhead" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Optimistic (@Version) allows concurrent reads, detects conflicts at commit. Benefits: no lock overhead. Drawbacks: wasted work if conflicts frequent, requires retry logic. Pessimistic (PESSIMISTIC_WRITE) acquires exclusive locks at read time. Benefits: guaranteed consistency. Drawbacks: lock contention, deadlocks, reduced concurrency."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Natural ID caching của Hibernate là gì và khi nào nó hữu ích?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Natural ID caching caches entities by their business key (ví dụ: email, ISBN) in một dedicated cache region — lookups via entityManager.unwrap(Session.class).byNaturalId() bypass second-level cache và hit natural ID cache directly" },
+        { "id": "b", "text": "Natural ID caching giống first-level cache — cả hai store entities by surrogate ID" },
+        { "id": "c", "text": "Natural ID caching yêu cầu một separate database index cho mỗi natural ID lookup" },
+        { "id": "d", "text": "Natural ID caching đã deprecated in Hibernate 6.x" }
+      ],
+      "correctKey": "a",
+      "explanation": "Natural IDs (@NaturalId annotation) represent business keys — unique identifiers defined by domain (ví dụ: email, order number). Hibernate cache lookups by natural ID in một dedicated cache region. Use byNaturalId(MyEntity.class).using('email', email).load() cho fast lookups. Đặc biệt hữu ích cho reference data."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa Hibernate's StatelessSession và một regular JPA EntityManager là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "StatelessSession bypasses persistence context entirely — không first-level cache, không dirty checking, không lazy loading — mỗi operation là direct SQL; hữu ích cho bulk operations hoặc ETL" },
+        { "id": "b", "text": "StatelessSession nhanh hơn vì nó dùng một direct JDBC connection pool; EntityManager dùng Hibernate's connection pool" },
+        { "id": "c", "text": "EntityManager đã deprecated in favor of StatelessSession in Hibernate 6.x" },
+        { "id": "d", "text": "StatelessSession supports optimistic locking; EntityManager thì không" }
+      ],
+      "correctKey": "a",
+      "explanation": "StatelessSession là Hibernate-specific API operate without a persistence context. Không có: first-level cache, dirty checking, automatic lifecycle callbacks (@PrePersist), hoặc entity versioning. Entities returned là disconnected snapshots. Use cases: bulk inserts/updates/deletes where performance matters và entities don't need to be managed."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "JPA xử lý entity identity (equality) như thế nào và khi nào nên override equals() và hashCode()?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JPA dùng database identity (@Id) cho equality within a persistence context; cho detached entities hoặc collections (Set), bạn nên override equals() và hashCode() dùng một business key hoặc stable natural ID — không phải surrogate ID" },
+        { "id": "b", "text": "JPA tự động overrides equals() và hashCode() cho tất cả entities dùng @Id field" },
+        { "id": "c", "text": "equals() và hashCode() phải luôn dùng database surrogate ID (@Id) cho consistency" },
+        { "id": "d", "text": "Overriding equals() và hashCode() là optional và không có impact on JPA behavior" }
+      ],
+      "correctKey": "a",
+      "explanation": "Within a persistence context, entity identity được managed by JPA: same @Id = same entity reference. Outside (detached entities, Sets), identity vs equality matters. Override equals() và hashCode() dùng một stable business key (ví dụ: email, UUID) — không phải surrogate ID (@Id) vì nó null before persist. Pitfall: dùng @Id gây null pointer exceptions before persistence."
+    }
+  ]
+}

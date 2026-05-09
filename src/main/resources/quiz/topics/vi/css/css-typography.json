@@ -1,0 +1,330 @@
+{
+  "topicSlug": "css-typography",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào đặt kích thước text?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-size" },
+        { "id": "b", "text": "text-size" },
+        { "id": "c", "text": "font-scale" },
+        { "id": "d", "text": "content-size" }
+      ],
+      "correctKey": "a",
+      "explanation": "`font-size` là thuộc tính CSS cho kích thước text. Nhận: absolute units (px, pt), relative units (em, rem, %), và functions mới (clamp(), calc())."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Cách đúng để làm text đậm trong CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-weight: bold" },
+        { "id": "b", "text": "font-weight: bold" },
+        { "id": "c", "text": "font-style: bold" },
+        { "id": "d", "text": "text-style: bold" }
+      ],
+      "correctKey": "b",
+      "explanation": "`font-weight` nhận giá trị keywords (normal, bold) hoặc số (100–900). Chỉ variable fonts mới hỗ trợ toàn bộ numeric range."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`line-height: 1.5` nghĩa là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Line height = 1.5px" },
+        { "id": "b", "text": "Line height = 1.5 × font-size (unitless — recommended)" },
+        { "id": "c", "text": "Line height = 1.5 × line-height gốc" },
+        { "id": "d", "text": "Line height = 1.5 × viewport height" }
+      ],
+      "correctKey": "b",
+      "explanation": "line-height: 1.5 (không đơn vị) = 1.5 × font-size. Recommended: dùng unitless values vì chúng inherit và scale đúng với font-size."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `em` và `rem` trong typography?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "em relative đến document root; rem relative đến parent" },
+        { "id": "b", "text": "em relative đến parent; rem relative đến document root" },
+        { "id": "c", "text": "Chúng giống nhau" },
+        { "id": "d", "text": "em cho spacing; rem cho font-size" }
+      ],
+      "correctKey": "b",
+      "explanation": "rem (root em) relative đến root element's font-size — predictable và consistent. em relative đến current element's parent font-size — có thể compound trong deeply nested elements. Recommended: dùng rem cho typography và spacing, em cho component-internal sizing."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào đặt font-family?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-family" },
+        { "id": "b", "text": "font-face" },
+        { "id": "c", "text": "typeface" },
+        { "id": "d", "text": "font-name" }
+      ],
+      "correctKey": "a",
+      "explanation": "`font-family` đặt font. Luôn cung cấp fallback fonts: `font-family: 'Helvetica Neue', Arial, sans-serif`. Generic families: serif, sans-serif, monospace, cursive, fantasy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi font-style (italic, oblique)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-style" },
+        { "id": "b", "text": "font-variant" },
+        { "id": "c", "text": "text-style" },
+        { "id": "d", "text": "font-weight" }
+      ],
+      "correctKey": "a",
+      "explanation": "`font-style` nhận: normal, italic, oblique. italic dùng italic font face; oblique nghiêng bình thường font."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi font-variant (small-caps, normal)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-variant" },
+        { "id": "b", "text": "font-style" },
+        { "id": "c", "text": "text-transform" },
+        { "id": "d", "text": "font-feature" }
+      ],
+      "correctKey": "a",
+      "explanation": "`font-variant` nhận: normal, small-caps, v.v. `font-variant-ligatures` kiểm soát ligatures."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`letter-spacing` kiểm soát khoảng cách giữa cái gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Khoảng cách giữa các ký tự" },
+        { "id": "b", "text": "Khoảng cách giữa các từ" },
+        { "id": "c", "text": "Khoảng cách giữa các dòng" },
+        { "id": "d", "text": "Khoảng cách giữa các letters" }
+      ],
+      "correctKey": "a",
+      "explanation": "`letter-spacing` đặt khoảng cách giữa các ký tự. `word-spacing` đặt khoảng cách giữa các từ."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`text-align: justify` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Căn chỉnh text để cả hai mép bằng nhau (trừ dòng cuối)" },
+        { "id": "b", "text": "Căn giữa text" },
+        { "id": "c", "text": "Căn trái text" },
+        { "id": "d", "text": "Căn phải text" }
+      ],
+      "correctKey": "a",
+      "explanation": "`text-align: justify` kéo dài các dòng để cả hai mép bằng nhau. Dòng cuối không được căn justify (hoặc dùng text-align-last)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào kiểm soát text overflow với ellipsis?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-overflow" },
+        { "id": "b", "text": "overflow" },
+        { "id": "c", "text": "white-space" },
+        { "id": "d", "text": "text-wrap" }
+      ],
+      "correctKey": "a",
+      "explanation": "`text-overflow: ellipsis` hiển thị '...' khi text tràn. Yêu cầu: overflow: hidden + white-space: nowrap. VD: overflow: hidden; white-space: nowrap; text-overflow: ellipsis."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `text-indent` và `padding-left` cho indent paragraph?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-indent chỉ indent dòng đầu tiên; padding-left indent tất cả các dòng" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "padding-left chỉ indent dòng đầu" },
+        { "id": "d", "text": "text-indent indent tất cả dòng" }
+      ],
+      "correctKey": "a",
+      "explanation": "text-indent chỉ indent dòng ĐẦU TIÊN của block. padding-left indent TẤT CẢ các dòng. Dùng text-indent cho paragraph indent."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`white-space: pre` khác `white-space: pre-wrap` thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "pre giữ nguyên whitespace nhưng có thể overflow; pre-wrap giữ nguyên + cho phép wrapping" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "pre-wrap có less whitespace" },
+        { "id": "d", "text": "pre cho phép wrapping" }
+      ],
+      "correctKey": "a",
+      "explanation": "white-space: pre giữ nguyên ALL whitespace nhưng KHÔNG wrapping (có thể overflow). pre-wrap giữ nguyên whitespace VÀ cho phép wrapping (có thể overflow). pre-line collapses whitespace nhưng giữ nguyên line breaks."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Font-display: swap làm gì trong @font-face?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hiển thị fallback font ngay, sau đó swap sang web font khi load xong — giảm FOIT" },
+        { "id": "b", "text": "Ẩn text cho đến khi web font load xong" },
+        { "id": "c", "text": "Tự động download web fonts" },
+        { "id": "d", "text": "Chỉ dùng local fonts" }
+      ],
+      "correctKey": "a",
+      "explanation": "font-display: swap giảm FOIT (Flash of Invisible Text) bằng cách hiển thị fallback font ngay lập tức, rồi swap sang web font khi load xong. Các giá trị khác: auto, block, fallback, optional."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát hyphenation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "hyphens" },
+        { "id": "b", "text": "word-break" },
+        { "id": "c", "text": "overflow-wrap" },
+        { "id": "d", "text": "text-wrap" }
+      ],
+      "correctKey": "a",
+      "explanation": "`hyphens` nhận: none, manual (chỉ khi có soft hyphen), auto (trình duyệt tự thêm). Cần language attribute: lang='en'. word-break ngắt từ at any character."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\np {\n  font-size: 1.25rem;\n  line-height: 1.6;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Font-size 1.25 × root font-size; line-height 1.6 × own font-size (unitless)" },
+        { "id": "b", "text": "Font-size 1.25px; line-height 1.6px" },
+        { "id": "c", "text": "Font-size cố định 1.25px" },
+        { "id": "d", "text": "Line-height tính theo root" }
+      ],
+      "correctKey": "a",
+      "explanation": "1.25rem = 1.25 × root font-size (VD: 1.25 × 16px = 20px). line-height: 1.6 (unitless) = 1.6 × own font-size (20px × 1.6 = 32px)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`text-rendering: optimizeLegibility` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Yêu cầu trình duyệt ưu tiên legibility (độ dễ đọc) hơn speed/kerning khi render text" },
+        { "id": "b", "text": "Tăng tốc rendering" },
+        { "id": "c", "text": "Tối ưu hóa kerning cho web fonts" },
+        { "id": "d", "text": "Chỉ hoạt động với SVG" }
+      ],
+      "correctKey": "a",
+      "explanation": "`text-rendering: optimizeLegibility` yêu cầu trình duyệt ưu tiên legibility khi render text (VD: kerning, ligatures). optimizeSpeed yêu cầu tốc độ. auto để trình duyệt quyết định."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Font-variant-ligatures: common-ligatures kiểm soát gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Các ligatures phổ biến như fi, fl, ae" },
+        { "id": "b", "text": "Tất cả ligatures" },
+        { "id": "c", "text": "Chỉ decorative ligatures" },
+        { "id": "d", "text": "Kerning" }
+      ],
+      "correctKey": "a",
+      "explanation": "font-variant-ligatures: common-ligatures kiểm soát ligatures phổ biến. Các giá trị: common-ligatures, no-common-ligatures, discretionary-ligatures, historical-ligatures, contextual."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `font-feature-settings` và `font-variant`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-variant là shorthand chuẩn; font-feature-settings là low-level control dùng OpenType feature tags" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "font-feature-settings cho legacy fonts" },
+        { "id": "d", "text": "font-variant là low-level" }
+      ],
+      "correctKey": "a",
+      "explanation": "font-variant là shorthand chuẩn cho OpenType features. font-feature-settings là low-level control dùng OpenType feature tags (VD: 'liga' for ligatures, 'kern' for kerning). Dùng font-variant khi có thể."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Text overflow có thể xử lý multi-line không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Có — dùng -webkit-line-clamp kết hợp overflow: hidden và display: -webkit-box" },
+        { "id": "b", "text": "Không — chỉ single-line" },
+        { "id": "c", "text": "Có — dùng white-space: nowrap" },
+        { "id": "d", "text": "Chỉ với JavaScript" }
+      ],
+      "correctKey": "a",
+      "explanation": "-webkit-line-clamp giới hạn số dòng và thêm ellipsis. VD: display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Variable fonts là gì và lợi ích của chúng trong typography?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Variable fonts chứa toàn bộ design space trong một file — cho phép font-weight, font-style, font-stretch tùy ý (100-900) thay vì chỉ 400/700" },
+        { "id": "b", "text": "Fonts có thể thay đổi kích thước tự động" },
+        { "id": "c", "text": "Fonts responsive với viewport" },
+        { "id": "d", "text": "Fonts dùng ít bộ nhớ" }
+      ],
+      "correctKey": "a",
+      "explanation": "Variable fonts (OpenType 1.8) chứa axes (weight, width, slant, optical size) trong một file. Cho phép font-weight từ 100-900 thay vì fixed weights. Giảm HTTP requests và file size vs multiple font files."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Optical sizing trong variable fonts là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tự động điều chỉnh letterforms cho kích thước font khác nhau (serif phổ biến hơn ở small sizes để tăng legibility)" },
+        { "id": "b", "text": "Tự động resize font" },
+        { "id": "c", "text": "Kerning cho small caps" },
+        { "id": "d", "text": "Optical character recognition" }
+      ],
+      "correctKey": "a",
+      "explanation": "Optical sizing (font-optical-sizing: auto) tự động điều chỉnh letterforms cho font-size khác nhau. Ở small sizes (caption), letterforms được thiết kế rộng hơn, có serif để tăng legibility. Ở large sizes (display), letterforms thanh mảnh hơn."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Font Stretch axis (wdth) trong variable fonts cho phép điều gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nén hoặc giãn font từ ultra-condensed đến ultra-expanded (font-stretch: 50% đến 200%)" },
+        { "id": "b", "text": "Thay đổi font-weight" },
+        { "id": "c", "text": "Thay đổi font-style" },
+        { "id": "d", "text": "Chỉ dùng cho headings" }
+      ],
+      "correctKey": "a",
+      "explanation": "wdth axis (font-stretch: 50% ultra-condensed đến 200% ultra-expanded) cho phép nén/giãn font. Giá trị: ultra-condensed (50%), extra-condensed (62.5%), condensed (75%), semi-condensed (87.5%), normal (100%), semi-expanded (112.5%), expanded (125%), extra-expanded (150%), ultra-expanded (200%)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa font-synthesis: none và font-synthesis: weight/style?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "none ngăn browser synthesize bold/italic khi font thiếu; weight/style cho phép synthesis" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "none bật synthesis" },
+        { "id": "d", "text": "weight/style ngăn synthesis" }
+      ],
+      "correctKey": "a",
+      "explanation": "font-synthesis: none ngăn trình duyệt synthesize fake bold/italic khi font thiếu weights/styles. font-synthesis: weight/style cho phép (mặc định). Luôn luôn tốt hơn dùng real font weights/styles."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "OpenType font-variant-alternates với @ stylistic() rules là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cho phép chọn alternate glyphs trong font, ví dụ: font-variant-alternates: stylistic(swash); font-variant-alternates: stylistic(#{feature})" },
+        { "id": "b", "text": "Alternate fonts fallback" },
+        { "id": "c", "text": "Chỉ cho web fonts" },
+        { "id": "d", "text": "Alternate ligatures" }
+      ],
+      "correctKey": "a",
+      "explanation": "font-variant-alternates: stylistic(swash), styleset(custom), character-variant, ornamental, swash, historical-forms chọn alternate glyphs được định nghĩa trong font. Cần font hỗ trợ OpenType features."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n@font-face {\n  font-family: 'MyFont';\n  src: url('myfont.woff2') format('woff2');\n  font-display: optional;\n}\nbody {\n  font-family: 'MyFont', sans-serif;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Dùng MyFont nếu có sẵn, không fallback nếu không load được (font-display: optional = never show fallback)" },
+        { "id": "b", "text": "Luôn dùng MyFont" },
+        { "id": "c", "text": "Luôn dùng fallback" },
+        { "id": "d", "text": "font-display không ảnh hưởng" }
+      ],
+      "correctKey": "a",
+      "explanation": "font-display: optional = trình duyệt KHÔNG hiển thị fallback nếu web font không có sẵn ngay lập tức (ưu tiên page load). Nếu font không load, chỉ dùng fallback."
+    }
+  ]
+}

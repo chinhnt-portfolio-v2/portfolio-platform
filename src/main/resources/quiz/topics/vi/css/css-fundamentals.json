@@ -1,0 +1,630 @@
+{
+  "topicSlug": "css-fundamentals",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào dùng để thay đổi màu chữ của một phần tử?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-color" },
+        { "id": "b", "text": "color" },
+        { "id": "c", "text": "font-color" },
+        { "id": "d", "text": "foreground" }
+      ],
+      "correctKey": "b",
+      "explanation": "Thuộc tính `color` đặt màu chữ foreground. Các tùy chọn sai (text-color, font-color, foreground) không tồn tại trong CSS."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`box-sizing: border-box` làm gì với kích thước phần tử?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Width và height chỉ bao gồm content area" },
+        { "id": "b", "text": "Width và height bao gồm content, padding và border" },
+        { "id": "c", "text": "Width và height bao gồm content và padding, nhưng không border" },
+        { "id": "d", "text": "Nó loại bỏ border khỏi phần tử" }
+      ],
+      "correctKey": "b",
+      "explanation": "`border-box` làm width/height bao gồm content + padding + border. Mặc định `content-box` cộng thêm padding và border vào declared width. CSS reset hiện đại gần như luôn áp dụng `box-sizing: border-box` cho tất cả phần tử."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Bộ chọn CSS nào nhắm đến TẤT CẢ phần tử trên trang?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "all { }" },
+        { "id": "b", "text": "*" },
+        { "id": "c", "text": "body" },
+        { "id": "d", "text": ":root" }
+      ],
+      "correctKey": "b",
+      "explanation": "Universal selector `*` nhắm đến tất cả phần tử. Nó có specificity bằng 0. Thường dùng trong CSS reset."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `visibility: hidden` và `display: none` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Chúng giống nhau hoàn toàn" },
+        { "id": "b", "text": "visibility: hidden ẩn phần tử nhưng giữ không gian layout; display: none loại bỏ phần tử khỏi layout hoàn toàn" },
+        { "id": "c", "text": "display: none ẩn phần tử nhưng giữ không gian" },
+        { "id": "d", "text": "visibility: hidden loại bỏ phần tử khỏi layout" }
+      ],
+      "correctKey": "b",
+      "explanation": "`display: none` loại bỏ phần tử và không gian của nó khỏi layout. `visibility: hidden` ẩn phần tử nhưng vẫn chiếm không gian trong layout."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đơn vị `px` trong CSS là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Pixel vật lý trên màn hình" },
+        { "id": "b", "text": "Device pixel ratio" },
+        { "id": "c", "text": "1/96 inch tuyệt đối (CSS pixel — không phải pixel vật lý)" },
+        { "id": "d", "text": "Percent của viewport" }
+      ],
+      "correctKey": "c",
+      "explanation": "1px CSS = 1/96 inch tuyệt đối. Nó KHÔNG phải pixel vật lý — trên màn hình Retina, 1px CSS có thể = 2-3 pixel vật lý. px không phản hồi với user font preferences."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào dùng để thay đổi khoảng cách giữa các dòng text?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "line-spacing" },
+        { "id": "b", "text": "line-height" },
+        { "id": "c", "text": "text-height" },
+        { "id": "d", "text": "leading" }
+      ],
+      "correctKey": "b",
+      "explanation": "`line-height` đặt khoảng cách giữa các dòng text. Nó chấp nhận: số (nhân với font-size), length (px, em), percentage, và normal."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào dùng để thay đổi font của text?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-family" },
+        { "id": "b", "text": "text-font" },
+        { "id": "c", "text": "typeface" },
+        { "id": "d", "text": "font-type" }
+      ],
+      "correctKey": "a",
+      "explanation": "`font-family` đặt font. Luôn cung cấp fallback fonts: `font-family: 'Helvetica Neue', Arial, sans-serif`. Font generic: serif, sans-serif, monospace, cursive, fantasy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code CSS sau là gì?\n\n.box {\n  width: 200px;\n  padding: 20px;\n  border: 5px solid black;\n  box-sizing: border-box;\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tổng chiều rộng = 200px (content = 200 - 20 - 5 = 150px)" },
+        { "id": "b", "text": "Tổng chiều rộng = 200px (content = 200px)" },
+        { "id": "c", "text": "Tổng chiều rộng = 250px (content = 200px)" },
+        { "id": "d", "text": "Tổng chiều rộng = 225px" }
+      ],
+      "correctKey": "b",
+      "explanation": "Với `box-sizing: border-box`, width=200px bao gồm content + padding + border. Content width = 200 - 40 - 10 = 150px. Total width = 200px."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi độ đậm nhạt của font?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-weight" },
+        { "id": "b", "text": "font-weight" },
+        { "id": "c", "text": "boldness" },
+        { "id": "d", "text": "font-bold" }
+      ],
+      "correctKey": "b",
+      "explanation": "`font-weight` nhận giá trị keywords (normal, bold) hoặc số (100–900). Chỉ variable fonts mới hỗ trợ toàn bộ numeric range. Font thường chỉ có normal (400) và bold (700)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Margin collapsing xảy ra giữa các phần tử nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Giữa inline elements" },
+        { "id": "b", "text": "Giữa các block elements theo chiều dọc (không phải inline-direction)" },
+        { "id": "c", "text": "Giữa flex items" },
+        { "id": "d", "text": "Giữa tất cả phần tử" }
+      ],
+      "correctKey": "b",
+      "explanation": "Margin collapsing xảy ra theo chiều dọc giữa block elements: margins của sibling elements gộp lại (lấy giá trị lớn nhất), và margins của parent + first/last child gộp. Không xảy ra: trong flex/grid, với padding ngăn cách, hoặc với overflow."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi kiểu list marker (bullet, number)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "list-style" },
+        { "id": "b", "text": "bullet-style" },
+        { "id": "c", "text": "list-marker" },
+        { "id": "d", "text": "marker-type" }
+      ],
+      "correctKey": "a",
+      "explanation": "`list-style` là shorthand cho list-style-type, list-style-image, list-style-position. Giá trị: disc, circle, square, decimal, lower-alpha, none, v.v."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "CSS cascade ưu tiên bộ chọn nào cao nhất (từ thấp đến cao)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Element < Class < ID < Inline" },
+        { "id": "b", "text": "Inline < Element < Class < ID" },
+        { "id": "c", "text": "Class < Element < Inline < ID" },
+        { "id": "d", "text": "ID < Class < Element < Inline" }
+      ],
+      "correctKey": "a",
+      "explanation": "Specificity: Element (1) < Class (10) < ID (100) < Inline (1000). !important override tất cả. Universal selector (*) có specificity = 0."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi màu nền của phần tử?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "background-color" },
+        { "id": "b", "text": "bg-color" },
+        { "id": "c", "text": "background" },
+        { "id": "d", "text": "color" }
+      ],
+      "correctKey": "a",
+      "explanation": "`background-color` đặt màu nền. Nhận: color keywords, hex, rgb(), hsl(), v.v. Lưu ý: background (shorthand) có thể ghi đè background-color."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.parent {\n  color: red;\n}\n.child {\n  color: blue;\n}\n<div class='parent'>\n  <p class='child'>Hello</p>\n</div>",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Text 'Hello' có class='child' → `.child` có specificity cao hơn `.parent` → màu blue. Inline style > ID > Class/Attribute/Pseudo-class > Element."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi kiểu font (italic, normal)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-style" },
+        { "id": "b", "text": "text-style" },
+        { "id": "c", "text": "font-variant" },
+        { "id": "d", "text": "italic-style" }
+      ],
+      "correctKey": "a",
+      "explanation": "`font-style` nhận: normal, italic, oblique. italic dùng italic font face (nếu có), oblique nghiêng bình thường font."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào kiểm soát độ trong suốt của phần tử?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "opacity" },
+        { "id": "b", "text": "transparent" },
+        { "id": "c", "text": "visibility" },
+        { "id": "d", "text": "alpha" }
+      ],
+      "correctKey": "a",
+      "explanation": "`opacity` nhận giá trị 0-1 (hoặc 0%-100%). Nó ảnh hưởng đến toàn bộ phần tử (background, border, text, con). rgba() và hsla() chỉ ảnh hưởng đến property đó."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi text-decoration (underline, strikethrough)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-decoration" },
+        { "id": "b", "text": "text-underline" },
+        { "id": "c", "text": "text-style" },
+        { "id": "d", "text": "underline" }
+      ],
+      "correctKey": "a",
+      "explanation": "`text-decoration` là shorthand cho text-decoration-line, text-decoration-color, text-decoration-style, text-decoration-thickness. Giá trị: none, underline, overline, line-through."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào kiểm soát khoảng cách giữa các từ?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "word-spacing" },
+        { "id": "b", "text": "text-spacing" },
+        { "id": "c", "text": "spacing" },
+        { "id": "d", "text": "letter-spacing" }
+      ],
+      "correctKey": "a",
+      "explanation": "`word-spacing` đặt khoảng cách giữa các từ. `letter-spacing` đặt khoảng cách giữa các ký tự."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi text alignment?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-align" },
+        { "id": "b", "text": "align" },
+        { "id": "c", "text": "horizontal-align" },
+        { "id": "d", "text": "float" }
+      ],
+      "correctKey": "a",
+      "explanation": "`text-align` nhận: left, right, center, justify. justify kéo dài các dòng để cả hai mép bằng nhau (trừ dòng cuối)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi text-transform (uppercase, lowercase, capitalize)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-transform" },
+        { "id": "b", "text": "text-case" },
+        { "id": "c", "text": "case-style" },
+        { "id": "d", "text": "font-case" }
+      ],
+      "correctKey": "a",
+      "explanation": "`text-transform` nhận: none, uppercase, lowercase, capitalize. Nó thay đổi cách hiển thị mà không thay đổi DOM."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi border-radius của phần tử?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "border-radius" },
+        { "id": "b", "text": "rounded-border" },
+        { "id": "c", "text": "corner-radius" },
+        { "id": "d", "text": "border-round" }
+      ],
+      "correctKey": "a",
+      "explanation": "`border-radius` nhận: length (px, em, %) hoặc /. Dùng / cho elliptical corners: border-radius: 50% / 50% (tạo ellipse)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi line-height của text?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "line-height" },
+        { "id": "b", "text": "leading" },
+        { "id": "c", "text": "text-height" },
+        { "id": "d", "text": "row-height" }
+      ],
+      "correctKey": "a",
+      "explanation": "`line-height` đặt chiều cao của một dòng. Nhận: normal, number (nhân font-size), length (px, em), %. Recommended: unitless number (1.5) hoặc em."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.container {\n  display: flex;\n}\n.item {\n  margin-left: auto;\n}\n<div class='container'>\n  <div class='item'>X</div>\n</div>",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "margin-left: auto trong flex container đẩy .item sang phải (nếu flex-direction: row). margin: auto đặt phần tử vào giữa container."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát overflow của phần tử khi nội dung vượt quá kích thước?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "overflow" },
+        { "id": "b", "text": "content-overflow" },
+        { "id": "c", "text": "clip" },
+        { "id": "d", "text": "box-overflow" }
+      ],
+      "correctKey": "a",
+      "explanation": "`overflow` là shorthand cho overflow-x và overflow-y. Giá trị: visible (mặc định), hidden, scroll, auto. `overflow: hidden` tạo BFC."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát display của list marker?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "list-style-position" },
+        { "id": "b", "text": "marker-position" },
+        { "id": "c", "text": "bullet-position" },
+        { "id": "d", "text": "inside hoặc outside" }
+      ],
+      "correctKey": "a",
+      "explanation": "`list-style-position` đặt vị trí bullet/number: inside (trong content box) hoặc outside (ngoài, mặc định)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.box {\n  width: 100px;\n  height: 100px;\n  overflow: hidden;\n}\n<div class='box'>\n  Lorem ipsum dolor sit amet\n</div>",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Text bị cắt nếu vượt quá 100x100px" },
+        { "id": "b", "text": "Text bị cắt nếu vượt quá 100x100px, scrollbar xuất hiện" },
+        { "id": "c", "text": "Box mở rộng để chứa text" },
+        { "id": "d", "text": "Text bị ẩn hoàn toàn" }
+      ],
+      "correctKey": "a",
+      "explanation": "overflow: hidden ẩn nội dung tràn, không mở rộng box. Text dài bị cắt tại ranh giới 100x100px. overflow: auto thêm scrollbar nếu cần."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào thay đổi border style?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "border-style" },
+        { "id": "b", "text": "border-type" },
+        { "id": "c", "text": "border-line" },
+        { "id": "d", "text": "line-style" }
+      ],
+      "correctKey": "a",
+      "explanation": "`border-style` nhận: none (mặc định), solid, dashed, dotted, double, groove, ridge, inset, outset."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát vertical alignment của inline/block-level elements?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "vertical-align" },
+        { "id": "b", "text": "align" },
+        { "id": "c", "text": "v-align" },
+        { "id": "d", "text": "top/middle/bottom" }
+      ],
+      "correctKey": "a",
+      "explanation": "`vertical-align` áp dụng cho inline elements và table cells. Giá trị: baseline, top, middle, bottom, text-top, text-bottom, sub, super, length, percentage."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát cursor appearance?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "cursor" },
+        { "id": "b", "text": "pointer" },
+        { "id": "c", "text": "mouse" },
+        { "id": "d", "text": "icon" }
+      ],
+      "correctKey": "a",
+      "explanation": "`cursor` đặt kiểu cursor: pointer, grab, crosshair, wait, help, not-allowed, v.v. cursor: url() cho custom cursor."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào thay đổi outline của phần tử?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "outline" },
+        { "id": "b", "text": "border" },
+        { "id": "c", "text": "stroke" },
+        { "id": "d", "text": "frame" }
+      ],
+      "correctKey": "a",
+      "explanation": "`outline` là shorthand cho outline-width, outline-style, outline-color. Không giống border, outline không ảnh hưởng đến layout (không chiếm không gian)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát word wrapping khi text quá dài?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "overflow-wrap / word-wrap" },
+        { "id": "b", "text": "word-break" },
+        { "id": "c", "text": "white-space" },
+        { "id": "d", "text": "text-overflow" }
+      ],
+      "correctKey": "a",
+      "explanation": "`overflow-wrap` (word-wrap) ngắt từ dài không thể chứa. overflow-wrap: break-word ngắt từ tràn (không ngắt từ bình thường). word-wrap là alias cũ."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào thay đổi white-space handling?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "white-space" },
+        { "id": "b", "text": "text-space" },
+        { "id": "c", "text": "whitespace" },
+        { "id": "d", "text": "space-handling" }
+      ],
+      "correctKey": "a",
+      "explanation": "`white-space` kiểm soát whitespace và wrapping: normal (collapse + wrap), nowrap (no wrap), pre (giữ nguyên), pre-wrap (giữ + wrap), pre-line (collapse + giữ line breaks)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát text overflow (ellipsis)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-overflow" },
+        { "id": "b", "text": "overflow-text" },
+        { "id": "c", "text": "ellipsis" },
+        { "id": "d", "text": "clip-text" }
+      ],
+      "correctKey": "a",
+      "explanation": "`text-overflow` chỉ hoạt động khi overflow: hidden và white-space: nowrap. Kết hợp: overflow: hidden; white-space: nowrap; text-overflow: ellipsis."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát hyphens trong text?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "hyphens" },
+        { "id": "b", "text": "word-break" },
+        { "id": "c", "text": "text-break" },
+        { "id": "d", "text": "hyphenation" }
+      ],
+      "correctKey": "a",
+      "explanation": "`hyphens` nhận: none (mặc định), manual (chỉ khi có soft hyphen), auto (trình duyệt tự thêm). Cần language attribute: lang='en'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát letter-spacing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "letter-spacing" },
+        { "id": "b", "text": "char-spacing" },
+        { "id": "c", "text": "word-spacing" },
+        { "id": "d", "text": "kerning" }
+      ],
+      "correctKey": "a",
+      "explanation": "`letter-spacing` đặt khoảng cách giữa các ký tự. Nhận: normal, length (px, em, v.v.), negative values."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào thay đổi text-indent (thụt đầu dòng)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-indent" },
+        { "id": "b", "text": "indent" },
+        { "id": "c", "text": "paragraph-indent" },
+        { "id": "d", "text": "margin-indent" }
+      ],
+      "correctKey": "a",
+      "explanation": "`text-indent` thụt đầu dòng đầu tiên. Nhận: length (px, em, %), percentage (của containing block's width)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.box {\n  display: inline-block;\n  width: 100px;\n  vertical-align: top;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Box xếp trên cùng một dòng, căn trên" },
+        { "id": "b", "text": "Box xếp dưới cùng" },
+        { "id": "c", "text": "Box trở thành block-level" },
+        { "id": "d", "text": "Box bị ẩn" }
+      ],
+      "correctKey": "a",
+      "explanation": "display: inline-block giữ phần tử trên cùng dòng nhưng cho phép đặt width/height. vertical-align: top căn trên."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào tạo new block formatting context (BFC)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "overflow: hidden/auto (not visible)" },
+        { "id": "b", "text": "display: flex" },
+        { "id": "c", "text": "float: left" },
+        { "id": "d", "text": "Tất cả trên" }
+      ],
+      "correctKey": "d",
+      "explanation": "BFC được tạo bởi: overflow ≠ visible, display: flow-root/inline-block, float ≠ none, position ≠ static, contain ≠ none. display: flow-root là cách 'sạch' nhất."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào thay đổi font-variant (small-caps, normal)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "font-variant" },
+        { "id": "b", "text": "font-variant (normal, small-caps, v.v.)" },
+        { "id": "c", "text": "text-variant" },
+        { "id": "d", "text": "small-caps" }
+      ],
+      "correctKey": "b",
+      "explanation": "`font-variant` nhận: normal, small-caps, v.v. font-variant-ligatures kiểm soát ligatures."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào kiểm soát appearance của selection?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "::selection" },
+        { "id": "b", "text": "::highlight" },
+        { "id": "c", "text": "::text-select" },
+        { "id": "d", "text": "text-highlight" }
+      ],
+      "correctKey": "a",
+      "explanation": "::selection style phần text user highlight. Chỉ một số properties được cho phép: color, background-color, text-shadow."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào tạo placeholder cho input?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "::placeholder" },
+        { "id": "b", "text": "::input-placeholder" },
+        { "id": "c", "text": "placeholder" },
+        { "id": "d", "text": ":placeholder" }
+      ],
+      "correctKey": "a",
+      "explanation": "::placeholder pseudo-element style placeholder text. ::placeholder-shown pseudo-class nhắm đến input đang hiện placeholder."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi scroll-behavior?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "scroll-behavior" },
+        { "id": "b", "text": "smooth-scroll" },
+        { "id": "c", "text": "scroll-style" },
+        { "id": "d", "text": "html { scroll-behavior: smooth; }" }
+      ],
+      "correctKey": "d",
+      "explanation": "`scroll-behavior` nhận: auto (mặc định), smooth. Đặt trên html cho toàn bộ trang. scroll-behavior: smooth cho smooth scrolling."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào kiểm soát fill và stroke của SVG?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "fill và stroke" },
+        { "id": "b", "text": "color và border" },
+        { "id": "c", "text": "background và foreground" },
+        { "id": "d", "text": "Chỉ fill" }
+      ],
+      "correctKey": "a",
+      "explanation": "Trong SVG, `fill` đặt màu bên trong shape, `stroke` đặt màu đường viền. Cả hai có thể nhận CSS color values."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào kiểm soát resize của element?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "resize" },
+        { "id": "b", "text": "draggable" },
+        { "id": "c", "text": "size-change" },
+        { "id": "d", "text": "stretch" }
+      ],
+      "correctKey": "a",
+      "explanation": "`resize` nhận: none, both (mặc định textarea), horizontal, vertical. Chỉ hoạt động khi overflow ≠ visible."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi cursor trên scrollable containers khi scrolling?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "scrollbar-gutter" },
+        { "id": "b", "text": "scrollbar-width / scrollbar-color" },
+        { "id": "c", "text": "Cả hai trên" },
+        { "id": "d", "text": "overflow: overlay" }
+      ],
+      "correctKey": "c",
+      "explanation": "scrollbar-width (thin, auto, none) và scrollbar-color (track + thumb colors) style scrollbars. scrollbar-gutter tạo space cho scrollbar."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào thay đổi animation timing function mặc định?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "animation-timing-function" },
+        { "id": "b", "text": "transition-timing-function" },
+        { "id": "c", "text": "timing-function" },
+        { "id": "d", "text": "easing" }
+      ],
+      "correctKey": "a",
+      "explanation": "`animation-timing-function` đặt easing: linear, ease, ease-in, ease-out, ease-in-out, cubic-bezier(), steps(). transition-timing-function tương tự cho transitions."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.box {\n  transform: rotate(45deg);\n  transform-origin: center center;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Box xoay 45 độ quanh tâm" },
+        { "id": "b", "text": "Box co lại 45 lần" },
+        { "id": "c", "text": "Box dịch 45px" },
+        { "id": "d", "text": "Box bị ẩn" }
+      ],
+      "correctKey": "a",
+      "explanation": "transform: rotate(45deg) xoay element 45 độ quanh transform-origin. transform-origin: center center đặt điểm xoay ở tâm (mặc định)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào tạo gap giữa flex items?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "gap" },
+        { "id": "b", "text": "margin giữa items" },
+        { "id": "c", "text": "padding giữa items" },
+        { "id": "d", "text": "grid-gap" }
+      ],
+      "correctKey": "a",
+      "explanation": "`gap` là shorthand cho row-gap và column-gap. Áp dụng cho flex, grid, và multi-column layouts. Grid cũ dùng grid-gap."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào kiểm soát caret-color trong input?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "caret-color" },
+        { "id": "b", "text": "cursor-color" },
+        { "id": "c", "text": "text-cursor" },
+        { "id": "d", "text": "input-cursor" }
+      ],
+      "correctKey": "a",
+      "explanation": "`caret-color` đặt màu của con trỏ text (caret) trong input và textarea."
+    }
+  ]
+}

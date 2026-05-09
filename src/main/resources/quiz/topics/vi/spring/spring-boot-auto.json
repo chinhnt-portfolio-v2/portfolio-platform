@@ -1,0 +1,441 @@
+{
+  "topicSlug": "spring-boot-auto",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@SpringBootApplication kết hợp những gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Configuration và @ComponentScan only" },
+        { "id": "b", "text": "@Configuration, @EnableAutoConfiguration, và @ComponentScan" },
+        { "id": "c", "text": "@EnableWebMvc và @EnableAutoConfiguration" },
+        { "id": "d", "text": "@SpringBootConfiguration và @EnableAutoConfiguration only" }
+      ],
+      "correctKey": "b",
+      "explanation": "@SpringBootApplication là một composed annotation kết hợp @Configuration (đánh dấu class như một nguồn @Bean definitions), @EnableAutoConfiguration (kích hoạt Spring Boot's auto-configuration engine), và @ComponentScan (kích hoạt component scanning từ application class's package trở xuống)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mục đích của Spring Boot starters là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Chúng cung cấp pre-compiled executable JAR files cho deployment" },
+        { "id": "b", "text": "Chúng là các dependency descriptors tổng hợp tất cả required dependencies cho một feature cụ thể (ví dụ: spring-boot-starter-web) — giảm complexity của dependency management" },
+        { "id": "c", "text": "Chúng là code generators scaffold toàn bộ application layers" },
+        { "id": "d", "text": "Chúng là runtime plugins kích hoạt cloud-native features" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring Boot starters là convenience dependency descriptors theo naming pattern spring-boot-starter-{feature}. Mỗi starter tổng hợp tất cả required transitive dependencies cho một technology với các versions đã được test và tương thích."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Spring Boot auto-configuration tìm configuration property sources ở đâu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Chỉ application.properties trong classpath root" },
+        { "id": "b", "text": "application.properties hoặc application.yml trong working directory, environment variables, và command-line arguments — theo thứ tự precedence (cao nhất: command-line args)" },
+        { "id": "c", "text": "Chỉ file application.yml trong thư mục src/main/resources" },
+        { "id": "d", "text": "Chỉ system properties được set qua System.setProperty()" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring Boot's PropertySource order (cao đến thấp): command-line arguments > OS environment variables > application.{properties, yml} > @PropertySource annotations. Profile-specific files (application-{profile}.properties) additive vào base file."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "spring-boot-maven-plugin cung cấp gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó compile Java source files dùng Maven's compiler plugin" },
+        { "id": "b", "text": "Nó đóng gói ứng dụng thành một executable fat JAR với tất cả dependencies, và cung cấp goal spring:run cho development" },
+        { "id": "c", "text": "Nó tự động generate application.properties từ project structure" },
+        { "id": "d", "text": "Nó quản lý Spring Boot version upgrades trong pom.xml" }
+      ],
+      "correctKey": "b",
+      "explanation": "spring-boot-maven-plugin repackages ứng dụng thành một executable JAR (fat JAR / Uber JAR) chứa tất cả compiled classes và dependencies. Key goals: repackage, run, và build-info. Không có plugin này, bạn chỉ nhận được plain JAR của các classes — không chạy được standalone."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@ConfigurationProperties annotation làm gì trong Spring Boot?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó generate getters và setters cho configuration fields tại compile time" },
+        { "id": "b", "text": "Nó bind các external configuration properties (từ application.properties/yml, environment variables) vào một typed POJO, cho phép type-safe configuration với validation" },
+        { "id": "c", "text": "Nó đánh dấu một class như một configuration class tương đương với @Configuration" },
+        { "id": "d", "text": "Nó override Spring Boot's auto-configuration với custom bean definitions" }
+      ],
+      "correctKey": "b",
+      "explanation": "@ConfigurationProperties bind externalized configuration (application.properties, env vars, YAML) vào một Java POJO dùng relaxed binding rules (my-property → myProperty, MY_PROPERTY). Cho type-safe, structured configuration với IDE autocomplete. Enable bằng @EnableConfigurationProperties hoặc @ConfigurationPropertiesScan."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Hành vi mặc định của Spring Boot DevTools trong một ứng dụng đang chạy là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó compile classes ở background và trigger a live restart của ứng dụng khi class files thay đổi" },
+        { "id": "b", "text": "Nó tự động deploy WAR files đến một external Tomcat server" },
+        { "id": "c", "text": "Nó enable hot swapping của methods mà không restart JVM" },
+        { "id": "d", "text": "Nó generate API documentation từ controller annotations" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot DevTools giám sát classpath files và trigger a restart (không reload) của ứng dụng khi thay đổi được phát hiện. Nó dùng hai classloaders: một cho application classes (restarted), một cho base classes (not restarted) — làm restarts nhanh hơn nhiều. DevTools bị disabled trong production."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa application.properties và application.yml là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "application.properties dùng cho Spring Boot 2.x; application.yml dùng cho Spring Boot 3.x" },
+        { "id": "b", "text": "Cả hai tương đương — YAML dùng indentation và cấu trúc hierarchical, properties dùng flat key=value pairs; Spring Boot hỗ trợ cả hai formats đồng thời" },
+        { "id": "c", "text": "application.yml có higher precedence hơn application.properties" },
+        { "id": "d", "text": "application.properties hỗ trợ profiles; application.yml thì không" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cả hai formats được parse bởi Spring Boot's PropertySource loader và đại diện cho cùng data. YAML hỗ trợ hierarchical, nested configuration, trong khi properties là flat. Spring Boot's RelaxedBinding xử lý name variations."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Làm sao để kích hoạt một Spring profile có tên 'production'?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đặt @Profile annotation trên main class: @Profile(\"production\")" },
+        { "id": "b", "text": "Pass --spring.profiles.active=production như command-line argument, set SPRING_PROFILES_ACTIVE environment variable, hoặc cấu hình spring.profiles.active trong application.properties" },
+        { "id": "c", "text": "Tạo một ProductionApplication class extends main class" },
+        { "id": "d", "text": "Set spring.profiles.default=production trong application.properties" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring profiles được kích hoạt qua: command-line (--spring.profiles.active=production), environment variable (SPRING_PROFILES_ACTIVE=production), hoặc programmatically. Profile-specific files (application-prod.properties) additive vào base file — properties trong profile file override base file."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@EnableAutoConfiguration hoạt động như thế nào under the hood?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó scan classpath cho tất cả @Configuration classes và register chúng như beans" },
+        { "id": "b", "text": "Nó import AutoConfigurationImportSelector đọc META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports để load các auto-configuration classes tạo beans có điều kiện dựa trên classpath presence" },
+        { "id": "c", "text": "Nó thay thế tất cả manual @Bean definitions bằng auto-configured defaults" },
+        { "id": "d", "text": "Nó enable Hot Reload cho tất cả configuration classes without restart" }
+      ],
+      "correctKey": "b",
+      "explanation": "@EnableAutoConfiguration (included in @SpringBootApplication) kích hoạt Spring Boot's auto-configuration engine. Nó import AutoConfigurationImportSelector đọc META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports (Spring Boot 3.x; trước đó META-INF/spring.factories). Mỗi auto-config class dùng @Conditional annotations để decide có activate hay không."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@ConditionalOnClass và @ConditionalOnMissingBean khác nhau như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@ConditionalOnClass activate configuration nếu một class tồn tại trên classpath; @ConditionalOnMissingBean activate chỉ nếu một bean của type đó KHÔNG tồn tại trong container" },
+        { "id": "b", "text": "Cả hai check classpath presence — naming purely stylistic" },
+        { "id": "c", "text": "@ConditionalOnMissingBean activate khi một bean tồn tại; @ConditionalOnClass activate khi một class tồn tại" },
+        { "id": "d", "text": "@ConditionalOnClass dùng cho Spring profiles; @ConditionalOnMissingBean dùng cho Spring Data repositories" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ConditionalOnClass: activate nếu DataSource trên classpath — ngăn compilation errors khi optional dependency absent. @ConditionalOnMissingBean: activate chỉ nếu chưa có DataSource bean — đảm bảo user-defined beans take precedence over auto-configured ones. Pattern tiêu chuẩn: kết hợp cả hai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@ConfigurationProperties(prefix = \"server\") bind đến cái gì trong application.properties?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Chỉ server.classpath.* properties" },
+        { "id": "b", "text": "server.port, server.address, server.ssl.*, server.servlet.*, và tất cả server.* properties — dùng relaxed binding (server.port → setPort())" },
+        { "id": "c", "text": "server.* chỉ trong application.yml, không phải application.properties" },
+        { "id": "d", "text": "Chỉ server.environment.* properties" }
+      ],
+      "correctKey": "b",
+      "explanation": "@ConfigurationProperties với prefix 'server' bind tất cả server.* properties từ bất kỳ source nào (properties, YAML, env vars) vào ServerProperties POJO fields. Relaxed binding: server.port, SERVER_PORT, server-port đều map vào cùng field."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích của spring-boot-autoconfigure-metadata.json file là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó định nghĩa auto-configuration classes nào được load during startup" },
+        { "id": "b", "text": "Nó lưu trữ metadata về configuration properties (names, types, default values, deprecation info) dùng bởi IDE tooling và auto-configuration engine cho early filtering — tăng startup speed" },
+        { "id": "c", "text": "Nó map environment variable names thành property names cho relaxed binding" },
+        { "id": "d", "text": "Nó lưu trữ exclusion list cho production deployments" }
+      ],
+      "correctKey": "b",
+      "explanation": "autoConfigure-metadata.json (generated by spring-boot-configuration-processor at compile time) lưu metadata về all exposed configuration properties. Spring Boot's auto-configuration engine dùng metadata này để early eliminate inapplicable configurations. IDEs cũng dùng nó để cung cấp autocomplete."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "spring.main.banner-mode control cái gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó control whether the Spring logo ASCII art được hiển thị at startup: console (print to stdout), log (write to logger), off (disabled)" },
+        { "id": "b", "text": "Nó control whether Spring Boot checks for banner.txt in the classpath" },
+        { "id": "c", "text": "Nó enable the startup banner cho production environments" },
+        { "id": "d", "text": "Nó control the log level của Spring banner" }
+      ],
+      "correctKey": "a",
+      "explanation": "spring.main.banner-mode nhận ba giá trị: console (print to System.out), log (write to logger at INFO level), off (disable). Default là console in development, off in production. Có thể customize bằng banner.gif, banner.jpg, banner.png, hoặc banner.txt trong src/main/resources."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "spring-boot-configuration-processor là gì và tại sao nên thêm nó vào build?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó xử lý @Configuration classes at runtime để enable lazy initialization" },
+        { "id": "b", "text": "Nó generate spring-configuration-metadata.json at compile time từ @ConfigurationProperties annotations, enable IDE autocomplete, validation, và early auto-configuration filtering" },
+        { "id": "c", "text": "Nó auto-generate application.properties files từ Java code structure" },
+        { "id": "d", "text": "Nó thay thế @EnableConfigurationProperties bằng cách xử lý chúng at compile time" }
+      ],
+      "correctKey": "b",
+      "explanation": "spring-boot-configuration-processor là một annotation processor (runs during javac/compileJava) đọc @ConfigurationProperties classes và emit spring-configuration-metadata.json. Không có nó, không có autocomplete và không có validation trong application.properties/yml."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Spring Boot auto-configuration sẽ override bất kỳ @Bean definitions nào trong @Configuration classes của bạn.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "Auto-configuration classes dùng @ConditionalOnMissingBean để đảm bảo chúng chỉ register beans khi không có user-defined bean cùng type. Execution order: user @Configuration beans first, then auto-configurations. User beans take precedence."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "spring.profiles.default property có thể được override bởi SPRING_PROFILES_ACTIVE environment variable.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "true",
+      "explanation": "Environment variables có higher precedence hơn properties files. SPRING_PROFILES_ACTIVE override spring.profiles.default đã set trong application.properties. Spring Boot's property resolution order được thiết kế sao cho deployment infrastructure (env vars, command line) luôn thắng over application defaults."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "@AutoConfigureBefore và @AutoConfigureAfter khác nhau như thế nào trong Spring Boot auto-configuration ordering?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@AutoConfigureBefore đảm bảo auto-configuration này chạy trước cái được đặt tên (register beans sớm hơn); @AutoConfigureAfter đảm bảo auto-configuration này chạy sau cái được đặt tên (register beans muộn hơn)" },
+        { "id": "b", "text": "Cả hai annotations tương đương — thứ tự được xác định bởi class name alphabetically" },
+        { "id": "c", "text": "@AutoConfigureAfter làm configuration class trở thành một @Lazy bean; @AutoConfigureBefore thì không" },
+        { "id": "d", "text": "@AutoConfigureAfter đã deprecated trong Spring Boot 3.x" }
+      ],
+      "correctKey": "a",
+      "explanation": "@AutoConfigureBefore và @AutoConfigureAfter kiểm soát ordering của các auto-configuration classes. Không có explicit ordering, auto-configurations được sorted alphabetically by class name."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Spring Boot's relaxed binding hoạt động như thế nào cho property names?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Relaxed binding cho phép tất cả variations (camelCase, kebab-case, SCREAMING_SNAKE_CASE) map đến cùng property — ví dụ: server-port, serverPort, SERVER_PORT đều bind đến setServerPort()" },
+        { "id": "b", "text": "Relaxed binding chỉ hoạt động cho environment variables; properties phải match exact Java field names" },
+        { "id": "c", "text": "Relaxed binding convert tất cả property names thành SCREAMING_SNAKE_CASE regardless of source" },
+        { "id": "d", "text": "Relaxed binding đã deprecated trong Spring Boot 3.x thay vì strict name matching" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot's relaxed binding cho phép property sources với các naming conventions khác nhau map đến cùng Java property. Đây là lý do bạn có thể set server.port trong properties nhưng SPRING_APPLICATION_JSON với \"server\":{\"port\":8080} cũng hoạt động."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "@ConditionalOnWebApplication vs @ConditionalOnNotWebApplication có mục đích gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cả hai annotations check cho sự hiện diện của web-related JARs trên classpath" },
+        { "id": "b", "text": "@ConditionalOnWebApplication activate configuration chỉ trong servlet-based hoặc reactive web application context; @ConditionalOnNotWebApplication activate trong batch/CLI applications — dùng để ngăn auto-configurations activate trong unintended application types" },
+        { "id": "c", "text": "@ConditionalOnWebApplication check nếu ứng dụng đang chạy trên một web server; @ConditionalOnNotWebApplication check cho command-line argument presence" },
+        { "id": "d", "text": "@ConditionalOnNotWebApplication là inverse của @ConditionalOnClass cho web applications" }
+      ],
+      "correctKey": "b",
+      "explanation": "Các @Conditional annotations này check ApplicationContext type để determine có activate một auto-configuration hay không. Dùng để ngăn auto-configurations can thiệp across application types."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "spring.factories và file META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports mới trong Spring Boot 3 khác nhau như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cả hai files phục vụ cùng mục đích nhưng spring.factories dùng cho JDK 8 và imports dùng cho JDK 17+" },
+        { "id": "b", "text": "imports file thay thế spring.factories cho auto-configuration class listing — nó line-based (một class per line), hỗ trợ comments (#), và đơn giản hơn spring.factories' properties format; spring.factories deprecated trong Spring Boot 3.x" },
+        { "id": "c", "text": "spring.factories dùng để enable security features; imports dùng cho data source configuration only" },
+        { "id": "d", "text": "imports file được encrypted; spring.factories là plain text" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring Boot 3.0 giới thiệu META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports (vị trí mới được recommend) để thay thế META-INF/spring.factories. Imports file dùng một class name per line, hỗ trợ # comments. spring.factories deprecated nhưng vẫn supported."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Spring Boot's failure analyzer cải thiện error messages khi auto-configuration thất bại.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "true",
+      "explanation": "FailureAnalyzer là một Spring Boot mechanism intercept startup exceptions và produce human-readable diagnostic messages thay vì raw stack traces. Spring Boot ship ~50+ built-in analyzers. ConditionEvaluationReport (enabled via --debug) cũng liệt kê conditions nào passed/failed."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@ConditionalOnProperty làm gì trong Spring Boot auto-configuration?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó làm một bean read-only khi property name chứa 'readonly'" },
+        { "id": "b", "text": "Nó activate configuration chỉ nếu specified property tồn tại và có expected value — ví dụ: @ConditionalOnProperty(name = \"spring.data.jpa.repositories.enabled\", havingValue = \"true\")" },
+        { "id": "c", "text": "Nó tự động bind property vào một @ConfigurationProperties class" },
+        { "id": "d", "text": "Nó enable property-based routing giữa hai bean implementations khác nhau" }
+      ],
+      "correctKey": "b",
+      "explanation": "@ConditionalOnProperty check liệu một configuration property tồn tại và khớp expected value. Dùng nó để tạo feature flags. Spring Boot's own auto-configurations dùng nó rất nhiều để cho phép users disable specific auto-configs qua properties."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "@ConditionalOnClass làm gì trong Spring Boot auto-configuration?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó activate configuration chỉ nếu một Java class với specified name tồn tại trên classpath — ngăn compilation errors khi optional dependencies absent" },
+        { "id": "b", "text": "Nó import specified class vào Spring context at compile time" },
+        { "id": "c", "text": "Nó scan classpath cho tất cả @Component-annotated classes" },
+        { "id": "d", "text": "Nó tự động thêm specified class như một dependency trong Maven without modifying pom.xml" }
+      ],
+      "correctKey": "a",
+      "explanation": "@ConditionalOnClass(value = DataSource.class) activate @Configuration chỉ nếu DataSource (hoặc HikariCPDataSource) present trên classpath. Điều này essential cho optional dependencies: nếu user không include JDBC driver, DataSourceAutoConfiguration không nên fail với ClassNotFoundException."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "spring-boot-starter-parent cung cấp gì trong một Maven project?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó cung cấp pre-compiled Spring Boot JAR files để embed trong một WAR file" },
+        { "id": "b", "text": "Nó là một parent POM quản lý dependency versions, cung cấp default plugin configurations (Java version, resource encoding), và enable Spring Boot's dependency management — child projects inherit versions without specifying them" },
+        { "id": "c", "text": "Nó compile ứng dụng dùng Spring Boot's custom compiler thay vì Maven's" },
+        { "id": "d", "text": "Nó thay thế spring-boot-starter bằng cách cung cấp tất cả Spring Boot dependencies directly" }
+      ],
+      "correctKey": "b",
+      "explanation": "spring-boot-starter-parent là parent POM trong Maven. Key benefits: dependency management section — tất cả spring-boot-starter-* inherit version từ parent. Build plugin defaults. Resource filtering. Executable JAR packaging configured."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Làm sao để disable một Spring Boot auto-configuration class cụ thể?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Không thể disable auto-configurations — chúng luôn active" },
+        { "id": "b", "text": "Dùng spring.autoconfigure.exclude trong application.properties: spring.autoconfigure.exclude=org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration — hoặc exclude attribute trên @SpringBootApplication" },
+        { "id": "c", "text": "Delete the auto-configuration JAR khỏi classpath" },
+        { "id": "d", "text": "Dùng @EnableAutoConfiguration(disabled = DataSourceAutoConfiguration.class) trên main class" }
+      ],
+      "correctKey": "b",
+      "explanation": "Hai cách exclude: (1) Trong application.properties: spring.autoconfigure.exclude=... (comma-separated cho multiple). (2) Trên @SpringBootApplication: @SpringBootApplication(exclude = DataSourceAutoConfiguration.class) hoặc @ExcludeAutoConfiguration trong Spring Boot 3.x."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "spring.factories file có mục đích gì trong Spring Boot 2.x, và cái gì thay thế nó trong Spring Boot 3.x?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "spring.factories liệt kê các auto-configuration classes; Spring Boot 3.x dùng META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports thay thế — một simpler line-based format thay thế properties format" },
+        { "id": "b", "text": "spring.factories lưu trữ application properties defaults; Spring Boot 3.x dùng application.yml cho điều này" },
+        { "id": "c", "text": "spring.factories định nghĩa Spring profiles; Spring Boot 3.x dùng @ActiveProfiles cho điều này" },
+        { "id": "d", "text": "spring.factories là cho servlet registration; Spring Boot 3.x dùng một cơ chế khác hoàn toàn" }
+      ],
+      "correctKey": "a",
+      "explanation": "Trong Spring Boot 2.x, spring.factories (EnableAutoConfiguration key) liệt kê auto-configuration classes dùng properties syntax. Spring Boot 3.0 giới thiệu imports file đơn giản hơn. spring.factories deprecated nhưng vẫn supported for backward compatibility."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa @ConfigurationProperties(prefix = \"...\") và @Value trong Spring Boot là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@ConfigurationProperties bind multiple properties vào một POJO với type-safe, hierarchical binding; @Value inject individual property values như string-based SpEL expressions — @ConfigurationProperties được ưu tiên cho structured configuration" },
+        { "id": "b", "text": "@Value cho database properties; @ConfigurationProperties cho HTTP endpoint configuration only" },
+        { "id": "c", "text": "@ConfigurationProperties yêu cầu property phải tồn tại; @Value silently ignores missing properties" },
+        { "id": "d", "text": "Cả hai annotations về chức năng giống hệt nhau — sự lựa chọn purely stylistic" }
+      ],
+      "correctKey": "a",
+      "explanation": "@Value đơn giản: @Value(\"${my.property}\") inject một property dưới dạng string được Spring coerce sang target type. @ConfigurationProperties bind prefix vào typed POJO: server.port, server.ssl.enabled đều bind vào ServerProperties fields với full IDE autocomplete. @ConfigurationProperties advantages: structured, cohesive, validation, relaxed binding, IDE metadata."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Spring Boot's environment post-processor mechanism hoạt động như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "EnvironmentPostProcessor runs sau ApplicationContext được tạo — nó modify bean definitions trước instantiation" },
+        { "id": "b", "text": "EnvironmentPostProcessor runs trước ApplicationContext được tạo — nó có thể modify property sources (thêm defaults từ files, environment variables, v.v.) trước bất kỳ bean nào được instantiated hoặc property resolution xảy ra" },
+        { "id": "c", "text": "EnvironmentPostProcessor thay thế @ConfigurationProperties cho legacy applications" },
+        { "id": "d", "text": "EnvironmentPostProcessor encrypts properties trước khi chúng được lưu trong Environment" }
+      ],
+      "correctKey": "b",
+      "explanation": "EnvironmentPostProcessor chạy rất sớm trong Spring Boot lifecycle — trước khi ApplicationContext tồn tại. Nó có thể add hoặc modify property sources. Được registered trong META-INF/spring.factories. Key difference từ BeanFactoryPostProcessor: EnvironmentPostProcessor chạy trước context; BeanFactoryPostProcessor chạy during context refresh."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "spring-boot-configuration-processor generate cái gì at compile time?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "spring-configuration-metadata.json in META-INF — liệt kê tất cả @ConfigurationProperties properties với types, defaults, và descriptions" },
+        { "id": "b", "text": "IDE-friendly autocomplete hints trong IDE's internal format — hiển thị property names, expected types, và default values" },
+        { "id": "c", "text": "Runtime bean registration cho tất cả @ConfigurationProperties classes" },
+        { "id": "d", "text": "Code tự động write property values trở lại application.properties on startup" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "spring-boot-configuration-processor là annotation processor (runs during compileJava) đọc @ConfigurationProperties và @DefaultValue và emit META-INF/spring-configuration-metadata.json. File này được tiêu thụ bởi: (a) IDEs cho autocomplete và validation. (b) Spring Boot's auto-configuration engine cho early elimination của inapplicable configurations."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa property placeholder resolution và property binding trong Spring Boot là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Property placeholder resolution dùng ${placeholder} syntax được resolve bởi BeanFactoryPostProcessor; property binding dùng @ConfigurationProperties bind properties vào typed POJOs — cả hai là complementary mechanisms chạy ở các lifecycle stages khác nhau" },
+        { "id": "b", "text": "Cả hai là identical mechanisms — chúng là các tên khác nhau cho cùng Spring Boot feature" },
+        { "id": "c", "text": "Property binding runs trước property placeholder resolution trong Spring Boot's lifecycle" },
+        { "id": "d", "text": "Property placeholder resolution chỉ hoạt động cho primitive types; property binding hoạt động cho tất cả types" }
+      ],
+      "correctKey": "a",
+      "explanation": "Property placeholder resolution (${property}) là Spring Framework feature resolved by PropertySourcesPlaceholderConfigurer/BeanFactoryPostProcessor. Property binding (@ConfigurationProperties) là Spring Boot feature bind properties to POJO fields during context refresh. Cả hai tương thích: bạn có thể dùng ${placeholder} bên trong @ConfigurationProperties default values."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Các cân nhắc bảo mật khi expose Spring Boot Actuator endpoints trong production là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Actuator endpoints expose sensitive operational data — health endpoint safe (public), nhưng /heapdump, /threaddump, /env, /loggers, /auditevents expose sensitive system data; secure chúng với Spring Security bằng cách restrict đến internal network hoặc authenticated users" },
+        { "id": "b", "text": "Actuator endpoints luôn safe — Spring Boot tự động restrict chúng đến localhost only" },
+        { "id": "c", "text": "Không bao giờ expose Actuator endpoints — disable chúng hoàn toàn trong production" },
+        { "id": "d", "text": "Actuator endpoints yêu cầu SSL certificates được enable trong production" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot Actuator exposes operational endpoints. /env exposes secrets, /heapdump chứa memory snapshots. Mitigation: (1) Expose chỉ /health và /info publicly. (2) Secure all others qua Spring Security: requestMatchers(\"/actuator/**\").hasRole(\"ADMIN\"). (3) Dùng management.endpoints.web.exposure.include/exclude."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Spring Boot lazy initialization feature là gì và khi nào nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Lazy initialization defer tất cả bean creation cho đến first access — tăng startup time và giảm memory footprint at startup; enable qua spring.main.lazy-initialization=true hoặc @Lazy trên individual beans" },
+        { "id": "b", "text": "Lazy initialization enable hot reload của classes without restarting ứng dụng" },
+        { "id": "c", "text": "Lazy initialization là default trong Spring Boot 3.x — không cần configuration" },
+        { "id": "d", "text": "Lazy initialization disables auto-configuration để tăng startup speed" }
+      ],
+      "correctKey": "a",
+      "explanation": "spring.main.lazy-initialization=true làm tất cả beans lazy by default. Mỗi bean được tạo chỉ khi first requested — giảm startup time. Trade-offs: (1) first request chậm hơn. (2) Startup errors được defer đến first access. (3) Một số features cần beans at startup có thể fail."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "SpringApplicationBuilder fluent API là gì và khi nào nó hữu ích?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SpringApplicationBuilder cung cấp một fluent, chainable API để configure và run Spring Boot applications programmatically — setting properties, profiles, sources, banner, và register listeners trước context starts" },
+        { "id": "b", "text": "SpringApplicationBuilder là một replacement cho @SpringBootApplication cho Groovy-based applications" },
+        { "id": "c", "text": "SpringApplicationBuilder builds WAR files programmatically thay vì dùng Maven plugins" },
+        { "id": "d", "text": "SpringApplicationBuilder generates application.properties file at runtime" }
+      ],
+      "correctKey": "a",
+      "explanation": "SpringApplicationBuilder cho phép configure Spring Boot programmatically via fluent API. Hữu ích khi: (1) conditional application startup based on environment. (2) Set properties/profiles trước context built. (3) Hierarchical application contexts cho multi-module applications."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa Spring Boot's FailSafe và Strict JSON parsing modes là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Strict mode throws exception trên unknown JSON properties; FailSafe mode silently ignores chúng — Spring Boot defaults to FailSafe cho application.yml parsing để prevent startup failures từ typos" },
+        { "id": "b", "text": "FailSafe mode logs warnings cho unknown properties; Strict mode throws exceptions — Spring Boot defaults to Strict cho application.properties parsing" },
+        { "id": "c", "text": "Cả hai parsing modes identical — sự khác biệt chỉ trong documentation" },
+        { "id": "d", "text": "FailSafe mode converts all unknown properties thành null; Strict mode converts chúng thành empty strings" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot dùng Jackson's FAIL_ON_UNKNOWN_PROPERTIES khác nhau cho YAML vs properties files. Cho YAML (application.yml), Spring dùng lenient parser ignore unknown properties by default — typo trong YAML key sẽ không crash app. Strict mode khi desired: configure ObjectMapper với DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES=true."
+    }
+  ]
+}

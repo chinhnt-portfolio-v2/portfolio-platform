@@ -1,0 +1,227 @@
+{
+  "topicSlug": "react-rendering",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Virtual DOM trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một bản copy trực tiếp của browser's DOM được lưu trong React state, cập nhật đồng bộ" },
+        { "id": "b", "text": "Một JavaScript representation nhẹ của real DOM — React so sánh (diff) Virtual DOM mới với cái trước để xác định số lượng thay đổi tối thiểu cần thiết trước khi cập nhật real DOM" },
+        { "id": "c", "text": "Một DOM API cho phép thao tác trực tiếp trên HTML elements" },
+        { "id": "d", "text": "Một browser extension tăng tốc React applications" }
+      ],
+      "correctKey": "b",
+      "explanation": "Virtual DOM là một object tree JavaScript phản ánh cấu trúc của real DOM. Khi state thay đổi, React tạo VDOM tree mới, diff với cái trước (reconciliation), rồi apply minimal changes vào real DOM."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "React's reconciliation algorithm là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một algorithm được browser tích hợp sẵn trong DOM specification" },
+        { "id": "b", "text": "Process React dùng để so sánh hai Virtual DOM trees và xác định phần nào của real DOM cần được cập nhật — dùng heuristics để giả định lists duy trì order và elements cùng type tạo similar trees" },
+        { "id": "c", "text": "Một serialization format để transfer React state giữa server và client" },
+        { "id": "d", "text": "Một backup copy của Virtual DOM trước được giữ để debug" }
+      ],
+      "correctKey": "b",
+      "explanation": "Reconciliation là algorithm diffing của React — Fiber architecture (React 16+) làm nó interruptible và ưu tiên work. Heuristics: elements của different types tạo different trees, elements với different keys được coi là khác nhau."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Tại sao React yêu cầu `key` prop khi rendering một list các components?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Keys là security feature ngăn XSS attacks trong list items" },
+        { "id": "b", "text": "Keys giúp React xác định items nào đã thay đổi, được thêm vào, hoặc bị xóa — cho phép cập nhật DOM hiệu quả thay vì destroy và recreate toàn bộ list contents trên mỗi update" },
+        { "id": "c", "text": "Keys được TypeScript yêu cầu để array elements compile đúng" },
+        { "id": "d", "text": "Keys được dùng để sắp xếp list items alphabetically" }
+      ],
+      "correctKey": "b",
+      "explanation": "Không có key, React không phân biệt được items — khi insert/delete, React destroys và recreates DOM nodes cho mọi item sau thay đổi. Với stable, unique keys, React di chuyển existing nodes thay vì destroy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Role chính của `React.memo` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Memoize kết quả của một expensive computation bên trong component" },
+        { "id": "b", "text": "Ngăn component re-renders trừ khi props của nó đã thay đổi — đạt được qua shallow comparison của props" },
+        { "id": "c", "text": "Cache kết quả của một API call qua các renders" },
+        { "id": "d", "text": "Thay thế useMemo hook để cache giá trị" }
+      ],
+      "correctKey": "b",
+      "explanation": "React.memo là higher-order component memoize component: skip re-render khi props shallowly equal. Hữu ích khi component đắt để render và parent re-renders thường xuyên."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "PureComponent trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một class component tự động implement shouldComponentUpdate với shallow prop và state comparison — skip renders khi props và state chưa thay đổi" },
+        { "id": "b", "text": "Một component chỉ có thể render pure (deterministic) content không có side effects" },
+        { "id": "c", "text": "Một component render một mathematical function như một chart" },
+        { "id": "d", "text": "Một component không bao giờ re-renders, bất kể parent changes" }
+      ],
+      "correctKey": "a",
+      "explanation": "PureComponent implement `shouldComponentUpdate` với shallow equality check. Class equivalent của React.memo cho function components. Modern React: function components + React.memo được ưu tiên."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Khi một parent component re-renders, tất cả children của nó luôn re-renders, bất kể props.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Đây là default behavior của React. Không có React.memo, child components re-render mỗi khi parent re-render, ngay cả khi props không thay đổi."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`React.Suspense` được dùng để làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Pause component's render cho đến khi một điều kiện được thỏa mãn và hiển thị fallback UI trong khi chờ" },
+        { "id": "b", "text": "Throw một error boundary khi component fails to render" },
+        { "id": "c", "text": "Lazy-load images nằm ngoài viewport" },
+        { "id": "d", "text": "Pause JavaScript execution trong một React update cycle" }
+      ],
+      "correctKey": "a",
+      "explanation": "Suspense cho phép khai báo loading states cho async operations. Component 'throw' một promise — React catch và render fallback. Đây là nền tảng của concurrent features."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi bạn dùng `useMemo` để memoize một list được truyền như prop đến một `React.memo`-wrapped child, điều gì xảy ra?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useMemo ổn định array reference qua các renders; React.memo skip child's re-render vì prop reference không thay đổi — cùng nhau ngăn unnecessary renders" },
+        { "id": "b", "text": "useMemo và React.memo conflict — chỉ nên dùng một trong hai" },
+        { "id": "c", "text": "useMemo không có effect khi dùng với React.memo — child luôn re-renders" },
+        { "id": "d", "text": "useMemo buộc child re-renders ngay cả khi props không thay đổi" }
+      ],
+      "correctKey": "a",
+      "explanation": "Kết hợp synergistic: useMemo tạo stable reference; React.memo skip rendering khi props shallowly equal. Không useMemo, new array `items.map(...)` mỗi render defeat React.memo."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `useMemo` và `React.memo` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useMemo memoize một COMPUTED VALUE; React.memo memoize một COMPONENT — chúng tối ưu các mục tiêu khác nhau và có thể dùng cùng nhau" },
+        { "id": "b", "text": "useMemo cho class components; React.memo cho function components" },
+        { "id": "c", "text": "useMemo chạy trên server; React.memo chỉ chạy trong browser" },
+        { "id": "d", "text": "Chúng giống hệt nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "useMemo memoizes result của computation. React.memo memoizes COMPONENT (skip render nếu props shallowly equal). Dùng cùng nhau không redundant — tối ưu những thứ khác nhau."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "React.Suspense chỉ có thể được dùng với React.lazy cho code splitting.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "React 18 mở rộng Suspense như một general primitive cho async data fetching. Core mechanism — component 'throw' promise — là framework-agnostic."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`key` prop làm được gì mà React.memo không thể thay thế?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "key prop được dùng bởi React's reconciliation algorithm để identify elements qua các re-renders; React.memo chỉ so sánh props — nó không thể xác định một element hoàn toàn khác đang ở cùng tree position" },
+        { "id": "b", "text": "key prop là security feature mà React.memo không thể replicate" },
+        { "id": "c", "text": "key prop được TypeScript yêu cầu cho list rendering" },
+        { "id": "d", "text": "key prop làm components re-render ngay lập tức" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.memo so sánh props. Nếu swap hai siblings, React.memo thấy props khác nhau và re-renders cả hai. Key là reconciliation signal hoạt động ở level khác với memo."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "'Batched updates' behavior được giới thiệu trong React 18 là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React 18 tự động batch tất cả state updates — dù trong event handlers, promises, setTimeout, hay native event callbacks — vào một re-render thay vì nhiều re-renders riêng biệt" },
+        { "id": "b", "text": "Batching là kỹ thuật group CSS style updates trước khi apply vào DOM" },
+        { "id": "c", "text": "Batching chỉ có sẵn trong React 17 cho class components" },
+        { "id": "d", "text": "Batching là optimization thủ công yêu cầu useMemo để activate" }
+      ],
+      "correctKey": "a",
+      "explanation": "Before React 18, chỉ updates trong event handlers được batched. Updates trong setTimeout, promises, native events KHÔNG batched. React 18 batches ALL updates cải thiện performance."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Tại sao dùng array index làm `key` có thể gây rendering bugs?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Vì array index thay đổi khi list được reorder, gây React match DOM nodes sai với data items — leading to stale state in form inputs, sai animations, hoặc reordered content" },
+        { "id": "b", "text": "Vì array index không hợp lệ như một prop trong TypeScript" },
+        { "id": "c", "text": "Vì array indices luôn 0-based và React không xử lý được 0 như một key" },
+        { "id": "d", "text": "Vì dùng index làm key gây TypeScript báo type error trong strict mode" }
+      ],
+      "correctKey": "a",
+      "explanation": "Khi reorder items keyed by index, React thấy item 0 'khác' từ item data trước. React destroys old DOM nodes và creates new, losing local state. Luôn dùng stable, unique ID."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "React.memo's default comparison là shallow comparison. Điều này có nghĩa gì cho function và object props?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Với function và object props, shallow comparison kiểm tra equality của reference — nên new function objects hoặc new object references mỗi render luôn được coi là 'khác', defeat React.memo trừ khi reference được stabilized với useCallback hoặc useMemo" },
+        { "id": "b", "text": "Shallow comparison deeply inspect nội dung objects và arrays để xác định equality" },
+        { "id": "c", "text": "Shallow comparison chỉ hoạt động với primitive types; object props luôn được coi là equal" },
+        { "id": "d", "text": "Shallow comparison chậm hơn deep comparison" }
+      ],
+      "correctKey": "a",
+      "explanation": "Shallow comparison so sánh primitives by value và objects/arrays/functions by reference. New `() => {}` arrow function luôn là new reference. Dùng useCallback/useMemo để ổn định references."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mối quan hệ giữa React's Fiber architecture và concurrent rendering là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Fiber (React 16) làm rendering interruptible bằng cách chia work thành các work units (Fiber nodes); concurrent features (React 18) tận dụng Fiber để pause, prioritize, và resume work — enabling Suspense, useTransition, và automatic batching" },
+        { "id": "b", "text": "Fiber và concurrent rendering là cùng một thứ — chỉ khác tên gọi" },
+        { "id": "c", "text": "Fiber thay thế hoàn toàn Virtual DOM; concurrent rendering là một optimization layer riêng biệt" },
+        { "id": "d", "text": "Fiber đã bị loại bỏ trong React 18 và được thay bằng concurrent mode" }
+      ],
+      "correctKey": "a",
+      "explanation": "Fiber là rewrite internal của React 16 — thay call-stack-based reconciliation bằng linked tree of Fiber nodes có thể pause và resume. Concurrent rendering (React 18) dùng Fiber's interruptibility để schedule work theo priority."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "React.memo so sánh props dùng Object.is. Ý nghĩa thực tiễn cho props là arrays được tạo inline là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Inline arrays như `[1, 2, 3]` luôn là new references mỗi render — Object.is thấy chúng khác nhau, gây React.memo re-render child ngay cả khi data logically same — fix với useMemo ở parent" },
+        { "id": "b", "text": "Object.is deeply compares array contents, nên inline arrays luôn được coi là equal" },
+        { "id": "c", "text": "Inline arrays tự động được memoized bởi React và không gây re-renders" },
+        { "id": "d", "text": "Inline arrays không thể dùng như props trong React.memo" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.is so sánh references cho objects/arrays/functions. `const items = [1,2,3]` created inline tạo different reference mỗi render. Dùng useMemo: `const items = useMemo(() => [1,2,3], [])`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa `React.lazy` và eager loading là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.lazy dùng dynamic import (code splitting) để load component chỉ khi được render lần đầu — giảm initial bundle size; eager loading load mọi thứ upfront" },
+        { "id": "b", "text": "React.lazy preload tất cả components trước khi app bắt đầu; eager loading là lazy" },
+        { "id": "c", "text": "React.lazy chỉ hoạt động với class components" },
+        { "id": "d", "text": "React.lazy và eager loading tạo identical bundle sizes" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.lazy(() => import('./HeavyComponent')) — Webpack tạo separate chunk chỉ fetched khi component first renders. Giảm initial JavaScript bundle, cải thiện Time to Interactive."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Trong React 18 concurrent rendering, output của component tree này là gì?\n\nfunction App() {\n  return (\n    <React.Suspense fallback={<Spinner />}>\n      <Dashboard />\n    </React.Suspense>\n  );\n}\n\nfunction Dashboard() {\n  const user = useSuspenseQuery({ queryKey: ['user'], queryFn: fetchUser });\n  return <div>{user.name}</div>;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Spinner renders trong khi user query đang pending; khi resolved, Dashboard lên và Spinner được unmounted" },
+        { "id": "b", "text": "Dashboard renders ngay; Spinner bị ignore" },
+        { "id": "c", "text": "TypeScript error vì useSuspenseQuery không phải valid React hook" },
+        { "id": "d", "text": "Một infinite loading loop vì Suspense không handle query errors" }
+      ],
+      "correctKey": "a",
+      "explanation": "Suspense boundary catches thrown promise. Trong khi promise pending, React renders fallback (Spinner). Khi promise resolves, React re-renders và hiển thị Dashboard. Declarative async pattern."
+    }
+  ]
+}

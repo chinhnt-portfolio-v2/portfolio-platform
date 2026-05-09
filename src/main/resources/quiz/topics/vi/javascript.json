@@ -1,0 +1,668 @@
+{
+  "topicSlug": "javascript",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nconsole.log(x);\nvar x = 5;\nconsole.log(y);\nlet y = 10;",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "undefined rồi 5" },
+        { "id": "b", "text": "undefined rồi ReferenceError: Cannot access 'y' before initialization" },
+        { "id": "c", "text": "ReferenceError: Cannot access 'x' before initialization cho cả hai dòng" },
+        { "id": "d", "text": "5 rồi undefined" }
+      ],
+      "correctKey": "b",
+      "explanation": "`var` được hoisted lên đầu function/script scope và được initialized với `undefined` — nên `x` log ra undefined (không phải ReferenceError). `let` cũng được hoisted nhưng NOT initialized (temporal dead zone) — truy cập nó trước dòng khai báo throw ReferenceError. Đây là sự khác biệt chính: var được hoisted+initialized (an toàn), let/const được hoisted nhưng uninitialized (không an toàn truy cập trước khi khai báo)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `==` và `===` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "=== so sánh chỉ value; == so sánh cả value và type" },
+        { "id": "b", "text": "== thực hiện type coercion trước khi so sánh values; === so sánh cả value và type mà không có coercion" },
+        { "id": "c", "text": "== được dùng cho numbers; === được dùng cho strings" },
+        { "id": "d", "text": "Không có sự khác biệt chức năng — === chỉ là cú pháp ngắn hơn cho ==" }
+      ],
+      "correctKey": "b",
+      "explanation": "== (loose equality) coerces operands sang một type chung trước khi so sánh: `1 == '1'` là true, `0 == false` là true. === (strict equality) so sánh cả value và type mà không có coercion. Type coercion trong == dẫn đến các kết quả đáng ngạc nhiên — `'' == false` là true, `' ' == 0` là true — làm === trở thành lựa chọn an toàn mặc định."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Array method nào trả về một array mới với các elements được transform bởi một callback, mà không sửa đổi array gốc?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "array.forEach(fn) — gọi fn trên mỗi element và trả về undefined" },
+        { "id": "b", "text": "array.map(fn) — trả về một array mới với mỗi element được transform bởi fn" },
+        { "id": "c", "text": "array.reduce(fn, acc) — reduce array thành một giá trị accumulated nhưng sửa đổi array gốc" },
+        { "id": "d", "text": "array.filter(fn) — remove elements khỏi array gốc tại chỗ" }
+      ],
+      "correctKey": "b",
+      "explanation": "map() tạo và trả về một array mới cùng độ dài, với mỗi element được transform bởi callback — array gốc không bị chạm. forEach() (A) trả về undefined và được dùng cho side effects. reduce() (C) tích lũy thành một giá trị duy nhất. filter() (D) trả về một array mới; nó không transform elements — đó là job của map."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Giá trị nào KHÔNG phải là falsy value trong JavaScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0" },
+        { "id": "b", "text": "null" },
+        { "id": "c", "text": "'false'" },
+        { "id": "d", "text": "undefined" }
+      ],
+      "correctKey": "c",
+      "explanation": "Danh sách đầy đủ các falsy values: false, 0, -0, 0n, '', \"\", ``, null, undefined, NaN, và document.all. String 'false' (một non-empty string, dù chứa từ 'false') là truthy — đó là string 'false', không phải boolean false. Các phương án A, B, và D đều nằm trong danh sách falsy. Phương án C là giá trị truthy duy nhất."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Toán tử `typeof` trả về giá trị gì cho `null`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "\"null\"" },
+        { "id": "b", "text": "\"undefined\"" },
+        { "id": "c", "text": "\"object\"" },
+        { "id": "d", "text": "\"boolean\"" }
+      ],
+      "correctKey": "c",
+      "explanation": "typeof null trả về 'object' — đây là một legacy bug trong JavaScript từ phiên bản đầu tiên và chưa bao giờ được sửa để tương thích ngược. null là một primitive value, không phải object. Để kiểm tra null một cách đáng tin cậy, dùng `value === null`. typeof 'object' cho null là một trong những gotchas nổi tiếng nhất của JS."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả là gì?\n\nconsole.log(typeof []);\nconsole.log(Array.isArray([]));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "\"array\" rồi true" },
+        { "id": "b", "text": "\"object\" rồi true" },
+        { "id": "c", "text": "\"object\" rồi false" },
+        { "id": "d", "text": "\"array\" rồi false" }
+      ],
+      "correctKey": "b",
+      "explanation": "typeof [] trả về 'object' vì arrays là objects trong JavaScript (chúng inherit từ Object.prototype). Array.isArray([]) là cách đáng tin cậy để kiểm tra nếu một giá trị là array — nó trả về true cho bất kỳ array nào. Không bao giờ dùng typeof để kiểm tra arrays."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Từ khóa nào khai báo một biến block-scoped mà không thể được gán lại sau khi khởi tạo?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "var" },
+        { "id": "b", "text": "const" },
+        { "id": "c", "text": "let" },
+        { "id": "d", "text": "static" }
+      ],
+      "correctKey": "b",
+      "explanation": "const khai báo một block-scoped binding không thể được gán lại. Tuy nhiên, nếu giá trị là một object hoặc array, binding là cố định nhưng nội dung vẫn mutable. let là block-scoped nhưng có thể gán lại. var là function-scoped."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`NaN === NaN` đánh giá thành giá trị gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true" },
+        { "id": "b", "text": "false" },
+        { "id": "c", "text": "NaN" },
+        { "id": "d", "text": "Throws a ReferenceError" }
+      ],
+      "correctKey": "b",
+      "explanation": "NaN === NaN là false — NaN là giá trị JavaScript duy nhất không bằng chính nó. Điều này là vì NaN đại diện cho một kết quả không xác định từ phép toán số, và hai kết quả không xác định không được coi là bằng nhau. Dùng Number.isNaN(NaN) hoặc Object.is(NaN, NaN) để kiểm tra NaN một cách đáng tin cậy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Method nào thêm một hoặc nhiều elements vào CUỐI của một array?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "unshift()" },
+        { "id": "b", "text": "push()" },
+        { "id": "c", "text": "pop()" },
+        { "id": "d", "text": "shift()" }
+      ],
+      "correctKey": "b",
+      "explanation": "push() thêm elements vào cuối array và trả về new length. unshift() thêm vào đầu. pop() remove khỏi cuối. shift() remove khỏi đầu. Nhớ: push/pop = CUỐI (như một stack), unshift/shift = ĐẦU."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả là gì?\n\nconst a = [1, 2, 3];\nconst b = a;\nb.push(4);\nconsole.log(a);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[1, 2, 3]" },
+        { "id": "b", "text": "[1, 2, 3, 4]" },
+        { "id": "c", "text": "ReferenceError: Cannot assign to constant variable" },
+        { "id": "d", "text": "[4]" }
+      ],
+      "correctKey": "b",
+      "explanation": "Objects (bao gồm arrays) được assign by reference trong JavaScript. const b = a copies the reference — cả a và b đều trỏ đến CÙNG array object. Modifying object qua b (push) mutate shared object, nên a cũng thấy thay đổi. Dùng spread [...a] hoặc Array.from(a) để tạo shallow copy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Phát biểu nào về arrow functions là đúng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Arrow functions có `this` binding riêng, giống như regular functions" },
+        { "id": "b", "text": "Arrow functions không thể được dùng như methods bên trong objects vì chúng không bind `this` riêng" },
+        { "id": "c", "text": "Arrow functions được hoisted giống như regular functions" },
+        { "id": "d", "text": "Arrow functions phải luôn có một return statement" }
+      ],
+      "correctKey": "b",
+      "explanation": "Arrow functions không có `this` riêng — chúng inherit `this` từ enclosing scope. Điều này làm chúng không phù hợp như object methods (nơi bạn cần `this` refer đến object). Chúng KHÔNG được hoisted (không như function declarations). Chúng không có arguments object riêng. Single-expression arrow functions có implicit return."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả là gì?\n\nconsole.log('5' + 3);\nconsole.log('5' - 3);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "\"53\" rồi 2" },
+        { "id": "b", "text": "8 rồi 8" },
+        { "id": "c", "text": "\"53\" rồi \"53\"" },
+        { "id": "d", "text": "8 rồi 2" }
+      ],
+      "correctKey": "a",
+      "explanation": "Toán tử + trigger string concatenation nếu một operand là string: '5' + 3 → '53'. Toán tử - trigger numeric coercion: '5' - 3 → 2 (cả hai operands được convert sang numbers). Đây là một type coercion gotcha kinh điển."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Method nào được dùng để attach một event listener trong JavaScript hiện đại?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "element.onclick = handler" },
+        { "id": "b", "text": "element.addEventListener('click', handler)" },
+        { "id": "c", "text": "element.attachEvent('click', handler)" },
+        { "id": "d", "text": "element.listen('click', handler)" }
+      ],
+      "correctKey": "b",
+      "explanation": "addEventListener() là tiêu chuẩn hiện đại để attach event handlers. Nó cho phép nhiều handlers cho cùng event, hỗ trợ event phases (capture/bubble), và có thể dùng options object cho passive listeners. onclick = handler (A) thay thế bất kỳ existing handler nào. attachEvent (C) là IE-only và đã deprecated."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả là gì?\n\nconsole.log(Boolean(' '));\nconsole.log(Boolean(''));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true rồi true" },
+        { "id": "b", "text": "false rồi false" },
+        { "id": "c", "text": "true rồi false" },
+        { "id": "d", "text": "false rồi true" }
+      ],
+      "correctKey": "c",
+      "explanation": "Một non-empty string (thậm chí một dấu cách ' ') là truthy, nên Boolean(' ') là true. Một empty string '' là falsy. Sự phân biệt này quan trọng khi kiểm tra user input."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`document.getElementById('app')` trả về gì nếu không có element với ID đó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "null" },
+        { "id": "b", "text": "undefined" },
+        { "id": "c", "text": "Một empty HTMLCollection" },
+        { "id": "d", "text": "Throws a DOMException" }
+      ],
+      "correctKey": "a",
+      "explanation": "getElementById trả về null khi không tìm thấy matching element — nó không bao giờ trả về undefined hoặc một empty collection. Luôn guard against null."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Cách nào là hợp lệ để tạo một array?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "const a = []" },
+        { "id": "b", "text": "const b = new Array(5) — tạo một array có độ dài 5 với empty slots" },
+        { "id": "c", "text": "const c = Array.from({ length: 3 }, (_, i) => i)" },
+        { "id": "d", "text": "const d = Array.of(1, 2, 3)" }
+      ],
+      "correctKey": "a,b,c,d",
+      "explanation": "Tất cả đều hợp lệ. [] là array literal syntax. new Array(5) tạo một sparse array có độ dài 5 (empty slots). Array.from() tạo array từ một iterable. Array.of() tạo array từ các arguments của nó."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Array method nào bạn sẽ dùng để giữ lại chỉ các items có price lớn hơn 100?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "array.find(fn)" },
+        { "id": "b", "text": "array.some(fn)" },
+        { "id": "c", "text": "array.filter(fn)" },
+        { "id": "d", "text": "array.every(fn)" }
+      ],
+      "correctKey": "c",
+      "explanation": "filter() trả về một array mới chỉ chứa elements mà callback trả về true. find() trả về FIRST matching element. some() trả về true nếu ANY element matches. every() trả về true nếu ALL elements match."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Closure trong JavaScript là gì, và khi nào nó được tạo?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một closure là một function nhớ lexical scope của nó ngay cả khi được thực thi bên ngoài scope đó — được tạo mỗi khi một function được định nghĩa" },
+        { "id": "b", "text": "Một closure là một function trả về một function khác — chỉ được tạo khi bạn lồng functions một cách rõ ràng" },
+        { "id": "c", "text": "Closures chỉ được tạo trong arrow functions vì chúng không có `this` binding riêng" },
+        { "id": "d", "text": "Một closure là JavaScript's module pattern — nó yêu cầu cú pháp IIFE" }
+      ],
+      "correctKey": "a",
+      "explanation": "Một closure là sự kết hợp của một function và lexical environment của nó (các biến in scope khi function được định nghĩa). Mọi function trong JavaScript đều tạo một closure over surrounding scope — đây là một tính năng ngôn ngữ cơ bản, không phải một special pattern."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thứ tự thực thi đúng cho đoạn code sau là gì?\n\nsetTimeout(() => console.log('A'), 0);\nPromise.resolve().then(() => console.log('B'));\nconsole.log('C');",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A, B, C" },
+        { "id": "b", "text": "C, B, A" },
+        { "id": "c", "text": "C, A, B" },
+        { "id": "d", "text": "B, C, A" }
+      ],
+      "correctKey": "b",
+      "explanation": "Synchronous code chạy trước. Sau đó event loop chọn microtasks (Promises) trước macrotasks (setTimeout). Thứ tự: C (sync) → B (microtask) → A (macrotask). Đây là microtask vs macrotask queue ordering."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Prototype chain hoạt động như thế nào cho property lookup?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JavaScript tìm property trên chính object đó; nếu không tìm thấy, nó follow [[Prototype]] links lên đến Object.prototype, dừng khi tìm thấy hoặc trả về undefined" },
+        { "id": "b", "text": "JavaScript luôn tìm trên Object.prototype trước, sau đó mới đến own properties của object" },
+        { "id": "c", "text": "Prototype chain là static — nó được xác định tại compile time và không thể thay đổi tại runtime" },
+        { "id": "d", "text": "Prototype lookups là shallow — chúng chỉ kiểm tra một cấp trước khi trả về undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "JavaScript dùng prototypal inheritance. Property lookup bắt đầu trên chính object (own properties). Nếu không tìm thấy, nó follow [[Prototype]] đến prototype object, và tiếp tục recursively cho đến khi property được tìm thấy hoặc null được reached. Chain này là dynamic — bạn có thể mutate nó tại runtime qua Object.setPrototypeOf()."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 100);\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0, 1, 2" },
+        { "id": "b", "text": "3, 3, 3" },
+        { "id": "c", "text": "undefined, undefined, undefined" },
+        { "id": "d", "text": "0, 1, 2, rồi 3" }
+      ],
+      "correctKey": "b",
+      "explanation": "Dùng var (function-scoped), ba setTimeout callbacks đều close over CÙNG `i` variable. Khi callbacks chạy (sau 100ms), for loop đã hoàn thành và `i` là 3. Tất cả ba callbacks đều log 3. Fix: dùng `let` (block-scoped) trong loop."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Từ khóa `this` tham chiếu đến đối tượng nào bên trong một regular (non-arrow) function được dùng như một event handler?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Global window object trong tất cả các trường hợp" },
+        { "id": "b", "text": "DOM element đã dispatch event đó" },
+        { "id": "c", "text": "Function's lexical `this` từ enclosing scope" },
+        { "id": "d", "text": "undefined trong strict mode" }
+      ],
+      "correctKey": "b",
+      "explanation": "Khi một regular function được dùng như event handler (attached via addEventListener), `this` bên trong handler tham chiếu đến DOM element đã fire event đó. Arrow functions không rebind `this`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Phát biểu nào mô tả đúng về các methods `call`, `apply`, và `bind`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "call và apply invoke function ngay lập tức với một `this` được chỉ định; bind trả về một function mới với `this` đã bound nhưng không invoke nó" },
+        { "id": "b", "text": "call và bind invoke function ngay lập tức; apply trả về một function mới" },
+        { "id": "c", "text": "Cả ba methods đều giống nhau — chúng chỉ khác nhau ở style syntax" },
+        { "id": "d", "text": "bind được dùng để invoke ngay lập tức với một `this` được chỉ định; call và apply trả về một function mới" }
+      ],
+      "correctKey": "a",
+      "explanation": "call() invoke một function ngay lập tức với một `this` được chỉ định và các arguments riêng lẻ. apply() làm tương tự nhưng nhận arguments như một array. bind() trả về MỘT function mới với `this` permanently bound."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nconst obj = { a: 1 };\nconst handler = {\n  get(target, prop) {\n    return prop in target ? target[prop] : 42;\n  }\n};\nconst proxy = new Proxy(obj, handler);\nconsole.log(proxy.a, proxy.b);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1 rồi 42" },
+        { "id": "b", "text": "1 rồi undefined" },
+        { "id": "c", "text": "undefined rồi 42" },
+        { "id": "d", "text": "42 rồi 42" }
+      ],
+      "correctKey": "a",
+      "explanation": "Một Proxy wrap một target object và intercept các operations qua handler traps. Get trap được gọi khi truy cập properties. Ở đây, cho 'a' nó trả về target.a (1); cho 'b' (không có trong target) nó trả về 42. Proxy cho phép metaprogramming mạnh mẽ."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Phát biểu nào về `async/await` là đúng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "async/await thay thế Promises — chúng là các execution models hoàn toàn khác nhau" },
+        { "id": "b", "text": "async/await cho phép viết asynchronous code theo style đồng bộ; `await` tạm dừng execution trong async function cho đến khi Promise resolves" },
+        { "id": "c", "text": "Một async function luôn trả về giá trị một cách đồng bộ" },
+        { "id": "d", "text": "`await` có thể được dùng bên ngoài một async function" }
+      ],
+      "correctKey": "b",
+      "explanation": "async/await là syntactic sugar over Promises — một async function tự động trả về một Promise. await tạm dừng async function's execution cho đến khi awaited Promise settles, rồi resumes. await phải ở bên trong một async function."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nconsole.log([...[1, 2], ...[3, 4]]);\nconsole.log([...[1, 2], 5]);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[1, 2, 3, 4] rồi [1, 2, 5]" },
+        { "id": "b", "text": "[[1, 2], [3, 4]] rồi [[1, 2], 5]" },
+        { "id": "c", "text": "SyntaxError rồi [1, 2, 5]" },
+        { "id": "d", "text": "[1, 2, 3, 4] rồi [[1, 2, 5]]" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spread operator ... unpack một iterable thành các elements riêng lẻ. `[...[1,2], ...[3,4]]` spreads cả hai arrays, tạo [1,2,3,4]. Spread trong array literals thực hiện concatenation (shallow, không deep)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`Object.freeze()` ngăn chặn điều gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó ngăn chặn bất kỳ modifications nào trên object và nested objects của nó" },
+        { "id": "b", "text": "Nó ngăn chặn thêm, xóa, hoặc sửa đổi existing properties của object ở first level — nhưng nested objects vẫn có thể được sửa đổi" },
+        { "id": "c", "text": "Nó xóa tất cả properties khỏi object" },
+        { "id": "d", "text": "Nó ngăn object bị garbage collected" }
+      ],
+      "correctKey": "b",
+      "explanation": "Object.freeze() là shallow — nó ngăn chặn modifications trên own properties của object nhưng nested objects vẫn mutable. Để deeply freeze, phải recursively traverse và freeze từng nested object."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Phát biểu nào về Promise.all() là đúng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Promise.all() chạy tất cả promises song song và resolves khi TẤT CẢ đã resolved thành công, hoặc rejects ngay khi BẤT KỲ một nào rejects" },
+        { "id": "b", "text": "Promise.all() chạy promises tuần tự, theo thứ tự chúng được truyền" },
+        { "id": "c", "text": "Promise.all() luôn resolves, ngay cả khi một số promises reject" },
+        { "id": "d", "text": "Promise.allSettled() nhanh hơn Promise.all() vì nó không đợi tất cả promises" }
+      ],
+      "correctKey": "a",
+      "explanation": "Promise.all() nhận một array của promises và trả về một promise mới resolve với array của results khi tất cả input promises resolve — hoặc reject ngay upon the first rejection (fail-fast). Promise.allSettled() đợi tất cả promises settle trước khi resolve."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Array method nào phù hợp nhất để tính một giá trị summary duy nhất (ví dụ: sum) từ một array?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "array.find(fn)" },
+        { "id": "b", "text": "array.map(fn)" },
+        { "id": "c", "text": "array.reduce(fn, initialValue)" },
+        { "id": "d", "text": "array.flatMap(fn)" }
+      ],
+      "correctKey": "c",
+      "explanation": "reduce() apply một callback với một accumulator và mỗi element, trả về một giá trị duy nhất (sum, max, count, group, v.v.). Luôn cung cấp một initial value. map() trả về một array cùng độ dài."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đoạn code này output gì?\n\nlet x = 10;\nfunction outer() {\n  let x = 20;\n  function inner() {\n    console.log(x);\n  }\n  return inner;\n}\nconst fn = outer();\nfn();",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "10" },
+        { "id": "b", "text": "20" },
+        { "id": "c", "text": "undefined" },
+        { "id": "d", "text": "ReferenceError: x is not defined" }
+      ],
+      "correctKey": "b",
+      "explanation": "inner() là một closure capture biến `x` từ lexical scope của nó — cụ thể từ `outer()`, không phải global scope. Đây là lexical scoping: variable lookup xảy ra dựa trên nơi function được định nghĩa, không phải nơi nó được gọi."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nconst p = new Promise((resolve, reject) => {\n  reject(new Error('oops'));\n  resolve('ok');\n});\np.catch(e => console.log(e.message));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "'ok'" },
+        { "id": "b", "text": "'oops'" },
+        { "id": "c", "text": "Cả 'ok' và 'oops'" },
+        { "id": "d", "text": "Không có — một unhandled rejection error được throw" }
+      ],
+      "correctKey": "b",
+      "explanation": "Một Promise executor chạy đồng bộ. reject() được gọi trước (queuing a rejection), sau đó resolve() được gọi. Tuy nhiên, một khi Promise đã settled, state của nó là immutable — gọi resolve() sau reject() không có tác dụng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Vấn đề tiềm ẩn với closures bên trong loops dùng `var` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "var là block-scoped, nên mỗi loop iteration tạo một new variable binding — closures capture các giá trị khác nhau mỗi iteration" },
+        { "id": "b", "text": "var là function-scoped — tất cả closures trong loop share cùng `var` variable, giữ giá trị cuối cùng của loop khi callbacks thực thi" },
+        { "id": "c", "text": "Closures không thể được tạo bên trong loops — JavaScript throws SyntaxError" },
+        { "id": "d", "text": "var hoists variable nhưng closures ignore hoisted variables" }
+      ],
+      "correctKey": "b",
+      "explanation": "Vì `var` là function-scoped, một `i` duy nhất được share qua tất cả iterations. Khi callbacks thực thi, chúng đều reference cùng `i`, giữ final value. Fix: thay `var` bằng `let` (block-scoped)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Tính năng nào của ES6 modules (ESM) là đúng?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "ESM chạy ở strict mode theo mặc định" },
+        { "id": "b", "text": "ESM được phân tích tĩnh — imports được resolve tại load time, trước khi bất kỳ code nào thực thi, cho phép tree-shaking" },
+        { "id": "c", "text": "ESM imports là live bindings đến exported value — re-exporting một giá trị reflect updates được thực hiện bởi các modules khác" },
+        { "id": "d", "text": "ESM và CommonJS (require/module.exports) hoàn toàn interchangeable tại runtime" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "ESM strict by default. ESM statically analyzable. ESM exports là live bindings. Phương án D sai — ESM và CommonJS là các module systems khác nhau."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đoạn code này log gì?\n\nconst arr = [3, 1, 2];\narr.sort();\nconsole.log(arr);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[1, 2, 3]" },
+        { "id": "b", "text": "[3, 1, 2]" },
+        { "id": "c", "text": "[1, 2, 3] — các elements được coerce thành strings và sorted lexicographically" },
+        { "id": "d", "text": "TypeError: sort yêu cầu một comparator function cho numbers" }
+      ],
+      "correctKey": "c",
+      "explanation": "Array.sort() không có comparator convert elements thành strings và sort lexicographically. Để numeric sorting, dùng `arr.sort((a, b) => a - b)`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nconst obj = { x: 1, y: 2 };\nconst { x, ...rest } = obj;\nconsole.log(x, rest);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1 rồi { x: 1, y: 2 }" },
+        { "id": "b", "text": "1 rồi { y: 2 }" },
+        { "id": "c", "text": "1 rồi { x: 1 }" },
+        { "id": "d", "text": "TypeError: rest element phải đứng cuối trong destructuring" }
+      ],
+      "correctKey": "b",
+      "explanation": "Object destructuring với rest pattern (`...rest`) collect tất cả remaining properties không được đặt tên rõ ràng. Ở đây, `x` được destructured là 1, và `rest` collect những thứ còn lại: { y: 2 }."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Phát biểu nào về `null` và `undefined` là đúng?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "null đại diện cho sự vắng mặt có chủ đích của một giá trị — thường được set rõ ràng bởi developer" },
+        { "id": "b", "text": "undefined đại diện cho một giá trị chưa được khởi tạo hoặc thiếu — ngôn ngữ gán nó khi một biến được khai báo nhưng không được gán" },
+        { "id": "c", "text": "null == undefined là true (loose equality), nhưng null === undefined là false (strict equality)" },
+        { "id": "d", "text": "typeof null === 'object' là true, trong khi typeof undefined === 'undefined' cũng là true" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Phương án C sai: null === undefined cũng là false — strict equality kiểm tra type, và null và undefined là các types khác nhau. null == undefined là true (loose equality coi chúng tương đương như các absent values)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Vai trò của Event Loop trong concurrency model của JavaScript, và nó tương tác với microtasks và macrotasks như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Event Loop liên tục kiểm tra call stack; khi rỗng, nó drain TẤT CẢ queues (microtasks và macrotasks) trong một tick trước khi quay lại call stack" },
+        { "id": "b", "text": "Event Loop kiểm tra call stack; khi rỗng, nó drain tất cả microtasks, sau đó lấy một macrotask, rồi lặp lại — microtasks được xử lý trước bất kỳ macrotask mới nào" },
+        { "id": "c", "text": "Microtasks và macrotasks được xử lý song song bởi Web APIs thread pool" },
+        { "id": "d", "text": "Event Loop ưu tiên macrotasks vì chúng đại diện cho user interactions, không phải Promise callbacks" }
+      ],
+      "correctKey": "b",
+      "explanation": "Sau khi call stack rỗng, Event Loop drain microtask queue hoàn toàn trước khi pick MỘT macrotask. Đây là lý do một Promise chain có thể starve một setTimeout."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "`Symbol.iterator` cho phép điều gì trên một object, và nó liên quan đến iterator protocol như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Symbol.iterator đánh dấu một object là iterable bởi for...of loops và spread operators; nó phải trả về một iterator object với method next()" },
+        { "id": "b", "text": "Symbol.iterator là một unique identifier ngăn object property name collisions — nó không có quan hệ với iteration protocols" },
+        { "id": "c", "text": "Symbol.iterator tự động làm một object iterable trong JSON serialization" },
+        { "id": "d", "text": "Chỉ built-in JavaScript objects (Array, Map, Set) có thể có Symbol.iterator — user objects không thể implement iterator protocol" }
+      ],
+      "correctKey": "a",
+      "explanation": "Symbol.iterator là một well-known symbol khi được định nghĩa trên một object làm nó trở thành Iterable. Iterator protocol yêu cầu method trả về một iterator object với next() trả về {value, done} objects."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Web Worker là gì và khi nào bạn nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một Web Worker là một background thread cho CPU-intensive computation không thể trực tiếp manipulate DOM — dùng nó cho heavy data processing để giữ main thread responsive" },
+        { "id": "b", "text": "Web Workers thay thế main thread cho tất cả JavaScript execution trong modern SPAs" },
+        { "id": "c", "text": "Web Workers chạy trong cùng thread như event loop, chia sẻ memory với main context qua một shared buffer" },
+        { "id": "d", "text": "Web Workers được yêu cầu cho bất kỳ async operation nào như fetch() hoặc setTimeout()" }
+      ],
+      "correctKey": "a",
+      "explanation": "Web Workers chạy trong một isolated background thread với event loop riêng và không có DOM access — chúng giao tiếp với main thread qua postMessage. Chúng lý tưởng cho heavy computation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Điều nào có thể gây memory leaks trong JavaScript applications?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Accidental global variables được tạo ra bằng cách omit var/let/const (ví dụ: gán cho một biến chưa được khai báo trong non-strict mode)" },
+        { "id": "b", "text": "Detached DOM nodes — một DOM tree node được remove khỏi page nhưng một JavaScript reference đến nó vẫn tồn tại, ngăn garbage collection" },
+        { "id": "c", "text": "Closures capture large objects và giữ chúng alive beyond their useful scope, đặc biệt trong event handlers hoặc callbacks" },
+        { "id": "d", "text": "Tạo và discard nhiều temporary objects trong một tight loop mà không reuse chúng" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Phương án D nói chung KHÔNG phải là một leak — modern generational GCs xử lý transient allocations hiệu quả. Phương án A, B, C là các leak patterns được biết đến rộng rãi."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Phát biểu nào về generator functions là đúng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một generator function tạm dừng execution tại mỗi `yield` và resume từ điểm đó khi .next() được gọi — nó duy trì state của nó qua các invocations" },
+        { "id": "b", "text": "Generator functions thực thi đến completion giống như regular functions — yield chỉ là một return value marker" },
+        { "id": "c", "text": "Generators là instances của Array constructor và có thể được indexed giống như arrays" },
+        { "id": "d", "text": "Generator functions không thể được dùng với for...of loops" }
+      ],
+      "correctKey": "a",
+      "explanation": "Một generator function (được khai báo với `function*`) trả về một Generator object. Mỗi lần gọi .next() resume execution từ last yield. Generators là iterables."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đoạn code này output gì?\n\nasync function fetchData() {\n  console.log('1');\n  await Promise.resolve();\n  console.log('2');\n  await new Promise(r => setTimeout(r, 0));\n  console.log('3');\n}\nfetchData();\nconsole.log('4');",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1, 2, 3, 4" },
+        { "id": "b", "text": "1, 4, 2, 3" },
+        { "id": "c", "text": "1, 4, 3, 2" },
+        { "id": "d", "text": "4, 1, 2, 3" }
+      ],
+      "correctKey": "b",
+      "explanation": "Thứ tự: 1 (sync in async fn) → 4 (sync, outside) → 2 (microtask resume) → 3 (macrotask resume)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mục đích của `queueMicrotask()` và khi nào bạn nên ưu tiên nó hơn `setTimeout(fn, 0)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "queueMicrotask schedule work TRƯỚC rendering update tiếp theo nhưng SAU synchronous code hiện tại và microtasks kết thúc — dùng nó cho scheduling work không được gây layout thrashing hoặc macrotask delays không cần thiết" },
+        { "id": "b", "text": "queueMicrotask và setTimeout(fn, 0) về chức năng giống hệt nhau — dùng cái nào cũng được" },
+        { "id": "c", "text": "queueMicrotask luôn chạy trước khi call stack hiện tại rỗng" },
+        { "id": "d", "text": "setTimeout(fn, 0) có priority cao hơn queueMicrotask" }
+      ],
+      "correctKey": "a",
+      "explanation": "queueMicrotask queues một callback trong microtask queue. Nó chạy sau synchronous code và tất cả microtasks hiện có, nhưng trước macrotask tiếp theo. setTimeout(fn, 0) là macrotask — nó luôn yield cho rendering."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa WeakMap và Map trong JavaScript là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "WeakMap chỉ cho phép objects làm keys và tự động remove entries khi các objects đó không còn references khác ở ngoài — cho phép memory-safe, key-specific cleanup" },
+        { "id": "b", "text": "WeakMap giống hệt Map nhưng dùng một hash function yếu hơn cho security" },
+        { "id": "c", "text": "Map cho phép bất kỳ giá trị nào làm key, trong khi WeakMap chỉ cho phép non-object keys (primitives)" },
+        { "id": "d", "text": "WeakMap entries không bao giờ được garbage collected bất kể references" }
+      ],
+      "correctKey": "a",
+      "explanation": "WeakMap là một Map-like structure trong đó: (1) keys PHẢI là objects, (2) nếu object dùng làm key không có references khác, nó AND its value eligible for GC. Ideal để associate metadata với objects."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\nconsole.log(0.1 + 0.2 === 0.3);\nconsole.log((0.1 + 0.2).toFixed(2));\nconsole.log(Number.EPSILON);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true, '0.30', 2.220446049250313e-16" },
+        { "id": "b", "text": "false, '0.30', 2.220446049250313e-16" },
+        { "id": "c", "text": "false, '0.3', 1e-15" },
+        { "id": "d", "text": "true, '0.3', 2.220446049250313e-16" }
+      ],
+      "correctKey": "b",
+      "explanation": "0.1 + 0.2 === 0.3 là false vì IEEE 754 double-precision floating point representation. Number.EPSILON là smallest representable difference giữa hai IEEE 754 doubles (~2.22e-16). toFixed(2) tạo '0.30'."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt chính giữa `Object.create()` và class syntax cho inheritance là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Object.create() tạo một direct prototypal link không có classes — nguyên thủy hơn và rõ ràng hơn class syntax, class syntax desugars thành cùng prototype chain" },
+        { "id": "b", "text": "class syntax là purely syntactic sugar và compile thành code giống hệt như Object.create() — không có runtime difference" },
+        { "id": "c", "text": "Object.create() nhanh hơn class syntax trong tất cả JavaScript engines" },
+        { "id": "d", "text": "class syntax hỗ trợ nhiều prototype chains trong khi Object.create() thì không" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.create(proto) set prototype của một object mới trong một call — nó là direct, low-level prototypal inheritance primitive. ES6 class syntax là syntactic sugar: `class Foo extends Bar` compile thành constructor function + Object.setPrototypeOf(). Cả hai đều build prototype chains."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Phát biểu nào về JavaScript's garbage collection là đúng?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "JavaScript engines dùng generational (hoặc 'phân đời') collection — hầu hết objects chết young, nên young generations được collect thường xuyên hơn" },
+        { "id": "b", "text": "Objects được garbage collected khi không còn live references đến chúng — circular references giữa hai objects với không external references là collectable" },
+        { "id": "c", "text": "Setting một object reference thành null ngay lập tức frees memory của nó trước GC cycle tiếp theo" },
+        { "id": "d", "text": "WeakMap và WeakSet giữ weak references đến keys của chúng — values eligible for GC khi keys không còn được reference ở nơi khác" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Phương án C sai: nulling một reference không immediately free memory — nó chỉ làm object eligible for GC tại next collection cycle. Phương án A, B, D là đúng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\nconst arr = [1, [2, [3, [4]]]];\nconsole.log(arr.flat(2));\nconsole.log(arr.flat(Infinity));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[1, 2, [3, [4]]] rồi [1, 2, 3, 4]" },
+        { "id": "b", "text": "[1, 2, [3, [4]]] rồi [1, [2, [3, [4]]]]" },
+        { "id": "c", "text": "[1, 2, 3, [4]] rồi [1, 2, 3, 4]" },
+        { "id": "d", "text": "[1, 2, 3, 4] rồi [1, 2, 3, 4]" }
+      ],
+      "correctKey": "a",
+      "explanation": "flat(depth) flatten một array đến specified depth. flat(2): [1, [2, [3, [4]]]] → [1, 2, [3, [4]]]. flat(Infinity) flatten tất cả levels: [1, 2, 3, 4]."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\nconst [first, ...rest] = [1, 2, 3, 4];\nconsole.log(first, rest);\nfunction f(...args) {\n  console.log(args.length);\n}\nf(1, 2, 3);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1 rồi [2, 3, 4]; 3" },
+        { "id": "b", "text": "1 rồi 2; 4" },
+        { "id": "c", "text": "[1] rồi [2, 3, 4]; 3" },
+        { "id": "d", "text": "1 rồi [2, 3, 4]; 4" }
+      ],
+      "correctKey": "a",
+      "explanation": "Rest parameter trong destructuring `...rest` collect remaining elements thành một array. Ở đây, first=1 và rest=[2,3,4]. Trong function f(...args), args=[1,2,3], nên args.length=3."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\nconsole.log(2 ** 3 ** 2);\nconsole.log((2 ** 3) ** 2);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "64 rồi 64" },
+        { "id": "b", "text": "512 rồi 64" },
+        { "id": "c", "text": "64 rồi 512" },
+        { "id": "d", "text": "512 rồi 512" }
+      ],
+      "correctKey": "b",
+      "explanation": "Toán tử ** là right-associative: `2 ** 3 ** 2` là `2 ** (3 ** 2)` = 2 ** 9 = 512. `(2 ** 3) ** 2` = 8 ** 2 = 64. Watch out: `(-2) ** 2` là SyntaxError."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Phát biểu nào mô tả đúng về temporal dead zone (TDZ)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "TDZ là khoảng thời gian giữa entering block scope và executing declaration line — let/const variables tồn tại nhưng không thể được truy cập; bất kỳ reference nào throw ReferenceError" },
+        { "id": "b", "text": "TDZ chỉ áp dụng cho hoisted function declarations" },
+        { "id": "c", "text": "TDZ có nghĩa let/const variables không được hoisted at all" },
+        { "id": "d", "text": "TDZ chỉ ảnh hưởng đến các biến bên trong try/catch blocks" }
+      ],
+      "correctKey": "a",
+      "explanation": "let và const được hoisted giống như var, nhưng không giống var, chúng NOT initialized. Khoảng thời gian giữa start của block scope và actual execution của declaration là TDZ."
+    }
+  ]
+}

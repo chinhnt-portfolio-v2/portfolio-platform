@@ -1,0 +1,197 @@
+{
+  "topicSlug": "dsa-arrays",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian truy cập phần tử theo chỉ mục trong mảng là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — mảng cung cấp truy cập ngẫu nhiên O(1) qua phép tính offset chỉ mục" },
+        { "id": "b", "text": "O(n) — mảng phải quét tuần tự để đến chỉ mục" },
+        { "id": "c", "text": "O(log n) — tìm kiếm nhị phân được dùng để xác định chỉ mục" },
+        { "id": "d", "text": "O(n²) — cần truy cập chỉ mục lồng nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "Mảng lưu trữ phần tử trong các khối bộ nhớ liền kề. Tính địa chỉ của arr[i] là một phép toán: base_address + i * element_size. Phép tính địa chỉ trực tiếp này là O(1), đây là lý do mảng được gọi là cấu trúc dữ liệu 'random access'. Nhầm lẫn thường xảy ra khi nhầm giữa truy cập (O(1)) với tìm kiếm (O(n) cho chưa sắp xếp, O(log n) cho đã sắp xếp). Phương án B mô tả danh sách liên kết, không phải mảng."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Chèn vào giữa mảng có độ phức tạp O(n) nghĩa là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Các phần tử sau vị trí chèn phải được dịch sang phải một vị trí để tạo chỗ trống" },
+        { "id": "b", "text": "Toàn bộ mảng được copy sang vị trí bộ nhớ mới để chứa phần tử mới" },
+        { "id": "c", "text": "Hash của key xác định bucket chèn trong O(n)" },
+        { "id": "d", "text": "Chèn luôn là O(1); O(n) chỉ áp dụng cho xóa" }
+      ],
+      "correctKey": "a",
+      "explanation": "Chèn vào giữa mảng cần dịch chuyển tất cả phần tử sau vị trí chèn sang phải → O(n). Không có 'chỗ trống' tự nhiên trong mảng liền kề như danh sách liên kết. Đây là đánh đổi cơ bản: mảng có truy cập O(1) nhưng chèn/xóa O(n); danh sách liên kết có chèn/xóa O(1) ở vị trí đã biết nhưng truy cập O(n). Phương án B mô tả resize array, không phải chèn đơn lẻ."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mảng hai chiều (2D) được biểu diễn trong bộ nhớ như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Mỗi hàng được lưu trong một mảng riêng biệt, không liền kề nhau" },
+        { "id": "b", "text": "Một khối bộ nhớ liền kề duy nhất với các hàng được đặt end-to-end (row-major) hoặc cột theo cột (column-major)" },
+        { "id": "c", "text": "Mỗi phần tử có con trỏ đến hàng và cột tiếp theo" },
+        { "id": "d", "text": "Mảng 2D sử dụng cấu trúc cây nhị phân" }
+      ],
+      "correctKey": "b",
+      "explanation": "Mảng 2D thường được lưu trong một khối bộ nhớ liền kề. Row-major (C, Python): các hàng nối tiếp nhau. Column-major (Fortran): các cột nối tiếp nhau. Điều này ảnh hưởng đến cache locality: duyệt theo hàng trong row-major nhanh hơn (liền kề trong bộ nhớ), duyệt theo cột chậm hơn (stride lớn). Phương án A mô tả array-of-pointers, không phải mảng 2D thực sự."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\narr = [3, 1, 4, 1, 5, 9, 2, 6]\nprint(arr[2])",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "arr[2] = 4 (chỉ mục bắt đầu từ 0). arr[0]=3, arr[1]=1, arr[2]=4. Truy cập mảng theo chỉ mục là O(1). Phương án B là arr[3]. Phương án C là arr[4]."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian tìm kiếm nhị phân trên mảng đã sắp xếp là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — phần tử giữa được truy cập trực tiếp" },
+        { "id": "b", "text": "O(log n) — không gian tìm kiếm được chia đôi với mỗi lần so sánh" },
+        { "id": "c", "text": "O(n) — mảng phải được quét trong trường hợp xấu nhất" },
+        { "id": "d", "text": "O(n log n) — tìm kiếm nhị phân cần log n lần quét qua n phần tử" }
+      ],
+      "correctKey": "b",
+      "explanation": "Tìm kiếm nhị phân liên tục chia đôi không gian tìm kiếm: mid = (lo + hi) / 2, so sánh, rồi đệ quy sang trái hoặc phải. Sau k bước, không gian còn lại là n/2^k, thu hẹp về kích thước 1 khi 2^k ≥ n → k = ⌈log₂ n⌉. Phương án C mô tả tìm kiếm tuyến tính. Phương án D đếm sai — tổng số so sánh là O(log n), không phải O(n log n)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Xóa phần tử ở cuối mảng có độ phức tạp O(1). Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Xóa cuối (pop) chỉ cần giảm kích thước, không cần dịch chuyển phần tử. Đây là lý do ngăn xếp (stack) thường được triển khai bằng mảng."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mảng động (dynamic array) như ArrayList tự động tăng kích thước khi đầy. Chiến lược tăng trưởng phổ biến là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tăng 1 phần tử mỗi lần" },
+        { "id": "b", "text": "Nhân đôi dung lượng (double) — chi phí tăng trưởng O(n) được phân bổ qua n thao tác, cho chi phí amortized O(1) mỗi thêm" },
+        { "id": "c", "text": "Tăng theo hệ số cố định như +10" },
+        { "id": "d", "text": "Sử dụng thuật toán heap để quản lý bộ nhớ" }
+      ],
+      "correctKey": "b",
+      "explanation": "ArrayList nhân đôi khi đầy (Java) hoặc tăng 50% (Python list). Chi phí tăng trưởng O(n) được phân bổ qua n thao tác append, cho chi phí amortized O(1) mỗi append. Phương án A gây ra O(n²) trong tổng thể. Phương án C có chi phí tăng trưởng tuyến tính mỗi lần."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\nmatrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]\nfor row in matrix:\n    print(row[0], end=' ')",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Lấy phần tử đầu tiên của mỗi hàng: 1, 4, 7. Đây là duyệt theo cột đầu tiên qua tất cả hàng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Bạn có một mảng đã sắp xếp và một mảng đã sắp xếp khác đã bị merge vào mảng đầu tiên (giữ nguyên thứ tự). Làm thế nào để tìm phần tử trùng lặp trong O(n)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng tìm kiếm nhị phân trên toàn bộ mảng" },
+        { "id": "b", "text": "Dùng two pointers: so sánh phần tử hiện tại với phần tử tiếp theo, nếu bằng nhau thì trùng lặp" },
+        { "id": "c", "text": "Sử dụng hash set để kiểm tra trùng lặp" },
+        { "id": "d", "text": "Dùng thuật toán sắp xếp lại" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trong mảng đã sắp xếp, các phần tử trùng lặp sẽ nằm cạnh nhau. Two pointers (hoặc đơn giản là duyệt một vòng) so sánh arr[i] với arr[i+1] — nếu bằng nhau, tìm thấy trùng lặp. O(n) time, O(1) space. Hash set cũng được nhưng tốn O(n) space."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\narr = [1, 2, 3, 4, 5]\nprint(arr[-2])",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "arr[-2] = 4 trong Python. Chỉ mục âm đếm từ cuối mảng: -1 là phần tử cuối, -2 là phần tử thứ hai từ cuối."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mảng nào sau đây có thể tìm tổng lớn nhất của mảng con liên tục trong O(n)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Sắp xếp mảng rồi cộng nửa đầu" },
+        { "id": "b", "text": "Thuật toán Kadane: duy trì tổng mảng con kết thúc tại vị trí hiện tại, reset nếu âm" },
+        { "id": "c", "text": "Duyệt tất cả mảng con (O(n²))" },
+        { "id": "d", "text": "Chia mảng đôi và tìm max ở hai nửa" }
+      ],
+      "correctKey": "b",
+      "explanation": "Thuật toán Kadane giải bài toán Maximum Subarray (mảng con liên tục có tổng lớn nhất) trong O(n) time, O(1) space. current_sum = max(arr[i], current_sum + arr[i]); max_sum = max(max_sum, current_sum). Phương án C là O(n²) hoặc O(n³). Phương án D là cách chia để trị O(n log n)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuật toán sắp xếp nào có độ phức tạp trung bình và xấu nhất đều là O(n log n)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Quick sort — trung bình O(n log n), xấu nhất O(n²)" },
+        { "id": "b", "text": "Merge sort — xấu nhất O(n log n) được đảm bảo" },
+        { "id": "c", "text": "Selection sort — luôn O(n²)" },
+        { "id": "d", "text": "Insertion sort — trung bình O(n²)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Merge sort đảm bảo O(n log n) cho cả trung bình và xấu nhất vì chia đều và trộn tuyến tính. Quick sort có xấu nhất O(n²) khi pivot chọn xấu. Heap sort cũng đảm bảo O(n log n). Phương án A đúng về trung bình nhưng xấu nhất O(n²)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mảng có thể triển khai cấu trúc dữ liệu stack với O(1) cho cả push và pop ở cuối. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Stack dùng mảng: push = thêm vào cuối (O(1) amortized), pop = giảm kích thước (O(1)). Nếu mảng đầy, resize O(n) nhưng amortized vẫn O(1). Không cần duy trì con trỏ đặc biệt — chỉ cần theo dõi kích thước."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\narr = [2, 4, 6, 8, 10]\nbrr = arr[1:4]\nprint(len(brr))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "c",
+      "explanation": "arr[1:4] lấy các phần tử từ chỉ mục 1 đến 3 (không bao gồm 4): [4, 6, 8]. Độ dài = 3. Slice [1:4] có nghĩa start=1, end=4, loại trừ end."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn có một mảng n phần tử và cần tìm tất cả các cặp phần tử có tổng bằng target. Độ phức tạp tối ưu là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n²) — duyệt tất cả cặp" },
+        { "id": "b", "text": "O(n log n) — sắp xếp rồi dùng two pointers" },
+        { "id": "c", "text": "O(n) — dùng hash set, duy trì complement đã thấy" },
+        { "id": "d", "text": "O(n!) — cần hoán vị tất cả" }
+      ],
+      "correctKey": "c",
+      "explanation": "Two-sum bằng hash set: với mỗi phần tử num, kiểm tra target - num trong set đã thấy. Nếu có → tìm được cặp. O(n) time, O(n) space. O(n log n) (sắp xếp + two pointers) cũng được nhưng tốn thêm bước sắp xếp."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuật toán quay mảng (array rotation) tối ưu nhất để xoay mảng sang phải k vị trí có độ phức tạp là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n²) — dịch chuyển từng phần tử" },
+        { "id": "b", "text": "O(n) — đảo ngược toàn bộ, rồi đảo ngược k phần tử đầu, rồi đảo ngược phần còn lại (Juggling algorithm)" },
+        { "id": "c", "text": "O(n) — copy vào mảng mới rồi ghi lại" },
+        { "id": "d", "text": "O(k × n) — quay từng bước một" }
+      ],
+      "correctKey": "c",
+      "explanation": "Cách tối ưu nhất (không gian O(k) tạm): dùng gcd(n, k) chunks. Mỗi phần tử được gán đúng vị trí trong một lần duy nhất. O(n) time, O(1) space. Phương án C mô tả cách dùng mảng tạm O(n) space. Phương án D là cách naïve O(kn)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mảng có 1 triệu phần tử số nguyên. Thuật toán nào tìm median trong O(n)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Sắp xếp mảng rồi lấy phần tử giữa — O(n log n)" },
+        { "id": "b", "text": "QuickSelect — biến thể của quick sort chỉ sắp xếp phần cần thiết, trung bình O(n)" },
+        { "id": "c", "text": "Duyệt tìm max và min rồi chia đôi" },
+        { "id": "d", "text": "Không thể tìm median nhanh hơn O(n log n)" }
+      ],
+      "correctKey": "b",
+      "explanation": "QuickSelect (biến thể của QuickSort) tìm phần tử thứ k trong O(n) trung bình, O(n²) xấu nhất. Không cần sắp xếp toàn bộ. Median = phần tử thứ n/2. Heap approach (xây max-heap và min-heap) cũng O(n log n). Phương án D sai vì QuickSelect đạt O(n)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\narr = [1, 2, 2, 3, 3, 3, 4]\nunique = list(dict.fromkeys(arr))\nprint(unique)",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "dict.fromkeys() (Python) giữ thứ tự và loại bỏ trùng lặp: [1, 2, 3, 4]. Cách này O(n) cho mảng đã sắp xếp, giữ nguyên thứ tự xuất hiện đầu tiên."
+    }
+  ]
+}

@@ -1,0 +1,208 @@
+{
+  "topicSlug": "react-state",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "'Prop drilling' trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một performance optimization technique preload props trước khi rendering" },
+        { "id": "b", "text": "Truyền data qua nhiều lớp intermediate components không cần data đó, chỉ để đến được một deeply nested child" },
+        { "id": "c", "text": "Một TypeScript error xảy ra khi props không được type đúng" },
+        { "id": "d", "text": "Một React DevTools feature hiển thị prop flow qua component tree" }
+      ],
+      "correctKey": "b",
+      "explanation": "Prop drilling xảy ra khi props được truyền qua nhiều component layers — intermediate components nhận props họ không dùng, chỉ để forward xuống child cần props. Giải pháp: React Context, composition, hoặc state management."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "'Lifting state up' trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Di chuyển state từ child component lên parent để cả hai có thể chia sẻ, với parent là single source of truth" },
+        { "id": "b", "text": "Di chuyển tất cả state sang global state management để components không bao giờ giữ local state" },
+        { "id": "c", "text": "Chuyển class components sang functional components để dùng hooks" },
+        { "id": "d", "text": "Di chuyển state từ global state sang local useState để cải thiện hiệu năng" }
+      ],
+      "correctKey": "a",
+      "explanation": "Lifting state up means di chuyển shared state lên lowest common ancestor của các components cần nó. Parent giữ state và truyền xuống. Đây là core pattern của React để co-locate state với components cần và dùng nó."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Khi một parent component re-renders, tất cả child components của nó re-renders theo mặc định.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Đây là default behavior của React. Không có React.memo, child components re-renders mỗi khi parent re-renders, ngay cả khi child props không thay đổi."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mục đích chính của React Context là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Thay thế useState để quản lý local component state" },
+        { "id": "b", "text": "Cho phép data được truyền qua component tree mà không cần prop drilling, mà không cần data phải đi qua mọi intermediate component" },
+        { "id": "c", "text": "Cache các computed values tốn kém qua các renders" },
+        { "id": "d", "text": "Cung cấp cách chia sẻ event handlers giữa sibling components" }
+      ],
+      "correctKey": "b",
+      "explanation": "Context cung cấp cách pass data qua tree mà không cần manually thread props qua mọi intermediate level. Use cases: themes, locale, auth state."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "'State colocation' trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đặt tất cả application state vào một global store" },
+        { "id": "b", "text": "Giữ state càng gần nơi nó được sử dụng càng tốt — di chuyển nó xuống component tree thay vì giữ nó ở trên chỉ vì có thể một descendant cần" },
+        { "id": "c", "text": "Tổ chức component files trong một folder duy nhất theo feature" },
+        { "id": "d", "text": "Dùng useState thay vì useRef cho tất cả mutable values" }
+      ],
+      "correctKey": "b",
+      "explanation": "State colocation giữ state ở mức thấp nhất cần thiết trong component tree. Giảm unnecessary re-renders và giữ logic gần với nơi nó được sử dụng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Vấn đề hiệu năng chính của React Context là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context values được serialize thành JSON và gửi qua network" },
+        { "id": "b", "text": "Bất kỳ thay đổi nào trên Context value re-renders TẤT CẢ components consuming context đó, bất kể chúng có dùng phần thay đổi không" },
+        { "id": "c", "text": "Context không thể giữ values lớn hơn 1KB" },
+        { "id": "d", "text": "Context chỉ hoạt động trong class components" }
+      ],
+      "correctKey": "b",
+      "explanation": "Context dùng reference equality — khi Provider value thay đổi, tất cả useContext consumers re-render. Ngay cả consumer chỉ đọc `theme` nhưng value changed là `setTheme`, nó vẫn re-renders."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Pattern nào tối ưu đúng một Context Provider để ngăn unnecessary re-renders cho tất cả consumers?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Wrap Provider value với useMemo để đảm bảo referential stability khi value object không thực sự thay đổi" },
+        { "id": "b", "text": "Split context thành nhiều contexts nhỏ hơn để mỗi cái chỉ broadcast slice cụ thể thay đổi" },
+        { "id": "c", "text": "Cả A và B đều là valid optimization strategies cho Context" },
+        { "id": "d", "text": "Context re-renders không thể tối ưu — chuyển sang Redux" }
+      ],
+      "correctKey": "c",
+      "explanation": "Cả hai patterns đều valid. useMemo giữ stable reference. Splitting contexts để mỗi context chỉ chứa một focused slice — khi theme thay đổi, auth consumers không re-render."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Zustand's `create` function trả về gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một Context Provider component phải được rendered trong component tree" },
+        { "id": "b", "text": "Một hook (useStore) và optionally một Provider — store không cần Provider để hoạt động" },
+        { "id": "c", "text": "Một Redux-like store yêu cầu middleware được thêm thủ công" },
+        { "id": "d", "text": "Một class-based store mở rộng React.Component" }
+      ],
+      "correctKey": "b",
+      "explanation": "Zustand's `create` trả về một hook trực tiếp — không cần Provider. Gọi `const useStore = create(...)` và dùng `useStore(state => state.count)` bên trong bất kỳ component nào."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sai lầm phổ biến khi dùng useState với object hoặc array là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Objects và arrays không thể dùng như useState initial values" },
+        { "id": "b", "text": "Mutating state object trực tiếp (ví dụ: `state.count += 1`) thay vì tạo object mới — React không detect thay đổi" },
+        { "id": "c", "text": "Dùng objects làm keys trong useState gây TypeScript errors" },
+        { "id": "d", "text": "Objects phải được serialize thành JSON trước khi truyền vào useState" }
+      ],
+      "correctKey": "b",
+      "explanation": "React state phải treated as immutable. Mutating `state.count += 1` không trigger re-render vì reference đến state object không đổi. Phải tạo new object: `setState(prev => ({ ...prev, count: prev.count + 1 }))`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa 'colocating state' và 'lifting state up' là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Colocating state có nghĩa đặt nó trong một global store; lifting có nghĩa giữ nó trong root component" },
+        { "id": "b", "text": "Colocating state có nghĩa giữ nó ở mức thấp nhất có thể trong component tree; lifting có nghĩa di chuyển nó lên khi nhiều siblings cần — chúng là complementary principles" },
+        { "id": "c", "text": "Chúng giống nhau — cả hai terms mô tả di chuyển state lên parent component" },
+        { "id": "d", "text": "Lifting là cho props; colocating là cho refs" }
+      ],
+      "correctKey": "b",
+      "explanation": "Colocation là điểm bắt đầu: đặt state thấp trong tree. Lifting là điều chỉnh khi nhiều siblings cần cùng data. Complementary: chỉ lift khi cần thiết, giữ state càng thấp càng tốt."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "React Context trước hết là một dependency injection mechanism, không phải một state management solution.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Context deliver một value đến descendants — đó là dependency injection. Nó không quản lý state; nó distribute state. Subscription-based stores (Zustand, Redux, Jotai) dùng models khác."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Lợi thế chính của dùng Zustand selectors so với dùng store hook không có selector là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Selectors ngăn TypeScript type errors trong store definition" },
+        { "id": "b", "text": "Selectors cho phép components subscribe chỉ vào specific slice họ cần, ngăn unnecessary re-renders khi unrelated state thay đổi" },
+        { "id": "c", "text": "Selectors là required — dùng store không có selector gây TypeScript error" },
+        { "id": "d", "text": "Selectors tự động persist selected slice vào localStorage" }
+      ],
+      "correctKey": "b",
+      "explanation": "Không có selector, `useStore()` re-renders component khi bất kỳ state change nào. Selector `useStore(s => s.count)` chỉ re-render khi count thay đổi. Đây là key performance advantage."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa Redux và Zustand về behavior re-render là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Redux dùng Provider re-renders tất cả connected components trên bất kỳ dispatch nào; Zustand dùng selectors để chỉ subscribed components re-render" },
+        { "id": "b", "text": "Zustand re-renders tất cả components theo mặc định; Redux dùng selectors để ngăn unnecessary re-renders" },
+        { "id": "c", "text": "Cả Zustand và Redux re-renders tất cả components trên mọi state change theo mặc định" },
+        { "id": "d", "text": "Redux không bao giờ re-renders components; Zustand luôn re-renders tất cả" }
+      ],
+      "correctKey": "a",
+      "explanation": "Redux useSelector cũng dùng selector-based subscriptions. Key difference: boilerplate. Zustand đạt fine-grained subscriptions với một `create()` call đơn giản."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Khi nào nên dùng React Context thay vì subscription-based state manager như Zustand?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context tốt hơn cho data thay đổi thường xuyên (ví dụ: mouse position, scroll position)" },
+        { "id": "b", "text": "Context tốt hơn cho các giá trị global thực sự thay đổi ít (theme, auth status, locale) và khi component tree không quá lớn" },
+        { "id": "c", "text": "Context luôn tốt hơn vì nó được build vào React" },
+        { "id": "d", "text": "Context nên được dùng cho tất cả application state" }
+      ],
+      "correctKey": "b",
+      "explanation": "Context phù hợp cho infrequent, truly global values. Re-render cost tỉ lệ với số lượng consumers và frequency of change. Theme changes, auth state thay đổi theo login/logout là good fits."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Jotai dùng atomic model trong đó mỗi piece of state là một independent 'atom'. Lợi thế chính so với single-store model là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Atoms tự động được persist vào localStorage mà không cần configuration" },
+        { "id": "b", "text": "Components có thể subscribe chỉ vào specific atoms cần thiết, và React re-renders chỉ khi những atoms đó thay đổi — tương tự Zustand selectors nhưng với model atom composition linh hoạt hơn" },
+        { "id": "c", "text": "Atoms chạy trên một thread riêng biệt từ main React render cycle" },
+        { "id": "d", "text": "Atoms tự động deduplicate, ngăn duplicate API calls" }
+      ],
+      "correctKey": "b",
+      "explanation": "Jotai's atomic model cho phép compose atoms: `const priceAtom = atom((get) => get(basePriceAtom) * get(quantityAtom))`. Component subscribing `priceAtom` chỉ re-renders khi basePriceAtom hoặc quantityAtom thay đổi."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn có một form với 10 controlled input fields được quản lý bằng useState. Cấu trúc state nào được khuyến nghị để minimize unnecessary re-renders?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng một state object duy nhất: `useState({ field1: '', field2: '', ... })` và một onChange handler duy nhất — tất cả fields update trong một batch" },
+        { "id": "b", "text": "Dùng separate useState cho mỗi field để thay đổi một field không re-renders components phụ thuộc fields khác" },
+        { "id": "c", "text": "Dùng useRef cho mỗi field để tránh re-renders trên mỗi keystroke" },
+        { "id": "d", "text": "Dùng một state object duy nhất cho tất cả fields nhưng gọi setter trên mỗi keystroke với một handler được memoize — nhưng useReducer được ưu tiên hơn cho complex forms để centralize logic" }
+      ],
+      "correctKey": "d",
+      "explanation": "Một state object duy nhất group related data đúng semantic. Mỗi keystroke gọi setter và trigger một re-render (không phải 10). useReducer centralizes update logic trong một reducer function, clean hơn cho complex forms với validation và dependent fields."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Trong một large form với nhiều dependent fields (ví dụ: shipping address thay đổi khi billing address checkbox được toggle), useState với individual setters produce cleaner code hơn useReducer.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Với complex forms có interdependent fields, useReducer clean hơn — một dispatch function handle tất cả updates, và reducer function implement cross-field logic mà không cần nhiều useEffect để sync."
+    }
+  ]
+}

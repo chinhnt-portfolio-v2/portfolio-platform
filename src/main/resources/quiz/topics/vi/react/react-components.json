@@ -1,0 +1,247 @@
+{
+  "topicSlug": "react-components",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Cách đúng để truyền một prop bắt buộc kiểu string tên là `title` và một prop function tùy chọn tên là `onConfirm` vào functional component là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "function Modal({ title: string, onConfirm?: () => void }) { ... }" },
+        { "id": "b", "text": "function Modal({ title, onConfirm }: { title: string; onConfirm?: () => void }) { ... }" },
+        { "id": "c", "text": "function Modal(props: { title: string }) { const { onConfirm } = props; ... }" },
+        { "id": "d", "text": "function Modal(title: string, onConfirm?: () => void) { ... }" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trong TypeScript với React, cú pháp destructuring `{ title, onConfirm }: { title: string; onConfirm?: () => void }` là idiomatic — annotation type nằm trên object được destructuring, không phải trên từng tên biến riêng lẻ (A). Option C mất type của `onConfirm`. Option D dùng tham số theo vị trí, nhưng React component nhận một object `props` duy nhất, không phải các tham số theo vị trí."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Component này sẽ render gì?\n\nfunction Greeting({ children }: { children: React.ReactNode }) {\n  return <div>{children}</div>;\n}\n\n<Greeting>Hello World</Greeting>",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó render <div>Hello World</div>" },
+        { "id": "b", "text": "Nó chỉ render Hello World mà không có thẻ div bọc ngoài" },
+        { "id": "c", "text": "Nó gây ra TypeScript error vì children phải được type là string" },
+        { "id": "d", "text": "Nó render undefined vì children không được truyền một cách tường minh" }
+      ],
+      "correctKey": "a",
+      "explanation": "`children` được type là `React.ReactNode` chấp nhận bất kỳ nội dung nào có thể render — strings, numbers, JSX elements, fragments, arrays, v.v. Component bọc `children` bên trong một `<div>`, nên output là `<div>Hello World</div>`. React coi string children như text content bên trong div."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Phương pháp nào là đúng để render một danh sách các phần tử trong React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng vòng for bên trong render method để push các phần tử `<li>` vào một array" },
+        { "id": "b", "text": "Dùng Array.map() để transform mỗi phần tử thành JSX element và return nó" },
+        { "id": "c", "text": "Dùng Array.filter() bên trong JSX để render có điều kiện các phần tử" },
+        { "id": "d", "text": "Dùng Array.reduce() để flatten các nested array của các component" }
+      ],
+      "correctKey": "b",
+      "explanation": "Array.map() là pattern idiomatic trong React để render lists — nó trả về một array mới của các JSX element, mà React có thể render. Mỗi phần tử trong array trả về phải có một prop `key` duy nhất. Vòng for (A) không return JSX inline được. Array.filter bên trong JSX (C) hợp lệ cho conditional list rendering nhưng không phải là pattern render list chính. Array.reduce (D) có thể dùng nhưng không phải cách tiếp cận tiêu chuẩn cho việc render list đơn giản."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Tại sao prop `key` quan trọng khi render lists trong React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó là bắt buộc bởi TypeScript để array elements có type" },
+        { "id": "b", "text": "Nó giúp React nhận biết phần tử nào đã thay đổi, được thêm vào, hoặc bị xóa trong quá trình reconciliation, cho phép cập nhật DOM hiệu quả" },
+        { "id": "c", "text": "Nó là tính năng bảo mật giúp ngăn chặn XSS attacks trong list items" },
+        { "id": "d", "text": "Nó chỉ cần thiết khi render các array lớn hơn 100 phần tử" }
+      ],
+      "correctKey": "b",
+      "explanation": "Prop `key` cho React biết identity của mỗi phần tử trong một list. Không có key ổn định, React tái sử dụng DOM nodes không đúng sau các thay đổi list, gây ra bugs như stale state trong form inputs hoặc nội dung bị đảo thứ tự. Keys nên duy nhất trong các siblings và ổn định (không ngẫu nhiên mỗi lần render). Dùng array index làm key là rủi ro khi các phần tử có thể bị sắp xếp lại hoặc xóa. Option A nhầm lẫn type system của TypeScript với việc render của React."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Component này render gì?\n\nfunction Badge({ count, show = false }: { count: number; show?: boolean }) {\n  return <>{show && <span>{count}</span>}</>;\n}\n\n<Badge count={0} show={true} />",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó render <span>0</span>" },
+        { "id": "b", "text": "Nó không render gì vì 0 là falsy" },
+        { "id": "c", "text": "Nó render số 0 mà không có thẻ span bọc ngoài" },
+        { "id": "d", "text": "Nó throw TypeScript error vì count là 0" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trong React, `0` là falsy nhưng KHÔNG bị bỏ qua bởi JSX. Expression `show && <span>{count}</span>` evaluate thành `0` (giá trị falsy) khi count là 0, mà React sau đó render như text '0'. Đây là một React gotcha phổ biến — pattern && chỉ an toàn khi giá trị bên trái không bao giờ là một giá trị falsy nhưng vẫn có thể render được. Fix là `count > 0 && <span>{count}</span>` hoặc ternary. Option A bỏ qua việc evaluate falsy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "React components phải luôn luôn trả về một root element duy nhất.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "React 16+ giới thiệu Fragments (`<React.Fragment>` hoặc shorthand `<>...</>`), cho phép components trả về nhiều sibling elements mà không thêm một DOM wrapper thừa. Bạn cũng có thể return một array các elements (mỗi cái cần key). Quy tắc single-root là constraint của React 15, không còn áp dụng nữa."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mục đích của prop `children` trong một React component là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó cung cấp một cách để truyền các event handler functions từ parent xuống child components" },
+        { "id": "b", "text": "Nó là một prop đặc biệt chứa nội dung JSX được đặt giữa opening và closing tags của một component" },
+        { "id": "c", "text": "Nó bắt buộc trên mọi React component và phải luôn được khai báo trong props type" },
+        { "id": "d", "text": "Nó lưu trữ internal state của component mà tồn tại xuyên suốt các lần render" }
+      ],
+      "correctKey": "b",
+      "explanation": "`children` là một prop đặc biệt tự động có sẵn trên mọi component — nó chứa bất kỳ JSX nào được đặt giữa opening và closing tags khi component được sử dụng. Ví dụ: `<Card>Hello</Card>` làm `children = 'Hello'`. Nó cho phép các composition pattern như các layout components (Card, Modal, Layout) bọc arbitrary content. Option A mô tả callback props, không phải children. Option C là sai — children là tùy chọn và implicit."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Vấn đề gì với định nghĩa component này?\n\nconst Card = (title: string) => <div>{title}</div>;",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Arrow functions không thể được dùng để định nghĩa React components" },
+        { "id": "b", "text": "React components nhận một object props duy nhất làm argument, không phải các tham số riêng lẻ — vì vậy `title: string` không hợp lệ như tham số đầu tiên" },
+        { "id": "c", "text": "Annotation type trả về bị thiếu sau arrow" },
+        { "id": "d", "text": "Khai báo const không thể chứa JSX expressions" }
+      ],
+      "correctKey": "b",
+      "explanation": "React components — whether defined with `function` hoặc `const` arrow — luôn nhận một argument duy nhất: object `props`. Viết `(title: string)` làm `title` thành một positional parameter, không phải một destructured prop. Pattern đúng là `(props: { title: string })` hoặc `({ title }: { title: string })`. Option A là sai — arrow functions được sử dụng rộng rãi cho React components. Option C không phải là vấn đề chính ở đây."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Có thể render một React component có điều kiện mà không có DOM wrapper thừa không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Không — mỗi conditional render phải tạo ra một root element duy nhất, nên bạn luôn cần một wrapper div" },
+        { "id": "b", "text": "Có — dùng React Fragments (`<>...</>` hoặc `<React.Fragment>...</React.Fragment>`) cho phép nhiều elements mà không thêm vào DOM" },
+        { "id": "c", "text": "Có — bằng cách return null từ component thay vì JSX" },
+        { "id": "d", "text": "Chỉ nếu dùng React 15 hoặc cũ hơn; React 18 yêu cầu một wrapper" }
+      ],
+      "correctKey": "b",
+      "explanation": "Fragments (`<>...</>`) nhóm nhiều JSX elements mà không tạo DOM node thừa. Điều này thiết yếu cho table rows, list items với nhiều columns, hoặc flex/grid layouts nơi một wrapper div sẽ phá vỡ cấu trúc visual. Return `null` (C) ẩn component có điều kiện hoàn toàn, điều này hợp lệ nhưng không giống việc render sibling elements."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa dùng `children` như một prop và truyền các named props tường minh cho composition trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Named props dùng cho luồng dữ liệu từ parent xuống child; children chỉ dùng cho nội dung text" },
+        { "id": "b", "text": "Children cho phép consumer inject arbitrary JSX; named props rõ ràng hơn và thân thiện với TypeScript cho các API contract được typed" },
+        { "id": "c", "text": "Không có sự khác biệt chức năng — cả hai pattern đều compile thành code giống hệt nhau" },
+        { "id": "d", "text": "Named props chỉ có thể truyền primitives, không phải JSX elements" }
+      ],
+      "correctKey": "b",
+      "explanation": "Prop children cho phép một composition pattern linh hoạt — parent quyết định cái gì đi vào bên trong. Named props làm API rõ ràng và tốt hơn cho TypeScript autocomplete và enforcement required/optional. Cả hai đều là patterns hợp lệ: children phù hợp với generic wrappers (Layout, Card), named props phù hợp với component APIs tường minh (Table columns, FormField labels). Chọn giữa chúng là một design decision dựa trên mức độ linh hoạt vs. rõ ràng bạn muốn expose."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "TypeScript type nào đúng cho một functional component nhận `name` (string) và `age` (number) props và trả về JSX?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "const Person: React.FC<{ name: string; age: number }> = ({ name, age }) => <div>{name} - {age}</div>" },
+        { "id": "b", "text": "const Person: React.Component<{ name: string; age: number }> = ({ name, age }) => <div>{name} - {age}</div>" },
+        { "id": "c", "text": "const Person = ({ name, age }: { name: string; age: number }) => <div>{name} - {age}</div>" },
+        { "id": "d", "text": "const Person: FunctionComponent<{ name: string; age: number }> = ({ name, age }) => <div>{name} - {age}</div>" }
+      ],
+      "correctKey": "c",
+      "explanation": "Option C là plain function expression pattern — idiomatic trong các React + TypeScript codebases hiện đại. `React.FC` (A) có sẵn nhưng có quirks: nó tự động thêm `children?: ReactNode`, có thể không mong muốn. Nhiều teams prefer plain function signature (C) để rõ ràng. Option B's `React.Component` là class-based generic. Option D's `FunctionComponent` là alias cho `React.FC` — cùng limitations."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Code này output gì?\n\nfunction Item({ id, name }: { id: number; name: string }) {\n  return <li key={id}>{name}</li>;\n}\n\nfunction List() {\n  const items = [{ id: 1, name: 'Alpha' }, { id: 2, name: 'Beta' }];\n  return (\n    <ul>\n      {items.map(item => <Item {...item} key={item.id} />)}\n    </ul>\n  );\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một list với hai items: Alpha và Beta, với React key handling đúng" },
+        { "id": "b", "text": "TypeScript error vì prop key không thể được truyền cùng với spread props" },
+        { "id": "c", "text": "Chỉ item đầu tiên (Alpha) render vì key của Beta bị ghi đè bởi spread" },
+        { "id": "d", "text": "Key phải được khai báo trong props type của Item component" }
+      ],
+      "correctKey": "a",
+      "explanation": "Prop `key` là đặc biệt trong React — nó không được truyền vào component như một prop và không được include trong props type của component. Pattern `<Item {...item} key={item.id} />` tách biệt đúng `key` (used by React reconciliation) khỏi component props. Đây là cách idiomatic để truyền data qua spread trong khi cũng cung cấp key. Options B, C, và D đều sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi render một list các components, dùng array index làm key luôn an toàn.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Array index làm key chỉ an toàn khi list là static (các items không bao giờ được thêm, xóa, hoặc sắp xếp lại) VÀ các items không thay đổi. Nếu các items có thể được sắp xếp lại (ví dụ: sorted) hoặc xóa, React sẽ match sai items với DOM nodes, gây bugs như stale form state hoặc nội dung bị đảo thứ tự. Luôn dùng một stable, unique ID làm key khi list có thể thay đổi."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Bạn cần một Card component render một title section và một arbitrary content section. Prop pattern nào là phù hợp nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Card nên nhận `title` như một ReactNode và `content` như một ReactNode, cả hai đều là required props" },
+        { "id": "b", "text": "Card nên nhận `title` như string và `content` như ReactNode — title như string hạn chế hơn nhưng đủ, và content qua children để linh hoạt tối đa" },
+        { "id": "c", "text": "Card chỉ nên dùng children prop và không expose bất kỳ named props nào" },
+        { "id": "d", "text": "Card nên nhận nhiều named slots (title, subtitle, footer) như các ReactNode props cộng với một children duy nhất cho main body" }
+      ],
+      "correctKey": "d",
+      "explanation": "Component composition với named slots (title, subtitle, footer) như các ReactNode props cho consumers quyền kiểm soát tường minh trên mỗi section trong khi children cover main body. Đây là slot pattern được dùng bởi MUI, Radix UI, và shadcn/ui — mỗi slot có một mục đích rõ ràng. Option B giới hạn title thành plain string, ngăn JSX-based titles. Option C không cung cấp cấu trúc gì."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa default props và default parameter syntax trong React TypeScript components là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Default props (`Component.defaultProps`) đã deprecated trong React hiện đại — destructuring với default values là cách tiếp cận được ưa chuộng" },
+        { "id": "b", "text": "Default props chỉ hoạt động trong class components; function components phải dùng default parameter syntax" },
+        { "id": "c", "text": "Cả hai về mặt chức năng giống hệt nhau và có thể dùng thay thế cho nhau trong function components" },
+        { "id": "d", "text": "Default props được kiểm tra at runtime; default parameters được kiểm tra at compile time" }
+      ],
+      "correctKey": "a",
+      "explanation": "Trong React + TypeScript hiện đại, default props trên function components qua `Component.defaultProps = { ... }` phần lớn được thay thế bởi ES6 default parameter syntax trong function signature (`({ name = 'Guest' })`). Default parameter approach type-safe, co-located với prop destructuring, và không cần một object riêng biệt. `defaultProps` vẫn được support nhưng được coi là legacy cho function components."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Output của render này là gì?\n\nfunction Row({ id }: { id: number }) {\n  return <tr><td>{id}</td></tr>;\n}\n\nfunction Table() {\n  return (\n    <table>\n      {[{ id: 1 }, { id: 2 }].map(item => (\n        <React.Fragment key={item.id}>\n          <Row id={item.id} />\n        </React.Fragment>\n      ))}\n    </table>\n  );\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Một table với 2 rows, mỗi cái chứa một cell với id" },
+        { "id": "b", "text": "TypeScript error vì React.Fragment không thể wrap một child duy nhất" },
+        { "id": "c", "text": "Compilation error vì React.Fragment không support prop key trong syntax này" },
+        { "id": "d", "text": "Một empty table vì Fragment không render bất kỳ DOM elements nào" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.Fragment với key (`<React.Fragment key={item.id}>`) là hợp lệ — key phải là một attribute, không phải prop được truyền cho child được wrap. Đây là trường hợp duy nhất phải dùng đầy đủ `<React.Fragment>` syntax thay vì shorthand `<>...</>` (không thể nhận key). Table render đúng 2 rows."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt chính giữa controlled và uncontrolled components trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Controlled components lưu trữ state của chúng trong React state; uncontrolled components lưu trữ state trong DOM và dùng refs để đọc nó" },
+        { "id": "b", "text": "Controlled components được dùng với useState; uncontrolled components được dùng với useRef" },
+        { "id": "c", "text": "Uncontrolled components không thể validate input; controlled components có thể" },
+        { "id": "d", "text": "Controlled components nhanh hơn vì không đụng đến DOM; uncontrolled components truy cập DOM trực tiếp" }
+      ],
+      "correctKey": "a",
+      "explanation": "Giá trị của một controlled component được điều khiển hoàn toàn bởi React state — parent sở hữu giá trị và cập nhật nó qua event handlers. Uncontrolled component sở hữu internal state của riêng nó qua DOM (`<input defaultValue=\"...\" />`), và bạn truy cập giá trị qua ref khi cần (ví dụ: trên form submit). Cả hai patterns đều hợp lệ; lựa chọn phụ thuộc vào việc bạn có cần real-time access đến giá trị trong React hay chỉ trên specific events."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "'Slot pattern' trong React component design là gì và khi nào bạn nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một pattern nơi các named props (slots) được type như ReactNode được dùng thay vì hoặc cùng với children để cho consumers các vị trí có cấu trúc nhằm inject content" },
+        { "id": "b", "text": "Một pattern nơi component state được chia thành các slices riêng biệt, mỗi cái được quản lý bởi một hook khác nhau" },
+        { "id": "c", "text": "Một CSS technique để render components trong grid slots" },
+        { "id": "d", "text": "Một testing pattern nơi các components được test trong isolation bằng cách mock các slot components của chúng" }
+      ],
+      "correctKey": "a",
+      "explanation": "Slot pattern sử dụng các typed ReactNode props (ví dụ: `header?: ReactNode`, `footer?: ReactNode`) cùng hoặc thay vì một `children` prop duy nhất. Điều này cho consumers các vị trí tường minh, được đặt tên cho các content sections khác nhau. Nó cung cấp TypeScript autocomplete tốt hơn và tránh sự mơ hồ của 'children ở bất kỳ đâu' từ một children prop duy nhất. Nó được sử dụng rộng rãi trong các component libraries (Radix UI, shadcn/ui Dialog, v.v.) cho các UI primitives có thể compose."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Higher-Order Components (HOCs) wrap các components hiện có để thêm behavior. React composition qua slot/children pattern được coi là ưu tiên hơn trong hầu hết các use cases hiện đại.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Trong khi HOCs (ví dụ: `withRouter(Component)`) là pattern thống trị trong các React version trước, React team bây giờ khuyến nghị composition qua children, render props, hoặc custom hooks như các alternatives đơn giản hơn. HOCs introduces prop name collision risks, tạo extra wrapper DOM nodes, và làm type inference khó hơn. Hooks era (useContext, custom hooks) đã thay thế nhiều HOC use cases hoàn toàn. Tuy nhiên, HOCs vẫn có valid uses cho cross-cutting concerns mà hooks không thể address gọn gàng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Component này render gì?\n\nfunction Outer({ children }: { children: React.ReactNode }) {\n  return <div className=\"outer\">{children}</div>;\n}\n\nfunction App() {\n  return (\n    <Outer>\n      <span>Header</span>\n      <Outer>\n        <span>Nested</span>\n      </Outer>\n      <span>Footer</span>\n    </Outer>\n  );\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Một flat div với ba spans: Header, Nested, Footer" },
+        { "id": "b", "text": "Một div với Header, sau đó một nested div với Nested, rồi Footer — hai Outer divs tổng cộng" },
+        { "id": "c", "text": "Một single div chỉ với Header và Footer; nested Outer bị bỏ qua" },
+        { "id": "d", "text": "TypeScript error vì Outer không thể được dùng bên trong chính nó" }
+      ],
+      "correctKey": "b",
+      "explanation": "React components có thể render chính nó một cách đệ quy (self-reference) miễn là data recursion. Outer `<Outer>` bọc children của nó — inner `<Outer>` chỉ là một trong những children đó, nên nó render như một nested `<div className=\"outer\">`. Kết quả là `<div className=\"outer\"><span>Header</span><div className=\"outer\"><span>Nested</span></div><span>Footer</span></div>`. Recursive component rendering là hợp lệ khi component tự nhiên handle children của chính nó."
+    }
+  ]
+}

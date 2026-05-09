@@ -1,5 +1,7 @@
-package dev.chinh.portfolio.apps.wallet;
+package dev.chinh.portfolio.apps.wallet.controller;
 
+import dev.chinh.portfolio.apps.wallet.PushSubscription;
+import dev.chinh.portfolio.apps.wallet.PushSubscriptionRepository;
 import dev.chinh.portfolio.auth.annotation.CurrentUser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

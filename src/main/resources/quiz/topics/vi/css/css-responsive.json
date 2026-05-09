@@ -1,0 +1,330 @@
+{
+  "topicSlug": "css-responsive",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Tính năng CSS nào cho phép áp dụng styles có điều kiện dựa trên viewport width?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@media print" },
+        { "id": "b", "text": "@media screen" },
+        { "id": "c", "text": "@media (max-width: 768px)" },
+        { "id": "d", "text": "@if viewport" }
+      ],
+      "correctKey": "c",
+      "explanation": "@media (max-width: 768px) là media feature nhắm đến viewport rộng tối đa 768px. Breakpoints phổ biến: 480px (mobile), 768px (tablet), 1024px (desktop). @media print cho output in ấn."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mobile-first approach trong responsive CSS là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Viết styles cho mobile trước, rồi dùng min-width media queries để thêm styles cho màn lớn hơn" },
+        { "id": "b", "text": "Dùng pixels thay vì rem/em để đảm bảo rendering mobile nhất quán" },
+        { "id": "c", "text": "Viết styles cho desktop trước, rồi dùng max-width để ẩn nội dung mobile" },
+        { "id": "d", "text": "Dùng JavaScript để detect mobile devices và inject CSS classes" }
+      ],
+      "correctKey": "a",
+      "explanation": "Mobile-first: styles cơ sở cho mobile, dùng min-width queries để thêm progressive enhancements. Ngược lại là desktop-first (dùng max-width). Mobile-first có xu hướng code ít hơn vì styles desktop thường phức tạp hơn."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đơn vị CSS nào dùng cho responsive typography?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "px" },
+        { "id": "b", "text": "rem hoặc em" },
+        { "id": "c", "text": "pt" },
+        { "id": "d", "text": "cm" }
+      ],
+      "correctKey": "b",
+      "explanation": "rem cho font-size tôn trọng user's browser font size preferences (accessibility). em compound với parent font-size — dùng cho spacing internal của component. px không phản hồi với user font size."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đơn vị `vw` (viewport width) bằng bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1% chiều rộng viewport" },
+        { "id": "b", "text": "10% chiều rộng viewport" },
+        { "id": "c", "text": "Chiều rộng cố định" },
+        { "id": "d", "text": "Chiều cao viewport" }
+      ],
+      "correctKey": "a",
+      "explanation": "1vw = 1% chiều rộng viewport. 100vw = toàn bộ chiều rộng viewport. Cần cẩn thận với 100vw (có thể gây horizontal scroll nếu có vertical scrollbar)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Media query `@media (min-width: 768px)` áp dụng cho devices nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tất cả devices có viewport width TỐI THIỂU 768px trở lên" },
+        { "id": "b", "text": "Tất cả devices có viewport width TỐI ĐA 768px" },
+        { "id": "c", "text": "Chỉ desktop" },
+        { "id": "d", "text": "Chỉ mobile" }
+      ],
+      "correctKey": "a",
+      "explanation": "min-width: 768px = viewport width ≥ 768px. max-width: 768px = viewport width ≤ 768px. min-width là mobile-first approach."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Container query CSS khác media query ở điểm nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Container query phản hồi với kích thước container CHA, không phải viewport" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "Media query không hoạt động trên mobile" },
+        { "id": "d", "text": "Container query yêu cầu viewport rộng" }
+      ],
+      "correctKey": "a",
+      "explanation": "Container query: component phản hồi với kích thước của container cha (cần `container-type`), không phải viewport. Cho phép reusable components thích ứng với sidebar vs main content."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.container {\n  container-type: inline-size;\n}\n@container (min-width: 400px) {\n  .card {\n    display: grid;\n    grid-template-columns: 1fr 1fr;\n  }\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Card hiển thị grid 2 columns khi container rộng ≥ 400px" },
+        { "id": "b", "text": "Card luôn hiển thị grid" },
+        { "id": "c", "text": "Container query không hợp lệ" },
+        { "id": "d", "text": "Chỉ hoạt động khi viewport ≥ 400px" }
+      ],
+      "correctKey": "a",
+      "explanation": "@container query phản hồi với container's inline size (chiều rộng). Khi container ≥ 400px, card chuyển sang grid 2 columns."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `aspect-ratio` và `padding-bottom` hack là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "aspect-ratio là thuộc tính CSS chuẩn cho tỷ lệ khung hình; padding-bottom hack là workaround cũ dùng percentage padding" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "padding-bottom hack mới hơn" },
+        { "id": "d", "text": "aspect-ratio chỉ dùng cho video" }
+      ],
+      "correctKey": "a",
+      "explanation": "`aspect-ratio: 16/9` là cách chuẩn để đặt tỷ lệ khung hình. Padding-bottom hack (dùng padding-bottom: 56.25% cho 16:9) là cách cũ vì padding % tính theo width của containing block."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Container query units (cqi, cqb, v.v.) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đơn vị CSS mới tương đối với container's dimensions, cần container-type được định nghĩa" },
+        { "id": "b", "text": "Đơn vị viewport mới" },
+        { "id": "c", "text": "Đơn vị pixel" },
+        { "id": "d", "text": "Đơn vị cho flex items" }
+      ],
+      "correctKey": "a",
+      "explanation": "Container query units (cqw, cqh, cqi, cqb, cqmin, cqmax) tương đối với container dimensions. 1cqi = 1% chiều rộng container. Cần parent có container-type. Tương tự vw/vh nhưng cho container."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi nào nên dùng `clamp()` cho responsive typography?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Để tạo fluid typography thay đổi liên tục giữa min và max theo viewport, không cần breakpoints" },
+        { "id": "b", "text": "Để fix font size cố định" },
+        { "id": "c", "text": "Để tắt responsive behavior" },
+        { "id": "d", "text": "Chỉ cho heading styles" }
+      ],
+      "correctKey": "a",
+      "explanation": "`clamp(min, preferred, max)`: preferred có thể là biểu thức viewport-relative (VD: 5vw). font-size: clamp(16px, 2vw + 12px, 24px) tạo fluid typography. Nhỏ nhất 16px, lớn nhất 24px, interpolated theo viewport."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `@media (prefers-color-scheme: dark)` và regular media queries là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "prefers-color-scheme là media feature cho user preference (dark/light mode), không phải viewport size" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "prefers-color-scheme chỉ cho mobile" },
+        { "id": "d", "text": "prefers-color-scheme bắt buộc phải dùng" }
+      ],
+      "correctKey": "a",
+      "explanation": "prefers-color-scheme nhắm đến OS/browser dark/light mode preference của user. Ngoài ra còn có prefers-reduced-motion, prefers-contrast, prefers-reduced-transparency."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đơn vị nào thay đổi khi browser URL bar ẩn/hiện trên mobile?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "vh — dvh thì động (thay đổi theo URL bar)" },
+        { "id": "b", "text": "vw" },
+        { "id": "c", "text": "px" },
+        { "id": "d", "text": "rem" }
+      ],
+      "correctKey": "a",
+      "explanation": "vh thay đổi khi URL bar ẩn/hiện (dùng full viewport height không động). dvh (dynamic viewport height) phản ánh trạng thái dynamic của viewport. svh (small viewport height) dùng trạng thái luôn hiện. Dùng dvh cho full-height mobile layouts."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Media query `@media (orientation: landscape)` nhắm đến gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Devices có viewport width lớn hơn height" },
+        { "id": "b", "text": "Devices có viewport height lớn hơn width" },
+        { "id": "c", "text": "Devices có cảm biến landscape" },
+        { "id": "d", "text": "Tất cả devices" }
+      ],
+      "correctKey": "a",
+      "explanation": "orientation: landscape = viewport width > height. orientation: portrait = viewport height > width. Orientation dựa trên viewport dimensions, không phải device orientation sensor."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "break-inside: avoid trong multi-column layout làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Ngăn column break bên trong phần tử đó" },
+        { "id": "b", "text": "Cho phép break bên trong" },
+        { "id": "c", "text": "Tạo column break" },
+        { "id": "d", "text": "Chỉ hoạt động với grid" }
+      ],
+      "correctKey": "a",
+      "explanation": "break-inside: avoid ngăn column/page break bên trong phần tử. Dùng cho cards hoặc images trong multi-column layout để không bị cắt ngang."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Fluid typography dùng calc() và viewport units là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Font size tính bằng biểu thức như calc(16px + 2vw) — tự động thay đổi theo viewport mà không cần breakpoints" },
+        { "id": "b", "text": "Font size cố định" },
+        { "id": "c", "text": "Font size chỉ thay đổi trên mobile" },
+        { "id": "d", "text": "Chỉ dùng cho images" }
+      ],
+      "correctKey": "a",
+      "explanation": "Fluid typography: font-size: calc(16px + 0.5vw) hoặc clamp(16px, 2vw + 14px, 20px). Tự động scale theo viewport. Kết hợp với clamp() cho min/max bounds."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "CSS Grid với `auto-fill` vs `auto-fit` khác nhau thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "auto-fill tạo columns dù có items hay không (preserve space); auto-fit collapse empty columns (items stretch to fill)" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "auto-fit tạo nhiều columns hơn" },
+        { "id": "d", "text": "auto-fill chỉ dùng cho flexbox" }
+      ],
+      "correctKey": "a",
+      "explanation": "repeat(auto-fill, minmax(100px, 1fr)) vs repeat(auto-fit, minmax(100px, 1fr)). auto-fill: columns rỗng vẫn chiếm space. auto-fit: columns rỗng collapse, items stretch. Dùng auto-fit khi muốn items fill container."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Container query `@container` có thể query properties nào của container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "size features (width, height, inline-size, block-size) và style features (color, resolution)" },
+        { "id": "b", "text": "Chỉ width" },
+        { "id": "c", "text": "Chỉ viewport properties" },
+        { "id": "d", "text": "Chỉ custom properties" }
+      ],
+      "correctKey": "a",
+      "explanation": "@container hỗ trợ size features (width, height, inline-size, block-size, aspect-ratio, orientation) và style features (color, resolution). VD: @container (color: dark mode) style queries."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa `@media (pointer: coarse)` và `@media (pointer: fine)` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "coarse = touch devices (finger); fine = pointing devices (mouse, stylus)" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "coarse = keyboard navigation" },
+        { "id": "d", "text": "Chỉ cho mobile" }
+      ],
+      "correctKey": "a",
+      "explanation": "pointer media feature mô tả độ chính xác của pointing device. coarse = touch/finger (không chính xác); fine = mouse/stylus (chính xác); none = no pointing device. Dùng để điều chỉnh touch targets (44px minimum)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Media query `@media (scripting: none)` nhắm đến gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Devices hoặc browser settings có JavaScript bị vô hiệu hóa" },
+        { "id": "b", "text": "Devices có JavaScript được bật" },
+        { "id": "c", "text": "Browser không hỗ trợ scripts" },
+        { "id": "d", "text": "Server-side rendering" }
+      ],
+      "correctKey": "a",
+      "explanation": "scripting: none = JavaScript disabled hoặc không supported. scripting: enabled = JavaScript available. scripting: initial-only = JavaScript chỉ chạy lúc load, không sau."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Custom media queries (`@custom-media`) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cho phép định nghĩa và reuse media query aliases, ví dụ: @custom-media --wide (max-width: 1200px)" },
+        { "id": "b", "text": "Media queries mặc định của browser" },
+        { "id": "c", "text": "Media queries cho custom elements" },
+        { "id": "d", "text": "Deprecated feature" }
+      ],
+      "correctKey": "a",
+      "explanation": "@custom-media cho phép định nghĩa reusable media query aliases ở đầu stylesheet. VD: @custom-media --mobile (max-width: 480px); Dùng: @media (--mobile) { ... }"
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Media query `@media (dynamic-range: high)` nhắm đến gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Devices hỗ trợ high dynamic range (HDR) displays" },
+        { "id": "b", "text": "Devices có độ tương phản cao" },
+        { "id": "c", "text": "Devices có resolution cao" },
+        { "id": "d", "text": "Video HDR content" }
+      ],
+      "correctKey": "a",
+      "explanation": "dynamic-range: high = device hỗ trợ HDR displays (VD: Apple XDR, some Android devices). Cho phép điều chỉnh colors và contrast cho HDR screens."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa resolution media feature và device-pixel-ratio là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "resolution = pixel density của output device (VD: 2dppx); device-pixel-ratio là legacy alias không được khuyến khích" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "device-pixel-ratio là tiêu chuẩn mới" },
+        { "id": "d", "text": "resolution chỉ cho images" }
+      ],
+      "correctKey": "a",
+      "explanation": "resolution (đơn vị: dppx, dpi, dpcm) là tiêu chuẩn. device-pixel-ratio là legacy non-standard. Ngoài ra còn có max-resolution, min-resolution."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Viewport segments (`@media (horizontal-viewport-segments: 2)`) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Số vùng ngang mà viewport được chia (VD: foldable devices, dual-screen phones)" },
+        { "id": "b", "text": "Số màn hình" },
+        { "id": "c", "text": "Viewport width" },
+        { "id": "d", "text": "Độ phân giải" }
+      ],
+      "correctKey": "a",
+      "explanation": "horizontal-viewport-segments và vertical-viewport-segments mô tả số vùng viewport được chia bởi hardware folds (VD: foldable phones như Samsung Fold). Cho phép layout adapt cho fold positions."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Media query `@media (update: fast)` vs `@media (update: slow)` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "update: fast = device có thể redraw frequently (VD: screens); update: slow = device không thể redraw thường xuyên (VD: e-ink); update: none = no redraw capability" },
+        { "id": "b", "text": "Tốc độ scroll" },
+        { "id": "c", "text": "Refresh rate của screen" },
+        { "id": "d", "text": "Network speed" }
+      ],
+      "correctKey": "a",
+      "explanation": "update media feature mô tả tần suất device có thể thay đổi output. Dùng để quyết định có nên dùng animations và transitions hay không."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS `environment()` function dùng cho gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Truy cập safe-area-insets của device (VD: notch, home indicator) cho layout không bị che khuất" },
+        { "id": "b", "text": "Environment variables của server" },
+        { "id": "c", "text": "Browser settings" },
+        { "id": "d", "text": "CSS variables thông thường" }
+      ],
+      "correctKey": "a",
+      "explanation": "env(safe-area-inset-*) truy cập các safe area insets cho notch, home indicator trên iPhone. VD: padding-bottom: env(safe-area-inset-bottom). Luôn kết hợp với fallback values."
+    }
+  ]
+}

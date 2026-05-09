@@ -1,0 +1,343 @@
+{
+  "topicSlug": "css-grid",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào kích hoạt CSS Grid layout trên một container?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "grid: enable" },
+        { "id": "b", "text": "display: grid" },
+        { "id": "c", "text": "grid-layout: grid" },
+        { "id": "d", "text": "layout: grid" }
+      ],
+      "correctKey": "b",
+      "explanation": "`display: grid` (hoặc `display: inline-grid`) kích hoạt CSS Grid layout. Tất cả direct children tự động trở thành grid items. Không giống flexbox (một chiều), CSS Grid hoạt động trong hai chiều — rows VÀ columns đồng thời."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`grid-template-columns: 1fr 1fr 1fr` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tạo ba rows bằng nhau" },
+        { "id": "b", "text": "Tạo ba columns, mỗi chiếm 1/3 không gian khả dụng" },
+        { "id": "c", "text": "Tạo ba cột cố định 1px" },
+        { "id": "d", "text": "Tạo ba grid tracks với khoảng cách 1fr giữa chúng" }
+      ],
+      "correctKey": "b",
+      "explanation": "`1fr 1fr 1fr` tạo ba columns bằng nhau, mỗi chiếm 1/3 không gian khả dụng. fr (fraction unit) chia không gian còn lại sau khi fixed sizes được tính."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt chính giữa CSS Grid và Flexbox là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Grid dùng cho layout một chiều; Flexbox cho layout hai chiều" },
+        { "id": "b", "text": "Grid cho layout hai chiều (rows và columns); Flexbox cho layout một chiều (hàng hoặc cột)" },
+        { "id": "c", "text": "Chúng giống nhau" },
+        { "id": "d", "text": "Flexbox cũ hơn Grid" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS Grid: hai chiều — bạn kiểm soát cả rows và columns đồng thời. Flexbox: một chiều — items theo hàng hoặc cột. Grid tốt cho page layouts; Flexbox tốt cho components và navigation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`grid-template-columns: repeat(3, 1fr)` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tạo 3 columns bằng nhau (giống 1fr 1fr 1fr)" },
+        { "id": "b", "text": "Tạo 3 rows" },
+        { "id": "c", "text": "Tạo 3 columns với khoảng cách cố định" },
+        { "id": "d", "text": "Tạo 1 column với 3 items" }
+      ],
+      "correctKey": "a",
+      "explanation": "`repeat(3, 1fr)` lặp lại `1fr` 3 lần → giống `1fr 1fr 1fr`. repeat() viết tắt cho các patterns lặp, rút gọn khai báo."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`grid-column: 1 / 3` nghĩa là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Item bắt đầu ở column line 1 và kết thúc ở column line 3" },
+        { "id": "b", "text": "Item chiếm 3 columns bắt đầu từ column 1" },
+        { "id": "c", "text": "Item bắt đầu ở column 1 và kết thúc ở column 1" },
+        { "id": "d", "text": "Item ở hàng 1, column 3" }
+      ],
+      "correctKey": "a",
+      "explanation": "`grid-column: 1 / 3` đặt grid item từ column line 1 đến column line 3 (trải dài 2 columns: lines 1→2 và 2→3). shorthand cho grid-column-start / grid-column-end."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Grid line là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đường kẻ ngang hoặc dọc xác định vị trí grid tracks và items" },
+        { "id": "b", "text": "Đường bao của grid item" },
+        { "id": "c", "text": "Đường gạch ngang giữa rows" },
+        { "id": "d", "text": "Border của container" }
+      ],
+      "correctKey": "a",
+      "explanation": "Grid lines là các đường tạo thành lưới grid. Có column lines (dọc) và row lines (ngang). Items được định vị bằng số line."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Grid cell là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Giao điểm của một row và một column" },
+        { "id": "b", "text": "Ô lớn nhất trong grid" },
+        { "id": "c", "text": "Một grid item cụ thể" },
+        { "id": "d", "text": "Container chính" }
+      ],
+      "correctKey": "a",
+      "explanation": "Grid cell là đơn vị nhỏ nhất của grid — giao điểm của một row track và một column track. Giống như một ô trong bảng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`grid-template-rows: auto 100px auto` định nghĩa gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "3 rows: row 1 tự động, row 2 100px, row 3 tự động" },
+        { "id": "b", "text": "3 columns" },
+        { "id": "c", "text": "1 row với 3 sections" },
+        { "id": "d", "text": "3 rows, mỗi 100px" }
+      ],
+      "correctKey": "a",
+      "explanation": "`grid-template-rows` định nghĩa chiều cao của mỗi row. `auto` = kích thước tự động theo nội dung. 100px = row cố định. Có thể mix units."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Grid track là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Khoảng cách giữa hai grid lines liền kề (row hoặc column)" },
+        { "id": "b", "text": "Đường bao của grid" },
+        { "id": "c", "text": "Một grid item" },
+        { "id": "d", "text": "Gap giữa items" }
+      ],
+      "correctKey": "a",
+      "explanation": "Grid track là không gian giữa hai grid lines liền kề. Có row tracks (tracks ngang) và column tracks (tracks dọc). Kích thước track được định nghĩa bởi grid-template-rows/columns."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `grid-area: 1 / 1 / 3 / 3` và `grid-area: 2 / 2 / 4 / 4` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Grid area thứ hai lớn gấp đôi" },
+        { "id": "b", "text": "Grid area thứ nhất trải dài 2 columns và 2 rows; grid area thứ hai cũng vậy, nhưng ở vị trí khác" },
+        { "id": "c", "text": "Chúng giống nhau" },
+        { "id": "d", "text": "Grid area thứ hai trải dài 4 columns" }
+      ],
+      "correctKey": "b",
+      "explanation": "`grid-area: row-start / col-start / row-end / col-end`. Cả hai areas đều trải dài 2×2 cells nhưng ở vị trí khác nhau trong grid."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`grid-template-columns: minmax(100px, 1fr) 2fr` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Column 1: tối thiểu 100px, tối đa 1fr; Column 2: 2fr" },
+        { "id": "b", "text": "Hai columns bằng nhau" },
+        { "id": "c", "text": "Column 1: 100px; Column 2: 2fr" },
+        { "id": "d", "text": "Sai cú pháp" }
+      ],
+      "correctKey": "a",
+      "explanation": "`minmax(min, max)` đặt kích thước track giữa min và max. Column 1 có min=100px, max=1fr (có thể mở rộng). Column 2 luôn 2fr."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Grid item có thể đặt vào grid area không thuộc về nó không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Có — grid items có thể trải dài nhiều tracks" },
+        { "id": "b", "text": "Không — mỗi item phải nằm trong cell riêng" },
+        { "id": "c", "text": "Chỉ khi không có gap" },
+        { "id": "d", "text": "Chỉ trong flex layout" }
+      ],
+      "correctKey": "a",
+      "explanation": "Grid items có thể trải dài nhiều rows/columns bằng grid-column/row span. Nhiều items có thể chồng lên nhau nếu placed vào cùng grid area."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.grid {\n  display: grid;\n  grid-template-columns: repeat(2, 1fr);\n  gap: 10px;\n}\n.item:first-child {\n  grid-column: span 2;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Item đầu tiên trải dài cả 2 columns (full width); các items khác bên dưới" },
+        { "id": "b", "text": "Tất cả items xếp 2 columns" },
+        { "id": "c", "text": "Item đầu tiên ở góc trái" },
+        { "id": "d", "text": "Grid bị lỗi" }
+      ],
+      "correctKey": "a",
+      "explanation": "`grid-column: span 2` làm item đầu tiên trải dài cả 2 columns. grid-column: span N = trải dài N tracks."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Grid line numbering bắt đầu từ đâu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Từ 1 (không phải 0)" },
+        { "id": "b", "text": "Từ 0" },
+        { "id": "c", "text": "Từ -1 (cho phép đếm từ cuối)" },
+        { "id": "d", "text": "Tùy thuộc grid" }
+      ],
+      "correctKey": "a",
+      "explanation": "Grid lines bắt đầu từ 1. Line 1 là mép trái/trên. Có thể dùng số âm: -1 = mép phải/dưới (như Python indexing)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`grid-auto-rows` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đặt kích thước cho các rows được tạo tự động (implicit rows)" },
+        { "id": "b", "text": "Tạo rows tự động" },
+        { "id": "c", "text": "Đặt số lượng rows" },
+        { "id": "d", "text": "Xóa rows" }
+      ],
+      "correctKey": "a",
+      "explanation": "`grid-auto-rows` đặt kích thước cho implicit rows (rows được tạo tự động khi grid items vượt quá explicit grid). grid-auto-flow kiểm soát thứ tự implicit tracks được tạo."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Grid axis là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hàng (row axis) và cột (column axis)" },
+        { "id": "b", "text": "Đường chéo của grid" },
+        { "id": "c", "text": "Border của grid" },
+        { "id": "d", "text": "Gap giữa items" }
+      ],
+      "correctKey": "a",
+      "explanation": "Grid có hai axes: row axis (hàng ngang, block axis) và column axis (cột dọc, inline axis). Các thuộc tính alignment hoạt động trên cả hai axes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa explicit và implicit grid?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Explicit grid được định nghĩa bằng grid-template; implicit grid được tạo tự động khi items vượt quá" },
+        { "id": "b", "text": "Implicit grid lớn hơn explicit" },
+        { "id": "c", "text": "Chúng giống nhau" },
+        { "id": "d", "text": "Explicit grid là 2D; implicit là 1D" }
+      ],
+      "correctKey": "a",
+      "explanation": "Explicit grid: được định nghĩa rõ ràng bằng grid-template-rows/columns. Implicit grid: được tạo tự động cho items ngoài explicit grid. Dùng grid-auto-* để kiểm soát implicit tracks."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.grid {\n  display: grid;\n  grid-template-columns: 50px 50px;\n  grid-auto-columns: 100px;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Explicit columns 50px; implicit columns 100px" },
+        { "id": "b", "text": "Tất cả columns 50px" },
+        { "id": "c", "text": "Tất cả columns 100px" },
+        { "id": "d", "text": "Sai cú pháp" }
+      ],
+      "correctKey": "a",
+      "explanation": "grid-template-columns định nghĩa explicit columns (50px). grid-auto-columns đặt kích thước cho implicit columns (100px)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS Subgrid là gì và tại sao nó quan trọng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Subgrid cho phép nested grid items tham gia vào grid tracks của parent, căn chỉnh với siblings dù ở deep nesting" },
+        { "id": "b", "text": "Subgrid tạo grid con bên trong grid cha" },
+        { "id": "c", "text": "Subgrid cho phép responsive columns" },
+        { "id": "d", "text": "Subgrid chỉ hoạt động trong flex container" }
+      ],
+      "correctKey": "a",
+      "explanation": "Subgrid cho phép grid items có `grid-template-columns: subgrid` để inherit parent grid tracks. Lý tưởng cho card layouts nơi internal elements cần căn chỉnh với siblings."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.container {\n  display: grid;\n  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Grid tự động tạo columns tối thiểu 100px, tối đa 1fr, tối ưu số columns cho không gian" },
+        { "id": "b", "text": "Grid có đúng 3 columns" },
+        { "id": "c", "text": "Grid chỉ có 1 column" },
+        { "id": "d", "text": "Grid tạo rows tự động" }
+      ],
+      "correctKey": "a",
+      "explanation": "`repeat(auto-fill, minmax(100px, 1fr))` là responsive grid pattern không cần media queries. auto-fill tạo maximum columns có thể vừa, mỗi column tối thiểu 100px."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS Grid có thể được dùng để tạo magazine-style layouts không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Có — dùng grid-template-areas và span để tạo complex overlapping layouts" },
+        { "id": "b", "text": "Không — chỉ dùng cho simple grids" },
+        { "id": "c", "text": "Chỉ với JavaScript" },
+        { "id": "d", "text": "Chỉ với flexbox" }
+      ],
+      "correctKey": "a",
+      "explanation": "grid-template-areas cho phép đặt tên areas và gán chúng vào items: `.item-a { grid-area: header; }`. Span cho phép items trải dài nhiều cells cho complex layouts."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.grid {\n  display: grid;\n  grid-template-areas:\n    'header header'\n    'sidebar content'\n    'footer footer';\n  grid-template-rows: 50px 1fr 50px;\n}\n.header { grid-area: header; }\n.sidebar { grid-area: sidebar; }\n.content { grid-area: content; }\n.footer { grid-area: footer; }",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Layout với header (2 columns), sidebar, content, footer" },
+        { "id": "b", "text": "Layout chỉ có header" },
+        { "id": "c", "text": "Layout dọc" },
+        { "id": "d", "text": "Lỗi grid-template-areas" }
+      ],
+      "correctKey": "a",
+      "explanation": "grid-template-areas định nghĩa named areas bằng strings. 'header header' = header trải dài 2 columns. 'sidebar content' = sidebar và content. 'footer footer' = footer trải dài 2 columns."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS Grid có thể kết hợp với flexbox không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Có — dùng grid cho page layout, flexbox cho component-level layout" },
+        { "id": "b", "text": "Không — chỉ dùng một trong hai" },
+        { "id": "c", "text": "Có — nhưng gây conflict" },
+        { "id": "d", "text": "Chỉ grid có thể chứa flexbox" }
+      ],
+      "correctKey": "a",
+      "explanation": "Grid và flexbox bổ sung cho nhau. Grid cho overall layout (page structure, two-dimensional alignment). Flexbox cho components (navigation, card internals, one-dimensional flow). Không conflict — chúng giải quyết các vấn đề khác nhau."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\n.container {\n  display: grid;\n  grid-template-columns: [a] 1fr [b] 1fr [c] 1fr [d];\n}\n.item {\n  grid-column: a / c;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Item trải dài từ column line 'a' đến 'c' (2 columns)" },
+        { "id": "b", "text": "Item ở column a" },
+        { "id": "c", "text": "Item ở column c" },
+        { "id": "d", "text": "Lỗi cú pháp" }
+      ],
+      "correctKey": "a",
+      "explanation": "Grid lines có thể được đặt tên bằng cách wrapping trong []. `grid-column: a / c` nhắm đến column line từ named line 'a' đến 'c'. Không cần nhớ số line."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS Grid `place-items` và `place-content` khác nhau thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "place-items căn chỉnh all items trong grid cell; place-content căn chỉnh entire grid trong container" },
+        { "id": "b", "text": "Chúng giống nhau" },
+        { "id": "c", "text": "place-items chỉ cho rows; place-content chỉ cho columns" },
+        { "id": "d", "text": "place-items cho implicit grid; place-content cho explicit" }
+      ],
+      "correctKey": "a",
+      "explanation": "place-items (align-items + justify-items) căn chỉnh tất cả items trong grid cell của chúng. place-content (align-content + justify-content) căn chỉnh entire grid track trong container."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS Grid alignment properties hoạt động trên mấy chiều?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "align-* và justify-* hoạt động độc lập trên 2 chiều (row axis và column axis)" },
+        { "id": "b", "text": "Chỉ 1 chiều" },
+        { "id": "c", "text": "3 chiều" },
+        { "id": "d", "text": "align-* cho cả hai" }
+      ],
+      "correctKey": "a",
+      "explanation": "Grid alignment: justify-* (row axis / inline direction), align-* (column axis / block direction). justify-items, justify-content, justify-self; align-items, align-content, align-self."
+    }
+  ]
+}

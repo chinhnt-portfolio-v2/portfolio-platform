@@ -1,0 +1,247 @@
+{
+  "topicSlug": "react-hooks",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "useState trả về gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một giá trị state đơn lẻ" },
+        { "id": "b", "text": "Một tuple [stateValue, stateSetter]" },
+        { "id": "c", "text": "Một object với các properties `value` và `setValue`" },
+        { "id": "d", "text": "Một ref object với property `.current`" }
+      ],
+      "correctKey": "b",
+      "explanation": "useState trả về một tuple (array 2 phần tử): `[currentState, setStateFunction]`. Pattern idiomatic là `const [count, setCount] = useState(0)`. Setter có thể nhận giá trị mới hoặc functional update `setCount(prev => prev + 1)`. Options A, C, và D mô tả các patterns khác nhưng không phải những gì useState trả về."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Cách đúng để khởi tạo useState cho một giá trị có thể là undefined là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "const [user, setUser] = useState<User>(undefined)" },
+        { "id": "b", "text": "const [user, setUser] = useState<User | undefined>(undefined)" },
+        { "id": "c", "text": "const [user, setUser] = useState({} as User)" },
+        { "id": "d", "text": "const [user, setUser] = useState<User>()" }
+      ],
+      "correctKey": "b",
+      "explanation": "Option B đúng khi biểu thị union type: state có thể là User hoặc undefined. Option A infer `undefined` là type (không phải `User | undefined`), mất type User. Option C ép một empty object làm initial value, gây hiểu nhầm — user không thực sự là empty User lúc bắt đầu. Option D's syntax không hợp lệ — useState yêu cầu một initial value argument."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "useEffect với một dependency array rỗng `[]` chạy khi nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Sau mỗi lần render của component" },
+        { "id": "b", "text": "Chỉ một lần sau khi component mount (initial render)" },
+        { "id": "c", "text": "Không bao giờ trong vòng đời của component" },
+        { "id": "d", "text": "Chỉ khi một dependency nào đó trong array thay đổi" }
+      ],
+      "correctKey": "b",
+      "explanation": "Một dependency array rỗng `[]` bảo React: 'effect này không có dependencies, vậy đừng chạy lại nó'. React coi đây là 'chạy một lần sau mount'. Đây là pattern tiêu chuẩn cho effects thiết lập browser-side resources (event listeners, timers, subscriptions) cần cleanup. Nếu không có array nào, effect chạy sau mỗi render. Với một non-empty array, nó chạy khi những deps đó thay đổi."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Một bug phổ biến khi dùng useEffect mà không có dependency array là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Effect sẽ chỉ chạy trong development mode, không chạy trong production" },
+        { "id": "b", "text": "Effect chạy sau mỗi render, có thể gây stale closure problems, infinite loops, hoặc performance issues" },
+        { "id": "c", "text": "TypeScript sẽ báo type error vì useEffect yêu cầu một dependency array" },
+        { "id": "d", "text": "Effect sẽ bị garbage collected ngay lập tức và không bao giờ thực thi" }
+      ],
+      "correctKey": "b",
+      "explanation": "Gọi `useEffect(() => { ... })` không có dependency array làm effect chạy sau mỗi render — bao gồm potential infinite loops nếu effect set state. Đây là nguồn phổ biến của performance bugs và stale closures (nơi một effect capture một biến stale từ render trước). Cách đúng: luôn chỉ định một array: `[]` cho mount-only, hoặc `[deps]` cho when-it-changes."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "useRef trả về gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một state value trigger re-renders khi changed" },
+        { "id": "b", "text": "Một ref object có property `.current` có thể mutate, persist across renders mà không gây re-renders" },
+        { "id": "c", "text": "Một callback function được gọi sau mỗi render" },
+        { "id": "d", "text": "Một ref object tự động attach vào một DOM element on mount" }
+      ],
+      "correctKey": "b",
+      "explanation": "useRef trả về một ref object với một property `.current` có thể mutate. Cập nhật `.current` KHÔNG gây re-render — đây là điều làm nó phù hợp để lưu trữ các giá trị mutable persist across renders (timers, giá trị trước đó, DOM element references). Object được return ổn định qua các renders. Option D mô tả `ref` callback pattern, không phải những gì useRef trả về."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "useEffect luôn chạy trước khi browser paint màn hình.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Mặc định, useEffect chạy sau khi browser đã paint — React defer nó cho đến sau khi paint được commit. Đây là lý do tại sao các effects cập nhật DOM visual (ví dụ: toggle một class) dùng flush sync pattern hoặc layout effects nếu synchronous painting được yêu cầu. Để chạy trước paint, dùng useLayoutEffect thay vì useEffect, cái mà chạy synchronously sau tất cả DOM mutations nhưng trước paint."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "useMemo làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó memoizes một component để nó chỉ re-render khi props thay đổi" },
+        { "id": "b", "text": "Nó memoizes kết quả của một phép tính, chỉ tính lại khi dependencies thay đổi" },
+        { "id": "c", "text": "Nó ngăn một function được tạo lại trên mỗi render" },
+        { "id": "d", "text": "Nó caches một API response cho vòng đời của component" }
+      ],
+      "correctKey": "b",
+      "explanation": "useMemo memoizes KẾT QUẢ của một phép tính đắt giá — `const memoizedValue = useMemo(() => computeExpensive(a, b), [a, b])`. Function bên trong chỉ được thực thi lại khi `a` hoặc `b` thay đổi. Option A mô tả React.memo (component memoization). Option C mô tả useCallback (function reference memoization). Option D mô tả caching, mà useMemo cung cấp, nhưng chỉ trong một component instance và dependency set nhất định."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa useCallback và useMemo là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useCallback memoizes một function reference; useMemo memoizes một computed value — chúng tương đương vì useMemo(() => fn, deps) === useCallback(fn, deps)" },
+        { "id": "b", "text": "useCallback để ngăn re-renders; useMemo để ngăn expensive re-computations" },
+        { "id": "c", "text": "Cả A và B đều đúng" },
+        { "id": "d", "text": "useCallback deprecated trong React 18; nên dùng useMemo thay vì" }
+      ],
+      "correctKey": "c",
+      "explanation": "Hai cái này về cấu trúc tương đương (`useCallback(fn, deps)` là `useMemo(() => fn, deps)`), nhưng phục vụ intent khác nhau: useCallback giữ một stable function reference (cho props hoặc deps), trong khi useMemo caches một computed value. Option D sai — useCallback không deprecated. Việc chọn cái nào là về sự rõ ràng của intent trong codebase."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Output của component này là gì?\n\nfunction Counter() {\n  const [count, setCount] = useState(0);\n\n  useEffect(() => {\n    const id = setInterval(() => {\n      setCount(c => c + 1);\n    }, 1000);\n    return () => clearInterval(id);\n  }, []);\n\n  return <div>{count}</div>;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Một counter tăng mỗi giây, bắt đầu từ 0" },
+        { "id": "b", "text": "Một counter chỉ tăng một lần rồi dừng" },
+        { "id": "c", "text": "Một component crash vì setInterval không thể dùng trong useEffect" },
+        { "id": "d", "text": "Một counter tăng cực nhanh do thiếu cleanup" }
+      ],
+      "correctKey": "a",
+      "explanation": "Empty dependency array `[]` đảm bảo interval được thiết lập một lần on mount, và cleanup function clears nó on unmount — ngăn memory leaks. Dùng functional update `c => c + 1` bên trong setInterval đảm bảo count luôn phản ánh giá trị mới nhất (tránh stale closure problem). Kết quả là một counter tăng sạch mỗi giây."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Vấn đề 'stale closure' trong useEffect là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Khi một closure capture một biến từ một render trước đó và sử dụng giá trị outdated của nó thay vì giá trị hiện tại" },
+        { "id": "b", "text": "Khi callback của useEffect được gọi trước khi component render" },
+        { "id": "c", "text": "Khi useEffect chạy hai lần trong React 18 Strict Mode" },
+        { "id": "d", "text": "Khi một prop thay đổi nhưng component không re-render" }
+      ],
+      "correctKey": "a",
+      "explanation": "Một stale closure xảy ra khi một function 'close over' một biến từ scope tạo của nó, nhưng giá trị biến đó đã thay đổi kể từ khi closure được tạo. Trong useEffect, bỏ qua một biến khỏi dependency array có nghĩa là effect sẽ luôn dùng giá trị biến từ lần render đầu tiên. Ví dụ: `useEffect(() => { setInterval(() => setCount(count), 1000) }, [])` dùng count=0 mãi mãi — fix là `[count]` hoặc functional update pattern `setCount(c => c + 1)`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi nào nên dùng useLayoutEffect thay vì useEffect?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Khi bạn cần đọc hoặc ghi DOM synchronously trước khi browser paint" },
+        { "id": "b", "text": "Khi effect chậm và không nên block UI" },
+        { "id": "c", "text": "Khi effect phụ thuộc vào rendered output của component" },
+        { "id": "d", "text": "Khi bạn cần effect chạy ở background trong khi user tương tác với page" }
+      ],
+      "correctKey": "a",
+      "explanation": "useLayoutEffect chạy synchronously sau DOM mutations nhưng trước khi browser paint — hữu ích để đọc và ghi DOM một cách imperative (ví dụ: đo một DOM element, focus một input). Điều này ngăn visual flicker. Tuy nhiên, nó blocks painting và có thể gây hại performance nếu dùng quá nhiều. Trong hầu hết các trường hợp, useEffect là đủ và được ưa chuộng hơn. Nếu bạn thấy TypeScript warnings về `useLayoutEffect` trong React 18, bạn có thể cần thêm `// eslint-disable`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "useContext nhận gì và trả về gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó nhận một Context object và trả về giá trị context hiện tại cho context đó" },
+        { "id": "b", "text": "Nó nhận một Provider component và trả về giá trị được truyền cho Provider đó" },
+        { "id": "c", "text": "Nó nhận một default value và trả về nó nếu không có Provider nào được tìm thấy" },
+        { "id": "d", "text": "Nó tạo một Context mới và trả về một Provider-Value pair" }
+      ],
+      "correctKey": "a",
+      "explanation": "useContext nhận một Context object (được tạo bởi `React.createContext`) và trả về giá trị context hiện tại. Giá trị đến từ `<Context.Provider>` gần nhất phía trên trong tree. Nếu không có Provider, nó trả về `defaultValue` truyền cho createContext. Option B nhầm lẫn Consumer (useContext) với Provider (JSX component). Option D mô tả `createContext` chính nó."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Quy tắc chính mà TẤT CẢ React hooks phải tuân theo là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hooks phải được gọi bên trong các câu lệnh có điều kiện để đảm bảo chúng chỉ chạy khi cần" },
+        { "id": "b", "text": "Hooks phải được gọi ở top level của một React function component hoặc custom hook — không bao giờ bên trong conditions, loops, hoặc nested functions" },
+        { "id": "c", "text": "Hooks phải được gọi sau lần render đầu tiên của component" },
+        { "id": "d", "text": "Hooks phải được khai báo là async functions" }
+      ],
+      "correctKey": "b",
+      "explanation": "React dựa vào thứ tự gọi để duy trì hook state. Nếu hooks được gọi có điều kiện (bên trong if/else) hoặc bên trong loops, thứ tự gọi thay đổi giữa các renders, gây ra state bị mismatch giữa các hooks khác nhau. Đây là 'Rules of Hooks'. React enforce điều này at runtime và ESLint's `react-hooks/rules-of-hooks` enforce nó statically. Custom hooks chứa hooks cũng phải tuân theo quy tắc này."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Custom hook trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một function bắt đầu với 'use' và có thể gọi các hooks khác — dùng để extract và chia sẻ stateful logic giữa các components" },
+        { "id": "b", "text": "Một hook được build-in vào React và có thể được customize qua options" },
+        { "id": "c", "text": "Một higher-order component wrap một functional component" },
+        { "id": "d", "text": "Một TypeScript utility type để extend React hook types" }
+      ],
+      "correctKey": "a",
+      "explanation": "Custom hooks là các JavaScript functions có tên bắt đầu với 'use' gọi các hooks khác. Chúng cho phép logic reuse giữa các components mà không có prop-drilling hoặc HOC complexity của các patterns cũ. Ví dụ: `useLocalStorage`, `useDebounce`, `useFetch`. Mỗi component dùng một custom hook nhận state riêng biệt của nó — hook không chia sẻ state giữa các components, nó chỉ chia sẻ logic pattern."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "useRef và useState cùng lưu trữ các giá trị persist across renders. Điểm khác biệt chính là cập nhật .current của useRef KHÔNG trigger re-render.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Đây là sự phân biệt cơ bản: useState trigger re-render khi giá trị thay đổi; useRef thì không. Dùng useRef khi bạn cần lưu trữ một giá trị thay đổi nhưng không nên làm component re-render (timers, giá trị trước đó, mutable objects). Dùng useState khi state changes nên được reflect trong UI."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Output của code này là gì?\n\nfunction Watcher() {\n  const [value, setValue] = useState('');\n  const prevValue = useRef('');\n\n  useEffect(() => {\n    prevValue.current = value;\n  });\n\n  return (\n    <div>\n      <input value={value} onChange={e => setValue(e.target.value)} />\n      <p>Current: {value} | Previous: {prevValue.current}</p>\n    </div>\n  );\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Hiển thị giá trị input hiện tại và giá trị trước đó — cập nhật sau mỗi keystroke" },
+        { "id": "b", "text": "Chỉ hiển thị giá trị hiện tại; giá trị trước luôn rỗng vì useEffect chạy sau render" },
+        { "id": "c", "text": "Gây infinite loop vì useEffect set state bên trong component" },
+        { "id": "d", "text": "TypeScript error vì prevValue không được type đúng" }
+      ],
+      "correctKey": "a",
+      "explanation": "Đây là một 'previous value' pattern cổ điển với useRef. useEffect không có dependency array chạy sau mỗi render, lưu `value` hiện tại vào `prevValue.current`. Vì `prevValue` là một ref, setting `.current` không trigger re-render. Sau mỗi keystroke (render mới), effect từ RENDER TRƯỚC cập nhật `prevValue.current` thành giá trị trước đó, cho bạn 'previous' vs 'current' trong display."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mục đích của hook useId trong React 18 là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tạo unique IDs cho các form elements ổn định across server renders và hydration" },
+        { "id": "b", "text": "Thay thế thư viện uuid để tạo random identifiers" },
+        { "id": "c", "text": "Tạo một unique key cho list items mà không cần data ID" },
+        { "id": "d", "text": "Tạo session IDs persist across page reloads" }
+      ],
+      "correctKey": "a",
+      "explanation": "useId tạo một unique ID string ổn định across server (SSR) và client (hydration). Điều này giải quyết vấn đề dùng `Math.random()` hoặc counters tăng — cái mà tạo các giá trị khác nhau trên server vs client, gây hydration mismatches. Mỗi component instance nhận một unique ID, prefixed bởi tree's context để tránh collisions. Lưu ý: KHÔNG dùng useId cho list keys — hãy dùng stable data IDs thay vào đó."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mục đích của useDeferredValue trong React 18 concurrent mode là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Trì hoãn một state update đến priority thấp hơn để UI vẫn responsive trong các re-renders đắt giá" },
+        { "id": "b", "text": "Trì hoãn rendering của một component đi một số milliseconds cố định" },
+        { "id": "c", "text": "Hoãn fetching data cho đến khi user ngừng tương tác với một input" },
+        { "id": "d", "text": "Cache một giá trị trong một khoảng thời gian xác định trước khi nó trở nên stale" }
+      ],
+      "correctKey": "a",
+      "explanation": "useDeferredValue nhận một giá trị và trả về một phiên bản deferred (priority thấp hơn) của nó. Khi React đang bận rendering một thứ gì đó urgent (ví dụ: user đang gõ), nó có thể defer việc update deferred-value để chạy sau, giữ UI responsive. Điều này hữu ích cho search inputs nơi list filtering đắt giá — search input vẫn responsive trong khi filtered list render ở background. Nó khác với useTransition (đánh dấu updates) và debouncing (trì hoãn ở một tốc độ cố định)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "React 18's Strict Mode gây effects mount, unmount, và remount một cách có chủ đích. Điều này có nghĩa là các effects với cleanup functions không clear resources đúng sẽ leak memory vĩnh viễn.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Double-invocation của Strict Mode (mount → unmount → mount) được thiết kế đặc biệt để surface cleanup bugs — nếu effect leak của bạn trên unmount đầu tiên, mount thứ hai sẽ re-acquire resource, và cleanup chạy lại trên unmount tiếp theo. Properly implemented cleanup (clearing timers, removing event listeners, aborting fetch requests với AbortController) xử lý pattern này đúng. Mục đích là để làm cho bugs visible trong development, không phải để tạo permanent leaks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn có một custom hook `useToggle(initialValue)` trả về `[value, toggle]`. Đoạn code này implement cái gì?\n\nfunction useToggle(initialValue = false): [boolean, () => void] {\n  const [value, setValue] = useState(initialValue);\n  const toggle = useCallback(() => setValue(v => !v), []);\n  return [value, toggle];\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Một memoized toggle hook trả về một stable toggle function — hữu ích để truyền vào các memoized child components" },
+        { "id": "b", "text": "Một toggle hook dùng useCallback không cần thiết vì function reference không cần ổn định" },
+        { "id": "c", "text": "Một hook sẽ gây infinite re-renders vì toggle được gọi bên trong setValue" },
+        { "id": "d", "text": "Một toggle hook chỉ có thể được dùng một lần mỗi component" }
+      ],
+      "correctKey": "a",
+      "explanation": "Đây là một custom hook được implement đúng. Functional update `setValue(v => !v)` tránh stale closure issues. useCallback wrap toggle để cung cấp nó một stable reference across renders — điều này có ý nghĩa khi `toggle` được truyền như một prop đến một React.memo-wrapped child, ngăn các re-renders không cần thiết. Nếu không có child đó, useCallback là optional optimization. Đây là một pattern tiêu chuẩn cho shareable boolean state logic."
+    }
+  ]
+}

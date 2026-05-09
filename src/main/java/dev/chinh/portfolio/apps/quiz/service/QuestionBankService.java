@@ -24,6 +24,8 @@ public class QuestionBankService {
 
     private static final Logger log = LoggerFactory.getLogger(QuestionBankService.class);
     private static final String SEED_PATH = "quiz/topics";
+
+    private static final String[] SUPPORTED_LANGS = {"en", "vi"};
     private static final Map<String, String[]> TOPIC_SUBPATHS = Map.of(
             "java-core", new String[]{"java"},
             "spring-boot", new String[]{"spring"},
@@ -76,22 +78,24 @@ public class QuestionBankService {
         log.info("Seeding quiz question bank...");
         int total = 0;
         for (String topicSlug : TOPIC_SUBPATHS.keySet()) {
-            try {
-                int count = loadTopLevel(topicSlug);
-                if (count > 0) log.info("  Loaded {} questions from top-level '{}'", count, topicSlug);
-                total += count;
-            } catch (Exception e) {
-                log.warn("  Could not load top-level '{}': {}", topicSlug, e.getMessage());
-            }
-            String[] subDirs = TOPIC_SUBPATHS.get(topicSlug);
-            if (subDirs != null) {
-                for (String subDir : subDirs) {
-                    try {
-                        int subCount = loadSubTopics(subDir, topicSlug);
-                        if (subCount > 0) log.info("  Loaded {} questions from sub-dir '{}' (parent: '{}')", subCount, subDir, topicSlug);
-                        total += subCount;
-                    } catch (Exception e) {
-                        log.warn("  Could not load sub-dir '{}': {}", subDir, e.getMessage());
+            for (String lang : SUPPORTED_LANGS) {
+                try {
+                    int count = loadTopLevel(topicSlug, lang);
+                    if (count > 0) log.info("  Loaded {} questions from top-level '{}' (lang={})", count, topicSlug, lang);
+                    total += count;
+                } catch (Exception e) {
+                    log.warn("  Could not load top-level '{}' lang={}: {}", topicSlug, lang, e.getMessage());
+                }
+                String[] subDirs = TOPIC_SUBPATHS.get(topicSlug);
+                if (subDirs != null) {
+                    for (String subDir : subDirs) {
+                        try {
+                            int subCount = loadSubTopics(subDir, topicSlug, lang);
+                            if (subCount > 0) log.info("  Loaded {} questions from sub-dir '{}' (parent='{}', lang={})", subCount, subDir, topicSlug, lang);
+                            total += subCount;
+                        } catch (Exception e) {
+                            log.warn("  Could not load sub-dir '{}' lang={}: {}", subDir, lang, e.getMessage());
+                        }
                     }
                 }
             }
@@ -99,15 +103,15 @@ public class QuestionBankService {
         log.info("Quiz seed complete: {} total questions.", total);
     }
 
-    private int loadTopLevel(String topicSlug) throws IOException {
-        ClassPathResource resource = new ClassPathResource(SEED_PATH + "/" + topicSlug + ".json");
+    private int loadTopLevel(String topicSlug, String lang) throws IOException {
+        ClassPathResource resource = new ClassPathResource(SEED_PATH + "/" + lang + "/" + topicSlug + ".json");
         if (!resource.exists()) return 0;
         try (InputStream is = resource.getInputStream()) {
-            return parseAndSave(is, topicSlug);
+            return parseAndSave(is, topicSlug, lang);
         }
     }
 
-    private int loadSubTopics(String subDir, String parentSlug) throws IOException {
+    private int loadSubTopics(String subDir, String parentSlug, String lang) throws IOException {
         ClassPathResource dirResource = new ClassPathResource(SEED_PATH + "/" + subDir);
         if (!dirResource.exists()) return 0;
 
@@ -136,10 +140,10 @@ public class QuestionBankService {
                     new String[]{};
 
             for (String file : knownFiles) {
-                ClassPathResource fileRes = new ClassPathResource(SEED_PATH + "/" + subDir + "/" + file);
+                ClassPathResource fileRes = new ClassPathResource(SEED_PATH + "/" + lang + "/" + subDir + "/" + file);
                 if (fileRes.exists()) {
                     try (InputStream fis = fileRes.getInputStream()) {
-                        saved += parseAndSave(fis, parentSlug);
+                        saved += parseAndSave(fis, parentSlug, lang);
                     } catch (Exception e) {
                         log.warn("    Failed to parse '{}': {}", file, e.getMessage());
                     }
@@ -148,7 +152,7 @@ public class QuestionBankService {
         return saved;
     }
 
-    private int parseAndSave(InputStream is, String topicSlug) throws IOException {
+    private int parseAndSave(InputStream is, String topicSlug, String lang) throws IOException {
         JsonNode root = objectMapper.readTree(is);
         JsonNode questionsNode = root.get("questions");
         if (questionsNode == null || !questionsNode.isArray()) return 0;
@@ -171,9 +175,9 @@ public class QuestionBankService {
 
             String sql = String.format(
                     "INSERT INTO quiz_questions (id, topic_slug, level_tag, question_text, " +
-                    "question_type, options, correct_key, explanation, created_at, updated_at) " +
-                    "VALUES (nextval('quiz_questions_id_seq'), '%s', '%s', '%s', '%s', %s, '%s', %s, NOW(), NOW())",
-                    topicSlug, levelTag, questionText, questionType, options, correctKey, explanation);
+                    "question_type, options, correct_key, explanation, lang, created_at, updated_at) " +
+                    "VALUES (nextval('quiz_questions_id_seq'), '%s', '%s', '%s', '%s', %s, '%s', %s, '%s', NOW(), NOW())",
+                    topicSlug, levelTag, questionText, questionType, options, correctKey, explanation, lang);
 
             entityManager.createNativeQuery(sql).executeUpdate();
             saved++;

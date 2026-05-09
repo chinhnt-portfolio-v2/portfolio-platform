@@ -1,0 +1,241 @@
+{
+  "topicSlug": "sd-caching",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích cơ bản của cache trong kiến trúc hệ thống là gì, và đánh đổi quan trọng nhất mà nó mang lại là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache lưu trữ vĩnh viễn dữ liệu được truy cập thường xuyên để thay thế database trở thành kho dữ liệu chính" },
+        { "id": "b", "text": "Cache lưu bản sao dữ liệu được truy cập thường xuyên gần người tiêu dùng hơn nhằm giảm latency và giảm tải cho origin; đánh đổi chính là data staleness — dữ liệu cache có thể lỗi thời so với nguồn tin cậy" },
+        { "id": "c", "text": "Cache là một lớp phần mềm giúp tăng tốc đọc nhưng không thể dùng cho ghi — nó chỉ là tối ưu đọc" },
+        { "id": "d", "text": "Cache loại bỏ hoàn toàn nhu cầu về database bằng cách lưu toàn bộ trạng thái ứng dụng trong bộ nhớ" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cache (từ tiếng Pháp 'cacher' — che giấu) là lớp lưu trữ tạm thời tốc độ cao, giữ bản sao dữ liệu có khả năng được yêu cầu lại. Lợi ích cốt lõi là giảm latency và giảm tải database/backend. Đánh đổi cơ bản là staleness: cache là bản sao, không phải nguồn tin cậy, nên dữ liệu cache có thể khác với origin theo thời gian. Các chiến lược cache invalidation (TTL, event-driven eviction, write-through) là các quyết định thiết kế quan trọng. Phương án A hiểu sai cache là kho lưu trữ vĩnh viễn. Phương án C sai (write-through, write-behind caches tồn tại). Phương án D nguy hiểm."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Cache-aside (lazy loading) là gì, và ưu điểm chính của nó so với các phương án thay thế là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache-aside eager load toàn bộ dữ liệu database vào cache khi ứng dụng khởi động để warm cache chủ động" },
+        { "id": "b", "text": "Cache-aside là pattern mà ứng dụng kiểm tra cache trước; khi miss, đọc từ database và populate cache — ưu điểm là đơn giản và chỉ cache những gì thực sự được yêu cầu" },
+        { "id": "c", "text": "Cache-aside ghi trực tiếp vào cache và cache truyền ghi sang database bất đồng bộ ở background" },
+        { "id": "d", "text": "Cache-aside đảm bảo cache luôn đồng bộ 100% với database mọi lúc" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cache-aside (lazy loading): code ứng dụng kiểm tra cache → nếu miss, đọc từ DB → populate cache → trả dữ liệu. Ưu điểm: dễ implement, chỉ cache dữ liệu thực sự được dùng (không lãng phí cache cho dữ liệu không dùng), tự nhiên thích ứng với access patterns, không cần hạ tầng đặc biệt. Nhược điểm: cache stampede (thundering herd khi cache miss phổ biến), cold-start latency, không có write-through để update cache. Các phương án khác: read-through, write-through, write-behind. Phương án A mô tả cache warming. Phương án C mô tả write-behind. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Một bài blog nổi tiếng lan truyền và cache nhận 10.000 requests/giây cho cùng một bài viết. Ở request đầu tiên, cache miss gây ra một truy vấn database duy nhất — nhưng ở các request tiếp theo, 9.999 request khác cũng hit database đồng thời trước khi cache được populate. Đây là vấn đề gì và cách phòng ngừa ra sao?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache poisoning — các request độc hại flood cache với dữ liệu sai; phòng ngừa bằng cách dùng signed cache entries" },
+        { "id": "b", "text": "Cache stampede (thundering herd) — nhiều request đồng thời đều miss cache và hit database; phòng ngừa bằng probabilistic early expiration, cache lock (chỉ một request fetch từ DB trong khi các request khác đợi), hoặc background refresh với stale-while-revalidate" },
+        { "id": "c", "text": "Cache avalanche — tất cả cache entries hết hạn cùng lúc do shared TTL; phòng ngừa bằng cách thêm random jitter vào giá trị TTL" },
+        { "id": "d", "text": "Cache fragmentation — bộ nhớ được cấp phát và giải phóng quá thường xuyên, gây áp lực bộ nhớ; phòng ngừa bằng cách pre-allocate một heap lớn" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cache stampede (thundering herd) xảy ra khi các cache entries phổ biến hết hạn (hoặc bị evict) và nhiều request đồng thời đều miss, tràn ngập backend. Giải pháp: (1) probabilistic early expiration, (2) cache locks (mutex — một request fetch từ DB, các request khác đợi), (3) stale-while-revalidate (serve stale data trong khi refresh ở background). Cache avalanche (C) là vấn đề liên quan nhưng khác: mass expiry của các entries chia sẻ TTL. Cache poisoning (A) và fragmentation (D) không liên quan."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "TTL (Time To Live) trong ngữ cảnh caching là gì, và hậu quả của việc đặt TTL quá ngắn so với quá dài là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "TTL là kích thước tối đa của một cache entry tính bằng byte; TTL ngắn ngăn cache bloat nhưng gây eviction thường xuyên các object lớn" },
+        { "id": "b", "text": "TTL là khoảng thời gian một cached entry còn hợp lệ trước khi cần refresh hoặc discard; TTL quá ngắn tăng database load (cache miss thường xuyên), TTL quá dài tăng nguy cơ staleness và lãng phí cache space cho dữ liệu lỗi thời" },
+        { "id": "c", "text": "TTL chỉ liên quan đến CDN caches; application-level caches như Redis không dùng TTL" },
+        { "id": "d", "text": "TTL dài hơn luôn cải thiện cache hit rate và giảm backend load — không có nhược điểm với TTL rất dài" }
+      ],
+      "correctKey": "b",
+      "explanation": "TTL định nghĩa thời gian một cache entry được coi là hợp lệ. TTL ngắn (vd: 60 giây): nguy cơ staleness thấp nhưng cache miss và backend load cao — phù hợp cho dữ liệu thay đổi nhanh (giá cổ phiếu, số lượng tồn kho). TTL dài (giờ/ngày): cache hit rate cao hơn, backend load thấp hơn, nhưng nguy cơ stale data — phù hợp cho dữ liệu tương đối tĩnh (user profile metadata, cấu hình). TTL tối ưu phụ thuộc dữ liệu và thường được tune thực nghiệm. Phương án A định nghĩa sai TTL. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa chiến lược cache write-through và write-behind (write-back) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Write-through và write-behind giống hệt nhau — cả hai đều update cache và database đồng thời trong cùng một thao tác đồng bộ" },
+        { "id": "b", "text": "Write-through update cache và database đồng bộ trong cùng một thao tác — cả hai phải thành công trước khi acknowledge ghi; write-behind update cache ngay lập tức và flush vào database bất đồng bộ — acknowledge ghi trước khi database được update" },
+        { "id": "c", "text": "Write-behind luôn ghi vào database trước rồi mới update cache; write-through update cache trước" },
+        { "id": "d", "text": "Write-through là chiến lược bất đồng bộ dùng cho kịch bản ghi throughput cao; write-behind là đồng bộ và dùng khi durability dữ liệu là quan trọng" }
+      ],
+      "correctKey": "b",
+      "explanation": "Write-through: dual-write đồng bộ vào cache + DB. Acknowledgment chỉ gửi sau khi cả hai thành công. Cache luôn có dữ liệu nhất quán. Ghi chậm hơn (hai I/O ops). Phù hợp cho: dữ liệu sẽ được đọc lại ngay, cache-aside misses cần populate. Write-behind: ghi vào cache ngay (nhanh), acknowledge ngay lập tức, flush vào DB bất đồng bộ ở background. Throughput ghi cao, nhưng crash giữa cache write và DB flush mất dữ liệu (durability risk). Phù hợp cho: ghi throughput cao (logging, analytics, rate limiting). Phương án A sai. Phương án C ngược. Phương án D ngược."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Policy eviction nào loại bỏ entry được truy cập gần nhất khi cache đạt dung lượng tối đa?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "LRU (Least Recently Used) — loại bỏ entry được truy cập gần nhất khi đầy" },
+        { "id": "b", "text": "LFU (Least Frequently Used) — loại bỏ entry có tần suất truy cập thấp nhất" },
+        { "id": "c", "text": "FIFO (First In, First Out) — loại bỏ entry cũ nhất bất kể lịch sử truy cập" },
+        { "id": "d", "text": "Random Eviction — chọn ngẫu nhiên một entry để loại bỏ; không đảm bảo thống kê giữ hot data" }
+      ],
+      "correctKey": "a",
+      "explanation": "LRU (Least Recently Used) theo dõi timestamps truy cập cho mỗi entry và loại bỏ entry chưa được truy cập lâu nhất khi đầy. Hoạt động tốt khi các items được truy cập gần đây có khả năng được truy cập lại (temporal locality). LRU là policy phổ biến nhất trong Redis và Memcached (cả hai đều dùng biến thể LRU). LFU (B) tốt hơn cho workload mà tần suất quan trọng hơn recency. FIFO (C) bỏ qua usage patterns. Random (D) đơn giản nhưng không ưu tiên hot data. Phương án A đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa LRU và LFU eviction policy là gì, và khi nào LFU phù hợp hơn LRU?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "LRU và LFU là cùng một thuật toán với tên khác nhau — cả hai đều theo dõi tần suất truy cập theo cùng cách" },
+        { "id": "b", "text": "LRU loại bỏ items được truy cập gần nhất; LFU loại bỏ items có tần suất thấp nhất; LFU tốt hơn khi muốn giữ các items phổ biến liên tục dù không được truy cập gần đây, và tránh giữ một spike lớn đơn lẻ vừa xảy ra gần đây" },
+        { "id": "c", "text": "LFU luôn vượt trội hơn LRU cho mọi cache workload vì tần suất là chỉ báo tốt hơn recency cho future access" },
+        { "id": "d", "text": "LRU chỉ dùng cho CPU caches (L1/L2); LFU dùng cho disk và memory caches" }
+      ],
+      "correctKey": "b",
+      "explanation": "LRU dùng recency làm proxy cho future access (giả định temporal locality). LFU dùng tần suất làm proxy. LFU tốt hơn cho workload có 'bursty' access patterns: một item được truy cập một triệu lần gần đây bị loại bởi một item được truy cập một lần ngay bây giờ trong LRU. Thách thức của LFU: frequency counters tích lũy ('cache pollution' từ old hot items không còn được truy cập). Phương án A sai. Phương án C sai (phụ thuộc workload). Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Redis cache của bạn đang tiêu thụ 100% bộ nhớ được cấp phát. Điều gì xảy ra với các thao tác ghi mới, và cần cấu hình gì để xử lý?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Redis tự động evict các entries cũ để nhường chỗ cho ghi mới — không cần cấu hình" },
+        { "id": "b", "text": "Redis mặc định trả về OUTOFMEMORY error khi maxmemory đạt và không có eviction policy nào giải phóng được space (trừ khi policy là 'noeviction' cũng trả error); phải cấu hình eviction policy phù hợp (vd: allkeys-lru, volatile-ttl) hoặc scale cluster" },
+        { "id": "c", "text": "Redis tự động chuyển sang chế độ lưu trữ disk-backed khi đầy bộ nhớ — các ghi được chuyển hướng sang filesystem" },
+        { "id": "d", "text": "Khi Redis đạt maxmemory, nó bắt đầu trả về null cho tất cả thao tác đọc cho đến khi bộ nhớ được giải phóng" }
+      ],
+      "correctKey": "b",
+      "explanation": "Redis block các lệnh ghi khi đạt maxmemory (trừ khi có eviction policy phù hợp). Policy mặc định là 'noeviction' (trả error khi ghi). Cấu hình 'allkeys-lru' hoặc 'volatile-lru' cho phép evict tự động các keys ít dùng gần đây nhất. 'volatile-ttl' evict keys có TTL ngắn nhất. Chọn policy đúng phụ thuộc vào việc tất cả keys có là ứng viên evict không hay chỉ keys có TTL. Redis Cluster mode phân phối keys qua các nodes cho horizontal memory scaling. Phương án A sai. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "CDN phục vụ các static assets (hình ảnh, CSS, JavaScript) toàn cầu. File CSS đã được deploy lên origin server nhưng người dùng trên toàn thế giới vẫn thấy CSS cũ trong tối đa 24 giờ. Nguyên nhân gốc là gì và cách sửa ra sao?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CDN đang serve stale content vì origin server bị down — sửa bằng cách restart origin server" },
+        { "id": "b", "text": "CDN đang honor Cache-Control TTL do origin đặt; CSS cũ được cache tại các edge PoPs tối đa 24 giờ; sửa bằng cách đặt TTL ngắn cho static assets, dùng cache-busting (filename versioning như app.a1b2c3.css), hoặc gửi cache invalidation (purge) request tới CDN sau khi deploy" },
+        { "id": "c", "text": "CDN tự động purge toàn bộ cached content mỗi khi origin server deploy — vấn đề là browser cache, không phải CDN" },
+        { "id": "d", "text": "File CSS quá lớn (> 1 MB) nên CDN từ chối cache các files trên kích thước limit" }
+      ],
+      "correctKey": "b",
+      "explanation": "CDN edge nodes honor Cache-Control max-age header từ origin. Nếu origin serve Cache-Control: max-age=86400 (24 giờ), CDN cache file trong 24 giờ trước khi check origin lại. Khi deploy update, các phiên bản cũ được cached vẫn tồn tại cho đến khi TTL hết. Giải pháp: (1) đặt TTL ngắn cho mutable assets, (2) implement cache-busting (fingerprint/versioning trong filename), (3) issue cache purge/invalidation API call tới CDN ngay sau khi deploy. Phương án A không liên quan. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Cache-busting (hoặc cache-busting fingerprinting) là gì, và tại sao nó là cách ưu tiên để xử lý caching cho các static assets thay đổi thường xuyên?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache-busting buộc browser clear toàn bộ browser cache mỗi khi có deployment mới" },
+        { "id": "b", "text": "Cache-busting nhúng content hash hoặc build timestamp vào filename hoặc query string của static asset; khi asset thay đổi, URL thay đổi, khiến CDN và browser coi nó là resource mới — loại bỏ stale cache issues mà không cần cache invalidation" },
+        { "id": "c", "text": "Cache-busting là kỹ thuật chỉ dùng bởi Redis để ngăn cache stampede trong quá trình key eviction" },
+        { "id": "d", "text": "Cache-busting yêu cầu người dùng thủ công clear browser cache sau mỗi deployment" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cache-busting (fingerprinting) làm mỗi phiên bản file có một URL duy nhất: vd: main.a3f8c1d2.js (hash-based) hoặc main.20240407.js (timestamp-based). Khi file content thay đổi, hash thay đổi → URL mới → cache entry mới → browsers và CDNs fetch file mới. Các phiên bản cũ tự nhiên hết hạn theo TTL hoặc đơn giản không bao giờ được request lại. Điều này tách biệt cache TTL khỏi deployment cadence — TTL dài (1 năm) có thể dùng an toàn cho immutable build artifacts. Phương án A sai. Phương án C nhầm lẫn. Phương án D là workaround thủ công cũ."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Stale-while-revalidate caching pattern là gì, và khi nào nó hữu ích nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Stale-while-revalidate immediately expires tất cả cache entries khi TTL đạt — request tiếp theo luôn trigger fresh fetch" },
+        { "id": "b", "text": "Stale-while-revalidate serve một cached entry ngay cả khi nó đã hết hạn (stale) trong khi fetch một bản sao mới ở background không đồng bộ — cung cấp response nhanh mà không để lại staleness vĩnh viễn" },
+        { "id": "c", "text": "Stale-while-revalidate là chiến lược ghi update cache và database theo thứ tự xen kẽ để cân bằng write throughput" },
+        { "id": "d", "text": "Stale-while-revalidate là chiến lược cache eviction loại bỏ expired entries trước khi evict non-expired entries" }
+      ],
+      "correctKey": "b",
+      "explanation": "Stale-while-revalidate (HTTP Cache-Control extension): trả về entry (có thể stale) ngay cho user, sau đó refresh cache ở background không đồng bộ. Users nhận response nhanh (không chờ revalidation), và cache vẫn tương đối tươi. Directive 'stale-while-revalidate' trong Cache-Control: s-maxage=3600, stale-while-revalidate=60 nghĩa: serve từ cache trong 3600s, sau đó 60s nữa serve stale trong khi refresh. Đây là HTTP equivalent của cache lock + background refresh, được CDN, Nginx, và nhiều HTTP clients hỗ trợ native. Phương án A mô tả simple expiry. Phương án C và D không liên quan."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Thêm một lớp cache trước database luôn giảm average latency của các thao tác đọc.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Cache thêm một network hop và overhead serialization tiềm năng. Với requests là cache misses, path cache → miss → database dài hơn database đơn lẻ. Nếu cache hit rate thấp (dưới ~70-80%), overhead của lớp cache thêm vào lớn hơn lợi ích. Cache chỉ giúp khi hit rate đủ cao để average latency thấp hơn raw database latency. Cache cũng giúp giảm database load và cải thiện throughput với chi phí nguy cơ staleness — lợi ích không chỉ là giảm latency."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Đặt TTL của một cache entry bằng 0 effectively làm entry không bao giờ hết hạn.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Trong Redis, TTL=0 nghĩa là key đã hết hạn và sẽ bị xóa ở lần truy cập tiếp theo (hoặc ngay lập tức nếu lazy expiration được trigger). TTL=0 là giá trị đặc biệt nghĩa là 'hết hạn ngay lập tức' — ngược với 'không bao giờ hết hạn'. Để một entry không bao giờ hết hạn trong Redis, đơn giản không gọi EXPIRE trên key, hoặc đặt TTL thành -1. Null TTL trong HTTP Cache-Control cũng có ý nghĩa cụ thể (không cache gì cả). Đây là hiểu lầm phổ biến."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Cache miss luôn yêu cầu một round-trip đầy đủ tới database trước khi dữ liệu cached có thể được khôi phục.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Cache miss có thể được xử lý bằng nhiều cách. Trong cache-aside, đúng, ứng dụng fetch từ DB. Nhưng trong cache-aside với mutex lock, các request đồng thời đợi request đầu tiên populate cache. Trong stale-while-revalidate, giá trị cached stale được trả trong khi cache được refresh ở background — không chờ miss. Trong probabilistic early expiration, cache có thể serve giá trị mới trong khi revalidates. Miss rate và database load không giống nhau — cache miss latency có thể được ẩn hoàn toàn bằng cách serve stale data trong khi revalidates không đồng bộ."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Team của bạn đang đánh giá Redis vs. Memcached như application-level cache. Redis single-threaded. Điều này ảnh hưởng thế nào tới throughput và latency characteristics so với multi-threaded architecture của Memcached?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Redis single-threaded luôn chậm hơn Memcached multi-threaded cho mọi workload vì nó chỉ có thể dùng một CPU core" },
+        { "id": "b", "text": "Redis single-threaded event loop loại bỏ hoàn toàn lock contention và cung cấp latency nhất quán, predictable cho mọi operations; Memcached multi-threaded đạt throughput raw cao hơn trên multi-core machines nhưng bị lock contention và inconsistent latency dưới high concurrency — Redis 6+ thêm I/O threads để parallelize network processing trong khi giữ command execution single-threaded" },
+        { "id": "c", "text": "Memcached multi-threaded superior vì có thể process nhiều commands đồng thời trên các CPU cores khác nhau; Redis không thể dùng nhiều hơn một core nếu không shard thủ công" },
+        { "id": "d", "text": "Cả Redis và Memcached đều single-threaded và cung cấp identical throughput characteristics; mọi performance difference là do network configuration" }
+      ],
+      "correctKey": "b",
+      "explanation": "Redis single-threaded event loop (dùng epoll/kqueue) cung cấp latency consistency: không lock contention, không context switching overhead giữa threads, và O(log N) complexity predictable cho hầu hết operations. Nó không bị giới hạn một core cho network I/O trong Redis 6+ (I/O threads parallelize network processing) và scale tốt hơn Memcached cho hầu hết workloads. Memcached multi-threaded (libevent-based) có thể saturate nhiều cores cho high-throughput scenarios nhưng bị global metadata locks giới hạn scalability dưới contention. Với typical application cache workloads (sub-millisecond target), mô hình single-threaded của Redis có lợi thế. Phương án A sai. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Một user profile service đọc user data 100 lần thường xuyên hơn so với update. Cache lưu user profiles với TTL 1 giờ. Khi update, service invalidate cache. Dưới high write concurrency, một scenario xảy ra khi cache miss xảy ra đúng lúc update đang in-flight — một request đọc old data, request khác update DB, request đầu tiên re-populate cache với stale data. Cách sửa?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tăng TTL lên 24 giờ để giảm probability của cache miss xảy ra gần thời điểm update" },
+        { "id": "b", "text": "Dùng write-through caching: khi update, ghi vào database VÀ cache đồng thời trong cùng transaction để cache luôn có fresh data" },
+        { "id": "c", "text": "Implement cache update mutex hoặc dùng compare-and-swap (CAS) token: khi update, lưu version number trong cả DB và cache; khi read, verify version match trước khi populate cache — stale reads với old version bị discard" },
+        { "id": "d", "text": "Loại bỏ hoàn toàn TTL — không có expiration, cache sẽ không bao giờ miss và vấn đề stale data biến mất" }
+      ],
+      "correctKey": "c",
+      "explanation": "Đây là race condition kinh điển giữa cache invalidation và concurrent reads (delete-then-read race). Fix tiêu chuẩn là version hoặc timestamp check: lưu version number với mỗi entity trong cả DB và cache. Trên cache miss, reader fetch từ DB (nhận version N), kiểm tra version trong cache — nếu cache version != DB version, discard stale value và refetch. Bền vững hơn: dùng distributed lock (Redis SETNX) xung quanh read-and-cache operation để serialize reads trong thời gian update in-flight. Write-through (B) cũng đúng nhưng vẫn có race windows. Phương án A không fix race. Phương án D tạo permanent staleness risk."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn đang thiết kế caching strategy cho một social media application nơi users có thể có hàng triệu followers. Timeline của user cần hỗ trợ read throughput cao. Caching architecture nào phù hợp nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache full timeline cho mỗi user với TTL 5 phút; khi user post, immediately update tất cả followers' timeline caches bằng cách push tới mỗi follower's cached timeline" },
+        { "id": "b", "text": "Dùng fan-out-on-read: timeline được assemble ở read time từ cached post objects; mỗi post được cache riêng theo ID; điều này tránh massive write amplification nhưng thêm latency on reads cho users có nhiều followers" },
+        { "id": "c", "text": "Fan-out-on-write (push model) hoạt động cho tất cả social media use cases; nó đảm bảo timelines luôn pre-computed và đọc ngay lập tức" },
+        { "id": "d", "text": "Social media timelines không được lợi từ caching vì chúng unique cho mỗi user và thay đổi quá thường xuyên" }
+      ],
+      "correctKey": "b",
+      "explanation": "Twitter/Facebook-style timelines dùng fan-out-on-read (pull model): khi User A load timeline, system fetch list people A follows, sau đó fetch recent cached posts từ mỗi followed user, merge và sort. Mỗi post được cache riêng (post ID → post content). Fan-out-on-write (push model) — pushing tới tất cả follower timelines trên mỗi post — gây massive write amplification cho users với hàng triệu followers (celebrity problem). Hybrid approaches được dùng trong thực tế: fan-out-on-write cho normal users, fan-out-on-read cho high-follower-count accounts. Phương án A mô tả sai push model. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CDN được dùng cho một video streaming application. Videos từ 30 giây tới 2 giờ movies. CDN phục vụ hàng triệu users. CDN caching strategy nào bạn khuyên để optimize cả storage costs và playback start time (TTFB)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cache tất cả video content tại CDN edge với TTL 7 ngày; maximize cache hit rates và minimize origin requests bất kể video length" },
+        { "id": "b", "text": "Dùng tiered caching strategy: cache 5-10 phút đầu (intro segment) của mỗi video tại edge PoPs cho fast playback start (low TTFB), và dùng origin-pull (lazy loading) strategy cho phần còn lại của video được streamed từ nearest regional cache mid-tier; short clips được cache hoàn toàn, long videos được stream với partial caching" },
+        { "id": "c", "text": "Disable CDN caching hoàn toàn và stream tất cả video content trực tiếp từ origin server — CDN caching không phù hợp cho video streaming" },
+        { "id": "d", "text": "Chỉ store video thumbnail images trong CDN; các file video thực tế luôn được stream trực tiếp từ object storage mà không có CDN" }
+      ],
+      "correctKey": "b",
+      "explanation": "Video streaming có caching requirements độc đáo: (1) playback start time (TTFB) rất quan trọng cho user experience; (2) long videos (2 giờ movies) quá lớn để cache hoàn toàn tại mọi edge PoP; (3) chỉ vài phút đầu được xem trung bình (retention curve). Chiến lược tốt nhất: segment-based caching — cache segment đầu tại edge (fast start), cache popular full videos tại mid-tier regional caches, và stream phần còn lại từ origin hoặc deep storage. Dùng HLS/DASH chunked delivery để mỗi segment independently cacheable. Phương án A lãng phí CDN storage cho videos hiếm khi xem hết. Phương án C loại bỏ CDN benefits. Phương án D bỏ qua rằng CDN hoạt động tốt cho byte-range requests trên video segments."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đúng hay Sai: Trong một Redis Cluster với nhiều shards, cache-aside pattern hoạt động giống hệt như single-node Redis cache — nếu key tồn tại trên một trong các nodes, nó sẽ luôn được tìm thấy bất kể node nào xử lý request.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Trong Redis Cluster, keys được phân phối qua các shards dùng hash slots (16384 slots, mapped to nodes bằng slot = CRC16(key) mod 16384). Mỗi request phải được route tới đúng node cho slot của key. Nếu client kết nối tới node sai cho một key nhất định, nó nhận MOVED redirect (cluster báo client retry ở node nào). Clients phải implement smart routing (dùng cluster-aware drivers cache slot mappings) hoặc dùng proxy. Cache-aside pattern hoạt động tốt trong cluster mode nhưng yêu cầu cluster-aware clients hoặc proxies. Single-node behavior assumptions break trong cluster mode."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn cần implement một distributed session store cho một globally distributed web application với 50 triệu active sessions. Sessions phải accessible trong 10ms latency từ mọi region. Architecture nào phù hợp nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Store sessions trong một Redis cluster ở một region và chấp nhận latency penalty cho cross-region access — đây là cách đáng tin cậy nhất" },
+        { "id": "b", "text": "Dùng geo-distributed Redis cache (vd: Redis Enterprise Global, CockroachDB, hoặc DynamoDB Global Tables với DAX) với local read replicas ở mỗi region và một single write primary — route session reads tới nearest replica với session-level consistency (read-your-writes đi tới primary region), và writes tới primary" },
+        { "id": "c", "text": "Store sessions trong một in-memory hash map trên mỗi application server — loại bỏ network latency hoàn toàn cho local session access" },
+        { "id": "d", "text": "Store sessions trong browser cookies signed với HMAC — không cần server-side session storage, và điều này scale vô hạn không cần hạ tầng" }
+      ],
+      "correctKey": "b",
+      "explanation": "Global session storage yêu cầu: (1) local read replicas ở mỗi region cho sub-10ms reads, (2) single write primary để tránh split-brain scenarios, (3) session-level consistency cho read-after-write (cùng user's writes phải visible cho họ). Redis Enterprise (CRDT-based geo-replication), DynamoDB DAX + Global Tables, hoặc CockroachDB có thể cung cấp điều này. Redis Cluster là intra-region, không phải geo-distributed. Phương án A thất bại yêu cầu 10ms global. Phương án C tạo session-loss problem khi server restarts. Phương án D có size limits (4KB), expose session data tới client, và không có server-side invalidation capability."
+    }
+  ]
+}

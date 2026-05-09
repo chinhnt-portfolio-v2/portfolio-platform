@@ -1,0 +1,234 @@
+{
+  "topicSlug": "sd-databases",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích chính của database normalization là gì, và vấn đề nào nó ngăn chặn?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Normalization tăng tốc queries bằng cách lưu trữ computed aggregates trong các bảng riêng biệt" },
+        { "id": "b", "text": "Normalization tổ chức dữ liệu thành các bảng để loại bỏ redundant storage và ngăn update anomalies (insert, update, delete) làm hỏng data integrity khi cùng một dữ liệu được lưu ở nhiều nơi" },
+        { "id": "c", "text": "Normalization được yêu cầu cho bất kỳ database nào sử dụng foreign key constraints" },
+        { "id": "d", "text": "Normalization giảm số lượng indexes cần thiết để tăng tốc joins giữa các bảng liên quan" }
+      ],
+      "correctKey": "b",
+      "explanation": "Normalization (1NF through BCNF/3NF) loại bỏ data redundancy bằng cách chia dữ liệu thành các bảng liên quan để mỗi fact được lưu đúng một lần. Mục tiêu chính là ngăn update anomalies: nếu 'customer address' được lưu trong cả Orders và Invoices tables và customer chuyển nhà, update phải xảy ra ở nhiều nơi — một nơi có thể bị miss, tạo inconsistent data. Normalization cũng đảm bảo referential integrity. Denormalization (thêm redundant data) được thực hiện có chủ đích cho read performance. Phương án A mô tả materialized view. Phương án C là phụ, không phải mục đích chính. Phương án D ngược."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Bạn có một bảng user với cột 'country' thường xuyên dùng trong WHERE clauses. Hầu hết users đến từ một quốc gia (dữ liệu phân bố lệch). Điều này gây ra vấn đề gì với một simple B-tree index?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Index sẽ tiêu tốn quá nhiều disk space vì country có cardinality thấp" },
+        { "id": "b", "text": "Query optimizer có thể bỏ qua index cho majority country value và làm full table scan thay thế, vì B-tree index cung cấp ít selectivity cho highly skewed distributions" },
+        { "id": "c", "text": "B-tree indexes không thể được tạo trên các cột có ít hơn 100 distinct values" },
+        { "id": "d", "text": "Index sẽ gây deadlock conflicts trên concurrent inserts vào bảng user" }
+      ],
+      "correctKey": "b",
+      "explanation": "Với highly skewed cardinality (vd: 90% rows là country='US'), query planner có thể xác định B-tree index không đủ selective — scanning 90% của index không tốt hơn table scan, nên planner bỏ qua index. Đây là 'leading column problem' trong composite indexes và là lý do covering indexes, partial indexes, hoặc histogram statistics tồn tại. Low-cardinality columns (gender, country, boolean flags) là B-tree index candidates kém trừ khi dùng trong composite indexes với high-cardinality leading columns. Phương án A sai (index size liên quan tới row count, không phải cardinality). Phương án C sai. Phương án D không liên quan tới index selectivity."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa covering index và standard B-tree index là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Covering index bao gồm tất cả các cột trong bảng; standard index chỉ bao gồm primary key column" },
+        { "id": "b", "text": "Covering index (composite index với tất cả query columns) cho phép query được satisfy hoàn toàn từ index mà không cần chạm các actual table rows — loại bỏ nhu cầu lookup row riêng biệt" },
+        { "id": "c", "text": "Covering indexes chỉ dùng cho write-heavy workloads để batch nhiều updates thành một I/O operation" },
+        { "id": "d", "text": "Không có functional difference; covering index chỉ là B-tree index với tên khác" }
+      ],
+      "correctKey": "b",
+      "explanation": "Covering index bao gồm tất cả columns một query cần như index entries — không chỉ WHERE clause columns. Khi query được cover hoàn toàn, database có thể return results từ index một mình mà không fetch actual rows. Điều này tăng tốc đáng kể queries cho wide tables nơi đọc row tốn kém. Tradeoff: index size lớn hơn, writes chậm hơn. Index columns phải theo đúng thứ tự (most selective first cho B-tree lookups). Phương án A incorrect. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Database sharding (horizontal partitioning) là gì, và thách thức hoạt động chính khi resharding một sharded database hiện có là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Sharding chia các columns của một bảng thành các bảng riêng biệt (vertical partitioning); thách thức là duy trì foreign key consistency across column splits" },
+        { "id": "b", "text": "Sharding chia các rows của một bảng across multiple database servers dùng một shard key; thách thức chính là resharding (thay đổi shard key hoặc thêm shards) yêu cầu remapping và migrating một phần lớn dữ liệu hiện có với downtime tối thiểu" },
+        { "id": "c", "text": "Sharding tạo read-only copies của database cho reporting; thách thức là giữ replicas đồng bộ với primary" },
+        { "id": "d", "text": "Sharding tự động rebalances data across nodes khi load thay đổi; không có manual resharding step" }
+      ],
+      "correctKey": "b",
+      "explanation": "Sharding (horizontal partitioning) phân phối rows across N shards dựa trên shard key. Vấn đề hoạt động khó nhất là resharding — thay đổi số shards hoặc shard key — yêu cầu remapping existing rows và migrating data trong khi ứng dụng tiếp tục serve traffic. Kỹ thuật giảm thiểu: consistent hashing (giảm thiểu remapping), allocate-on-warn (pre-allocate shards), và online schema tools (Vitess, CockroachDB, TiDB xử lý native). Phương án A mô tả vertical partitioning. Phương án C mô tả replication. Phương án D sai cho manual sharding strategies."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính ACID đảm bảo strong consistency cho database transactions. 'I' (Isolation) trong ACID cụ thể điều chỉnh cái gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Isolation đảm bảo tất cả nodes trong một distributed database thấy cùng committed data cùng một lúc" },
+        { "id": "b", "text": "Isolation kiểm soát cách concurrent transaction operations tương tác — xác định hiện tượng nào (dirty reads, non-repeatable reads, phantom reads) được cho phép và invisible với nhau" },
+        { "id": "c", "text": "Isolation đảm bảo một transaction hoặc hoàn thành hoàn toàn hoặc rollback hoàn toàn không có partial effects trên database" },
+        { "id": "d", "text": "Isolation không liên quan cho single-threaded in-memory databases và chỉ quan trọng cho disk-based systems" }
+      ],
+      "correctKey": "b",
+      "explanation": "Isolation kiểm soát visibility của concurrent operations trong một transaction. Các isolation levels khác nhau (Read Uncommitted, Read Committed, Repeatable Read, Serializable) cho phép hoặc ngăn phenomena: dirty reads (uncommitted data), non-repeatable reads (cùng row thay đổi giữa các reads), và phantom reads (new rows xuất hiện trong range scan). Durability (D) trong ACID xử lý crash recovery. Atomicity (A) xử lý all-or-nothing execution. Consistency (C) xử lý database rules. Phương án A mô tả linearizability. Phương án C mô tả atomicity. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "BASE semantics (Basically Available, Soft state, Eventual consistency) được nhiều NoSQL databases sử dụng. 'Soft state' nghĩa là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Database không enforce schema constraints; schema được enforce ở application layer" },
+        { "id": "b", "text": "State của system có thể thay đổi theo thời gian ngay cả khi không có input mới, vì replicas đang converging không đồng bộ và replica states có thể khác nhau tạm thời" },
+        { "id": "c", "text": "BASE systems đảm bảo reads sẽ eventually become consistent sau một fixed timeout period (vd: 30 giây)" },
+        { "id": "d", "text": "Soft state nghĩa là database có thể mất data một cách silent trong normal operation mà không inform ứng dụng" }
+      ],
+      "correctKey": "b",
+      "explanation": "Soft state nắm bắt ý tưởng rằng replica state đang 'in flux' — replicas có thể giữ các giá trị khác nhau cho cùng một entity cùng một lúc vì updates được propagate không đồng bộ. System's state evolve theo thời gian khi replicas converge. Hard state (ngược lại) có nghĩa stored value là definitive committed state. Phương án A mô tả schema-on-read, không phải soft state. Phương án C hiểu sai eventual consistency như có bounded convergence time đảm bảo. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Một system yêu cầu financial transaction integrity nơi balance không thể âm. Bạn nên dựa vào database constraints hay application-level checks — và tại sao?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Application-level checks nhanh hơn vì database constraint check thêm unnecessary overhead cho mỗi transaction" },
+        { "id": "b", "text": "Database constraints (CHECK constraints, triggers) là last line of defense — database enforce chúng bất kể race conditions, application bugs, hoặc malicious input; luôn enforce critical invariants ở database level ngoài application checks" },
+        { "id": "c", "text": "Database constraints deprecated trong modern systems; microservices nên handle tất cả business logic ở application layer" },
+        { "id": "d", "text": "Cho financial integrity, dùng eventual consistency — system sẽ reconcile discrepancies không đồng bộ" }
+      ],
+      "correctKey": "b",
+      "explanation": "Critical business invariants (balance >= 0, inventory >= 0, unique email) phải được enforce ở database level vì: (1) concurrent transactions có thể race past application checks; (2) bugs, compromised credentials, hoặc direct DB access có thể bypass application logic; (3) constraints được enforce atomic như một phần của transaction. Application checks và database constraints cùng nhau tạo defense-in-depth. Phương án A ignore race conditions. Phương án C sai. Phương án D nguy hiểm cho financial data."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Denormalization là gì, và khi nào phù hợp để deliberately denormalize một normalized database design?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Denormalization nghĩa là drop tất cả tables và lưu mọi thứ trong một single wide table cho maximum simplicity" },
+        { "id": "b", "text": "Denormalization là cố ý thêm redundant data vào normalized tables để tăng tốc read queries, và phù hợp khi read performance outweighs chi phí giữ redundant data in sync across multiple write paths" },
+        { "id": "c", "text": "Denormalization không bao giờ nên được làm — normalized databases luôn nhanh hơn nhờ smaller table sizes và efficient use of indexes" },
+        { "id": "d", "text": "Denormalization chỉ dùng trong NoSQL databases; SQL databases phải luôn remain fully normalized" }
+      ],
+      "correctKey": "b",
+      "explanation": "Denormalization thêm redundant data (vd: lưu product_name trong Orders table cùng foreign key tới Products) để loại bỏ expensive joins cho read-heavy workloads. Chi phí: write operations phải update redundant copies — nếu không done atomically, data có thể diverge. Phù hợp khi reads远远 vượt writes, join costs prohibitive (vd: real-time dashboards), hoặc data hiếm khi thay đổi. Phương án A là extreme. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt chính giữa SQL (relational) và NoSQL databases về data model flexibility và query capability là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SQL databases chậm hơn NoSQL databases cho mọi workloads vì overhead của join processing" },
+        { "id": "b", "text": "NoSQL databases cung cấp flexible schemas (schema-on-read) và simpler query models (key-value, document, wide-column) với chi phí limited cross-document query capability; SQL databases enforce fixed schema và cung cấp powerful relational queries và joins" },
+        { "id": "c", "text": "SQL databases không thể handle JSON hoặc semi-structured data; NoSQL databases là lựa chọn duy nhất cho document storage" },
+        { "id": "d", "text": "NoSQL databases đảm bảo ACID transactions across multiple collections hoặc tables; SQL databases không hỗ trợ transactions" }
+      ],
+      "correctKey": "b",
+      "explanation": "NoSQL databases trade relational query power cho schema flexibility và horizontal scalability. Key-value (Redis), document (MongoDB), và wide-column (Cassandra) stores cho phép lưu data mà không cần predefine structure. Cross-document joins và complex aggregations limited hoặc require application-side processing. SQL databases cung cấp rich declarative queries (JOIN, GROUP BY, window functions), ACID transactions, và mature query optimizers — mạnh cho transactional (OLTP) và analytical (OLAP) workloads với structured data. Phương án A phụ thuộc workload. Phương án C sai (PostgreSQL có JSONB). Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Ứng dụng của bạn cần hỗ trợ 1 triệu writes mỗi giây globally với low latency. Một primary database không thể xử lý được. Data architecture nào giải quyết write-scaling problem tốt nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Thêm nhiều read replicas vào primary database và route tất cả writes tới primary — read replicas cải thiện read throughput nhưng không phải write throughput" },
+        { "id": "b", "text": "Shard database across multiple write-capable nodes dùng distributed SQL database (vd: CockroachDB, TiDB, YugabyteDB) hoặc sharding middleware (Vitess) cung cấp transparent horizontal write scaling với ACID guarantees" },
+        { "id": "c", "text": "Upgrade primary database server với nhiều CPU, RAM, và NVMe SSDs — vertical scaling có thể xử lý mọi write throughput requirement" },
+        { "id": "d", "text": "Dùng in-memory cache trước database để absorb write traffic và flush xuống disk không đồng bộ" }
+      ],
+      "correctKey": "b",
+      "explanation": "Write scaling yêu cầu partitioning (sharding) writes across multiple write-capable nodes. Traditional primary-replica setups chỉ scale reads — primary là bottleneck. Distributed SQL databases (CockroachDB, TiDB, YugabyteDB) cung cấp horizontal write scaling với SQL semantics, automatic resharding, và ACID transactions. Vitess (MySQL sharding middleware) và manual application-level sharding cũng hợp lệ. Phương án A chỉ scale reads. Phương án C có hardware ceiling. Phương án D delays writes nhưng không scale database itself."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa synchronous và asynchronous database replication là gì, và khi nào chọn mỗi cái?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Synchronous replication copy data tới replicas trước khi acknowledge writes; chọn cho durability guarantees. Asynchronous replication acknowledge writes ngay và copy ở background; chọn cho lower latency và higher availability" },
+        { "id": "b", "text": "Asynchronous replication nhanh hơn vì nó copy data tới tất cả replicas đồng thời dùng parallel threads; synchronous replication tuần tự và do đó chậm hơn" },
+        { "id": "c", "text": "Synchronous replication chỉ dùng cho read replicas; asynchronous replication dùng cho disaster recovery replicas" },
+        { "id": "d", "text": "Không có practical difference; cả hai đều cung cấp identical durability và performance characteristics" }
+      ],
+      "correctKey": "a",
+      "explanation": "Synchronous replication đợi replica confirmations trước khi commit — nếu replica chậm hoặc down, write blocks hoặc fails. Đảm bảo committed write tồn tại trên nhiều nodes. Asynchronous replication acknowledge ngay sau khi primary commits, propagating changes ở background — lower latency nhưng có window of data loss nếu primary fails trước khi propagation completes. Synchronous dùng cho financial systems, DR in multi-DC setups. Asynchronous dùng cho geo-distributed read replicas nơi latency quan trọng hơn zero-RPO. Phương án B overstates difference. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Trong một multi-master database replication setup, mỗi node có thể accept writes và replicate tới others — điều này loại bỏ tất cả single points of failure và cung cấp cả high availability và strong consistency.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Multi-master replication loại bỏ single write-primary nhưng giới thiệu serious new problems: write conflicts (concurrent writes tới cùng row ở different nodes), consistency trade-offs (phải dùng last-writer-wins hoặc conflict resolution), và coordination complexity. Nodes bị network-partitioned có thể accept conflicting writes phải được reconciled sau. Multi-master cung cấp high availability nhưng sacrifices strong consistency — nó thuộc AP side của CAP. Conflict-free Replicated Data Types (CRDTs) có thể giúp nhưng có limited applicability."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: SQL databases luôn sử dụng ACID transaction semantics, trong khi NoSQL databases luôn sử dụng BASE semantics.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Đây là hiểu lầm phổ biến. Sự khác biệt SQL/NoSQL là về data model (relational vs. non-relational), không phải transaction guarantees. Nhiều SQL databases hỗ trợ BASE (vd: PostgreSQL's asynchronous standbys), và nhiều NoSQL databases hỗ trợ ACID-like transactions (vd: MongoDB 4.0+ hỗ trợ multi-document ACID transactions, Cassandra hỗ trợ tunable consistency, Cosmos DB offers strong consistency mode). ACID vs BASE mô tả consistency trade-offs có thể tồn tại trong cả SQL và NoSQL systems."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Team của bạn đang thiết kế một multi-tenant SaaS application nơi mỗi tenant's data phải completely isolated. Một tenant's data không bao giờ được accessible tới other tenants kể cả trong database failures hoặc maintenance. Multi-tenancy architecture nào cung cấp strongest isolation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Shared database, shared schema — tenant_id column in all tables với application-level access control" },
+        { "id": "b", "text": "Shared database, separate schemas — mỗi tenant có their own schema (namespace) within a single database instance, cung cấp schema-level isolation và separate namespace" },
+        { "id": "c", "text": "Separate database per tenant — mỗi tenant được own database instance (database-per-tenant), cung cấp complete physical isolation bao gồm separate connection pools, backup domains, và failure domains" },
+        { "id": "d", "text": "Separate database per tenant cung cấp strongest isolation, nhưng separate schemas within a shared database equally strong cho most compliance requirements" }
+      ],
+      "correctKey": "c",
+      "explanation": "Database-per-tenant cung cấp strongest isolation: mỗi tenant có separate connection pool, separate backup domain, separate resource allocation, và failures fully contained. Shared-schema (tenant_id column) có weakest isolation — SQL injection hoặc misconfigured query có thể cross tenant boundaries. Shared-schema-with-schema isolation tốt hơn nhưng vẫn shares database server (resource contention, shared failure domain). Cho compliance-heavy workloads (healthcare, finance), database-per-tenant hoặc even separate database servers per tenant được yêu cầu. Phương án D's second clause sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Một Cassandra cluster dùng partition key để phân phối data across nodes. Bạn phát hiện một partition nhận 10x traffic hơn others (một 'hot partition'). Hậu quả là gì và chiến lược giảm thiểu nào tồn tại?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hot partitions được xử lý tự động bởi Cassandra's gossip protocol; không cần manual intervention" },
+        { "id": "b", "text": "Hot partitions gây một node trở thành bottleneck, saturating its resources trong khi others ngồi idle; mitigations bao gồm thêm một 'write path' buffer hot data trong in-memory store (vd: Redis), splitting the hot partition key into sub-partitions, hoặc using request rate limiting at the coordinator node" },
+        { "id": "c", "text": "Hot partitions có thể được loại bỏ bằng cách tăng replication factor — nhiều replicas phân phối load across nhiều nodes" },
+        { "id": "d", "text": "Cassandra's consistent hashing tự động balance partitions evenly bất kể access patterns — hot partitions indicate a bug trong application" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cassandra phân phối data bằng partition key — nếu một key maps tới một frequently accessed entity (vd: celebrity's user profile), tất cả reads/writes cho entity đó hit một single node (hoặc replica group), tạo bottleneck. Mitigations: (1) write-behind cache (Redis in front of Cassandra) absorb hot reads, (2) token-range splitting thêm more vnodes cho hot range, (3) bucketing the partition key (userId_timestamp_bucket) spread load across more partitions. Phương án A sai. Phương án C chỉ áp dụng cho replication factor cho durability, không phải load distribution. Phương án D sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Ứng dụng của bạn yêu cầu serializable isolation (strongest isolation level) để ngăn tất cả concurrency anomalies, nhưng PostgreSQL's serializable isolation gây significant performance degradation. Các cách tiếp cận thay thế nào có thể cung cấp serializability mà không có full serializable locking?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng READ COMMITTED isolation và thêm explicit row-level locks (SELECT FOR UPDATE) xung quanh tất cả transactions — điều này cung cấp serializability equivalent behavior mà không có serializable snapshot isolation overhead" },
+        { "id": "b", "text": "Chuyển sang optimistic concurrency control pattern: dùng version numbers hoặc optimistic locks, detect conflicts at commit time, và retry conflicting transactions — điều này cung cấp serializability mà không có blocking locks với chi phí transaction retry overhead" },
+        { "id": "c", "text": "Serialized operations không thể đạt được mà không có serializable isolation — bất kỳ alternative nào sẽ permit anomalies" },
+        { "id": "d", "text": "Dùng READ UNCOMMITTED và dựa vào application-level checks để ngăn dirty reads — điều này functionally equivalent tới serializable với better performance" }
+      ],
+      "correctKey": "b",
+      "explanation": "Serializable snapshot isolation (SSI) trong PostgreSQL uses serialized execution plan nhưng có thể gây significant lock contention cho write-heavy workloads. Optimistic concurrency control (OCC) là alternative: transactions đọc data không có locking, ghi lại version/timestamp hoặc checksum của những gì chúng đọc, và at commit time verify không có concurrent modification. Nếu conflict detected, transaction retries. Điều này hoạt động tốt cho read-heavy workloads với occasional conflicts, nhưng có thể gây livelock (starvation) under high write contention. Phương án A's explicit locking approach là serializable nhưng uses pessimistic locking (blocking). Phương án C sai. Phương án D nguy hiểm và sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn cần implement một globally distributed database có thể serve low-latency reads từ multiple regions trong khi tolerating region failures. Read-your-writes consistency cho cùng một user được yêu cầu. Combination nào của strategies tốt nhất giải quyết các requirements này?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng single primary region với asynchronous read replicas ở other regions — serve tất cả reads từ primary để guarantee read-your-writes consistency" },
+        { "id": "b", "text": "Dùng multi-region database với read replicas ở mỗi region, và after a write, route cùng user's subsequent reads tới writer region cho một time window (session-level consistency), fall back to replica reads ở nơi khác" },
+        { "id": "c", "text": "Disable eventual consistency hoàn toàn bằng cách configure synchronous multi-region replication với quorum consensus — tất cả regions confirm mỗi write trước acknowledgment" },
+        { "id": "d", "text": "Lưu tất cả user-specific data trong client-side local database (IndexedDB) sync không đồng bộ — read-your-writes guaranteed locally without any server-side consistency guarantees" }
+      ],
+      "correctKey": "b",
+      "explanation": "Global multi-region databases (DynamoDB Global Tables, Cosmos DB, CockroachDB, Spanner) cung cấp eventual consistency by default. Read-your-writes (session consistency) đạt được bằng cách routing reads tới writer region briefly after a write — known as 'sticky sessions to the writer.' Đây là standard pragmatic approach: nó giữ writes latency bounded by nearest region's round-trip to primary, trong khi giving users consistent reads cho their own data. Phương án A sacrifices lợi ích của geo-distribution cho reads. Phương án C (synchronous multi-region quorum) có extremely high write latency. Phương án D là client-side pattern, không phải database architecture."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đúng hay Sai: Một composite index trên (last_name, first_name) có thể được dùng efficiently cho một query chỉ filter trên first_name.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Trong một B-tree composite index, leading column(s) phải có mặt trong query filter để index được dùng efficiently. Một index trên (last_name, first_name) hỗ trợ efficient queries trên (last_name) và (last_name, first_name), nhưng một query chỉ filter trên first_name không thể dùng index — database phải scan toàn bộ index hoặc table vì first_name xuất hiện sau last_name trong index structure. Đây là 'leading column rule' cho composite B-tree indexes. Queries trên first_name đơn lẻ cần một separate index on first_name."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn đang thiết kế một time-series IoT database nơi hàng triệu sensor readings arrive mỗi giây. Mỗi reading có device_id, timestamp, và value. Indexing và partitioning strategy nào best supports both high ingestion throughput và efficient time-range queries per device?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Lưu tất cả readings trong một bảng với primary key chỉ trên (timestamp) — điều này enables fast time-range scans; device_id được lưu như regular column cho filtering" },
+        { "id": "b", "text": "Dùng composite partition key của (device_id, timestamp) — partitioning by device_id colocates mỗi device's data trên cùng nodes, enabling efficient per-device time-range queries, trong khi timestamp ordering within each partition enables efficient range scans; dùng bucketing within partitions cho very high volume devices" },
+        { "id": "c", "text": "Tạo một database riêng cho mỗi device để đảm bảo complete isolation — đây là cách duy nhất handle hàng triệu writes mỗi giây" },
+        { "id": "d", "text": "Lưu raw readings trong key-value store (Redis) cho write throughput, và chuyển tất cả historical data sang SQL database cho analytical queries — separate stores loại bỏ nhu cầu complex indexing" }
+      ],
+      "correctKey": "b",
+      "explanation": "Time-series databases (TimescaleDB, InfluxDB, Cassandra với bucketing) dùng (device_id, timestamp) composite partition key để colocate mỗi device's data trên cùng nodes. Điều này enables efficient per-device range queries (partition pruning eliminates unrelated devices) và high write throughput. Time-ordering within partitions supports efficient time-range scans. Cho extremely high-volume devices, sub-partition bucketing prevents oversized partitions. Phương án A gây hot spots trên single partition. Phương án C operationally unmanageable at scale. Phương án D tạo data silos và synchronization complexity."
+    }
+  ]
+}

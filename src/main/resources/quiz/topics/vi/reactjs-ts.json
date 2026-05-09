@@ -1,0 +1,599 @@
+{
+  "topicSlug": "reactjs-ts",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Nguyên nhân gây ra TypeScript error này là gì?\n\nType 'string | undefined' is not assignable to type 'string'.",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Biến được typed là `string | undefined` nhưng target mong đợi một string non-nullable — bạn phải narrow type qua null check" },
+        { "id": "b", "text": "TypeScript yêu cầu tất cả biến phải được khởi tạo tại thời điểm khai báo" },
+        { "id": "c", "text": "Tên biến conflict với một built-in TypeScript DOM type" },
+        { "id": "d", "text": "Đây là một lint error từ ESLint, không phải TypeScript compiler error" }
+      ],
+      "correctKey": "a",
+      "explanation": "TypeScript's strict null checks có nghĩa `string | undefined` không assignable được cho `string`. Bạn phải narrow qua if/throw/optional chaining (`value!` cho non-null assertion, hoặc `value ?? 'default'`) trước khi truyền nó nơi một plain string được yêu cầu."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Điều gì sai với component này?\n\nfunction Greeting({ name }: { name: string }) {\n  useEffect(() => {\n    document.title = name;\n  }); // missing dependency\n  \n  return <h1>Hello, {name}!</h1>;\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useEffect hook thiếu dependency array argument, gây nó chạy trên mỗi render thay vì khi `name` thay đổi" },
+        { "id": "b", "text": "useEffect không thể truy cập props trực tiếp — bạn phải destructure `name` bên ngoài hook" },
+        { "id": "c", "text": "Component sẽ infinite-loop vì useEffect trả về một giá trị mà không có cleanup function" },
+        { "id": "d", "text": "JSX không hợp lệ vì `name` được typed là string và không thể được render trực tiếp" }
+      ],
+      "correctKey": "a",
+      "explanation": "useEffect's dependency array kiểm soát khi effect chạy. Không có nó (hoặc `[]`) gây hành vi khác nhau: no array → chạy sau mỗi render; `[]` → chạy một lần sau mount; `[name]` → chạy khi name thay đổi."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Pattern nào triển khai đúng conditional rendering trong React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng ternary operator: `{isLoggedIn ? <Dashboard /> : <Login />}`" },
+        { "id": "b", "text": "Dùng && cho non-falsy fallback: `{count && <Badge count={count} />}` — nhưng điều này break nếu count là 0" },
+        { "id": "c", "text": "Cả ternary và short-circuit && đều hợp lệ tùy thuộc vào 0 hoặc empty string có phải là giá trị hợp lệ hay không" },
+        { "id": "d", "text": "Conditional rendering chỉ nên được thực hiện bằng higher-order component (HOC), không phải inline expressions" }
+      ],
+      "correctKey": "c",
+      "explanation": "Cả hai patterns đều hợp lệ nhưng có failure modes khác nhau. Ternary an toàn cho tất cả values bao gồm 0 và empty string. && short-circuit nguy hiểm: `{count && <Badge />}` renders 0 khi count là 0."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa event handler được định nghĩa là `onClick={handleClick}` và `onClick={() => handleClick(id)}` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Không có sự khác biệt — cả hai đều truyền function reference đến onClick và thực thi nó khi event fire" },
+        { "id": "b", "text": "handleClick truyền function trực tiếp; arrow function version tạo một function mới trên mỗi render, break React.memo optimization" },
+        { "id": "c", "text": "Arrow functions không thể được dùng như event handlers — chúng phải là plain functions" },
+        { "id": "d", "text": "Arrow function version tự động nhận SyntheticEvent như first argument của nó" }
+      ],
+      "correctKey": "b",
+      "explanation": "Khi bạn viết `onClick={() => handleClick(id)}`, React tạo một function object mới trên mỗi render. Đối với memoized child component, điều này có nghĩa prop reference thay đổi mỗi render, defeat React.memo's shallow comparison."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Khi nào bạn nên dùng useRef thay vì useState?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useRef cho các giá trị drive UI re-renders; useState cho các giá trị mutable không nên gây re-renders" },
+        { "id": "b", "text": "useRef cho việc lưu trữ một giá trị mutable persists across renders mà không trigger re-renders; useState cho các giá trị khi thay đổi nên update UI" },
+        { "id": "c", "text": "useRef đã deprecated trong React 18 — useState nên được dùng cho tất cả mutable state" },
+        { "id": "d", "text": "useRef chỉ dùng cho DOM element references; useState xử lý tất cả state khác" }
+      ],
+      "correctKey": "b",
+      "explanation": "useRef giữ một mutable .current value (initialValue argument) persists across renders mà không gây re-renders — hoàn hảo cho timers, enzyme句柄, hoặc caching một giá trị mà không trigger UI updates. useState trigger re-renders."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "TypeScript utility type nào tạo một type mới với tất cả properties của T được set thành optional?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Partial<T>" },
+        { "id": "b", "text": "Optional<T>" },
+        { "id": "c", "text": "Maybe<T>" },
+        { "id": "d", "text": "Required<T>" }
+      ],
+      "correctKey": "a",
+      "explanation": "TypeScript's Partial<T> (built-in utility type) constructs một type với tất cả properties của T set thành optional. Optional<T> và Maybe<T> không tồn tại trong TypeScript."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đúng hay Sai: Trong TypeScript, bạn có thể assign một số cho một biến typed là string mà không cần type assertion.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "False. TypeScript là structurally typed và enforce type safety tại compile time. Một số không assignable cho string — chúng là các primitive types khác nhau."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mục đích chính của prop `key` trong React lists là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Keys cho DOM elements một unique CSS identifier cho mục đích styling" },
+        { "id": "b", "text": "Keys giúp React xác định items nào đã thay đổi, được thêm, hoặc bị xóa trong quá trình reconciliation để nó có thể update chỉ các DOM nodes cần thiết" },
+        { "id": "c", "text": "Keys được yêu cầu bởi browser cho accessibility trong list elements" },
+        { "id": "d", "text": "Keys ngăn XSS attacks bằng cách escape user-generated content trong list items" }
+      ],
+      "correctKey": "b",
+      "explanation": "Keys giúp React xác định items nào đã thay đổi trong reconciliation. Dùng array index là anti-pattern khi list có thể được reordered hoặc filtered."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Phát biểu nào về JSX là ĐÚNG?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JSX là valid plain HTML mà browsers có thể parse mà không cần build step" },
+        { "id": "b", "text": "JSX là syntactic sugar compile thành React.createElement calls tại build time" },
+        { "id": "c", "text": "JSX expressions phải luôn được wrap trong một parent element — fragments không được phép" },
+        { "id": "d", "text": "React components phải trả về đúng một JSX element mỗi render cycle" }
+      ],
+      "correctKey": "b",
+      "explanation": "JSX là một syntax extension transpile thành React.createElement calls (qua Babel/Vite/esbuild) — nó không phải plain HTML."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "JSX expression được đánh giá như thế nào khi được truyền như một child?\n\n<Card>{user.name.toUpperCase()}</Card>",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Expression được đánh giá một lần tại render time và kết quả (một string) được render như text content" },
+        { "id": "b", "text": "Expression được serialize thành JSON và gửi đến server để đánh giá" },
+        { "id": "c", "text": "JSX children phải chỉ là các JSX elements khác — JavaScript expressions bị reject bởi TypeScript compiler" },
+        { "id": "d", "text": "Expression chạy trên mỗi mouse interaction trên Card component" }
+      ],
+      "correctKey": "a",
+      "explanation": "JSX children wrapped trong {} được đánh giá như JavaScript expressions tại render time."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Prop drilling là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một lint rule ngăn passing props với tên dài hơn 10 ký tự" },
+        { "id": "b", "text": "Truyền data qua nhiều layers của intermediate components không cần data đó nhưng chỉ act as pass-through conduit" },
+        { "id": "c", "text": "Một performance optimization technique cache prop values across renders" },
+        { "id": "d", "text": "Quá trình validate prop types tại runtime dùng PropTypes library" }
+      ],
+      "correctKey": "b",
+      "explanation": "Prop drilling xảy ra khi deeply nested data phải được pass qua nhiều component layers không dùng nó trực tiếp. Giải pháp: React Context, state management libraries, hoặc component composition."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "TypeScript utility type nào tạo một type mới với đúng các keys của T được assign cho type V?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Pick<T, K>" },
+        { "id": "b", "text": "Record<K, V>" },
+        { "id": "c", "text": "Omit<T, K>" },
+        { "id": "d", "text": "Partial<T>" }
+      ],
+      "correctKey": "a",
+      "explanation": "Pick<T, K> constructs một type bằng cách select specified keys (K) từ T. Record<K, V> tạo một object type với keys K mapped to values V. Omit<T, K> ngược lại của Pick."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Điều gì sai với code này?\n\nconst Button = (props) => {\n  return <button style={{ color: props.color }}>{props.label}</button>;\n};\nButton.defaultProps = { color: \"#333\", label: \"Click me\" };",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "defaultProps trên function components đã deprecated — prop defaults nên được khai báo trong function signature dùng default parameters" },
+        { "id": "b", "text": "Function components không thể nhận props như một object — chúng phải nhận các arguments được đặt tên riêng" },
+        { "id": "c", "text": "Inline style objects phải là strings, không phải CSS custom properties" },
+        { "id": "d", "text": "defaultProps yêu cầu component phải được wrap trong React.forwardRef" }
+      ],
+      "correctKey": "a",
+      "explanation": "Function component defaultProps ĐÃ deprecated as of React 18.3. Pattern idiomatic là dùng default parameter values trong function signature."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Chọn TẤT CẢ đúng. React children types nào là hợp lệ?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Plain strings" },
+        { "id": "b", "text": "Numbers" },
+        { "id": "c", "text": "JSX elements" },
+        { "id": "d", "text": "Functions (render props pattern)" },
+        { "id": "e", "text": "Promises (without awaiting hoặc using Suspense)" }
+      ],
+      "correctKey": "a,b,c,d",
+      "explanation": "Strings (A), numbers (B), và JSX elements (C) là valid ReactNode types. Functions passed as children — 'render prop' pattern — là hợp lệ. Promises (E) KHÔNG hợp lệ như children một mình."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Điều gì gây một re-render của một React component? (Chọn TẤT CẢ đúng)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Parent component re-renders" },
+        { "id": "b", "text": "Component's own state thay đổi via setState" },
+        { "id": "c", "text": "Component nhận một changed prop value từ parent của nó" },
+        { "id": "d", "text": "Context value mà nó consume thay đổi" },
+        { "id": "e", "text": "Một CSS class được thêm vào component's root DOM element externally" }
+      ],
+      "correctKey": "a,b,c,d",
+      "explanation": "Re-renders được trigger bởi: (A) parent re-render, (B) setState call, (C) prop change, (D) Context value change. Option E — external DOM class manipulation KHÔNG gây React re-render."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "TypeScript type của một function trả về nothing và không nhận arguments là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "() => void" },
+        { "id": "b", "text": "() => undefined" },
+        { "id": "c", "text": "() => null" },
+        { "id": "d", "text": "Function<void>" }
+      ],
+      "correctKey": "a",
+      "explanation": "Type idiomatic cho side-effect-free callback là () => void. () => undefined (B) có nghĩa function phải return undefined một cách rõ ràng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt chính giữa useMemo và useCallback là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useMemo memoizes một computed value; useCallback memoizes một function reference — useCallback tương đương với useMemo(() => fn, deps)" },
+        { "id": "b", "text": "useMemo chỉ dùng cho numbers và strings; useCallback dùng cho objects và arrays" },
+        { "id": "c", "text": "useMemo trigger re-renders khi dependencies thay đổi; useCallback không trigger re-renders" },
+        { "id": "d", "text": "useCallback được giới thiệu trong React 18; useMemo tồn tại từ các phiên bản trước" }
+      ],
+      "correctKey": "a",
+      "explanation": "useMemo(fn, deps) memoizes fn's return value và re-computes chỉ khi deps thay đổi. useCallback(fn, deps) là syntactic sugar cho useMemo(() => fn, deps)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích của React.memo là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.memo wrap một component để memoize expensive computations bên trong component's render body" },
+        { "id": "b", "text": "React.memo tạo một higher-order component ngăn re-render nếu props (shallowly compared) chưa thay đổi kể từ render trước" },
+        { "id": "c", "text": "React.memo cache rendered HTML của một component cho lifetime của app" },
+        { "id": "d", "text": "React.memo được yêu cầu để làm function components hoạt động với React DevTools profiler" }
+      ],
+      "correctKey": "b",
+      "explanation": "React.memo là một higher-order component thực hiện shallow comparison của current vs previous props. Nếu tất cả props shallowly equal, component skip rendering."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: useEffect chạy đồng bộ sau khi DOM đã được paint và browser có cơ hội paint.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "a",
+      "explanation": "True. Theo mặc định, useEffect chạy không đồng bộ sau khi render được commit vào DOM — sau paint, nên nó không block browser's ability to display updates."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "useCallback làm gì, và khi nào optimization của nó có ý nghĩa?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useCallback memoizes function body để nó không bao giờ re-evaluate, ngay cả khi dependencies thay đổi" },
+        { "id": "b", "text": "useCallback trả về một memoized function reference chỉ thay đổi khi dependencies của nó thay đổi — hữu ích để ngăn child component re-renders khi được truyền như props" },
+        { "id": "c", "text": "useCallback luôn cải thiện performance — nó nên được dùng trên mọi function trong một React component" },
+        { "id": "d", "text": "useCallback tương đương với useMemo(() => fn, deps)" }
+      ],
+      "correctKey": "b",
+      "explanation": "useCallback(fn, deps) là useMemo(() => fn, deps). Optimization chỉ có ý nghĩa khi function được truyền như prop đến React.memo-wrapped child."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kịch bản nào KHÔNG phải là valid use case cho useReducer?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Quản lý complex state với nhiều sub-values thay đổi cùng nhau" },
+        { "id": "b", "text": "State transitions theo một predictable pattern (actions → reducer → new state)" },
+        { "id": "c", "text": "Thay thế TẤT CẢ useState usage ở bất kỳ đâu trong ứng dụng cho performance reasons" },
+        { "id": "d", "text": "Tránh passing quá nhiều update functions xuống component tree (grouped dispatch)" }
+      ],
+      "correctKey": "c",
+      "explanation": "useReducer không phải blanket useState replacement cho performance — nó được thiết kế cho state với related sub-values hoặc complex transitions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Discriminated union trong TypeScript là gì và khi nào nó hữu ích trong React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một union type trong đó mỗi member chia sẻ một common property (discriminant) mà TypeScript dùng để narrowing — hữu ích cho modeling conditional UI states (ví dụ: loading/success/error)" },
+        { "id": "b", "text": "Một TypeScript type loại undefined khỏi một union — dùng để làm React props non-nullable" },
+        { "id": "c", "text": "Một union của DOM elements có thể được render có điều kiện dựa trên CSS display property" },
+        { "id": "d", "text": "Một type guard pattern dùng instanceof để kiểm tra runtime types trong JSX" }
+      ],
+      "correctKey": "a",
+      "explanation": "Discriminated unions dùng một shared literal property (type: \"loading\" | \"success\" | \"error\") làm discriminant. TypeScript narrows the type trong switch/if branches, cho phép exhaustive UI rendering per state."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Hạn chế chính của React Context mà useContext giải quyết là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context không có hạn chế — useContext cho components full read/write access đến Provider value" },
+        { "id": "b", "text": "Context re-renders tất cả consumers khi bất kỳ value nào thay đổi ngay cả khi chúng chỉ đọc một subset — hạn chế là không có built-in way để subscribe đến một slice" },
+        { "id": "c", "text": "Context không thể được dùng bên ngoài một Provider tree — useContext giải quyết điều này bằng cách cung cấp một default value" },
+        { "id": "d", "text": "Context chỉ hoạt động với primitive values; useContext cho phép object values được truyền" }
+      ],
+      "correctKey": "b",
+      "explanation": "Context's re-render issue: khi Provider's value thay đổi, TẤT CẢ components consuming that context re-render bất kể slice nào chúng sử dụng. Giải pháp: split contexts, memoize value, hoặc dùng subscription library."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Chọn TẤT CẢ đúng. Khẳng định nào về controlled vs uncontrolled components là ĐÚNG?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Một controlled component's input value được drive hoàn toàn bởi React state — onChange handler updates state, và value prop reflects that state" },
+        { "id": "b", "text": "Một uncontrolled component sử dụng internal state của DOM (ref) và đọc value via ref.current.value on form submission" },
+        { "id": "c", "text": "File inputs phải luôn là controlled components để FileList của chúng có thể được lưu trong state" },
+        { "id": "d", "text": "Uncontrolled components không thể trigger validation — validation yêu cầu controlled inputs" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "Controlled (A): value từ React state, onChange updates state. Uncontrolled (B): value ở trong DOM, đọc via ref on submit. File inputs (C) luôn uncontrolled. Validation (D) hoạt động trên cả hai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích của Error Boundaries trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Error Boundaries bắt JavaScript errors trong toàn bộ React tree bên dưới chúng và hiển thị một fallback UI thay vì crash toàn bộ ứng dụng" },
+        { "id": "b", "text": "Error Boundaries ngăn TypeScript compilation errors crash ứng dụng đang chạy" },
+        { "id": "c", "text": "Error Boundaries là một replacement cho try-catch blocks trong async useEffect callbacks" },
+        { "id": "d", "text": "Error Boundaries bắt network errors từ fetch calls made in useEffect" }
+      ],
+      "correctKey": "a",
+      "explanation": "Error Boundaries là class components implement componentDidCatch để bắt errors ở bất kỳ đâu trong child component tree — render errors, lifecycle errors, constructor errors."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "useReducer trả về gì? (Chọn TẤT CẢ đúng)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Current state value" },
+        { "id": "b", "text": "Một dispatch function để gửi action objects đến reducer" },
+        { "id": "c", "text": "Một memoized getter function để đọc state mà không cần subscribe" },
+        { "id": "d", "text": "Một isPending boolean cho biết reducer có đang chạy một async operation không" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "useReducer trả về một pair: [state, dispatch]. Dispatch function stable across renders. Options C và D không đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "TypeScript type nào correctly represents một readonly array of strings?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "readonly string[]" },
+        { "id": "b", "text": "string readonly[]" },
+        { "id": "c", "text": "ReadonlyArray<string>" },
+        { "id": "d", "text": "Immutable<string[]>" }
+      ],
+      "correctKey": "c",
+      "explanation": "TypeScript's ReadonlyArray<T> là generic immutable array type. Cả A và C đều đúng; C là more explicit."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "useTransition làm gì trong React 18's concurrent rendering?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useTransition đánh dấu state updates là non-urgent, cho phép UI remain responsive trong khi transition render trong background" },
+        { "id": "b", "text": "useTransition thay thế useEffect cho async data fetching trong concurrent mode" },
+        { "id": "c", "text": "useTransition suspends tất cả child components cho đến khi parent finish rendering" },
+        { "id": "d", "text": "useTransition enables CSS transitions trên state changes trong React 18" }
+      ],
+      "correctKey": "a",
+      "explanation": "useTransition wrap state updates trong một isPending flag, đánh dấu chúng là 'transition' để concurrent React có thể interrupt lower-priority work."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Type nào đúng để describe một React component chấp nhận children là ReactNode?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "type Props = { children: string }" },
+        { "id": "b", "text": "type Props = { children: React.ReactNode }" },
+        { "id": "c", "text": "type Props = { children: JSX.Element }" },
+        { "id": "d", "text": "type Props = { children: ReactElement }" }
+      ],
+      "correctKey": "b",
+      "explanation": "React.ReactNode là children type most permissive — nó bao gồm JSX elements, strings, numbers, booleans, null, undefined, fragments. JSX.Element và ReactElement chỉ cover JSX expressions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "React Fiber reconciliation algorithm chủ yếu được thiết kế để giải quyết vấn đề gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Fiber introduces incremental rendering — work được split thành chunks và có thể được paused, aborted, hoặc prioritized, cho phép smooth updates ngay cả during heavy computations" },
+        { "id": "b", "text": "Fiber replaces virtual DOM với một real DOM clone cho faster rendering trong tất cả browsers" },
+        { "id": "c", "text": "Fiber enables React chạy hoàn toàn trong một Web Worker tách biệt khỏi main thread" },
+        { "id": "d", "text": "Fiber adds built-in support cho TypeScript generics tại runtime để cải thiện type safety" }
+      ],
+      "correctKey": "a",
+      "explanation": "React Fiber (React 16) re-implements reconciliation algorithm như một incremental, interruptible work queue. Điều này cho phép concurrent features như useTransition, Suspense, và useDeferredValue."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt chính giữa React Server Components (RSC) và Client Components là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Server Components chỉ execute trên server và có thể truy cập server-only resources (DB, filesystem); Client Components chạy trong browser và không thể truy cập server resources" },
+        { "id": "b", "text": "Server Components ship less JavaScript đến browser vì chúng render HTML trên server; Client Components hydrate và chạy interactivity trong browser" },
+        { "id": "c", "text": "Cả A và B đều đúng — Server Components eliminate client-side JS cho static parts trong khi enable direct server resource access" },
+        { "id": "d", "text": "Server Components chỉ là Server-Side Rendering (SSR) với một tên mới; JavaScript bundle giống hệt Client Components" }
+      ],
+      "correctKey": "c",
+      "explanation": "RSCs chạy trên server và không bao giờ ship code của chúng đến browser. Chúng có thể trực tiếp truy cập databases, file systems, và secrets."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Zustand's store so sánh với React Context cho global state management như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context re-renders tất cả consumers khi bất kỳ state nào thay đổi; Zustand dùng selectors nên chỉ components subscribed đến changed slices mới re-render" },
+        { "id": "b", "text": "Zustand stores là synchronous và không thể hold async state; Context có thể hold cả sync và async state" },
+        { "id": "c", "text": "Context có performance tốt hơn vì nó tự động dùng memoization; Zustand yêu cầu manual selector optimization" },
+        { "id": "d", "text": "Zustand yêu cầu một provider tree như Context; sự khác biệt chỉ là API syntax" }
+      ],
+      "correctKey": "a",
+      "explanation": "Context's Provider broadcasts đến tất cả consumers khi bất kỳ value nào thay đổi. Zustand dùng subscription model với selectors: chỉ components mà selected slice actually changed mới re-render."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "useDeferredValue làm gì trong React 18 concurrent features?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useDeferredValue trì hoãn một state update đến tick tiếp theo, đánh dấu nó là lower priority để UI có thể remain responsive during expensive renders" },
+        { "id": "b", "text": "useDeferredValue trì hoãn execution của một side effect bên trong useEffect bởi một fixed number of milliseconds" },
+        { "id": "c", "text": "useDeferredValue converts một Promise's result thành một deferred ReactNode, thay thế nhu cầu cho Suspense boundaries" },
+        { "id": "d", "text": "useDeferredValue debounces một value để ngăn excessive re-renders trong input handlers" }
+      ],
+      "correctKey": "a",
+      "explanation": "useDeferredValue(value) đánh dấu một value là deferrable — React schedule re-render ở lower priority, cho phép main thread stay responsive cho user input."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đúng hay Sai: Trong strict mode, React cố ý double-invokes component render methods, useReducer reducer functions, và useEffect cleanup/effect functions trong development để giúp detect side effects.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "a",
+      "explanation": "True. React StrictMode (development only) double-invokes: render methods, useReducer initial call, và effect setup/cleanup. Điều này expose side effects không được cleanup đúng cách."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Higher-Order Component (HOC) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một HOC là một function nhận một component làm input và trả về một new enhanced component — nó là một pattern cho việc reuse component logic, không phải một component" },
+        { "id": "b", "text": "Một HOC là một class component extends another component để add functionality" },
+        { "id": "c", "text": "Một HOC là một built-in React hook wrap child components với additional behavior" },
+        { "id": "d", "text": "Một HOC là một TypeScript utility type tạo một higher-kinded type cho React components" }
+      ],
+      "correctKey": "a",
+      "explanation": "HOC là một pure function nhận một WrappedComponent và trả về một EnhancedComponent. Ví dụ kinh điển: react-redux's connect."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Chọn TẤT CẢ đúng. Khẳng định nào về React Server Components (RSC) là ĐÚNG?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Server Components có thể trực tiếp truy cập server-side resources (databases, file system, secrets) mà không expose chúng đến client" },
+        { "id": "b", "text": "Server Components không thể use hooks vì hooks require một React component instance không tồn tại trên server" },
+        { "id": "c", "text": "Server Components' code được include trong client-side JavaScript bundle" },
+        { "id": "d", "text": "Client Components có thể được import và render bên trong một Server Component, nhưng Server Components không thể được dùng bên trong Client Components without passing them as children props" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "RSCs (A) chạy độc quyền trên server. Chúng không thể dùng hooks (B). Phương án C sai — RSC code không bao giờ đến client bundle. Phương án D đúng nhưng không phải câu trả lời cho câu hỏi này."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Concern về performance chính với React Context API ở scale là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Context values được serialized và deserialized on every Provider update, gây CPU overhead trong large applications" },
+        { "id": "b", "text": "Khi Provider value thay đổi, TẤT CẢ components consuming that context re-render — ngay cả những cái chỉ đọc một phần nhỏ của context — vì Context dùng reference equality, không phải deep equality" },
+        { "id": "c", "text": "Context không thể được dùng với TypeScript vì nó mất type information tại boundary" },
+        { "id": "d", "text": "Context re-renders chậm hơn setState re-renders vì chúng bypass virtual DOM diffing algorithm" }
+      ],
+      "correctKey": "b",
+      "explanation": "Primary Context performance issue là broadcast re-rendering. Giải pháp: split into multiple narrow contexts, memoize value object với useMemo, hoặc replace với subscription-based state manager."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Pattern nào KHÔNG effectively prevent một unnecessary re-render của một memoized child component?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Wrap child component trong React.memo và chỉ truyền primitive props hoặc stable callback references từ useCallback" },
+        { "id": "b", "text": "Split một large context thành multiple focused contexts để consumers chỉ re-render khi specific slice họ dùng thay đổi" },
+        { "id": "c", "text": "Thêm một key prop vào child component's JSX element để force React unmount và remount nó on every parent render" },
+        { "id": "d", "text": "Dùng useMemo để memoize một object prop để reference stays stable across renders" }
+      ],
+      "correctKey": "c",
+      "explanation": "Thêm key vào child JSX element làm NGƯỢC LẠI: nó buộc React destroy và recreate component on every render. Keys dùng để giúp React identify elements nào thay đổi."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Cách đúng để xử lý cleanup của một side effect setup một subscription là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Bên trong useEffect, trả về một cleanup function gọi unsubscribe method — React gọi cleanup này before the next effect runs và on unmount" },
+        { "id": "b", "text": "Dùng một global variable bên ngoài component để track subscription và call cleanup trong một separate useEffect với empty dependency array" },
+        { "id": "c", "text": "React tự động cleanup subscriptions khi component function re-renders — không cần explicit cleanup" },
+        { "id": "d", "text": "Call cleanup inside the return statement của component function body để nó chạy before unmount" }
+      ],
+      "correctKey": "a",
+      "explanation": "Pattern idiomatic: useEffect(() => { const sub = subscribe(handler); return () => sub.unsubscribe(); }, [deps]). Returned function là cleanup."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Chọn TẤT CẢ đúng. Khẳng định nào về interaction giữa useTransition và Suspense là ĐÚNG?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "useTransition đánh dấu state updates là transitions để React có thể giữ UI responsive — isPending có thể được dùng để show loading state during transition in progress" },
+        { "id": "b", "text": "Suspense wrap lazy-loaded components và hiển thị một fallback trong khi component's code chunk đang load — nó integrate với useTransition khi dùng together trong concurrent mode" },
+        { "id": "c", "text": "useTransition và Suspense mutually exclusive — bạn không thể dùng cả hai trong cùng component tree" },
+        { "id": "d", "text": "useTransition được yêu cầu để làm Suspense hoạt động cho code-splitting trong React 18" }
+      ],
+      "correctKey": "a,b",
+      "explanation": "useTransition đánh dấu certain updates là interruptible. Suspense hiển thị fallback UI while lazy components load. Chúng complementary."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa Omit<T, K> và Exclude<T, U> trong TypeScript là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Omit remove keys khỏi một object type (property-level); Exclude remove types khỏi một union type (type-level) — chúng operate ở các levels khác nhau của type system" },
+        { "id": "b", "text": "Omit và Exclude identical — cả hai có thể được dùng interchangeably cho bất kỳ type operation nào" },
+        { "id": "c", "text": "Exclude remove keys khỏi một object type; Omit remove types khỏi một union" },
+        { "id": "d", "text": "Omit hoạt động tại runtime; Exclude chỉ hoạt động tại compile time" }
+      ],
+      "correctKey": "a",
+      "explanation": "Omit<T, K> tạo một object type mới từ T trừ đi named properties trong K. Exclude<T, U> filter union members."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Điều gì KHÔNG xảy ra khi React.memo được áp dụng cho một component?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React sẽ skip calling component function nếu tất cả props shallowly equal với render trước" },
+        { "id": "b", "text": "React sẽ deep-compare nested object và array props để xác định có cần re-render không" },
+        { "id": "c", "text": "React sẽ trả về cached output từ previous render mà không tạo DOM nodes mới" },
+        { "id": "d", "text": "React vẫn chạy reconciliation algorithm của nó cho children của component" }
+      ],
+      "correctKey": "b",
+      "explanation": "React.memo dùng SHALLOW comparison của props — nó KHÔNG deep-compare objects hoặc arrays. Nếu bạn truyền một object/array mới như prop, React.memo coi nó đã thay đổi."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Render prop pattern trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một render prop là một prop trên một component có giá trị là một function mà component gọi để render một phần của UI của nó — nó cho phép sharing logic mà không cần inheritance hoặc mixins" },
+        { "id": "b", "text": "Một render prop là JSX được return từ một React component's render method — nó tham chiếu đến virtual DOM output của component" },
+        { "id": "c", "text": "Một render prop là một TypeScript generic type đại diện cho return type của một React component" },
+        { "id": "d", "text": "Một render prop là một special prop tự động injected bởi React vào mọi component để track its render count" }
+      ],
+      "correctKey": "a",
+      "explanation": "Render prop là một function prop (conventionally named children hoặc render) mà một component gọi để render UI của nó."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "useSyncExternalStore trong React 18 làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useSyncExternalStore subscribe đến một external store (ví dụ: Zustand, Redux, hoặc third-party subscription system) và force re-render khi store's state thay đổi — nó là backbone của React 18's concurrent rendering support cho external state" },
+        { "id": "b", "text": "useSyncExternalStore synchronizes React state với một server-side data source real time sử dụng WebSockets" },
+        { "id": "c", "text": "useSyncExternalStore là một replacement cho useState cung cấp built-in undo/redo history cho state mutations" },
+        { "id": "d", "text": "useSyncExternalStore chỉ được dùng cho reading URL state (window.location) trong React 18 applications" }
+      ],
+      "correctKey": "a",
+      "explanation": "useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot?) là React 18's official hook cho integrating external subscription-based state. Nó đảm bảo React 18's concurrent features không gây inconsistencies."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "React.lazy làm gì khi dynamically imported component throw một error (ví dụ: network failure)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.lazy throw error đến nearest Error Boundary trong component tree, cho phép graceful error handling mà không crash toàn bộ app" },
+        { "id": "b", "text": "React.lazy tự động retry import lên đến 3 lần trước khi surface error" },
+        { "id": "c", "text": "React.lazy chỉ hoạt động cho network-based imports (CDN URLs) — local module failures được xử lý bởi TypeScript compiler, không phải React" },
+        { "id": "d", "text": "React.lazy không handle errors từ failed imports — error propagates như một uncaught Promise rejection đến browser" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.lazy dùng Suspense boundary như error handling surface của nó: khi import() rejects, React treat đây như một thrown promise mà Suspense bắt."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Concern chính khi dùng CSS-in-JS libraries (như styled-components hoặc Emotion) với React Server Components là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CSS-in-JS libraries dựa vào JavaScript runtime style injection (ví dụ: injecting <style> tags tại runtime) không hoạt động during server rendering vì không có browser DOM" },
+        { "id": "b", "text": "CSS-in-JS libraries không thể được import trong TypeScript vì chúng thiếu official type declarations" },
+        { "id": "c", "text": "CSS-in-JS styles được tự động server-rendered vì chúng serialize thành inline style attributes" },
+        { "id": "d", "text": "CSS-in-JS không tương thích với React Concurrent Mode và phải luôn chạy ở legacy concurrent mode" }
+      ],
+      "correctKey": "a",
+      "explanation": "Nhiều CSS-in-JS libraries inject styles tại runtime via JavaScript. During server rendering, không có JavaScript runtime, nên styles absent in initial HTML."
+    }
+  ]
+}

@@ -1,0 +1,382 @@
+{
+  "topicSlug": "java-oop",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Access modifier nào làm một field chỉ visible trong chính class đó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "public" },
+        { "id": "b", "text": "protected" },
+        { "id": "c", "text": "private" },
+        { "id": "d", "text": "default (package-private)" }
+      ],
+      "correctKey": "c",
+      "explanation": "Modifier `private` giới hạn quyền truy cập chỉ trong class khai báo. `public` cho phép truy cập từ mọi nơi; `protected` thêm quyền truy cập từ subclass; default (không modifier) cho phép truy cập ở cấp package. Private fields là nền tảng của encapsulation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Từ khóa nào được dùng để indicating một class kế thừa từ một class khác?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "inherits" },
+        { "id": "b", "text": "extends" },
+        { "id": "c", "text": "implements" },
+        { "id": "d", "text": "super" }
+      ],
+      "correctKey": "b",
+      "explanation": "Từ khóa `extends` thiết lập mối quan hệ kế thừa giữa hai class. Một class chỉ có thể `extend` một superclass (single inheritance). `implements` dùng cho interface; `super` tham chiếu đến parent class; `inherits` không phải là từ khóa trong Java."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nclass Animal { void speak() { System.out.print(\"sound \"); } }\nclass Dog extends Animal { void speak() { System.out.print(\"bark \"); } }\n\npublic class Main {\n  public static void main(String[] args) {\n    Animal a = new Dog();\n    a.speak();\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "sound" },
+        { "id": "b", "text": "bark" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Runtime error" }
+      ],
+      "correctKey": "b",
+      "explanation": "Đây là ví dụ về runtime polymorphism (dynamic method dispatch). Reference type là `Animal` nhưng object type là `Dog`. Tại runtime, JVM gọi phiên bản `speak()` của `Dog`, không phải của `Animal`. Method nào được gọi được xác định bởi actual object type, không phải reference type."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đâu mô tả đúng nhất về encapsulation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Ẩn dữ liệu bên trong class và expose qua các public methods" },
+        { "id": "b", "text": "Viết code có thể chạy trên nhiều hệ điều hành" },
+        { "id": "c", "text": "Tái sử dụng code bằng cách kế thừa từ một class cha" },
+        { "id": "d", "text": "Định nghĩa một contract mà một class phải tuân theo" }
+      ],
+      "correctKey": "a",
+      "explanation": "Encapsulation gói dữ liệu (fields) cùng với các methods thao tác trên dữ liệu đó, và giới hạn truy cập từ bên ngoài vào internal state qua private fields và public accessors. Option B mô tả platform independence; C mô tả inheritance; D mô tả interfaces."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Abstraction trong Java là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Ẩn chi tiết implementation và chỉ expose các features thiết yếu" },
+        { "id": "b", "text": "Tạo nhiều instances của một class" },
+        { "id": "c", "text": "Tái sử dụng code hiện có thông qua inheritance" },
+        { "id": "d", "text": "Bảo vệ dữ liệu khỏi truy cập trái phép" }
+      ],
+      "correctKey": "a",
+      "explanation": "Abstraction ẩn chi tiết implementation phức tạp đằng sau một interface đơn giản. Abstract classes và interfaces expose điều gì đó làm được (contract) mà không tiết lộ làm thế nào. Người dùng tương tác với abstraction, không phải với độ phức tạp bên dưới."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Một class không thể được đánh dấu là cả `abstract` và `final` trong Java.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Một `abstract` class là incomplete và phải được subclass để sử dụng; một `final` class không thể được subclass. Đây là hai yêu cầu loại trừ lẫn nhau — một class không thể đồng thời yêu cầu và cấm inheritance. Java compiler từ chối sự kết hợp này."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nclass Base {\n  Base() { System.out.print(\"Base \"); }\n}\nclass Derived extends Base {\n  Derived() { System.out.print(\"Derived \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) { new Derived(); }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Derived" },
+        { "id": "b", "text": "Base Derived" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Runtime error" }
+      ],
+      "correctKey": "b",
+      "explanation": "Constructors chain upward — trước khi một subclass constructor chạy, superclass constructor thực thi trước. Lời gọi ngầm `super()` ở đầu `Derived()` trigger `Base`'s constructor, in 'Base ', rồi `Derived`'s constructor in 'Derived '. Đây là một phần của inheritance và initialization lifecycle."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Tất cả các methods trong một interface đều implicitly abstract trong Java.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Từ Java 8, interfaces có thể chứa `default` methods (với implementation), `static` methods, và `private` methods. Chỉ có interfaces trước Java 8 mới có toàn bộ abstract methods. Một interface hiện đại chỉ có abstract methods vẫn hợp lệ, nhưng câu statement này không đúng như một quy tắc phổ quát."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đoạn code này vi phạm nguyên tắc SOLID nào?\n\nclass Bird {\n  void fly() { /* ... */ }\n}\nclass Penguin extends Bird { void fly() { throw new UnsupportedOperationException(); } }",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Liskov Substitution Principle (LSP)" },
+        { "id": "b", "text": "Open/Closed Principle (OCP)" },
+        { "id": "c", "text": "Interface Segregation Principle (ISP)" },
+        { "id": "d", "text": "Dependency Inversion Principle (DIP)" }
+      ],
+      "correctKey": "a",
+      "explanation": "LSP phát biểu rằng objects của subclass phải có thể thay thế được cho objects của superclass mà không làm hỏng chương trình. `Penguin` tự nhận là `Bird` nhưng throw exception khi `fly()` được gọi — nó không thể thay thế cho `Bird` trong mọi context. Đây là ví dụ kinh điển về vi phạm Liskov với inheritance."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\ninterface Playable { default String tune() { return \"generic\"; } }\nclass Guitar implements Playable { public String tune() { return \"Guitar: GCEA\"; } }\n\npublic class Main {\n  public static void main(String[] args) {\n    Playable p = new Guitar();\n    System.out.println(p.tune());\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "generic" },
+        { "id": "b", "text": "Guitar: GCEA" },
+        { "id": "c", "text": "Compilation error — cannot override default method" },
+        { "id": "d", "text": "Compilation error — missing @Override" }
+      ],
+      "correctKey": "b",
+      "explanation": "Default methods trong interfaces (Java 8+) cung cấp một default implementation có thể được override. Khi một class implements interface, override của nó được ưu tiên hơn default. Dù variable type là `Playable`, runtime object là `Guitar`, nên `Guitar.tune()` được gọi — thể hiện polymorphism ở cấp interface."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đâu mô tả đúng nhất về Single Responsibility Principle?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một class nên chỉ có một lý do để thay đổi" },
+        { "id": "b", "text": "Một class nên implement chỉ một interface" },
+        { "id": "c", "text": "Một class nên chỉ có một instance trong toàn bộ ứng dụng" },
+        { "id": "d", "text": "Một class nên chỉ có một method" }
+      ],
+      "correctKey": "a",
+      "explanation": "Single Responsibility Principle (SRP) phát biểu rằng một class nên chỉ có một lý do để thay đổi — nghĩa là nó nên có một job hoặc responsibility duy nhất. Điều này làm class dễ maintain, test, và hiểu hơn. Option B mô tả interface segregation; Option C mô tả singletons; Option D không phải nguyên tắc thực."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nclass A { int val = 1; }\nclass B extends A { int val = 2; }\n\npublic class Main {\n  public static void main(String[] args) {\n    A a = new B();\n    System.out.println(a.val);\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1" },
+        { "id": "b", "text": "2" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Runtime error" }
+      ],
+      "correctKey": "a",
+      "explanation": "Field hiding (shadowing) được resolve tại compile time dựa trên reference type, không phải runtime object type. Không giống methods, instance fields không tham gia dynamic dispatch. Compiler thấy `a.val` và resolve thành `A.val = 1`. Method overriding là polymorphic; field hiding thì không."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Method overloading là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Định nghĩa nhiều methods cùng tên nhưng khác parameter lists trong cùng một class" },
+        { "id": "b", "text": "Định nghĩa một method trong subclass với cùng signature như một superclass method" },
+        { "id": "c", "text": "Thay thế một superclass method implementation trong subclass" },
+        { "id": "d", "text": "Gọi một parent class method từ child class" }
+      ],
+      "correctKey": "a",
+      "explanation": "Method overloading (compile-time polymorphism) cho phép nhiều methods cùng tên trong một class nếu chúng khác nhau về số lượng, kiểu, hoặc thứ tự parameters. Return type không thể phân biệt các overloaded methods. Option B mô tả method overriding. Option C cũng mô tả overriding. Option D mô tả cách dùng từ khóa `super`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Từ khóa nào dùng để ngăn một class được extends?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "static" },
+        { "id": "b", "text": "private" },
+        { "id": "c", "text": "sealed" },
+        { "id": "d", "text": "final" }
+      ],
+      "correctKey": "d",
+      "explanation": "Từ khóa `final` trên một class ngăn inheritance — không class nào có thể extend nó. String class là một class `final` nổi tiếng. Option C `sealed` (Java 17+) ngược lại: nó hạn chế class nào có thể extend nó, nhưng yêu cầu ít nhất một permitted subclass."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nclass Parent {\n  void greet() { System.out.print(\"Hello \"); }\n}\nclass Child extends Parent {\n  void greet(String name) { System.out.print(\"Hi \" + name); }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    Child c = new Child();\n    c.greet();\n    c.greet(\"Bob\");\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hello Hi Bob" },
+        { "id": "b", "text": "Hi Bob Hi Bob" },
+        { "id": "c", "text": "Compilation error — greet() is not visible" },
+        { "id": "d", "text": "Hello Hi Bob" }
+      ],
+      "correctKey": "d",
+      "explanation": "Class `Child` kế thừa `greet()` từ `Parent` và thêm một overload `greet(String)`. Overloading và overriding có thể cùng tồn tại. `c.greet()` gọi phiên bản không argument → in 'Hello '. `c.greet(\"Bob\")` gọi method mới overloaded → in 'Hi Bob'. Hai methods này là riêng biệt, được resolve tại compile time."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Dependency Inversion Principle phát biểu rằng các modules cấp cao không nên phụ thuộc vào các modules cấp thấp.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "DIP phát biểu rằng cả high-level và low-level modules đều nên phụ thuộc vào abstractions. Các high-level classes nên định nghĩa interface, và low-level classes nên implement nó. Điều này decouples architecture — thay đổi một low-level implementation không làm hỏng high-level logic. Vi phạm tạo ra tight coupling khiến code cứng nhắc và khó thay đổi."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nabstract class Shape {\n  abstract void draw();\n  void print() { System.out.print(\"Shape \"); draw(); }\n}\nclass Circle extends Shape {\n  void draw() { System.out.print(\"Circle \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    Shape s = new Circle();\n    s.print();\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Shape Circle" },
+        { "id": "b", "text": "Circle" },
+        { "id": "c", "text": "Compilation error — cannot instantiate abstract class" },
+        { "id": "d", "text": "Shape Shape" }
+      ],
+      "correctKey": "a",
+      "explanation": "Polymorphism áp dụng ngay cả qua các non-abstract methods. `print()` gọi `draw()`, vốn là abstract. Tại runtime, JVM dispatch đến `Circle.draw()`. Pattern này — một template method trong abstract class gọi một abstract method — là một OOP design pattern kinh điển, nơi parent class kiểm soát thuật toán và subclass cung cấp implementation cho từng bước."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đâu là lợi ích của việc program to interfaces thay vì concrete implementations?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Performance nhanh hơn nhờ direct method calls" },
+        { "id": "b", "text": "Giảm memory usage vì interfaces không có instance fields" },
+        { "id": "c", "text": "Loose coupling — clients phụ thuộc vào abstraction, không phải concrete details" },
+        { "id": "d", "text": "Interfaces có thể có state (instance fields) trong Java" }
+      ],
+      "correctKey": "c",
+      "explanation": "Programming to interfaces decouples client code khỏi implementation classes. Điều này cho phép swapping implementations (ví dụ: từ in-memory storage sang database) mà không cần thay đổi client code — core của Open/Closed Principle. Option A sai; Option B không đúng; Option D sai — interfaces không thể có instance fields."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nclass A {\n  A() { System.out.print(\"A \"); }\n  { System.out.print(\"A-init \"); }\n}\nclass B extends A {\n  B() { System.out.print(\"B \"); }\n  { System.out.print(\"B-init \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) { new B(); }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A B B-init A-init" },
+        { "id": "b", "text": "A-init A B-init B" },
+        { "id": "c", "text": "A-init A B-init B" },
+        { "id": "d", "text": "A-init A B B-init" }
+      ],
+      "correctKey": "d",
+      "explanation": "Instance initializer blocks chạy theo thứ tự văn bản sau `super()` và trước constructor body. Thứ tự thực thi: 1) `new B()` trigger `B`'s constructor gọi ngầm `A()` trước. 2) `A`'s instance initializer chạy → in 'A-init'. 3) `A()` constructor body → in 'A'. 4) `B`'s instance initializer → in 'B-init'. 5) `B()` constructor body → in 'B'. Kết quả: A-init A B-init B."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Một class có thể extends nhiều classes trong Java thông qua multiple inheritance.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Java không hỗ trợ multiple inheritance of state (multiple class inheritance). Một class chỉ có thể `extend` một class. Đây là quyết định thiết kế có chủ đích để tránh 'diamond problem' của ambiguous method/field resolution. Java đạt được multiple-interface implementation và interface multiple inheritance, nhưng không phải class multiple inheritance."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "OOP design pattern nào được thể hiện khi một class `Component` được extends bởi `Button`, `Panel`, và `Dialog`, mỗi class override `render()` khác nhau?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Strategy Pattern" },
+        { "id": "b", "text": "Template Method Pattern" },
+        { "id": "c", "text": "Composite Pattern" },
+        { "id": "d", "text": "Factory Pattern" }
+      ],
+      "correctKey": "c",
+      "explanation": "Composite Pattern compose các objects thành tree structures để biểu diễn part-whole hierarchies. Một `Component` định nghĩa một interface chung (ví dụ `render()`), và cả leaves (Button) và composites (Panel chứa Components) đều implement nó một cách đồng nhất. Strategy (A) encapsulates interchangeable algorithms; Template Method (B) định nghĩa skeleton với các bước được override; Factory (D) xử lý object creation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\ninterface A { default void show() { System.out.print(\"A \"); } }\ninterface B { default void show() { System.out.print(\"B \"); } }\nclass C implements A, B {\n  public void show() { A.super.show(); B.super.show(); System.out.print(\"C \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) { new C().show(); }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "C" },
+        { "id": "b", "text": "A B C" },
+        { "id": "c", "text": "Compilation error — ambiguous default method" },
+        { "id": "d", "text": "A B" }
+      ],
+      "correctKey": "b",
+      "explanation": "Khi một class implements hai interfaces có cùng default method, compiler yêu cầu disambiguation rõ ràng. `C` giải quyết bằng cách gọi cả hai defaults qua `A.super.show()` và `B.super.show()`, rồi thêm behavior của riêng mình. Không có override rõ ràng này, code sẽ không compile — Java bắt buộc developer giải quyết ambiguity."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\ninterface A { static String id = \"A\"; }\ninterface B extends A { static String id = \"B\"; }\nclass C implements B { }\n\npublic class Main {\n  public static void main(String[] args) {\n    System.out.print(A.id + \" \" + B.id + \" \");\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A B" },
+        { "id": "b", "text": "B B" },
+        { "id": "c", "text": "A A" },
+        { "id": "d", "text": "Compilation error — ambiguous id" }
+      ],
+      "correctKey": "a",
+      "explanation": "Static fields trong interfaces không được inherited bởi implementing classes — chúng thuộc về chính interface type. `A.id` truy cập static field của A = 'A'. `B.id` truy cập static field của B = 'B'. `C.id` sẽ không compile vì static members của interfaces không được inherited; cần viết rõ `A.id` hoặc `B.id`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "SOLID principle nào bị vi phạm bởi một class có cả logic persistence và logic business rule validation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Single Responsibility Principle (SRP)" },
+        { "id": "b", "text": "Open/Closed Principle (OCP)" },
+        { "id": "c", "text": "Liskov Substitution Principle (LSP)" },
+        { "id": "d", "text": "Interface Segregation Principle (ISP)" }
+      ],
+      "correctKey": "a",
+      "explanation": "SRP phát biểu rằng một class nên chỉ có một lý do để thay đổi. Một class có cả validate business rules VÀ persist data có hai responsibilities — hai actors khác nhau có thể muốn thay đổi nó vì lý do khác nhau. Anti-pattern này làm class khó test, khó maintain, và khó reuse. Giải pháp: tách thành một domain object và một repository/service."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đúng hay Sai: Một interface có thể extend nhiều interfaces trong Java.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "a",
+      "explanation": "Java interfaces hỗ trợ multiple inheritance: `interface C extends A, B {}`. Điều này cho phép một interface kết hợp contracts từ nhiều nguồn mà không có diamond problem (vì interfaces không có state). Một class implement C phải implement methods từ cả A và B. Đây là cách Java mô hình multiple-inheritance of type."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nabstract class Base {\n  Base() { display(); }\n  abstract void display();\n}\nclass Derived extends Base {\n  int x = 10;\n  Derived() { x = 20; }\n  void display() { System.out.print(x + \" \"); }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    new Derived();\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0" },
+        { "id": "b", "text": "10" },
+        { "id": "c", "text": "20" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "a",
+      "explanation": "Constructor gọi `display()` được override bởi `Derived`. Nhưng khi `Base` constructor chạy, các fields của `Derived` chưa được initialized — instance fields `x` có giá trị default (0 cho int). Instance initializer và Derived's constructor body chưa chạy khi Base constructor gọi display(). Điều này in giá trị default 0. Đây là 'calling an overridable method in a constructor' anti-pattern."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Design pattern nào đảm bảo chỉ có một instance của một class tồn tại và cung cấp một global point of access?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Singleton Pattern" },
+        { "id": "b", "text": "Factory Pattern" },
+        { "id": "c", "text": "Observer Pattern" },
+        { "id": "d", "text": "Adapter Pattern" }
+      ],
+      "correctKey": "a",
+      "explanation": "Singleton pattern đảm bảo chính xác một instance và cung cấp một global access point (thường qua static getInstance() method). Các implementations gồm: eager initialization, lazy initialization, synchronized lazy, double-checked locking với volatile, và Bill Pugh's enum singleton (bền vững nhất). Factory Pattern (B) xử lý object creation; Observer (C) cho event systems; Adapter (D) chuyển đổi interface compatibility."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\nclass Outer {\n  private String s = \"Outer\";\n  class Inner {\n    private String s = \"Inner\";\n    void show() {\n      System.out.print(this.s + \" \");\n      System.out.print(Outer.this.s);\n    }\n  }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    Outer o = new Outer();\n    Outer.Inner i = o.new Inner();\n    i.show();\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Inner Outer" },
+        { "id": "b", "text": "Outer Inner" },
+        { "id": "c", "text": "Inner Inner" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "a",
+      "explanation": "Non-static inner classes có một implicit reference đến outer instance. Trong `show()`, `this.s` tham chiếu đến Inner's field 'Inner'. `Outer.this.s` dùng qualified `this` syntax để tường minh truy cập outer class's field 'Outer'. Inner class instance được tạo với `o.new Inner()` — nó phải gắn với một outer instance."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đâu là những lý do hợp lệ để ưu tiên composition hơn inheritance?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Inheritance tạo ra tight coupling — subclasses phụ thuộc vào parent implementation details" },
+        { "id": "b", "text": "Composition cho phép thay đổi behavior lúc runtime thông qua interface injection" },
+        { "id": "c", "text": "Inheritance luôn nhanh hơn composition trong Java do vtable lookups" },
+        { "id": "d", "text": "Composition tránh được 'fragile base class' problem khi thay đổi parent làm hỏng subclasses" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Composition (has-a) được ưu tiên hơn inheritance (is-a) trong nhiều trường hợp: loose coupling (B), runtime flexibility qua interface injection, và tránh fragile base class problem (A, D). Option C sai — inheritance không inherently nhanh hơn; cả hai đều compile thành cùng virtual method dispatch."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\nrecord Point(int x, int y) {\n  Point { x = Math.max(0, x); y = Math.max(0, y); }\n  Point(int x) { this(x, 0); }\n}\n\npublic class Main {\n  public static void main(String[] args) {\n    Point p = new Point(-5, 3);\n    System.out.print(p.x() + \" \" + p.y());\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0 3" },
+        { "id": "b", "text": "-5 3" },
+        { "id": "c", "text": "0 0" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "a",
+      "explanation": "Java 16 records hỗ trợ compact constructors (không parameter list). Canonical constructor body chạy sau argument validation. Khi `new Point(-5, 3)` được gọi, compact constructor clamp x thành 0 và giữ y là 3. Record accessor methods là x() và y(). Records là immutable data classes tự động generate equals/hashCode/toString và accessor methods."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sealed class trong Java 17 là gì và mục đích của nó là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một class giới hạn các class khác có thể extend nó, bằng cách liệt kê tường minh các permitted subclasses" },
+        { "id": "b", "text": "Một class không thể được instantiate trực tiếp, tương tự abstract" },
+        { "id": "c", "text": "Một class thread-safe và không thể modified sau khi initialize" },
+        { "id": "d", "text": "Một class ngăn methods của nó bị override" }
+      ],
+      "correctKey": "a",
+      "explanation": "Sealed classes (Java 17) giới hạn inheritance bằng cách liệt kê tường minh class nào có thể extend hoặc implement chúng qua `permits`. Các permitted subclasses phải là final, sealed, hoặc non-sealed. Điều này cho phép exhaustive pattern matching trong switch expressions — compiler có thể verify tất cả các cases được cover. Nó lấp đầy khoảng trống giữa cho phép controlled inheritance và hoàn toàn cấm (final)."
+    }
+  ]
+}

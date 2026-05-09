@@ -1,0 +1,666 @@
+{
+  "topicSlug": "css",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Trong CSS box model, thuộc tính nào thêm khoảng cách GIỮA border của phần tử và các phần tử xung quanh?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "padding" },
+        { "id": "b", "text": "border" },
+        { "id": "c", "text": "margin" },
+        { "id": "d", "text": "content" }
+      ],
+      "correctKey": "c",
+      "explanation": "Margin là khoảng cách BÊN NGOÀI border — giữa border và các phần tử lân cận. Padding là khoảng cách BÊN TRONG border, giữa border và content. Note: margins collapse theẳng dọc giữa các block elements (margin lớn hơn thắng), padding không bao giờ collapse."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Giá trị CSS display nào tạo block-level box bắt đầu trên dòng riêng và chiếm toàn bộ chiều rộng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "display: inline" },
+        { "id": "b", "text": "display: flex" },
+        { "id": "c", "text": "display: block" },
+        { "id": "d", "text": "display: grid" }
+      ],
+      "correctKey": "c",
+      "explanation": "display: block tạo block-level box: bắt đầu trên dòng mới, chiếm toàn bộ chiều rộng container (trừ khi đặt width). display: inline chảy với text. display: flex kích hoạt flex layout. display: grid kích hoạt grid layout."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `position: relative` và `position: absolute`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "relative định vị relative với document root; absolute định vị relative với nearest positioned ancestor" },
+        { "id": "b", "text": "relative giữ phần tử trong normal document flow và offset relative với chính nó; absolute loại khỏi flow và định vị relative với nearest positioned ancestor" },
+        { "id": "c", "text": "Cả hai đều loại phần tử khỏi document flow" },
+        { "id": "d", "text": "absolute không thể dùng nếu không đặt top/left" }
+      ],
+      "correctKey": "b",
+      "explanation": "position: relative giữ phần tử trong flow (không gian được giữ), offset bằng top/left/right/bottom từ vị trí gốc. position: absolute loại khỏi flow (không gian không được giữ), định vị relative với nearest ancestor có position ≠ static."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `em` và `rem`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "em relative đến document root; rem relative đến parent element's font size" },
+        { "id": "b", "text": "em relative đến parent; rem relative đến root" },
+        { "id": "c", "text": "em và rem giống nhau" },
+        { "id": "d", "text": "em cho dimensions; rem cho font-sizes" }
+      ],
+      "correctKey": "b",
+      "explanation": "rem (root em) relative đến root element's font size — predictable và consistent. em relative đến current element's parent font size — có thể compound trong nested elements. Recommended: rem cho typography và spacing."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Trong flex container với `flex-direction: row`, `flex-grow: 1` trên child làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Làm phần tử rộng 1px hơn content" },
+        { "id": "b", "text": "Flex child phát triển để lấp đầy không gian khả dụng, chia tỷ lệ với các flex-grow siblings khác" },
+        { "id": "c", "text": "Lặp lại phần tử 1 lần theo chiều ngang" },
+        { "id": "d", "text": "Ngăn phần tử co lại dưới kích thước content" }
+      ],
+      "correctKey": "b",
+      "explanation": "flex-grow định nghĩa proportion của không gian khả dụng phần tử nhận. flex-shrink kiểm soát ngược lại. flex-basis đặt kích thước ban đầu."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "CSS specificity là gì và bộ chọn nào có specificity cao nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Specificity là thứ tự CSS rules trong stylesheet — rule sau cùng thắng" },
+        { "id": "b", "text": "Specificity là hệ thống trọng số: inline > IDs > classes/attributes/pseudo-classes > elements/pseudo-elements; khi bằng nhau, source order quyết định" },
+        { "id": "c", "text": "!important override hoàn toàn specificity" },
+        { "id": "d", "text": "Universal selector (*) có specificity cao nhất" }
+      ],
+      "correctKey": "b",
+      "explanation": "Specificity tính: (inline, IDs, classes/attributes/pseudo-classes, elements/pseudo-elements). Universal selector (*) có specificity = 0."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích của `transition` trong CSS và các properties nó chấp nhận?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "transition animate sự thay đổi giá trị CSS property; nhận property, duration, timing-function, và delay" },
+        { "id": "b", "text": "transition bật keyframe animations cho tất cả properties" },
+        { "id": "c", "text": "transition có thể animate bất kỳ CSS property nào" },
+        { "id": "d", "text": "transition là shorthand cho animation" }
+      ],
+      "correctKey": "a",
+      "explanation": "transition là shorthand cho: transition-property, transition-duration, transition-timing-function, transition-delay. Không thể animate display: none↔block trực tiếp. @keyframes cho multi-step sequences."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS Layers (@layer) là gì và tại sao dùng thay vì specificity truyền thống?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@layer định nghĩa stacking contexts cho z-index" },
+        { "id": "b", "text": "@layer kiểm soát cascade order ở layer level — rules trong layers sau thắng layers trước bất kể specificity" },
+        { "id": "c", "text": "@layer là performance optimization" },
+        { "id": "d", "text": "@layer thay thế CSS Modules" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS @layer thiết lập cascade hierarchy độc lập với specificity. Khai báo `@layer reset, base, components;` — reset có specificity thấp nhất. Giải quyết specificity wars."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mục đích của `will-change` trong CSS và cách dùng đúng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "will-change ép browser tạo stacking context mới" },
+        { "id": "b", "text": "will-change hint browser rằng phần tử sẽ thay đổi, cho phép optimize trước; áp dụng ngắn trước animation và remove sau" },
+        { "id": "c", "text": "will-change là shorthand thay thế transform và opacity" },
+        { "id": "d", "text": "will-change cải thiện rendering bằng reducing DOM nodes" }
+      ],
+      "correctKey": "b",
+      "explanation": "will-change signal browser chuẩn bị thay đổi để optimize proactivẹ. Áp dụng ngắn trước animation và remove sau (hoặc auto). Properties: scroll-position, contents, transform, opacity."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Ưu điểm chính của container queries so với media queries?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Container queries làm component phản hồi với chiều rộng container CHA, không phải viewport" },
+        { "id": "b", "text": "Container queries nhanh hơn media queries" },
+        { "id": "c", "text": "Media queries deprecated" },
+        { "id": "d", "text": "Container queries thay thế hoàn toàn media queries" }
+      ],
+      "correctKey": "a",
+      "explanation": "Media queries phản hồi viewport size — component không thể adapt khi ở sidebar vs main content. Container queries query parent container (cần `container-type`), cho phép truly portable components."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào kiểm soát phần tử có thể grow đến đâu, với `width: min(100%, 600px)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Phần tử luôn đúng 600px" },
+        { "id": "b", "text": "Phần tử chiếm 100% container nhưng bị giới hạn tối đa 600px" },
+        { "id": "c", "text": "Phần tử luôn 100% chiều rộng" },
+        { "id": "d", "text": "Phần tử tối thiểu 600px" }
+      ],
+      "correctKey": "b",
+      "explanation": "min(A, B) chọn giá trị nhỏ hơn. Với 100% và 600px, browser chọn giá trị nhỏ hơn — container hẹp dùng 100%, container rộng bị giới hạn 600px."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đơn vị CSS nào relative đến viewport height, 1vh = 1% chiều cao viewport?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "vw" },
+        { "id": "b", "text": "vmin" },
+        { "id": "c", "text": "vh" },
+        { "id": "d", "text": "dvh" }
+      ],
+      "correctKey": "c",
+      "explanation": "vh (viewport height) = 1% chiều cao viewport. dvh (dynamic viewport height) thay đổi khi URL bar ẩn/hiện — dùng cho full-height mobile layouts."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`calc(100% - 40px)` tính gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Giá trị cố định 60px" },
+        { "id": "b", "text": "Giá trị fluid: 100% của parent dimension trừ 40px" },
+        { "id": "c", "text": "Lỗi — calc() không thể trừ pixel khỏi percentage" },
+        { "id": "d", "text": "Chỉ hoạt động với CSS Grid" }
+      ],
+      "correctKey": "b",
+      "explanation": "calc(100% - 40px) trừ 40px từ 100% chiều rộng parent. calc() hỗ trợ +, -, *, / với mixed units. Khoảng trắng quanh operators là bắt buộc."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính CSS nào kiểm soát text có wrap khi đến mép container, hay overflow?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "text-wrap" },
+        { "id": "b", "text": "overflow-wrap (word-wrap)" },
+        { "id": "c", "text": "white-space" },
+        { "id": "d", "text": "word-break" }
+      ],
+      "correctKey": "b",
+      "explanation": "overflow-wrap (word-wrap) kiểm soát browser có ngắt từ dài không. overflow-wrap: break-word ngắt từ tràn. word-break: break-all ngắt tại mọi character boundary."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`box-shadow: 0 4px 6px rgba(0,0,0,0.3)` tạo gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Shadow đỏ offset 4px phải và 6px xuống" },
+        { "id": "b", "text": "Soft shadow: 0px horizontal, 4px vertical, 6px blur, không spread, black 30% opacity" },
+        { "id": "c", "text": "Border 4px solid black với 6px blur" },
+        { "id": "d", "text": "Inset shadow" }
+      ],
+      "correctKey": "b",
+      "explanation": "box-shadow syntax: offset-x offset-y blur-radius spread-radius color. 0 4px 6px rgba(0,0,0,0.3) = 0 horizontal, 4px vertical, 6px blur, no spread, 30% opacity black."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`object-fit: cover` làm gì trên image?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Image lấp đầy và overflow nếu lớn hơn" },
+        { "id": "b", "text": "Image lấp đầy element trong khi bảo toàn aspect ratio, crop overflow" },
+        { "id": "c", "text": "Image thu nhỏ để vừa không crop" },
+        { "id": "d", "text": "object-fit chỉ hoạt động trên video" }
+      ],
+      "correctKey": "b",
+      "explanation": "object-fit: cover scale image để lấp đầy element trong khi bảo toàn aspect ratio, crop excess. object-fit: contain giữ nguyên image (có thể có letterboxing)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Tính năng CSS nào cho phép định nghĩa named animation sequence?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@media" },
+        { "id": "b", "text": "@keyframes" },
+        { "id": "c", "text": "@layer" },
+        { "id": "d", "text": "@supports" }
+      ],
+      "correctKey": "b",
+      "explanation": "@keyframes định nghĩa các trạng thái trung gian của animation sequence dùng percentage stops hoặc from/to."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Pseudo-class nào chọn phần tử là con cuối cùng của parent?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": ":last" },
+        { "id": "b", "text": ":last-of-type" },
+        { "id": "c", "text": ":last-child" },
+        { "id": "d", "text": ":n-last-child(1)" }
+      ],
+      "correctKey": "c",
+      "explanation": ":last-child chọn phần tử chỉ khi nó là con cuối cùng (không có anh chị em sau). :last-of-type chọn phần tử cuối cùng của loại đó."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mục đích của `clip-path` trong CSS?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Clip extension từ image URLs" },
+        { "id": "b", "text": "Clip visible area thành shape định nghĩa (circle, polygon, ellipse) không ảnh hưởng layout" },
+        { "id": "c", "text": "Loại phần tử khỏi document flow khi scroll" },
+        { "id": "d", "text": "clip-path chỉ hợp lệ trên <canvas>" }
+      ],
+      "correctKey": "b",
+      "explanation": "clip-path định nghĩa clipping region — chỉ vùng trong shape visible. clip-path: polygon(50% 0, 100% 100%, 0 100%) tạo tam giác. GPU-accelerated."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`user-select: none` ngăn điều gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Ngăn phần tử nhận mouse hoặc keyboard events" },
+        { "id": "b", "text": "Ngăn users select/highlight text trong phần tử" },
+        { "id": "c", "text": "Ngăn phần tử được screen readers nhìn thấy" },
+        { "id": "d", "text": "Ngăn phần tử được copy vào clipboard" }
+      ],
+      "correctKey": "b",
+      "explanation": "user-select: none ngăn text selection/highlighting trong phần tử. Không ngăn nhận events hay copy qua keyboard shortcuts/dev tools."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích chính của `contain` property?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Chứa text trong box có kích thước cố định" },
+        { "id": "b", "text": "Cô lập layout, paint, và style calculations của component để không ảnh hưởng page — cải thiện performance" },
+        { "id": "c", "text": "Ngăn flex items wrap" },
+        { "id": "d", "text": "contain là deprecated" }
+      ],
+      "correctKey": "b",
+      "explanation": "contain: layout ngăn margin collapse với parent; paint ngăn painting ra ngoài; style ngăn style changes ảnh hưởng outside. Đây là performance optimization."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`appearance: none` làm gì và khi nào dùng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Loại phần tử khỏi DOM hoàn toàn" },
+        { "id": "b", "text": "Loại browser-native styling (select arrows, checkbox appearance) để apply custom styles" },
+        { "id": "c", "text": "Ẩn phần tử nhưng giữ trong accessibility tree" },
+        { "id": "d", "text": "appearance: none là default" }
+      ],
+      "correctKey": "b",
+      "explanation": "appearance: none loại default browser styling cho form controls (select, checkbox, radio, input). Cần vendor prefix (-webkit-appearance: none) trong một số browsers."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `cursor: pointer` và `cursor: grab`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Chúng giống nhau" },
+        { "id": "b", "text": "pointer hiển thị hand cho links/buttons; grab hiển thị open hand cho draggable elements, grab: active cho closed hand" },
+        { "id": "c", "text": "grab chỉ có trên mobile" },
+        { "id": "d", "text": "cursor chỉ ảnh hưởng mouse cursors" }
+      ],
+      "correctKey": "b",
+      "explanation": "cursor: pointer signal 'clickable/interactive'. cursor: grab signal 'draggable'. grab: active cho closed hand trong khi drag."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`inherit`, `initial`, và `unset` khác nhau thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "inherit theo cascade từ parent; initial reset về user agent default; unset fallback về inherited nếu inherited, ngược lại initial" },
+        { "id": "b", "text": "Chúng đồng nghĩa" },
+        { "id": "c", "text": "inherit chỉ hoạt động trên inherited properties" },
+        { "id": "d", "text": "unset loại bỏ property khỏi cascade" }
+      ],
+      "correctKey": "a",
+      "explanation": "inherit: dùng parent's computed value. initial: dùng user-agent default. unset: acts as inherit cho inherited properties, initial cho non-inherited."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "BFC (Block Formatting Context) là gì và thuộc tính CSS nào tạo nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "BFC là loại flex container" },
+        { "id": "b", "text": "BFC là isolated layout context — tạo bởi overflow, display, position, float, hoặc contain" },
+        { "id": "c", "text": "BFC là layout algorithm mặc định cho block elements" },
+        { "id": "d", "text": "BFC là grid layout" }
+      ],
+      "correctKey": "b",
+      "explanation": "BFC: margins không collapse với parent/children, floats không escape, overflow: hidden clips floats. Tạo bởi: overflow ≠ visible, display: flow-root, float ≠ none, position ≠ static, contain: layout."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`writing-mode: horizontal-tb` nghĩa là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Text chảy ngang, các dòng từ trên xuống dưới" },
+        { "id": "b", "text": "Text chảy dọc từ trên xuống, các dòng từ trái sang phải" },
+        { "id": "c", "text": "Text chảy từ dưới lên" },
+        { "id": "d", "text": "writing-mode chỉ ảnh hưởng chữ cái đầu" }
+      ],
+      "correctKey": "a",
+      "explanation": "horizontal-tb là default — text ngang (trái→phải trong LTR), dòng từ trên xuống dưới. vertical-rl cho CJK typography."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính `cursor` ngoài default arrow communicate điều gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "cursor chỉ thay đổi mouse pointer appearance" },
+        { "id": "b", "text": "cursor communicate affordance — shapes khác signal interactions khác nhau (pointer=clickable, grab=draggable, wait=loading)" },
+        { "id": "c", "text": "cursor chỉ hoạt động trên elements có display: block" },
+        { "id": "d", "text": "cursor: none ẩn pointer nhưng events vẫn nhận" }
+      ],
+      "correctKey": "b",
+      "explanation": "Cursor shapes communicate action khả dụng — là tín hiệu UX/accessibility quan trọng. pointer, grab, crosshair, wait, not-allowed, v.v."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào thay đổi cursor thành custom image?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "cursor: url('custom.cur'), auto" },
+        { "id": "b", "text": "cursor-image: url('custom.png')" },
+        { "id": "c", "text": "pointer-image: custom.png" },
+        { "id": "d", "text": "Custom cursors cần JavaScript" }
+      ],
+      "correctKey": "a",
+      "explanation": "cursor: url(path), fallback-value. Luôn cung cấp fallback sau URL. cursor: url(image.png) 4 4, auto đặt hotspot (x, y offset)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`background-clip: text` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Clip background đến padding box" },
+        { "id": "b", "text": "Clip background đến text foreground, tạo gradient text — background chỉ visible ở chỗ text xuất hiện" },
+        { "id": "c", "text": "Loại background hoàn toàn" },
+        { "id": "d", "text": "background-clip chỉ hợp lệ trên display: inline" }
+      ],
+      "correctKey": "b",
+      "explanation": "background-clip: text (cần -webkit-background-clip: text) clip background gradient/image vào hình dạng text. Text phải transparent."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuộc tính CSS nào kiểm soát stacking order và constraint quan trọng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "stack-index; chỉ hoạt động trong flex containers" },
+        { "id": "b", "text": "z-index; chỉ hoạt động trên elements có position: relative, absolute, fixed, hoặc sticky" },
+        { "id": "c", "text": "layer-order; hoạt động trên bất kỳ phần tử nào" },
+        { "id": "d", "text": "z-index là automatic" }
+      ],
+      "correctKey": "b",
+      "explanation": "z-index chỉ ảnh hưởng positioned elements (relative, absolute, fixed, sticky). z-index: auto không tạo stacking context mới; bất kỳ giá trị nào (kể cả 0) tạo."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `:nth-child(odd)` và `:nth-of-type(odd)`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Chúng giống nhau" },
+        { "id": "b", "text": ":nth-child(odd) đếm TẤT CẢ children; :nth-of-type(odd) chỉ đếm siblings cùng loại" },
+        { "id": "c", "text": ":nth-of-type chỉ hoạt động trong <ul>" },
+        { "id": "d", "text": ":nth-child bỏ qua type của phần tử" }
+      ],
+      "correctKey": "b",
+      "explanation": ":nth-child(odd) đếm tất cả children. :nth-of-type(odd) chỉ đếm siblings cùng element type."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mục đích của `CSS Layers` (@layer) trong quản lý large-scale CSS specificity?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@layer tạo stacking context cho z-index" },
+        { "id": "b", "text": "@layer thiết lập cascade hierarchy ở layer level — rules trong layers sau thắng rules trong layers trước bất kể specificity" },
+        { "id": "c", "text": "@layer là performance optimization cho GPU-accelerated layers" },
+        { "id": "d", "text": "@layer thay thế CSS Modules" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS Layers giải quyết specificity wars bằng cascade hierarchy rõ ràng. Unlayered CSS luôn thắng layered CSS."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "`::marker` tương tác với `counter-reset` và `counter-increment` như thế nào cho custom numbering?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "::marker thay thế counter() hoàn toàn" },
+        { "id": "b", "text": "counter() tạo giá trị số/string; ::marker style appearance — bổ sung: counter-reset định nghĩa, counter-increment cập nhật, counter() output, ::marker style output" },
+        { "id": "c", "text": "::marker chỉ hoạt động với predefined counter names" },
+        { "id": "d", "text": "::marker không thể kết hợp với CSS counters" }
+      ],
+      "correctKey": "b",
+      "explanation": "CSS counters layers: counter-reset declare, counter-increment update, counter() output, ::marker style marker box."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thứ tự ưu tiên cascade origin từ THẤP đến CAO?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "User agent → Author → User" },
+        { "id": "b", "text": "Author → User agent → User" },
+        { "id": "c", "text": "User agent → User → Author → Author !important → User !important" },
+        { "id": "d", "text": "Author !important → Author → User → User agent" }
+      ],
+      "correctKey": "c",
+      "explanation": "Cascade origin: user agent < user < author < author !important < user !important. User !important cao nhất cho accessibility."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "`filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3))` khác `box-shadow` thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "drop-shadow clip vào hình dạng box; box-shadow áp dụng cho border box" },
+        { "id": "b", "text": "drop-shadow theo alpha/transparency mask của element content (kể cả text và PNG cutouts); box-shadow chỉ tạo rectangular shadow quanh border box" },
+        { "id": "c", "text": "Chúng giống nhau" },
+        { "id": "d", "text": "box-shadow chỉ hoạt động trên block elements" }
+      ],
+      "correctKey": "b",
+      "explanation": "box-shadow tạo rectangular shadow quanh border box, bỏ qua content. filter: drop-shadow() theo actual shape của element và transparent regions."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "`scroll-behavior: smooth` làm gì và limitation chính?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Smooth scroll đến anchor links và scroll elements trong ~300ms; limitation: áp dụng toàn cục" },
+        { "id": "b", "text": "Thêm inertia-based scrolling" },
+        { "id": "c", "text": "scroll-behavior là JavaScript library" },
+        { "id": "d", "text": "scroll-behavior smooth chỉ khi click anchor links" }
+      ],
+      "correctKey": "a",
+      "explanation": "html { scroll-behavior: smooth; } smooth scroll cho all anchor links. Dùng scrollIntoView({ behavior: 'smooth' }) cho per-element control. Luôn check @media (prefers-reduced-motion: no-preference)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "`clip-path: fill-box` vs `clip-path: view-box` kiểm soát gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "fill-box clip đến element's border box; view-box clip đến SVG viewBox coordinate system" },
+        { "id": "b", "text": "fill-box clip đến inflated box model; view-box clip đến viewport" },
+        { "id": "c", "text": "Chúng đồng nghĩa" },
+        { "id": "d", "text": "fill-box cho HTML; view-box chỉ trong SVG <clipPath>" }
+      ],
+      "correctKey": "a",
+      "explanation": "fill-box dùng element's own bounding box (default). stroke-box dùng stroke bounding box (cho SVG strokes). view-box dùng SVG viewBox coordinate system."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa CSS `@layer` và `@scope`?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@layer và @scope giống nhau" },
+        { "id": "b", "text": "@layer kiểm soát cascade priority; @scope kiểm soát phần tử nào selector áp dụng" },
+        { "id": "c", "text": "@scope deprecated" },
+        { "id": "d", "text": "@layer chỉ cho grid layouts; @scope cho flex layouts" }
+      ],
+      "correctKey": "b",
+      "explanation": "@layer quản lý cascade priority. @scope quản lý style scope — @scope (.card) { .title } scope .title vào elements trong .card."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính `content` chỉ dùng được với `::before` và `::after`. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "content property chỉ hợp lệ trên ::before, ::after, ::marker. Bắt buộc trên ::before/::after (kể cả empty: content: '')."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Trong CSS, `vh` thay đổi khi URL bar hiện/ẩn trên mobile, còn `dvh` không. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "dvh THAY ĐỔI khi URL bar hiện/ẩn. vh dùng full viewport height (address bar visible). dvh reflect dynamic viewport state. svh dùng smallest viewport state."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "CSS `mask` và `clip-path` giống nhau. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "clip-path clip đến geometric shape — binary (inside/outside). mask clip dùng image's alpha channel — soft, feathered edges. Mask hỗ trợ multiple mask layers và gradient masks."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "z-index của child element luôn relative đến siblings, không phải elements trong parent stacking context. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Trong một stacking context, tất cả z-index values relative — child với z-index: 9999 bên trong parent z-index: 1 không thể xuất hiện trên element có z-index: 2 ở context khác. Đây là source của common bug."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "CSS variables (custom properties) được evaluate một lần tại definition time. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "CSS custom properties live — chúng theo cascade và recalculate khi giá trị thay đổi. var() được re-evaluate mỗi paint."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`appearance: none` loại phần tử khỏi accessibility tree. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "appearance: none loại browser's native UI, không phải DOM hay accessibility tree. Element vẫn là semantic element cho screen readers."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`display: flow-root` là cách sạch nhất tạo BFC không side effects. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "display: flow-root tạo BFC mà không thay đổi overflow behavior. overflow: hidden cũng tạo BFC nhưng có unintended overflow clipping."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS `@layer` có thể làm third-party CSS luôn thua styles của mình. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "@layer third-party { /* ... */ } trước, rồi @layer site { /* yours */ } sau — site styles luôn thắng bất kể specificity. Unlayered CSS luôn thắng layered."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "`position: fixed` bên trong parent có `transform: scale(0.9)` định vị relative với parent đã scale, không phải viewport. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Non-none transform trên ancestor tạo containing block mới, thay đổi what position: fixed fixed relative to. Di chuyển fixed element ra ngoài transformed container để fix."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS `@property` với `inherits: false` nghĩa là children không thể dùng custom property qua var(). Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "inherits: false ngăn cascade inheritance — children không inherit property value từ parent. Nhưng children vẫn dùng var() nếu có định nghĩa riêng hoặc fallback."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính CSS nào tạo new stacking context? (Chọn TẤT CẢ)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "position: relative + z-index: 0" },
+        { "id": "b", "text": "position: fixed (without z-index)" },
+        { "id": "c", "text": "opacity: 0.9" },
+        { "id": "d", "text": "transform: scale(1)" },
+        { "id": "e", "text": "display: flex" }
+      ],
+      "correctKey": "a,c,d",
+      "explanation": "position: relative + z-index (kể cả 0), opacity < 1, transform ≠ none đều tạo stacking context. position: fixed KHÔNG tạo nếu không có z-index. display: flex một mình không tạo."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Tính năng CSS nào yêu cầu parent phải được định nghĩa là container? (Chọn TẤT CẢ)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Container queries (@container)" },
+        { "id": "b", "text": "Media queries" },
+        { "id": "c", "text": "Container query units (cqw, cqh, cqi, cqb, cqmin, cqmax)" },
+        { "id": "d", "text": "aspect-ratio trên parent" },
+        { "id": "e", "text": "CSS Grid implicit tracks" }
+      ],
+      "correctKey": "a,c",
+      "explanation": "Container queries và container query units cần parent có container-type: inline-size (hoặc size). Media queries query viewport — không cần container setup."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Giá trị hợp lệ nào cho `font-variant-ligatures`? (Chọn TẤT CẢ)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "common-ligatures" },
+        { "id": "b", "text": "discretionary-ligatures" },
+        { "id": "c", "text": "historical-ligatures" },
+        { "id": "d", "text": "no-discretionary-ligatures" },
+        { "id": "e", "text": "smart-ligatures" }
+      ],
+      "correctKey": "a,b,c,d",
+      "explanation": "font-variant-ligatures: common-ligatures, no-common-ligatures, discretionary-ligatures, no-discretionary-ligatures, historical-ligatures, no-historical-ligatures, contextual. 'smart-ligatures' không phải giá trị hợp lệ."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bộ chọn nào tạo new stacking context? (Chọn TẤT CẢ)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": ".card { z-index: 0; position: relative; }" },
+        { "id": "b", "text": ".modal { z-index: 9999; position: fixed; }" },
+        { "id": "c", "text": ".widget { opacity: 0.5; }" },
+        { "id": "d", "text": ".dropdown { position: absolute; } (no z-index)" },
+        { "id": "e", "text": ".card { transform: translateZ(0); }" }
+      ],
+      "correctKey": "a,b,c,e",
+      "explanation": "positioned element với z-index + bất kỳ giá trị nào (kể cả 0) tạo (a, b). opacity < 1 tạo (c). transform ≠ none tạo (e). position: absolute KHÔNG tạo nếu không có z-index (d)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Giá trị CSS nào cho `white-space` preserve line breaks từ source HTML? (Chọn TẤT CẢ)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "pre" },
+        { "id": "b", "text": "pre-wrap" },
+        { "id": "c", "text": "pre-line" },
+        { "id": "d", "text": "nowrap" },
+        { "id": "e", "text": "normal" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "pre giữ tất cả whitespace VÀ line breaks. pre-wrap giữ whitespace và line breaks, nhưng CÓ wrapping. pre-line collapse whitespace nhưng giữ line breaks. nowrap và normal không giữ line breaks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Hàm CSS nào trả về giá trị có thể dùng làm CSS length? (Chọn TẤT CẢ)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "calc()" },
+        { "id": "b", "text": "clamp()" },
+        { "id": "c", "text": "min()" },
+        { "id": "d", "text": "attr()" },
+        { "id": "e", "text": "counter()" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "calc(), clamp(), min() trả về numeric values dùng được bất kỳ đâu length được chấp nhận. attr() trả string. counter() chỉ hợp lệ trong content: property."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "CSS này produce gì?\n\n.box {\n  width: min(100%, calc(50% + 200px));\n  max-width: 600px;\n  margin: 0 auto;\n  background: #eee;\n}\n/* Parent width: 1200px */",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Width: 600px — max-width clamp min() = 800px" },
+        { "id": "b", "text": "Width: 600px — min(100%, calc(50%+200px)) = min(1200px, 800px) = 800px, sau đó max-width: 600px giảm xuống 600px" },
+        { "id": "c", "text": "Width: 800px — max-width chỉ áp dụng nếu min() > 600px" },
+        { "id": "d", "text": "Width: 100% — calc(50%+200px) invalid" }
+      ],
+      "correctKey": "b",
+      "explanation": "min(100%, calc(50% + 200px)) = min(1200px, 800px) = 800px. max-width: 600px apply SAU vì 800px > 600px → clamp thành 600px."
+    }
+  ]
+}

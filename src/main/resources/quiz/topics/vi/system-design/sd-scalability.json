@@ -1,0 +1,228 @@
+{
+  "topicSlug": "sd-scalability",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt cơ bản giữa vertical scaling (scaling up) và horizontal scaling (scaling out) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Vertical scaling thêm nhiều machines hơn vào pool; horizontal scaling thêm nhiều CPU, RAM, và storage vào một machine" },
+        { "id": "b", "text": "Vertical scaling thêm nhiều CPU, RAM, và disk vào một machine có sẵn; horizontal scaling thêm nhiều machines vào pool để phân phối load" },
+        { "id": "c", "text": "Cả hai thuật ngữ mô tả cùng một thứ — chỉ là cách gọi khác nhau giữa cloud và on-premise vendors" },
+        { "id": "d", "text": "Horizontal scaling bị giới hạn bởi physical constraints của một machine; vertical scaling không có theoretical upper bound" }
+      ],
+      "correctKey": "b",
+      "explanation": "Vertical scaling (scaling up) beefs up một machine — nhiều CPU cores, RAM, faster disks — improve capacity without changing architecture. Horizontal scaling (scaling out) thêm nhiều machines vào pool, distributing work across nodes. Horizontal generally preferred for resilience và near-unlimited scale, nhưng requires stateless application design và data partitioning. Vertical scaling hits hardware ceiling và creates single point of failure. Phương án A reverses cả hai. Phương án C sai. Phương án D reverses constraints."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Load balancer routes traffic across pool của application servers. Algorithm nào tránh được problem của một single slow server nhận disproportionate share of requests?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Round-robin — distributes requests equally in rotation regardless of server state" },
+        { "id": "b", "text": "Weighted round-robin — assigns static weight tới mỗi server based on its capacity" },
+        { "id": "c", "text": "Least connections — routes a new request tới server có ít active connections nhất" },
+        { "id": "d", "text": "IP hash — maps client IP tới specific server using hash function for session affinity" }
+      ],
+      "correctKey": "c",
+      "explanation": "Least connections routes tới server với ítest active requests at the moment, tự nhiên accounting for varying request durations. A server processing slow queries accumulates fewer connections than one processing fast queries, nên slow servers tự nhiên receive fewer new requests. Round-robin (A) ignores server load và connection count. Weighted round-robin (B) uses static capacity weights, not real-time load. IP hash (D) là form của sticky session, not a load-based algorithm. Phương án C đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "System của bạn experiencing sudden traffic spike và some servers overwhelmed trong khi others sit idle. Load balancing algorithm nào best handles heterogeneous server capacities in real time?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Random selection — statistically distributes load across all servers regardless of capacity" },
+        { "id": "b", "text": "Weighted least connections — assigns new requests based on both active connection count và một server's configured capacity weight" },
+        { "id": "c", "text": "Sticky sessions — binds each user tới một server để session state luôn available" },
+        { "id": "d", "text": "Source IP hash — uses client IP deterministically select a server for consistent routing" }
+      ],
+      "correctKey": "b",
+      "explanation": "Weighted least connections extends least-connections algorithm by factoring in mỗi server's capacity weight (configured based on CPU/RAM). A server với weight=2 receives roughly twice as many connections as weight=1 only when its current active connections divided by weight is lower than competing servers. Điều này dynamically adapts to heterogeneous hardware và varying request complexity. Random (A) ignores capacity. Sticky sessions (C) about session affinity. IP hash (D) also about affinity. Phương án B đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Under CAP theorem, điều gì một CP (Consistent + Partition-tolerant) system sacrifices during a network partition?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Consistency — system allows stale reads remain available during a partition" },
+        { "id": "b", "text": "Availability — system refuses requests hoặc returns errors during a partition để maintain consistency" },
+        { "id": "c", "text": "Partition tolerance — system halts completely when a partition is detected" },
+        { "id": "d", "text": "Nothing is sacrificed; CP systems handle partitions without any trade-off" }
+      ],
+      "correctKey": "b",
+      "explanation": "CP systems choose consistency over availability during network partitions. Khi partition occurs, system có thể shut down non-majority nodes hoặc block writes để prevent diverged states — serving errors hoặc unavailable responses thay vì potentially stale data. Classic CP systems: HBase, MongoDB, Zookeeper, etcd. AP systems (Cassandra, DynamoDB) choose availability. Phương án A mô tả AP behavior. Phương án C misleading. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "User logs vào web app và load balancer routes họ tới Server A, which stores their session in memory. On next request, different load balancing algorithm routes họ tới Server B — their session lost. Best architectural fix?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Implement sticky sessions using a session cookie để user luôn hits cùng server" },
+        { "id": "b", "text": "Store session data in shared distributed cache (vd: Redis) và make application stateless; remove server-side session storage entirely" },
+        { "id": "c", "text": "Increase memory của mỗi server để sessions có more space và ít bị evicted hơn" },
+        { "id": "d", "text": "Use hardware load balancer với built-in session replication across all backend servers" }
+      ],
+      "correctKey": "b",
+      "explanation": "Sticky sessions (A) là band-aid — tạo load imbalance, make server maintenance harder, và don't survive server crashes. Correct fix là externalizing session state tới shared store (Redis, Memcached) để any server có thể handle any request. Đây là foundation của stateless application architecture. Option C doesn't fix cross-server routing. Option D expensive và still a band-aid. Phương án B đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "PACELC extends CAP theorem. In a system with no network partition, trade-off nào PACELC describe?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Ngay cả without partitions, bạn phải choose giữa latency và consistency — stronger consistency means higher latency" },
+        { "id": "b", "text": "PACELC states that without partitions, all three properties (Consistency, Availability, Latency) có thể maximized đồng thời" },
+        { "id": "c", "text": "PACELC chỉ relevant cho single-node databases và has no bearing on distributed systems" },
+        { "id": "d", "text": "Trade-off in PACELC is between Partition tolerance và Eventual consistency — latency not a factor" }
+      ],
+      "correctKey": "a",
+      "explanation": "PACELC (Brewer, 2012) adds Latency as first-class dimension: even when no partition (P), bạn face choice between Latency (L) và Consistency (C). A system that synchronously replicates writes to all replicas cho strong consistency incurs higher write latency than one that asynchronously replicates. CAP doesn't capture latency; PACELC does. Phương án A đúng. Phương án B, C, D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Service cần handle 100.000 concurrent WebSocket connections. Mỗi connection consumes memory và holds persistent channel tới backend. Architectural approach nào best addresses this scale?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Deploy single powerful server với 128+ CPU cores và 512 GB RAM" },
+        { "id": "b", "text": "Use connection pooling on single database server" },
+        { "id": "c", "text": "Horizontally scale WebSocket servers behind load balancer, use pub/sub message broker cho fan-out, và ensure application is stateless" },
+        { "id": "d", "text": "Limit concurrent connections per user và reject requests above threshold" }
+      ],
+      "correctKey": "c",
+      "explanation": "WebSocket long-lived connections are memory-intensive và stateful. Horizontal scaling requires stateless application logic (all shared state in Redis/database), a pub/sub broker (Redis pub/sub, NATS, Kafka) để broadcast messages across nodes, và a load balancer. Single-server approaches (A, B) hit resource limits và create single points of failure. Rejecting connections (D) not scaling. Phương án C đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "E-commerce site gets heavy traffic only on homepage và product listing pages, nhưng backend order-processing services sit idle most of the time. Architectural pattern nào solves this mismatch?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Microservices — split every service into separate deployment unit để chúng scale independently" },
+        { "id": "b", "text": "Queue-based load leveling — place asynchronous message queue (vd: SQS) giữa web tier và order-processing tier để mỗi scale tới its own pace" },
+        { "id": "c", "text": "Database sharding — partition database by order date để speed up writes cho peak traffic" },
+        { "id": "d", "text": "Horizontal scaling — always deploy 10x more backend servers than web servers" }
+      ],
+      "correctKey": "b",
+      "explanation": "Queue-based load leveling decouples producers from consumers. Web tier drops orders into queue as fast as they arrive; processing tier pulls from queue at its own pace — tự nhiên absorbing spikes. Đây là core của producer-consumer pattern và fundamental to event-driven architecture. Microservices (A) enable independent scaling nhưng don't alone solve mismatch. Sharding (C) là database strategy. Overprovisioning (D) wasteful. Phương án B đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Nghĩa của 'stateless' service là gì, và tại sao nó matter cho horizontal scalability?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A stateless service không dùng HTTP cookies; all client data passed in request headers" },
+        { "id": "b", "text": "A stateless service không store any per-request hoặc per-session data between requests; all state stored externally in shared storage — enabling any request được handle by any server instance" },
+        { "id": "c", "text": "A stateless service là một không ghi vào disk; nó only processes data in memory" },
+        { "id": "d", "text": "Stateless services nhanh hơn vì chúng không maintain any database connections" }
+      ],
+      "correctKey": "b",
+      "explanation": "A stateless service treats each request as independent — no session state, no in-memory per-user data stored between requests. All state lives in external stores (Redis, database). Điều này enables horizontal scaling: any instance handles any request, load balancers distribute freely, và instances có thể added or removed without breaking user sessions. Statelessness is prerequisite for cloud-native, auto-scaling architectures. Phương án B đúng. Phương án A, C, D mô tả sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Consistency model nào allows stale reads in exchange for lower latency và higher availability?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Linearizability — all nodes agree on order of operations, requiring synchronous coordination" },
+        { "id": "b", "text": "Causal consistency — operations that are causally related are seen by all nodes in order; unrelated operations có thể be seen in different orders" },
+        { "id": "c", "text": "Eventual consistency — updates propagate asynchronously; reads có thể return stale data, nhưng all replicas eventually converge tới cùng value" },
+        { "id": "d", "text": "Strict consistency — every read sees most recent write, with no exceptions" }
+      ],
+      "correctKey": "c",
+      "explanation": "Eventual consistency (EC) là asynchronous replication model nơi writes propagated to replicas in background. Reads có thể return stale (out-of-date) results, nhưng system guarantees convergence once all writes propagated. Điều này enables low-latency local reads (đặc biệt in geo-distributed systems) và high availability during network partitions. DynamoDB, Cassandra, DNS, và many CDN caches use eventual consistency. Phương án C đúng. Phương án A, D require synchronous coordination. Phương án B là middle ground."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Global SaaS application stores user profile data in database in us-east-1. Users in Asia experience 300ms+ latency cho profile reads. Most effective way reduce latency cho global reads while keeping data reasonably consistent?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Compress all API responses với gzip để reduce transfer time over transatlantic link" },
+        { "id": "b", "text": "Add read replicas in each geographic region và route read queries tới nearest replica; writes go tới primary — accepting eventual consistency for read replicas" },
+        { "id": "c", "text": "Upgrade database server's CPU và add SSDs để reduce query execution time locally" },
+        { "id": "d", "text": "Use CDN để cache user profile responses at the edge" }
+      ],
+      "correctKey": "b",
+      "explanation": "Geo-distributed read replicas là standard solution cho read-heavy, latency-sensitive workloads. Primary handles writes, read replicas in each region serve low-latency reads. This sacrifices strong consistency for reads. Option A only reduces transfer time, not network latency. Option C doesn't help remote users. Option D works for static assets, not dynamic personalized data. Phương án B đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Under CAP theorem, một system có thể simultaneously guarantee all three properties — Consistency, Availability, và Partition Tolerance — khi không có network partition.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "CAP theorem's strict formulation nói bạn có thể have at most two of three at any given time. In practice, 'choice' chỉ matters during a partition. Without a partition, system có thể be both consistent và available. However, some strict CAP formulations treat it as a property system always exhibits. Nuance: impossibility result (choosing CA) applies only to theoretical model, not to partition-free operation in practice."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Một system dùng synchronous (blocking) replication tới all replicas sẽ luôn more consistent hơn một system dùng asynchronous replication.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Synchronous replication requires all replicas confirm a write before acknowledging it to client — guaranteeing that a successful write visible to subsequent readers from any replica. Asynchronous replication acknowledges write after primary accepts it, propagating in background — reader on replica có thể not yet see a recently acknowledged write. Tuy nhiên, synchronous replication introduces latency và reduces availability if replica slow or unreachable."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Sticky sessions (session affinity) generally considered a best practice for scaling stateful web applications horizontally.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Sticky sessions work around the symptom (lost in-memory session) rather than fixing the root cause. Chúng create uneven load distribution, make it impossible to gracefully take a server offline, và don't survive server crashes. Industry best practice là externalize session state tới shared distributed store (Redis, Memcached) và build stateless services."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Team dùng health-check endpoint trên mỗi application server for load balancer routing decisions. Under high load, health check passes nhưng server is so overloaded it takes 10+ seconds để respond to real requests. Điều gì xảy ra và làm sao fix?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Load balancer routes more traffic tới struggling server because its health check still passing — causing a thundering herd. Fix: implement passive health check that also monitors error rates hoặc latency từ load balancer's perspective" },
+        { "id": "b", "text": "Load balancer correctly routes traffic away from slow server because 10-second response triggers timeout. No fix needed." },
+        { "id": "c", "text": "Load balancer automatically isolates server after 3 consecutive slow health-check responses." },
+        { "id": "d", "text": "Active health checks cannot distinguish between healthy slow server và failing server. Fix: remove health checks entirely và use round-robin." }
+      ],
+      "correctKey": "a",
+      "explanation": "Active health checks (ping /health endpoint) only verify server is reachable và responding — chúng don't measure actual request capacity. A server có thể pass health check while queued behind hundreds of slow requests. Fixes: add /ready endpoint checks internal load (queue depth, thread pool, memory), configure LB passive health checks, và set circuit breakers. Phương án A đúng. Phương án B, C, D sai hoặc không đủ."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Consistent hashing dùng để distribute keys across nodes. Problem nào nó solves compared to naive modulo hashing, và tại sao adding virtual nodes (vnodes) improves distribution?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Consistent hashing solves thundering herd problem during traffic spikes; virtual nodes randomize request routing để prevent hotspots" },
+        { "id": "b", "text": "Consistent hashing minimizes key remapping khi nodes added or removed; virtual nodes spread keyspace owned by each physical node across multiple points on the hash ring, producing more even load distribution" },
+        { "id": "c", "text": "Virtual nodes solve CAP theorem trade-off by making every physical node appear as both CP và AP simultaneously" },
+        { "id": "d", "text": "Consistent hashing eliminates need for load balancer entirely" }
+      ],
+      "correctKey": "b",
+      "explanation": "Naive modulo hashing (hash(key) % N) remaps virtually all keys when a node added or removed, triggering cache-miss or shard-remap storm. Consistent hashing maps keys và nodes onto a circular ring — only keys between failed/added node và its neighbors remapped. Virtual nodes assign multiple hash positions per physical node, smoothing out load imbalances. Used in: DynamoDB, Cassandra, Memcached, Redis Cluster. Phương án B đúng. Phương án A, C, D sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "System requires read-after-write consistency for user profile updates. Strategy nào best achieves this cho globally distributed read-heavy system?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng eventual consistency với 5-second propagation delay" },
+        { "id": "b", "text": "After a write, route same user's subsequent reads tới primary (writer) region cho a configurable time window; reads from other regions use replicas (session-level consistency)" },
+        { "id": "c", "text": "Disable read replicas globally và direct all traffic through primary region" },
+        { "id": "d", "text": "Implement read-your-writes at database level using synchronous multi-region replication" }
+      ],
+      "correctKey": "b",
+      "explanation": "Read-after-write consistency (read-your-writes) ensures a user immediately sees their own writes. Pragmatic global approach: read from primary (writer) region briefly after a write (vd: 30 seconds hoặc until sync marker), then fall back to replica reads elsewhere. This is session-level consistency. Option A fails requirement. Option C sacrifices geo-distribution benefits. Option D has extremely high write latency. Phương án B đúng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đúng hay Sai: Adding load balancer in front of microservice cluster always improves both performance và availability compared to not having one.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "A load balancer adds a single point of failure if not configured redundantly (active-passive HA pair). It also introduces a network hop (adding milliseconds of latency). For purely in-process communication within a Kubernetes cluster, a service mesh hoặc client-side load balancing có thể more appropriate. Load balancer only improves availability when deployed in HA configuration."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Auto-scaling policy triggers when average CPU exceeds 80%. New instances spin up nhưng target group reports them unhealthy và they are terminated before taking traffic. Root cause likely là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Health check endpoint responding với HTTP 200 nhưng app actually crashed" },
+        { "id": "b", "text": "Application requires JVM warm-up period hoặc dependency initialization (DB connections, caches) xảy ra after process starts; health check passes before app truly ready to serve traffic" },
+        { "id": "c", "text": "CPU usage spiked above 80% immediately, causing auto-scaler launch too many instances simultaneously" },
+        { "id": "d", "text": "Load balancer health check timeout too short và killing legitimate slow responses" }
+      ],
+      "correctKey": "b",
+      "explanation": "Đây là 'cold start' hoặc 'warm-up' problem common với JVM-based, Spring Boot, và Node.js applications. Process starts, HTTP server binds port (health check passes), nhưng application still initializing: establishing DB connection pools, warming caches. If health check là /health instead of /ready, it passes before app capable of handling requests. Fix: implement /ready endpoint checks internal readiness. Phương án B đúng. Phương án A, C, D không đúng."
+    }
+  ]
+}

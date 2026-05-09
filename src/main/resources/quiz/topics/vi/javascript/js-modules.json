@@ -1,0 +1,248 @@
+{
+  "topicSlug": "js-modules",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `import` và `require` trong JavaScript là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "import là ES6 module syntax (static, hoisted, chạy tại parse time); require là CommonJS syntax (dynamic, có thể conditional, chạy tại execution time" },
+        { "id": "b", "text": "import và require hoán đổi cho nhau được — chúng compile thành cùng JavaScript code" },
+        { "id": "c", "text": "require nhanh hơn import vì nó chạy tại execution time thay vì parse time" },
+        { "id": "d", "text": "import chỉ hoạt động trong Node.js; require chỉ hoạt động trong browsers" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 import/export (ESM) là static — cấu trúc được analyzed tại parse/compile time, cho phép tree shaking và dead code elimination. CommonJS require() là dynamic — có thể gọi conditionally (if statements, loops). import phải ở top level của module. Node.js hỗ trợ cả hai."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`export default` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Export một giá trị duy nhất là default export của module — được import với `import name from 'module'` (không có dấu ngoặc nhọn) và có thể dùng bất kỳ tên nào tại import site" },
+        { "id": "b", "text": "Export một giá trị phải được import với cùng tên chính xác như export" },
+        { "id": "c", "text": "Export một giá trị chỉ có thể được import bằng named import syntax: import { default }" },
+        { "id": "d", "text": "export default không còn được dùng trong JavaScript hiện đại" }
+      ],
+      "correctKey": "a",
+      "explanation": "Một module có thể có MỘT default export. Tại import site: `import MyName from 'module'` bind default export vào MyName. Có thể đặt tên bất kỳ. Một module có thể combine default export với named exports."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`export { name, name2 }` (named exports) làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Export các bindings được chỉ định theo tên — được import với `import { name, name2 } from 'module'` (tên chính xác trong dấu ngoặc nhọn), hoặc aliased với `import { name as alias }`" },
+        { "id": "b", "text": "Export tất cả properties của module object như một named export duy nhất" },
+        { "id": "c", "text": "Export một function tên name và một biến tên name2" },
+        { "id": "d", "text": "Named exports phải được import cùng với một default import" }
+      ],
+      "correctKey": "a",
+      "explanation": "Named exports export specific bindings từ module. Import với tên chính xác trong dấu ngoặc nhọn. Có thể rename on import. Có thể import all named exports như một object. Một module có thể có multiple named exports."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Barrel file trong ngữ cảnh JavaScript modules là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một file duy nhất (thường đặt tên index.js) re-exports nhiều modules từ một directory, cung cấp một import point duy nhất aggregate public API của module đó" },
+        { "id": "b", "text": "Một file bundle tất cả dependencies thành một output duy nhất để distribute" },
+        { "id": "c", "text": "Một configuration file chỉ định modules nào nên được include trong final bundle" },
+        { "id": "d", "text": "Một module chỉ export một default value và không có gì khác" }
+      ],
+      "correctKey": "a",
+      "explanation": "Barrel file aggregates exports từ nhiều sub-modules thành một import path tiện lợi. Consumers import từ barrel thay vì nhiều paths riêng lẻ."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Tree shaking trong ngữ cảnh JavaScript module bundlers là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một kỹ thuật dead code elimination của bundler loại bỏ unused exports khỏi final bundle — chỉ có thể thực hiện được vì ES6 modules có statically analyzable import/export syntax" },
+        { "id": "b", "text": "Một kỹ thuật sắp xếp các module files theo alphabetical order để optimize loading order" },
+        { "id": "c", "text": "Một process chuyển đổi CommonJS require() calls thành ES6 import statements" },
+        { "id": "d", "text": "Một security feature ngăn malicious modules được include trong bundle" }
+      ],
+      "correctKey": "a",
+      "explanation": "Tree shaking loại bỏ unused code khỏi bundle. Bundlers sử dụng ES6 module static analysis để xác định exports nào thực sự được sử dụng. CommonJS không thể statically analyzed đáng tin cậy."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "ES6 modules luôn được load và execute asynchronously khi được dùng trong browser qua <script type='module'>.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "ES6 modules là deferred (không phải async) — chúng load song song với các resources khác, execute theo document order, và chạy sau khi HTML được parsed nhưng trước DOMContentLoaded. Async scripts (type='module') run ngay khi downloaded."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\n// math.js\nexport const PI = 3.14;\nexport const E = 2.71;\n\n// main.js\nimport { PI, E as EULER } from './math.js';\nconsole.log(PI, EULER);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "3.14 2.71" },
+        { "id": "b", "text": "3.14 2.71 3.14 (PI được in hai lần)" },
+        { "id": "c", "text": "3.14, 2.71 (như một string)" },
+        { "id": "d", "text": "ReferenceError: cannot import const" }
+      ],
+      "correctKey": "a",
+      "explanation": "Named imports dùng tên chính xác trong dấu ngoặc nhọn. `E as EULER` syntax rename on import. Cả hai giá trị được in: 3.14 và 2.71. Named imports là live bindings — nếu exporting module reassigns PI tại runtime, importing module thấy giá trị updated."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Dynamic import() là một function trả về Promise và load một module on demand.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "import() (không nhầm với static import) là một function trả về Promise<module namespace>. Dùng cho lazy loading routes/components, conditional loading, giảm initial bundle size."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Điều gì xảy ra khi hai modules import lẫn nhau (circular dependency) với ES6 modules?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JavaScript execute cả hai modules' code theo dependency order, nhưng khi circular import được sử dụng trước khi exporting variable được initialized, nó trả về undefined — live binding được resolve sau khi exporting module finish executing" },
+        { "id": "b", "text": "Circular dependencies gây một ReferenceError immediately và crash chương trình" },
+        { "id": "c", "text": "Node.js silently ignores circular dependencies trong ES6 modules và trả về một empty module" },
+        { "id": "d", "text": "Circular dependencies được tự động resolve bằng cách hoisting tất cả module exports lên top" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 modules handle circulars qua live bindings: khi module A import từ B, A gets binding đến B's exported value. Nếu B chưa finish initializing, binding ban đầu là undefined. Fix: dùng lazy imports, restructure modules, hoặc mediator/third module."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`sideEffects: false` trong package.json là gì, và nó ảnh hưởng đến bundling như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một field báo cho bundlers rằng exports của package không có side effects khi import — cho phép aggressive tree shaking loại bỏ unused exports ngay cả khi module có top-level code" },
+        { "id": "b", "text": "Một flag ngăn package được load at all during build process" },
+        { "id": "c", "text": "Một configuration bắt buộc tất cả exports từ package này được include trong bundle bất kể usage" },
+        { "id": "d", "text": "Một declaration rằng package chỉ có thể được import như một CommonJS module" }
+      ],
+      "correctKey": "a",
+      "explanation": "sideEffects: false signal rằng import từ package này không có side effects — bất kỳ exported code nào không được consumer sử dụng có thể được safely eliminated. Critical cho tree shaking."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của đoạn code này là gì?\n\n// a.js\nexport let count = 0;\nexport function increment() { count++; }\n\n// b.js\nimport { count, increment } from './a.js';\nconsole.log(count);  // line X\nincrement();\nconsole.log(count);  // line Y",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "0, 1" },
+        { "id": "b", "text": "0, 0" },
+        { "id": "c", "text": "1, 2" },
+        { "id": "d", "text": "undefined, undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 module imports là live bindings đến original export. Khi increment() modifies count trong a.js, import trong b.js reflect change ngay. Line X log 0. Sau increment(), count là 1. Line Y log 1."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa re-exporting với `export { x } from './module'` và `import { x } from './module'; export { x }` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Re-export (export from) forwards một export mà không làm nó available trong current module's scope — importing module nhận binding từ original source. Named import+export tạo một local binding shadows original" },
+        { "id": "b", "text": "Cả hai syntaxes giống hệt nhau — chúng tạo cùng module semantics" },
+        { "id": "c", "text": "Re-export tạo một copy của giá trị; import+export tạo một live binding" },
+        { "id": "d", "text": "import+export chỉ có thể dùng với default exports; re-export chỉ có thể dùng với named exports" }
+      ],
+      "correctKey": "a",
+      "explanation": "`export { x } from './module'` KHÔNG thêm x vào current module's lexical scope. `import { x }; export { x }` import x vào scope hiện tại, tạo local binding. Re-export không thể dùng x() trong cùng file; import+export thì có thể."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "CommonJS module.exports và exports là cùng một object tại runtime.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Trong CommonJS, module.exports là object exports thực sự. exports là reference đến module.exports. Setting properties trên cả hai hoạt động vì cùng object. Nhưng reassigning exports (`exports = { foo }`) break reference — module.exports unchanged."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt chính trong cách Node.js resolve module paths cho bare imports vs relative imports là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Bare imports được resolve bằng cách kiểm tra node_modules directories; relative imports được resolve relative đến current file's directory" },
+        { "id": "b", "text": "Bare imports được resolve relative đến current working directory; relative imports được resolve bằng cách kiểm tra node_modules" },
+        { "id": "c", "text": "Cả hai dùng cùng resolution algorithm — chỉ import syntax khác nhau" },
+        { "id": "d", "text": "Relative imports không thể resolve đến directories và yêu cầu explicit file extensions" }
+      ],
+      "correctKey": "a",
+      "explanation": "Bare specifiers được resolve qua Node.js module resolution: duyệt directories tìm node_modules, kiểm tra package.json 'exports'. Relative imports resolve relative đến current file's directory."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích của `exports` field trong package.json cho các JavaScript packages hiện đại là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó định nghĩa public API surface của package, cho phép authors chỉ định different entry points cho different environments (ESM vs CJS) và ẩn internal modules — consumers chỉ thấy những gì được export" },
+        { "id": "b", "text": "Nó export tất cả files trong package directory như individual modules cho fine-grained imports" },
+        { "id": "c", "text": "Nó chỉ định files nào nên được include trong npm package tarball" },
+        { "id": "d", "text": "Nó định nghĩa Node.js version requirements cho package" }
+      ],
+      "correctKey": "a",
+      "explanation": "'exports' field là cách hiện đại để định nghĩa package entry points. Nó supersedes 'main' và cho phép conditional exports cho ESM vs CJS. Nó restricts subpaths accessible."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Module-level variables trong một ES6 module thực sự private — chúng không thể được truy cập từ bên ngoài module.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "ES6 modules có top-level scope riêng — module-level variables không accessible từ bên ngoài. Chỉ exported bindings mới accessible. Đây là fundamental encapsulation mechanism cho ESM."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa bundler's code splitting và dynamic import() cho lazy loading là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dynamic import() tạo một separate chunk tại build time (bởi bundler) và load nó at runtime on demand; cả hai đều giảm initial bundle size nhưng dynamic import() cho explicit runtime control" },
+        { "id": "b", "text": "Code splitting yêu cầu build-time configuration; dynamic import() fetches modules từ server at runtime without any build-time preparation" },
+        { "id": "c", "text": "Dynamic import() luôn dẫn đến một network request riêng cho mỗi module; code splitting combine modules thành một file" },
+        { "id": "d", "text": "Code splitting chỉ hoạt động với ES6 modules; dynamic import() chỉ hoạt động với CommonJS" }
+      ],
+      "correctKey": "a",
+      "explanation": "Cả hai dùng dynamic import() syntax, nhưng bundler transform nó thành một code-split chunk. React.lazy() và Vue defineAsyncComponent dùng dynamic import() internally."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\n// counter.js\nlet count = 0;\nexport function getCount() { return count; }\nexport function setCount(n) { count = n; }\n\n// main.js\nimport { getCount, setCount } from './counter.js';\nsetCount(5);\nimport { getCount as gc } from './counter.js';\nconsole.log(gc());",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "5" },
+        { "id": "b", "text": "0" },
+        { "id": "c", "text": "undefined" },
+        { "id": "d", "text": "5, 5" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 modules là singletons — module được evaluated chỉ một lần. Import thứ hai (với alias) không re-evaluate counter.js. setCount(5) modifies shared count. gc() (gọi sau setCount) trả về 5."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "'Dual package' problem trong npm packages là gì, và nó phát sinh như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một package ship cả CommonJS và ESM versions gây hai copies của package được loaded — dẫn đến hai separate module instances, breaking singleton behavior" },
+        { "id": "b", "text": "Một package export hai different APIs: một cho Node.js và một cho browsers, gây runtime compatibility issues" },
+        { "id": "c", "text": "Một package import chính nó gây stack overflow during resolution" },
+        { "id": "d", "text": "Một package dùng cả ES6 và CommonJS exports, gây TypeScript type definitions incorrectly resolved" }
+      ],
+      "correctKey": "a",
+      "explanation": "Dual package problem: package với cả CJS và ESM entry points được loaded qua require() (CJS) và qua import (ESM) — hai instances riêng biệt. Giải pháp: 'exports' field point cả require và import đến cùng ESM file."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "import.meta là một object portable, per-module trong ES2020+ expose context-specific metadata về current module, bao gồm URL của nó.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "import.meta cung cấp thông tin về current module. Property được hỗ trợ rộng rãi nhất là import.meta.url. Use cases: resolving relative asset paths at runtime."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt security chính giữa <script src='bundle.js'> và <script type='module' src='module.js'> liên quan đến CORS là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Regular <script> load files từ bất kỳ origin nào without CORS restrictions; <script type='module'> load cross-origin files chỉ nếu server gửi proper CORS headers, ngăn chặn data theft via script injection" },
+        { "id": "b", "text": "Cả <script> và <script type='module'> có identical CORS requirements" },
+        { "id": "c", "text": "<script type='module'> có thể load files từ bất kỳ origin nhưng không thể truy cập bất kỳ module exports nào từ cross-origin sources" },
+        { "id": "d", "text": "Regular <script> yêu cầu CORS headers; <script type='module'> thì không" }
+      ],
+      "correctKey": "a",
+      "explanation": "ES6 modules enforce CORS — browser yêu cầu server gửi Access-Control-Allow-Origin headers cho cross-origin module imports. Regular scripts có thể load từ bất kỳ origin. Đây là một security improvement."
+    }
+  ]
+}

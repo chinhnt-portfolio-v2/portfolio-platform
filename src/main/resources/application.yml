@@ -88,6 +88,18 @@ github:
   webhook:
     secret: ${GITHUB_WEBHOOK_SECRET:dev-secret-for-testing}
 
+# NLP / AI configuration
+# NLP_PROXY_URL: Claude-compatible Messages API endpoint (default: local dev proxy)
+# NLP_API_KEY: API key forwarded to proxy (empty string = no key for local dev proxy)
+app:
+  nlp:
+    proxy-url: ${NLP_PROXY_URL:http://localhost:8081/v1/messages}
+    api-key: ${NLP_API_KEY:}
+    model: claude-haiku-4-5-20251001
+    max-tokens: 500
+    rate-limit-per-user: 20
+    rate-limit-window-minutes: 60
+
 ---
 # ─────────────────────────────────────────────────────────────
 # PROD PROFILE — Google Cloud Run + Neon PostgreSQL

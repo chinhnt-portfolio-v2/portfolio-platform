@@ -1,0 +1,688 @@
+{
+  "topicSlug": "java-core",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Cách đúng để đảm bảo tính đóng gói (encapsulation) trong một class Java là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Khai báo tất cả fields là public để các class khác có thể truy cập trực tiếp" },
+        { "id": "b", "text": "Khai báo fields là private và cung cấp các phương thức getter/setter public" },
+        { "id": "c", "text": "Khai báo fields là protected để giới hạn truy cập trong cùng package" },
+        { "id": "d", "text": "Không sử dụng access modifier để fields mặc định thành public" }
+      ],
+      "correctKey": "b",
+      "explanation": "Đóng gói (Encapsulation) ẩn internal state và yêu cầu truy cập qua các interface được định nghĩa rõ ràng. Fields private với public accessor là idiom chuẩn của Java. Phương án A exposes internals trực tiếp, phá vỡ abstraction. Phương án C's protected modifier cho phép truy cập toàn bộ package, không phải full encapsulation. Phương án D dựa vào default (package-private) access, không an toàn."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code này là gì?\n\nclass Main {\n  static int count = 0;\n  \n  Main() { count++; }\n  \n  public static void main(String[] args) {\n    Main a = new Main();\n    Main b = new Main();\n    Main c = new Main();\n    System.out.println(count);\n  }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0" },
+        { "id": "b", "text": "1" },
+        { "id": "c", "text": "3" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "c",
+      "explanation": "Static field `count` được chia sẻ giữa tất cả instances của `Main`. Mỗi lần gọi constructor increment nó một lần, nên ba objects được tạo có nghĩa ba increments, cho kết quả `count = 3`. Static fields thuộc về class chứ không phải instance cụ thể, nên cả ba references đều thấy cùng một counter."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Phát biểu nào về `toString()` là đúng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Default toString() từ Object trả về class name và hash code của object dưới dạng hex" },
+        { "id": "b", "text": "toString() được tự động gọi bất cứ khi nào bạn nối một chuỗi với một object" },
+        { "id": "c", "text": "Override toString() là bắt buộc cho bất kỳ class nào lưu trữ dữ liệu" },
+        { "id": "d", "text": "Cả A và B đều đúng" }
+      ],
+      "correctKey": "d",
+      "explanation": "Phương án A đúng — toString() mặc định của Object tạo chuỗi dạng `Test@4aa298b7`. Phương án B cũng đúng — JVM tự động invoke toString() qua `String.valueOf()` khi nối chuỗi. Phương án C sai; override toString() là best practice, không phải yêu cầu của ngôn ngữ. Vì cả A và B đều đúng, D là đáp án."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt chính giữa `==` và `.equals()` khi so sánh hai String objects là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "== so sánh character sequences; equals() so sánh object references" },
+        { "id": "b", "text": "== so sánh object references (identity); equals() so sánh nội dung ký tự (value)" },
+        { "id": "c", "text": "Không có sự khác biệt — cả hai đều so sánh value đối với String objects" },
+        { "id": "d", "text": "equals() nhanh hơn vì nó bỏ qua String pool" }
+      ],
+      "correctKey": "b",
+      "explanation": "`==` kiểm tra reference equality (liệu hai biến có trỏ đến cùng một object trong heap memory hay không). `.equals()` trên String override Object's mặc định để so sánh character sequences. Dùng == giữa hai String objects riêng biệt (dù nội dung giống nhau) trả về false, trong khi equals() trả về true. String pool có thể khiến các literals interned chia sẻ references, che giấu sự khác biệt này trong các bài test đơn giản."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\nString s1 = new String(\"hello\");\nString s2 = new String(\"hello\");\nSystem.out.println(s1 == s2);\nSystem.out.println(s1.equals(s2));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true rồi true" },
+        { "id": "b", "text": "false rồi true" },
+        { "id": "c", "text": "true rồi false" },
+        { "id": "d", "text": "false rồi false" }
+      ],
+      "correctKey": "b",
+      "explanation": "`s1` và `s2` là hai distinct heap objects được tạo qua `new String()`. Toán tử `==` so sánh reference identity — chúng là objects khác nhau, nên `==` trả về false. `.equals()` trên String so sánh nội dung ký tự — cả hai đều chứa \"hello\", nên trả về true. Đây là ví dụ kinh điển minh họa sự khác biệt giữa identity và equality."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Khai báo nào sau đây là signature hợp lệ cho một constructor trong Java?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "public void MyClass(int x) { }" },
+        { "id": "b", "text": "public MyClass(int x) { }" },
+        { "id": "c", "text": "private static MyClass(int x) { }" },
+        { "id": "d", "text": "MyClass() { return this; }" }
+      ],
+      "correctKey": "b",
+      "explanation": "Constructor không có return type (thậm chí void) và giống hệt tên class. Phương án A có return type (void) — đó là một regular method. Phương án C thêm `static` — không hợp lệ cho constructors. Phương án D sử dụng `return this;` bên trong constructor nhưng không phải là return type declaration; chính option đó sai về cú pháp. Signature đúng đơn giản là `public MyClass(int x)`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả là gì?\n\npublic class Test {\n    static { System.out.print(\"A \"); }\n    { System.out.print(\"B \"); }\n    public Test() { System.out.print(\"C \"); }\n    public static void main(String[] args) {\n        new Test();\n        new Test();\n    }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "B C B C" },
+        { "id": "b", "text": "A B C A B C" },
+        { "id": "c", "text": "A B C B C" },
+        { "id": "d", "text": "B C A B C" }
+      ],
+      "correctKey": "c",
+      "explanation": "Static init block chạy một lần khi class được load (trước bất kỳ instance nào). Instance init blocks chạy trước constructor body mỗi khi object được tạo. Thứ tự: static init bắn một lần → object đầu tiên: instance init + constructor → object thứ hai: instance init + constructor. Kết quả: A (static một lần) + B C (instance 1) + B C (instance 2) = 'A B C B C'."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Từ khóa `final` có ý nghĩa gì khi áp dụng cho một method?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Method không thể có body và phải được implement bởi subclass" },
+        { "id": "b", "text": "Method không thể được override bởi subclasses" },
+        { "id": "c", "text": "Method phải trả về primitive type" },
+        { "id": "d", "text": "Method chỉ chạy một lần mỗi JVM session" }
+      ],
+      "correctKey": "b",
+      "explanation": "`final` trên một method ngăn subclasses override nó. Điều này được dùng khi bạn muốn khóa implementation — behavior được đảm bảo đúng như parent class định nghĩa. Nó khác với `static` (chia sẻ qua tất cả instances) và `private` (không thể truy cập bởi subclasses). Một method `private` ngầm là `final` vì nó không thể được override."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Từ khóa nào ngăn một class không thể được subclass?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "static" },
+        { "id": "b", "text": "private" },
+        { "id": "c", "text": "final" },
+        { "id": "d", "text": "abstract" }
+      ],
+      "correctKey": "c",
+      "explanation": "`final` trên một class ngăn inheritance — không class nào có thể extend nó. `abstract` ngược lại (yêu cầu inheritance). `static` tạo một class-level member, không phải class modifier. `private` giới hạn truy cập, không phải inheritance."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đúng hay Sai: Trong Java, primitive types được truyền bằng reference.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "Java hoàn toàn pass-by-value. Với primitives, chính giá trị được copy. Với objects, reference (giá trị địa chỉ memory) được copy — không phải object itself. Điều này có nghĩa một method không thể reassign reference của caller để trỏ đến object mới, nhưng nó có thể mutate internal state của object nếu object mutable."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả là gì?\n\nint a = 5;\nint b = a;\nb = 10;\nSystem.out.println(a);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "5" },
+        { "id": "b", "text": "10" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "Java là pass-by-value. Khi bạn assign `b = a`, bạn copy giá trị của `a` vào `b`. Thay đổi `b` sau đó không ảnh hưởng gì đến `a`. Cả hai đều là biến độc lập giữ cùng một giá trị primitive. Sự nhầm lẫn với objects: nếu `a` là reference đến object, cả hai đều reference cùng object, và mutate object đó sẽ visible qua cả hai biến — nhưng reassign `b = new Object()` sẽ không ảnh hưởng đến `a`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Cách nào là đúng để tạo và khởi tạo một mảng 5 số nguyên trong Java?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "int[] arr = new int[5]; // các phần tử mặc định là 0" },
+        { "id": "b", "text": "int[] arr = new int[] {1, 2, 3, 4, 5};" },
+        { "id": "c", "text": "int[] arr = {1, 2, 3, 4, 5}; // chỉ hợp lệ khi khai báo inline" },
+        { "id": "d", "text": "Tất cả đều hợp lệ" }
+      ],
+      "correctKey": "d",
+      "explanation": "Cả ba đều là cú pháp hợp lệ. Phương án A tạo một mảng với các phần tử default-initialized (int mặc định là 0). Phương án B dùng array initializer với explicit size. Phương án C là shorthand chỉ hợp lệ trong declaration context — `int[] arr; arr = {1,2,3,4,5};` sẽ KHÔNG compile."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Diamond operator trong Java generics là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một tính năng cú pháp cho phép bạn bỏ qua type parameter ở phía phải của assignment khi type được suy ra từ phía trái" },
+        { "id": "b", "text": "Một toán tử so sánh hai generic type parameters sử dụng cú pháp <>" },
+        { "id": "c", "text": "Một cách để khai báo một generic class với hai type parameters" },
+        { "id": "d", "text": "Một toán tử dùng để gọi default methods trong interfaces" }
+      ],
+      "correctKey": "a",
+      "explanation": "Diamond operator `<>` (được giới thiệu trong Java 7) cho phép compiler suy ra type parameter từ context: `List<String> list = new ArrayList<>();`. Không có nó, bạn phải viết `List<String> list = new ArrayList<String>();`. Diamond operator chỉ hoạt động khi type có thể được suy ra."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Từ khóa `this` trong một Java instance method tham chiếu đến đối tượng nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Class object đang thực thi" },
+        { "id": "b", "text": "Instance hiện tại mà method đang được gọi trên đó" },
+        { "id": "c", "text": "Parent class của instance hiện tại" },
+        { "id": "d", "text": "Một reference đến các method parameters" }
+      ],
+      "correctKey": "b",
+      "explanation": "`this` là reference đến current object — instance mà method đang thực thi trên đó. Nó được dùng để phân biệt instance variables khỏi local parameters cùng tên (`this.x = x`), để pass current object cho các methods khác, hoặc để chain constructors (`this(args)`). Trong static methods, `this` không khả dụng vì static methods thuộc về class, không phải instance."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Access modifier nào chỉ cho phép truy cập trong cùng package?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "private" },
+        { "id": "b", "text": "protected" },
+        { "id": "c", "text": "default (package-private)" },
+        { "id": "d", "text": "public" }
+      ],
+      "correctKey": "c",
+      "explanation": "Default (không modifier, còn gọi là package-private) giới hạn truy cập chỉ trong các classes cùng package. `private` giới hạn trong cùng class. `protected` cho phép cùng package + subclasses. `public` cho phép ở bất kỳ đâu. Đây là mức ít visible nhất trong hệ thống bốn cấp của Java: private < default < protected < public."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Method overloading là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Định nghĩa nhiều methods cùng tên nhưng khác parameter types hoặc counts trong cùng một class" },
+        { "id": "b", "text": "Override một parent class method với implementation cụ thể hơn trong subclass" },
+        { "id": "c", "text": "Một kỹ thuật gọi parent class constructor từ child class" },
+        { "id": "d", "text": "Sử dụng từ khóa 'super' để truy cập một parent method" }
+      ],
+      "correctKey": "a",
+      "explanation": "Overloading (compile-time polymorphism) xảy ra trong cùng class khi nhiều methods có cùng tên nhưng khác parameter count, type, hoặc order. Return type một mình không thể phân biệt overloads. Overriding (phương án B) là khái niệm khác — định nghĩa lại inherited method trong subclass. Overloading được resolve tại compile time dựa trên method signature."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Phát biểu nào mô tả đúng về Java heap memory?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Heap lưu trữ primitive types và method local variables; stack lưu trữ objects" },
+        { "id": "b", "text": "Heap lưu trữ objects và instance variables; stack lưu trữ method calls và local primitives/references" },
+        { "id": "c", "text": "Cả heap và stack lưu cùng loại dữ liệu; heap chỉ lớn hơn" },
+        { "id": "d", "text": "Heap được dùng cho static variables; stack được dùng cho dynamic allocation" }
+      ],
+      "correctKey": "b",
+      "explanation": "Heap lưu trữ tất cả objects (được tạo với `new`) và instance variables của chúng — garbage được collect ở đây. Stack lưu trữ method frames: local primitive variables và reference variables (các pointers, không phải objects themselves). Stack là LIFO và per-thread; heap được chia sẻ qua tất cả threads."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả là gì?\n\nString a = \"hello\";\nString b = \"hello\";\nString c = new String(\"hello\");\nSystem.out.println(a == b);\nSystem.out.println(a == c);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true rồi true" },
+        { "id": "b", "text": "true rồi false" },
+        { "id": "c", "text": "false rồi false" },
+        { "id": "d", "text": "false rồi true" }
+      ],
+      "correctKey": "b",
+      "explanation": "`a` và `b` là string literals lấy từ String pool — chúng trỏ đến cùng một pooled object, nên `==` trả về true. `c` được tạo tường minh với `new String()` trên heap — một object mới tách biệt khỏi pool. Nên `a == c` là false (khác objects). Note: `a.equals(c)` là true vì equals() so sánh nội dung."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Phát biểu nào về `instanceof` là đúng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Trả về true nếu object là instance của class hoặc bất kỳ subclasses nào của nó" },
+        { "id": "b", "text": "Trả về true chỉ cho exact class match, không phải subclasses" },
+        { "id": "c", "text": "instanceof đã deprecated trong Java 17" },
+        { "id": "d", "text": "Trả về Class object của instance" }
+      ],
+      "correctKey": "a",
+      "explanation": "`instanceof` trả về true nếu reference là instance của class đã cho hoặc bất kỳ subclasses nào của nó. Từ Java 16, `instanceof` có thể kết hợp với pattern matching: `if (obj instanceof String s)` — biến `s` được tự động cast và scoped trong if-block."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả là gì?\n\nint[] arr = {3, 1, 4, 1, 5};\nSystem.out.println(arr[arr.length - 1]);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "3" },
+        { "id": "b", "text": "5" },
+        { "id": "c", "text": "4" },
+        { "id": "d", "text": "ArrayIndexOutOfBoundsException" }
+      ],
+      "correctKey": "b",
+      "explanation": "`arr.length = 5`, nên `arr.length - 1 = 4`. Array indices là 0-based: arr[0]=3, arr[1]=1, arr[2]=4, arr[3]=1, arr[4]=5. `arr[4]` là phần tử cuối, là 5. Lỗi off-by-one phổ biến là dùng `arr[arr.length]` sẽ throw ArrayIndexOutOfBoundsException."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đúng hay Sai: Một Java interface có thể có constructor.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "b",
+      "explanation": "Interfaces không thể có constructors vì chúng không thể được instantiate trực tiếp. Từ Java 8, interfaces có thể có default methods, static methods, và private methods, nhưng vẫn không có constructors. Abstract classes có constructors vì chúng có thể được partial implement và extend."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Điều gì xảy ra khi bạn gọi `map.get(new Key(\"a\"))` nếu Key chỉ override `equals()` nhưng không override `hashCode()`? (Giả sử Key objects với nội dung equals có hash codes khác nhau.)",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Giá trị đúng luôn được tìm thấy, vì equals() được dùng như fallback" },
+        { "id": "b", "text": "Việc tìm kiếm có thể thất bại không mong đợi ngay cả khi equals() sẽ trả về true" },
+        { "id": "c", "text": "HashMap throw NullPointerException tại runtime" },
+        { "id": "d", "text": "Giá trị được lưu và retrieve đúng vì equals() là đủ" }
+      ],
+      "correctKey": "b",
+      "explanation": "HashMap đầu tiên tính hashCode của key để thu hẹp bucket search. Nếu hai objects bằng nhau tạo ra các hashCode khác nhau, bucket lookup sẽ sai — object không được tìm thấy dù equals() sẽ match. Điều này vi phạm HashMap contract: equal objects phải có equal hashCodes."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Stream API operation nào là một intermediate operation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "collect()" },
+        { "id": "b", "text": "findFirst()" },
+        { "id": "c", "text": "filter()" },
+        { "id": "d", "text": "forEach()" }
+      ],
+      "correctKey": "c",
+      "explanation": "Intermediate operations (filter, map, flatMap, distinct, sorted, limit, skip) trả về một Stream mới và lazy — chúng không thực thi cho đến khi một terminal operation trigger pipeline. Terminal operations (collect, findFirst, forEach, reduce, toList) trigger execution và trả về kết quả non-Stream."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`List<? super Integer>` nghĩa là gì trong Java generics?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một list của Integer hoặc bất kỳ supertypes nào của nó (parents của Integer)" },
+        { "id": "b", "text": "Một list của Integer hoặc bất kỳ subtypes nào của nó" },
+        { "id": "c", "text": "Một list có thể chứa cả Integer và tất cả subtypes của nó như elements" },
+        { "id": "d", "text": "Một list mà bạn có thể đọc elements như Integer nhưng không thể ghi Integer vào nó" }
+      ],
+      "correctKey": "a",
+      "explanation": "`? super Integer` là một lower-bounded wildcard. Nó chấp nhận List<Integer>, List<Number>, hoặc List<Object> — bất kỳ list nào có element type là supertype của Integer. Điều này làm list an toàn cho writes: bạn có thể thêm một Integer. PECS rule: Producer Extends, Consumer Super."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nList<Integer> nums = Arrays.asList(1, 2, 3, 4, 5);\nList<Integer> result = nums.stream()\n    .map(x -> x * 2)\n    .filter(x -> x > 5)\n    .collect(Collectors.toList());\nSystem.out.println(result);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "[2, 4, 6, 8, 10]" },
+        { "id": "b", "text": "[6, 8, 10]" },
+        { "id": "c", "text": "[2, 4, 6]" },
+        { "id": "d", "text": "[10]" }
+      ],
+      "correctKey": "b",
+      "explanation": "Pipeline: map doubles mỗi số [1,2,3,4,5] → [2,4,6,8,10]. Sau đó filter giữ chỉ > 5 → [6,8,10]. Hiểu thứ tự intermediate operations rất quan trọng — một sai lầm phổ biến là nghĩ filter chạy trước map."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Functional interface nào sau đây là hợp lệ trong Java?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "java.util.function.Consumer<T>" },
+        { "id": "b", "text": "java.util.function.Supplier<T>" },
+        { "id": "c", "text": "java.lang.Runnable" },
+        { "id": "d", "text": "java.util.List<T>" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Functional interface có đúng một abstract method. Consumer<T> và Supplier<T> là standard functional interfaces trong java.util.function. Runnable có method run(). List<T> có nhiều abstract methods (add, remove, get, v.v.) — không phải functional interface."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nOptional<String> opt = Optional.ofNullable(null);\nString result = opt.orElse(\"default\");\nSystem.out.println(result);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "null" },
+        { "id": "b", "text": "default" },
+        { "id": "c", "text": "NoSuchElementException" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "b",
+      "explanation": "`Optional.ofNullable(null)` tạo một empty Optional. Gọi `orElse(\"default\")` trả về fallback value khi Optional empty — nên 'default' được in. `orElseGet(() -> \"default\")` là alternative lazy (Supplier) — chỉ được gọi khi cần. `orElse()` với một object nặng luôn tạo nó dù không sử dụng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt chính giữa `ArrayList` và `LinkedList` cho operation add(E element) ở cuối list là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "LinkedList nhanh hơn vì nó sử dụng doubly-linked structure" },
+        { "id": "b", "text": "Cả hai đều O(1) amortized cho append, nhưng ArrayList có cache locality tốt hơn" },
+        { "id": "c", "text": "ArrayList là O(n) vì nó phải shift tất cả existing elements" },
+        { "id": "d", "text": "LinkedList là O(1) chỉ khi dùng addFirst(), không phải add()" }
+      ],
+      "correctKey": "b",
+      "explanation": "ArrayList's add(E) amortized O(1): appending đến cuối backing array là constant time cho đến khi cần resize. LinkedList's add(E) cũng O(1). Tuy nhiên, ArrayList có superior cache locality (contiguous memory) làm nó nhanh hơn trong thực tế. Random access: ArrayList O(1), LinkedList O(n) — đây là lý do chính để chọn LinkedList."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Method overriding là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Thay thế một method trong cùng class bằng implementation khác dựa trên parameter types" },
+        { "id": "b", "text": "Một subclass cung cấp implementation cụ thể của một method đã được định nghĩa trong parent class của nó" },
+        { "id": "c", "text": "Sử dụng một lambda expression để thay thế bất kỳ method nào trong một class" },
+        { "id": "d", "text": "Thay đổi access modifier của một method từ private thành public" }
+      ],
+      "correctKey": "b",
+      "explanation": "Overriding (runtime polymorphism) xảy ra khi một subclass định nghĩa lại một method từ parent class. Overridden method phải có cùng signature, cùng hoặc less restrictive access, và không throw checked exceptions rộng hơn. Annotation `@Override` giúp bắt lỗi."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Covariant return type trong Java là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một subclass override method có thể trả về một subtype cụ thể hơn của return type của parent" },
+        { "id": "b", "text": "Return type của một method có thể là một supertype của parameter type của nó" },
+        { "id": "c", "text": "Return type phải giống hệt nhau trong overriding method" },
+        { "id": "d", "text": "Một generic method có thể trả về các types khác nhau dựa trên type argument" }
+      ],
+      "correctKey": "a",
+      "explanation": "Covariant return types cho phép một overriding method trả về subtype của parent's return type. Ví dụ: parent method trả về `Object`, subclass override trả về `String`. Điều này hợp lệ trong Java từ Java 5 và cho phép caller tránh explicit cast."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nList<String> list = new ArrayList<>();\nlist.add(\"a\");\nlist.add(\"b\");\nlist.remove(0);\nSystem.out.println(list.get(0));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "a" },
+        { "id": "b", "text": "b" },
+        { "id": "c", "text": "IndexOutOfBoundsException" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "b",
+      "explanation": "`list.add(\"a\")` → [a], `list.add(\"b\")` → [a, b], `remove(0)` remove phần tử tại index 0 ('a'), shifting 'b' đến index 0 → [b]. `list.get(0)` trả về 'b'. Sự nhầm lẫn phổ biến: `remove(Object o)` vs `remove(int index)`. `list.remove(\"a\")` remove by object; `list.remove(0)` remove by index."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nString s = null;\nSystem.out.println(s instanceof String);",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "true" },
+        { "id": "b", "text": "false" },
+        { "id": "c", "text": "NullPointerException" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "b",
+      "explanation": "`instanceof` trả về `false` khi left operand là `null`, nó không throw NullPointerException. Điều này có chủ đích — null không phải instance của bất kỳ type nào. Từ Java 16, `instanceof` với pattern matching là null-safe."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Checked exceptions nào sau đây trong Java?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "IOException" },
+        { "id": "b", "text": "NullPointerException" },
+        { "id": "c", "text": "FileNotFoundException" },
+        { "id": "d", "text": "SQLException" }
+      ],
+      "correctKey": "a,c,d",
+      "explanation": "Checked exceptions extend Exception nhưng NOT RuntimeException — compiler yêu cầu chúng được catch hoặc declare trong method's throws clause. IOException và subclass của nó là checked. SQLException là checked. NullPointerException là RuntimeException (unchecked) — compiler không yêu cầu xử lý."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nMap<String, Integer> map = new HashMap<>();\nmap.put(\"a\", 1);\nmap.put(\"b\", 2);\nmap.putIfAbsent(\"a\", 3);\nSystem.out.println(map.get(\"a\"));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "1" },
+        { "id": "b", "text": "3" },
+        { "id": "c", "text": "null" },
+        { "id": "d", "text": "Compilation error" }
+      ],
+      "correctKey": "a",
+      "explanation": "`putIfAbsent(K, V)` chỉ insert value nếu key chưa tồn tại (hoặc map đến null). Vì 'a' đã map đến 1, call putIfAbsent không làm gì. Giá trị gốc 1 được trả về bởi `map.get(\"a\")`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Phương thức equals() trong Object so sánh reference equality theo mặc định.",
+      "questionType": "TRUE_FALSE",
+      "options": [
+        { "id": "a", "text": "True" },
+        { "id": "b", "text": "False" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object's default equals() dùng `==` để so sánh references — hai references chỉ bằng nhau nếu chúng trỏ đến cùng một object trong memory. Đây là lý do bạn phải override equals() trong các classes cần value-based equality. Contract yêu cầu: nếu override equals(), bạn PHẢI also override hashCode()."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả là gì?\n\nclass A { void show() { System.out.print(\"A \"); } }\nclass B extends A { void show() { System.out.print(\"B \"); } }\n\nA obj = new B();\nobj.show();",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A" },
+        { "id": "b", "text": "B" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "Runtime error" }
+      ],
+      "correctKey": "b",
+      "explanation": "Java sử dụng virtual method dispatch (runtime polymorphism). Ngay cả khi reference type là `A`, object là `new B()`. Tại runtime, JVM tìm actual object type (B) và gọi B's overridden `show()` method. Đây là essence của OOP polymorphism — behavior phụ thuộc vào actual runtime type, không phải compile-time reference type."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Collection types nào cho phép duplicate elements?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "List" },
+        { "id": "b", "text": "Set" },
+        { "id": "c", "text": "Queue" },
+        { "id": "d", "text": "Map (values only, keys phải unique)" }
+      ],
+      "correctKey": "a,c,d",
+      "explanation": "Lists cho phép duplicates (ordered by index). Queues cho phép duplicates trừ khi specified khác. Maps cho phép duplicate values nhưng unique keys. Sets theo định nghĩa không cho phép duplicate elements."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Garbage collection algorithm nào bạn sẽ chọn cho một ứng dụng với các objects có thời gian sống rất ngắn (ví dụ: request processing trong web server)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Serial GC — đơn giản nhất và hoạt động tốt cho single-threaded environments" },
+        { "id": "b", "text": "G1GC với Young Generation focused settings và một Eden space lớn" },
+        { "id": "c", "text": "ZGC — được thiết kế cho ultra-low latency applications bất kể heap size" },
+        { "id": "d", "text": "Mark-Sweep-Compact chạy trên old generation only" }
+      ],
+      "correctKey": "b",
+      "explanation": "Short-lived object workloads hưởng lợi nhiều nhất từ generational collectors. G1GC với tuned young generation settings là lựa chọn tiêu chuẩn. ZGC nhắm đến sub-millisecond pause times với very large heaps — overkill ở đây. Serial GC gây unacceptable stop-the-world pauses cho latency-sensitive servers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Vấn đề chính với code này trong multi-threaded context là gì?\n\npublic class Counter {\n  private long count = 0;\n  \n  public void increment() { count++; }\n  public long getCount()  { return count; }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "count nên được khai báo volatile vì nó là primitive type" },
+        { "id": "b", "text": "count++ không phải atomic — nó đọc, tăng, rồi ghi — dẫn đến lost updates dưới contention" },
+        { "id": "c", "text": "getCount() nên được synchronized để đảm bảo visibility của giá trị mới nhất" },
+        { "id": "d", "text": "Long không thread-safe cho increment; bạn phải dùng AtomicLong thay thế" }
+      ],
+      "correctKey": "b",
+      "explanation": "Compound read-modify-write của count++ (read → increment → write) không atomic dù Long là 64-bit. Hai threads có thể đọc cùng giá trị, cả hai increment, và cả hai ghi cùng kết quả — mất một update. Declaring volatile chỉ đảm bảo visibility, không phải atomicity của compound operation."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Cơ chế nào cho phép Java gọi một method trên một object mà không cần biết exact runtime type tại compile time?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Reflection — được dùng tại runtime để inspect và invoke methods trên class metadata" },
+        { "id": "b", "text": "Dynamic proxy — một proxy được generate tại runtime implement known interfaces" },
+        { "id": "c", "text": "Virtual method dispatch — JVM resolve method implementation tại runtime dựa trên actual object type" },
+        { "id": "d", "text": "Method handles — một low-level JVM feature cho invokeinterface calls" }
+      ],
+      "correctKey": "c",
+      "explanation": "Virtual method dispatch (dynamic dispatch) là cơ chế OOP mà JVM dùng để gọi overridden method trên actual runtime type. Reflection inspects types tại runtime nhưng không phải là cơ chế polymorphism tiêu chuẩn."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\npublic class Test {\n    static boolean flag = false;\n    static int result = 0;\n    \n    public static void main(String[] args) throws Exception {\n        Thread t = new Thread(() -> {\n            while (!flag) { }\n            System.out.println(result);\n        });\n        t.start();\n        Thread.sleep(100);\n        result = 42;\n        flag = true;\n        t.join();\n    }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0 (vòng lặp quay mãi mãi)" },
+        { "id": "b", "text": "42" },
+        { "id": "c", "text": "0 (vòng lặp thoát nhưng result không visible)" },
+        { "id": "d", "text": "Không có output (thread không bao giờ kết thúc)" }
+      ],
+      "correctKey": "b",
+      "explanation": "`t.join()` được gọi SAU khi đặt cả `result` và `flag`, tạo một happens-before relationship: tất cả writes bởi main thread visible cho thread t. Nếu không có join(), kết quả sẽ nondeterministic."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": " утверждения nào sau đây về Java Memory Model (JMM) happens-before relationship là đúng?",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Việc unlock một monitor happens-before mỗi subsequent lock tiếp theo trên cùng monitor đó" },
+        { "id": "b", "text": "Một write đến một volatile variable happens-before mỗi subsequent read của cùng volatile đó" },
+        { "id": "c", "text": "Thread.start() happens-before action đầu tiên của started thread" },
+        { "id": "d", "text": "Việc bắt đầu một thread happens-before main thread's call đến join()" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "JMM định nghĩa happens-before rules đảm bảo visibility của shared data giữa các threads. Phương án D sai vì happens-before đi từ completed thread đến join() caller, không phải theo hướng ngược lại."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa ReentrantLock và synchronized trong Java là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "synchronized là reentrant; ReentrantLock thì không" },
+        { "id": "b", "text": "ReentrantLock hỗ trợ tryLock() với timeout và nhiều wait sets (Conditions); synchronized thì không" },
+        { "id": "c", "text": "Cả hai có identical capabilities; chỉ khác nhau ở syntax" },
+        { "id": "d", "text": "synchronized là non-reentrant by default kể từ Java 17" }
+      ],
+      "correctKey": "b",
+      "explanation": "ReentrantLock cung cấp advantages so với synchronized: tryLock() với timeout, lockInterruptibly(), nhiều Condition objects, và fairness policies. Cả hai đều reentrant. Phương án D sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Internal iterator vs external iterator trong Java là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Internal iterator (forEach) chạy trong current thread; external iterator (Iterator) cho caller kiểm soát việc stepping qua các elements" },
+        { "id": "b", "text": "Internal iterator được dùng trong streams; external iterator được dùng trong for loops" },
+        { "id": "c", "text": "External iterators luôn nhanh hơn internal iterators" },
+        { "id": "d", "text": "Không có sự khác biệt — các thuật ngữ có thể hoán đổi cho nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "External iterator (Iterator, ListIterator) được control bởi client code. Internal iterator (forEach, stream operations) encapsulate iteration logic. Streams enable lazy evaluation và có thể được parallelize."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt chính giữa deep copy và shallow copy khi cloning một object trong Java là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Shallow copy copy tất cả fields bao gồm references — shared referenced objects; deep copy recursively copy referenced objects" },
+        { "id": "b", "text": "Deep copy nhanh hơn vì nó chỉ copy primitive fields" },
+        { "id": "c", "text": "Shallow copy yêu cầu implement Cloneable trên mọi nested object" },
+        { "id": "d", "text": "Deep copy là behavior mặc định của Object.clone()" }
+      ],
+      "correctKey": "a",
+      "explanation": "Object.clone() mặc định là shallow copy — primitive fields được copy, reference fields copy reference (không phải object), nên cả original và clone đều share same referenced objects. Deep copy tạo independent copies của tất cả referenced objects recursively."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\npublic class Test {\n    static String s = \"original\";\n    public static void main(String[] args) {\n        change(s);\n        System.out.println(s);\n    }\n    static void change(String s) { s = \"modified\"; }\n}",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "original" },
+        { "id": "b", "text": "modified" },
+        { "id": "c", "text": "Compilation error" },
+        { "id": "d", "text": "NullPointerException" }
+      ],
+      "correctKey": "a",
+      "explanation": "Java hoàn toàn pass-by-value. Biến `s` trong `change()` là một bản sao của reference. Reassign `s = \"modified\"` bên trong method thay đổi bản sao local trỏ đến String mới, nhưng không ảnh hưởng đến original reference trong `main()`. Đây là một trong những misconceptions phổ biến nhất về Java."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "JVM option nào bạn sẽ dùng để capture heap dumps cho OutOfMemoryError analysis?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/path/to/dumps" },
+        { "id": "b", "text": "-Xmx -Xms cho heap sizing" },
+        { "id": "c", "text": "-XX:+UseG1GC cho garbage collection analysis" },
+        { "id": "d", "text": "-Dcom.sun.management.jmxremote cho heap monitoring" }
+      ],
+      "correctKey": "a",
+      "explanation": "Flag `-XX:+HeapDumpOnOutOfMemoryError` hướng dẫn JVM viết heap dump (HPROF format) khi OutOfMemoryError được throw. `-XX:HeapDumpPath` chỉ định nơi lưu. Kết hợp với Eclipse MAT hoặc VisualVM để diagnose memory leaks."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\nList<Integer> list = Arrays.asList(1, 2, 3, 4, 5);\nOptional<Integer> result = list.stream()\n    .parallel()\n    .filter(x -> x % 2 == 0)\n    .findFirst();\nSystem.out.println(result.orElse(-1));",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "2" },
+        { "id": "b", "text": "Có thể 2 hoặc 4 tùy thuộc vào thread scheduling" },
+        { "id": "c", "text": "Throws IllegalStateException" },
+        { "id": "d", "text": "-1" }
+      ],
+      "correctKey": "a",
+      "explanation": "`findFirst()` trả về phần tử đầu tiên trong encounter order bất kể parallel hay sequential processing. Ngay cả trong parallel streams, `findFirst()` enforce encounter order (không như `findAny()`). Encounter order của source array là 1,2,3,4,5, nên số chẵn đầu tiên là 2."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả là gì?\n\nExecutorService executor = Executors.newSingleThreadExecutor();\nFuture<?> f = executor.submit(() -> {\n    System.out.print(\"A \");\n    throw new RuntimeException(\"error\");\n});\ntry {\n    f.get();\n    System.out.print(\"B \");\n} catch (Exception e) {\n    System.out.print(\"C \");\n}\nexecutor.shutdown();",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A B" },
+        { "id": "b", "text": "A C" },
+        { "id": "c", "text": "A (sau đó uncaught exception propagates)" },
+        { "id": "d", "text": "C A" }
+      ],
+      "correctKey": "b",
+      "explanation": "Task prints 'A' rồi throw RuntimeException. `submit()` catches exception và stores nó trong Future. Khi `f.get()` được gọi, nó re-throws exception wrapped in ExecutionException. Catch block bắt nó và prints 'C'. 'B' không bao giờ được in vì exception prevents normal completion."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa thread pool dùng bounded queue và unbounded queue là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Bounded queue giới hạn memory usage nhưng có thể reject tasks khi full; unbounded queue có thể gây OutOfMemoryError dưới pressure" },
+        { "id": "b", "text": "Unbounded queue luôn perform tốt hơn vì nó không bao giờ reject tasks" },
+        { "id": "c", "text": "Bounded queue yêu cầu nhiều threads hơn; unbounded yêu cầu ít hơn" },
+        { "id": "d", "text": "Không có practical difference — cả hai behave giống nhau dưới load" }
+      ],
+      "correctKey": "a",
+      "explanation": "Unbounded queue (LinkedBlockingQueue không capacity) có nghĩa tasks queue up indefinitely. Nếu producer rate vượt consumer rate, queue grow không bound — dẫn đến OutOfMemoryError. Bounded queue gây rejectedExecutionHandler trigger khi full."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Cách đúng để tạo một immutable list trong Java là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "List<String> list = new ArrayList<>(); // don't call add()" },
+        { "id": "b", "text": "List<String> list = Collections.unmodifiableList(Arrays.asList(\"a\", \"b\"));" },
+        { "id": "c", "text": "List<String> list = List.of(\"a\", \"b\"); // Java 9+ immutable list factory" },
+        { "id": "d", "text": "Cả B và C tạo effectively immutable lists" }
+      ],
+      "correctKey": "d",
+      "explanation": "Cả `Collections.unmodifiableList()` và `List.of()` đều tạo unmodifiable lists. `List.of()` (Java 9+) không cho phép null elements và throws UOE on structural modification. `Collections.unmodifiableList()` wraps một existing list — nếu list đó được modify sau đó, unmodifiable view reflect những changes đó."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Biased lock optimization trong JVM làm gì, và replacement của nó là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Biased lock làm thread đầu tiên acquire một monitor biased toward nó — tránh atomic operations trên mỗi lock; disabled by default từ Java 15, replaced by lightweight locking" },
+        { "id": "b", "text": "Biased lock cho priority cho thread được sử dụng gần đây nhất để giảm context switching" },
+        { "id": "c", "text": "Biased lock encrypt thread identifiers stored trong object header cho security" },
+        { "id": "d", "text": "Biased lock đã được removed trong Java 8 và replaced by striped locking" }
+      ],
+      "correctKey": "a",
+      "explanation": "Biased locking cho phép thread đầu tiên lock một object 'bias' lock toward chính nó — subsequent synchronizations từ cùng thread bypass atomic CAS operations hoàn toàn. Deprecated trong Java 15 với `-XX:+UseBiasedLocking` defaulting to false."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Cơ chế nào cho phép Java implement lazy initialization của expensive singletons một cách thread-safe mà không có synchronization overhead sau khi initialization?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Double-checked locking dùng volatile trên instance field" },
+        { "id": "b", "text": "Eager initialization trên một static field" },
+        { "id": "c", "text": "Dùng synchronized trên mọi access đến getInstance() method" },
+        { "id": "d", "text": "Initializing instance trong một static initializer block" }
+      ],
+      "correctKey": "a",
+      "explanation": "Double-checked locking (DCL) với `volatile` đảm bảo thread-safe lazy initialization không phải trả chi phí synchronization sau khi instance được tạo. Volatile ngăn instruction reordering, đảm bảo instance được tạo đầy đủ trước khi visible to other threads."
+    }
+  ]
+}

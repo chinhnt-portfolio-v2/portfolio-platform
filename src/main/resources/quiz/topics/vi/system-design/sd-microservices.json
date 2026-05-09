@@ -1,0 +1,228 @@
+{
+  "topicSlug": "sd-microservices",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích chính của API Gateway trong microservices architecture là gì, và những vấn đề nào nó giải quyết?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "API Gateway thay thế service mesh bằng cách cung cấp distributed tracing và metrics collection cho tất cả services" },
+        { "id": "b", "text": "API Gateway acts as single entry point cho tất cả client requests, handling cross-cutting concerns như authentication, rate limiting, protocol translation (HTTP → gRPC), request routing, và aggregation — để individual services không cần implement các concerns này" },
+        { "id": "c", "text": "API Gateway là một database proxy route database queries tới appropriate microservice dựa trên query type" },
+        { "id": "d", "text": "API Gateway chỉ cần cho legacy monolithic applications migrating to microservices" }
+      ],
+      "correctKey": "b",
+      "explanation": "API Gateway là single entry point cho tất cả external (và đôi khi internal) client traffic. Nó handles cross-cutting concerns (auth, TLS termination, rate limiting, load balancing, request routing, protocol translation) để microservices remain focused on business logic. Nó cũng có thể aggregate multiple backend calls into a single client response. Without a gateway, mỗi service phải implement auth/rate-limiting separately, creating duplication và inconsistency. Popular gateways: Kong, AWS API Gateway, Envoy, Nginx. Phương án A nhầm gateway với service mesh. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Service A cần call Service B trong một microservices system. Service B thỉnh thoảng trở nên slow hoặc unavailable. Pattern nào prevents Service A from also becoming unresponsive when Service B degrades?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Circuit breaker — nếu failure rate tới Service B exceeds threshold, circuit 'opens' và immediately returns fallback response without calling Service B, preventing resource exhaustion và cascading failure" },
+        { "id": "b", "text": "Retry với exponential backoff — Service A retries Service B indefinitely cho đến khi nó succeeds; đây là standard circuit breaker behavior" },
+        { "id": "c", "text": "Load balancer — load balancer automatically routes traffic away from failing instances of Service B" },
+        { "id": "d", "text": "Service registry — Service B registers its availability in a service registry, allowing Service A discover healthy instances" }
+      ],
+      "correctKey": "a",
+      "explanation": "Circuit breaker (Michael Nygard, Release It!): a state machine (Closed → Open → Half-Open) monitors call failures. Khi failures exceed threshold, breaker 'opens' — subsequent calls fail immediately (fallback) without making network call. Sau timeout, nó moves to 'half-open' (allow one test call). Nếu nó succeeds, nó closes; nếu fails, nó reopens. Điều này prevents resource exhaustion và cascading failures. Retry (B) without circuit breaker makes things worse under load. Load balancer (C) handles node-level failure, not service-level degradation. Service registry (D) handles discovery, not resilience. Phương án A đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Service discovery trong microservices là gì, và sự khác biệt giữa client-side và server-side discovery là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Service discovery là process of routing API requests tới correct version của một service sử dụng semantic versioning" },
+        { "id": "b", "text": "Client-side discovery: client queries a service registry (vd: Eureka, Consul) để find service endpoints và load balances among them; server-side discovery: a router hoặc load balancer (vd: AWS ALB, Envoy) queries registry và routes requests on behalf of client — client unaware of discovery process" },
+        { "id": "c", "text": "Server-side discovery requires each microservice implement its own load balancing logic; client-side discovery uses a centralized load balancer" },
+        { "id": "d", "text": "Service discovery chỉ cần khi dùng Docker containers; VMs không cần nó" }
+      ],
+      "correctKey": "b",
+      "explanation": "Client-side discovery (Eureka, Consul + client SDK): service consumer queries registry directly, picks an instance, và handles load balancing. Server-side discovery (AWS ALB, NGINX, service mesh sidecar): client sends requests tới well-known router, which queries registry và routes. Kubernetes uses server-side discovery via kube-proxy + DNS (CoreDNS). Phương án A mô tả sai. Phương án C reverses definitions. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Hai approaches chính để implement saga pattern trong microservices là gì, và khi nào chọn orchestration over choreography?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Orchestration: central coordinator sends commands tới mỗi service và waits for replies; Choreography: services publish và subscribe to events và react autonomously — dùng orchestration khi cần explicit visibility, complex ordering, và clear failure handling; dùng choreography cho simpler, loosely coupled flows" },
+        { "id": "b", "text": "Choreography là khi một central database coordinates transactions across services; orchestration là khi each service manages its own transaction independently" },
+        { "id": "c", "text": "Saga pattern uses distributed locks (2PC) for coordination; orchestration là name cho implementing saga without 2PC" },
+        { "id": "d", "text": "Orchestration và choreography identical — both involve a central coordinator sending messages to services" }
+      ],
+      "correctKey": "a",
+      "explanation": "Saga Choreography: services publish domain events. No central coordinator. Simple flows work well; complex flows create tangled event chains. Saga Orchestration: a saga orchestrator sends commands (ProcessPayment) tới services, receives events, và decides next steps. Better cho complex multi-step flows, clear visibility, và centralizes compensating transaction logic. Dùng orchestration cho: complex ordering dependencies, multiple participants, và clear audit trail. Phương án A đúng. Phương án B mô tả sai. Phương án C mô tả sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Ba states của một circuit breaker là gì, và purpose của half-open state là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Closed, Open, và Half-Open: Closed = circuit breaker is disabled; Open = circuit breaker is overloaded và logging all requests; Half-Open = circuit breaker is resetting after a timeout" },
+        { "id": "b", "text": "Closed (normal operation, failures counted), Open (failures exceeded threshold — calls fail immediately with fallback), và Half-Open (timeout elapsed — one test call allowed để check if downstream service has recovered; if success → Closed, if failure → Open)" },
+        { "id": "c", "text": "Closed, Open, và Retrying: Closed = all requests pass; Open = all requests fail và are retried with backoff; Retrying = requests are queued for later processing" },
+        { "id": "d", "text": "Half-Open only exists in software circuit breakers, not hardware; hardware circuit breakers have only Closed và Open states" }
+      ],
+      "correctKey": "b",
+      "explanation": "Circuit breaker states: (1) Closed: normal operation; if failures exceed threshold → Open. (2) Open: all calls fail immediately with fallback, no calls reach downstream. (3) Half-Open: after reset timeout, allow limited test calls; if succeed → Closed; if fail → Open. Half-open prevents permanently broken downstream from staying open forever. Libraries: Resilience4j (Java), Hystrix (Netflix), Polly (.NET). Phương án A sai. Phương án B đúng. Phương án C sai. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "12-factor app methodology là gì, và factors nào relevant nhất cho microservices deployment và operation?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "12-factor app là set of 12 coding guidelines focused on improving test coverage — factors 1-6 cover unit testing" },
+        { "id": "b", "text": "12-factor app (Heroku, 2011) defines 12 best practices cho cloud-native applications: factor IV (config store), VI (process stateless), XI (logs as event stream), XII (admin processes) đặc biệt relevant cho microservices — enabling independent deployability, horizontal scaling, và observability" },
+        { "id": "c", "text": "12-factor app mandates tất cả microservices phải be written in same programming language" },
+        { "id": "d", "text": "12-factor app primarily là database design methodology — factors 7-12 cover data management best practices" }
+      ],
+      "correctKey": "b",
+      "explanation": "12-factor app (heroku.com/blog/12factor): I. Codebase, II. Dependencies, III. Config, IV. Backing services, V. Build/release-run, VI. Processes (stateless), VII. Port binding, VIII. Concurrency, IX. Disposability, X. Dev/prod parity, XI. Logs (event streams), XII. Admin processes. Cho microservices: Factor III (config) enables per-environment config without code changes; Factor VI (stateless) enables horizontal scaling; Factor XI (logs) enables centralized observability. Phương án B đúng. Phương án A, C, D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Observability trong microservices context là gì, và tại sao nó more challenging hơn trong một monolithic application?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Observability nghĩa là collecting logs only — metrics và traces optional add-ons for microservices" },
+        { "id": "b", "text": "Observability nghĩa là ability to understand a system's internal state từ its external outputs; trong microservices nó requires three pillars — metrics (Prometheus), distributed traces (Jaeger/Zipkin), và structured logs — để correlate events across service boundaries và diagnose failures in a distributed call chain" },
+        { "id": "c", "text": "Observability less challenging in microservices vì each service nhỏ và easier to debug in isolation" },
+        { "id": "d", "text": "Observability chỉ cần in production environments, not during development or testing" }
+      ],
+      "correctKey": "b",
+      "explanation": "Observability: property of being able to infer internal state từ external outputs. Three pillars: (1) Metrics — numerical measurements over time; (2) Distributed traces — single request's path through multiple services (trace ID propagates via headers, vd: W3C TraceContext); (3) Structured logs — machine-readable logs with correlation IDs. Một user request có thể touch 10+ services — without distributed tracing, finding which service caused a latency spike nearly impossible. Monolith has single call stack; microservices have distributed call graph. Phương án A, C, D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Trong microservices, tại sao critical rằng services share nothing (are stateless) và that configuration is externalized từ application code?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Statelessness is optional — services có thể store local session state as long as they use sticky sessions for routing" },
+        { "id": "b", "text": "Stateless services + externalized config required for independent deployability, horizontal scaling, và fault tolerance — any service instance có thể handle any request; configuration changes take effect by restarting service without rebuilding hoặc redeploying artifact" },
+        { "id": "c", "text": "Externalized configuration chỉ cần cho production environments; development và staging có thể use hardcoded values" },
+        { "id": "d", "text": "Hardcoded configuration actually better for microservices vì nó prevents configuration drift between environments" }
+      ],
+      "correctKey": "b",
+      "explanation": "Microservices phải be independently deployable — nếu service cần configuration change và nó requires rebuilding container image, bạn lose ability to deploy independently. Configuration phải live outside artifact (environment variables, config maps, Consul, Spring Cloud Config, Vault). Stateless services enable horizontal scaling — any instance handles any request, và instances có thể be killed/restarted without user impact. Sticky sessions + local state are anti-patterns. Phương án A, C, D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Một microservice cần notify another microservice when an order is created. Sender không cần wait for receiver to process event. Communication style nào most appropriate?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Synchronous REST/gRPC call — order service calls notification service directly và waits for a response" },
+        { "id": "b", "text": "Asynchronous messaging (event hoặc message queue) — order service publishes OrderCreated event tới message broker; notification service subscribes và processes it independently; order service does not wait for notification to complete" },
+        { "id": "c", "text": "WebSocket — order service opens persistent connection tới notification service for push-based delivery" },
+        { "id": "d", "text": "Database polling — notification service periodically queries order database for new orders" }
+      ],
+      "correctKey": "b",
+      "explanation": "Asynchronous messaging decouples producer (OrderService) from consumer (NotificationService) in both time and space. OrderService publishes once; NotificationService processes at its own pace. Benefits: OrderService not blocked, NotificationService có thể scale independently, events durable (queue), và consumers có thể be added without modifying OrderService. Synchronous REST (A) creates coupling. WebSocket (C) connection-oriented, not appropriate. Database polling (D) anti-pattern. Phương án B đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Trong microservices, một service nên always expose REST API over HTTP cho synchronous calls vì nó most language-agnostic và interoperable protocol.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "REST over HTTP/1.1 widely supported nhưng có significant overhead cho internal microservice-to-microservice calls: JSON serialization/deserialization slow, HTTP/1.1 connections blocking, no native streaming, limited schema evolution support. Modern microservices use: gRPC (HTTP/2, binary Protobuf, strongly typed contracts, streaming) cho internal synchronous calls; REST/HTTP cho external-facing APIs; GraphQL cho client-facing data aggregation APIs. HTTP/2 + gRPC actually more efficient cho high-volume internal traffic. Phương án sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Trong một well-designed microservices architecture, each microservice nên own its own database (hoặc schema) và never share database tables hoặc schemas với other services.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Database per service là core principle của microservices: mỗi service manages its own data store, và other services access nó only through the service's API — never directly touching another service's database. Shared databases create tight coupling — schema changes in one service break other services, making independent deployability impossible. Đây là database-per-service pattern, và nó prevents 'distributed monolith' anti-pattern. Phương án đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: Strangler fig pattern được dùng để gradually migrate legacy monolith tới microservices by incrementally routing traffic từ monolith tới new microservices cho đến khi monolith eventually 'strangled' và có thể be decommissioned.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Strangler fig pattern (Martin Fowler): instead of risky big-bang rewrite, incrementally replace monolith functionality với microservices. API gateway hoặc reverse proxy intercepts requests — new/migrated features route tới new microservice, remaining features continue routing tới monolith. Over time, more traffic migrates until monolith handles only a small stub (eventually zero). Benefits: low risk, incremental value delivery, ability to rollback, real traffic testing. Đây là recommended approach cho modernizing legacy systems. Phương án đúng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn đang thiết kế microservices architecture nơi OrderService synchronously calls PaymentService, which synchronously calls FraudDetectionService, which calls AddressVerificationService. Chain này tạo 4-second end-to-end latency. Đây là vấn đề gì và làm sao redesign để giảm latency?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đây là distributed monolith anti-pattern — all services phải be merged back into a single monolith để giảm latency" },
+        { "id": "b", "text": "Đây là distributed monolith hoặc chatty microservice anti-pattern; redesign by replacing synchronous chains với asynchronous event-driven choreography: OrderService publishes OrderPlaced event; PaymentService, FraudDetectionService, và AddressVerificationService subscribe independently và process in parallel; OrderService waits for composite event hoặc uses saga orchestrator" },
+        { "id": "c", "text": "Đây là cascading failure — circuit breaker pattern sẽ resolve nó without changing the architecture" },
+        { "id": "d", "text": "Solution là increase timeout values in each service from 1 second tới 5 seconds" }
+      ],
+      "correctKey": "b",
+      "explanation": "Synchronous chains create 'distributed monolith' latency: end-to-end latency = sum of all service latencies. Redesign: use async choreography or orchestration. OrderService publishes an event once; services process it in parallel (fan-out). End-to-end latency reduces to latency của slowest step (not the sum). Option A sai. Option C (circuit breaker) handles failures, not latency. Option D masks the problem. Phương án B đúng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Trong Kubernetes, một pod crashes và new pod starts. During startup, nó receives traffic before fully initialized — causing request failures. Kubernetes supports graceful initialization before receiving production traffic như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Kubernetes automatically delays routing traffic tới new pod cho đến khi nó passes a readiness probe; configure readinessProbe (HTTP GET, TCP socket, hoặc exec) để check if application is ready to serve traffic" },
+        { "id": "b", "text": "Kubernetes sends 10% of traffic tới all pods simultaneously during startup" },
+        { "id": "c", "text": "Pod phải emit SIGTERM signal tới ingress controller để signal readiness" },
+        { "id": "d", "text": "Graceful initialization handled automatically by container runtime" }
+      ],
+      "correctKey": "a",
+      "explanation": "Kubernetes distinguishes: livenessProbe (is container alive? restart if not) vs readinessProbe (is container ready to receive traffic?). Only pods với passing readinessProbe được added to Service's endpoint slice và receive traffic. Readiness probe nên check: (1) HTTP endpoint returns 200, (2) database connections established, (3) cache warmed. Combined với preStop lifecycle hooks, điều này enables zero-downtime deployments. Phương án A đúng. Phương án B, C, D sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn cần ensure distributed tracing works across 15 microservices cho every user request. Requirements gì để traces correctly link single request across all 15 services, và điều gì xảy ra nếu one service fails to propagate trace context?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Mỗi service phải use a shared relational database để store trace IDs và look them up on each call" },
+        { "id": "b", "text": "Mỗi service phải propagate trace ID và span ID via standardized HTTP headers (W3C TraceContext: traceparent, tracestate) on every outgoing HTTP/gRPC call; nếu any service in call chain fails to propagate headers, trace breaks at that point — portion after break appears as unrelated trace hoặc is lost" },
+        { "id": "c", "text": "Distributed tracing requires a centralized trace collector that all services poll every 10 seconds" },
+        { "id": "d", "text": "Traces chỉ maintained within a single Kubernetes cluster" }
+      ],
+      "correctKey": "b",
+      "explanation": "Distributed tracing (Jaeger, Zipkin, AWS X-Ray, OpenTelemetry) links a single user request across all services using trace context propagation. W3C TraceContext standard: 'traceparent' (trace-id, span-id, trace flags) và 'tracestate' headers. First service creates root span; each subsequent service: extracts headers, creates child span linked to parent, injects headers into outgoing calls. Nếu a service fails to inject headers, trace breaks. Phương án A, C, D sai. Phương án B đúng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Một microservice dùng shared library cho database access. Khi library cần critical security patch, all 40 microservices that depend on it phải be updated và redeployed. Architectural approach nào prevents this tight coupling?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Remove all shared libraries và copy database access code into each microservice individually" },
+        { "id": "b", "text": "Dùng Sidecar pattern: deploy sidecar container alongside each microservice in same pod handles shared concerns (database connection pooling, metrics, secret injection) — library updates require only sidecar image rebuild, không phải application rebuild và redeployment" },
+        { "id": "c", "text": "Dùng monorepo với automatic versioning" },
+        { "id": "d", "text": "Compile shared library as a static binary và link it at container build time" }
+      ],
+      "correctKey": "b",
+      "explanation": "Sidecar pattern (ambassador or adapter): deploy sidecar container alongside each application container in same pod. Sidecar handles cross-cutting concerns: (1) service mesh sidecar (Envoy) handles network routing, retries, circuit breaking; (2) metrics sidecar; (3) secret injection sidecar; (4) database proxy sidecar (PgBouncer). Benefits: shared logic lives in sidecar container image, not application — updating shared logic requires rebuilding only sidecar image. Phương án B đúng. Phương án A (copy-paste) là scatter pattern. Phương án C, D không prevent redeployments."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn đang deploy new version của một microservice. In-flight requests phải complete gracefully, và no requests nên be lost. Làm sao achieve zero-downtime deployment in Kubernetes?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng blue-green deployment: spin up new version alongside old version, wait for new version passes health checks, then switch all traffic at once via load balancer" },
+        { "id": "b", "text": "Dùng rolling update: configure maxUnavailable=0 và maxSurge=1 in Deployment strategy; combine với preStop sleep (draining in-flight connections) và readinessProbe (ensuring new pods are ready before receiving traffic); incrementally replaces old pods với new ones while keeping service available" },
+        { "id": "c", "text": "Stop old version, wait 30 seconds, then start new version" },
+        { "id": "d", "text": "Zero-downtime deployment not possible in Kubernetes" }
+      ],
+      "correctKey": "b",
+      "explanation": "Rolling update với proper configuration: maxUnavailable=0 (no old pods killed before new pods ready), maxSurge=1 (one extra pod during update), readinessProbe checking actual readiness, preStop lifecycle hook với sleep để allow kube-proxy update iptables before SIGKILL, và graceful shutdown handling in application. Blue-green (A) also works but requires double resources. Rolling update là standard Kubernetes approach. Phương án B đúng. Phương án C, D sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đúng hay Sai: Trong một service mesh architecture, sidecar proxy (vd: Envoy) handles all cross-cutting concerns — authentication, authorization, retries, circuit breaking, và telemetry — without any application code changes.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Trong service mesh (Istio, Linkerd, Consul Connect), sidecar proxy injected alongside each application pod và intercepts all inbound và outbound network traffic. Mesh control plane configures proxies với policies for: mutual TLS (mTLS) encryption, JWT authentication, rate limiting, retries (with backoff), circuit breaking, traffic splitting (canary deployments), và telemetry (metrics, traces). Application code unmodified — nó đơn giản makes outbound calls tới localhost, và sidecar handles mTLS, routing, và retries transparently. Đây là core value proposition của service mesh. Phương án đúng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Một e-commerce platform cần support canary deployments: 5% of production traffic nên route tới new version của CheckoutService để validate performance và correctness before full rollout. Làm sao achieve canary routing in Kubernetes + service mesh environment?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng Kubernetes namespace isolation: deploy new version in a separate namespace và manually configure ingress controller" },
+        { "id": "b", "text": "Dùng traffic splitting (weight-based routing) in service mesh (Istio VirtualService, Linkerd) để split traffic: 95% tới stable, 5% tới canary; use metrics (error rate, latency) from Prometheus để determine if canary healthy; if metrics look good, incrementally increase canary weight" },
+        { "id": "c", "text": "Canary deployments require a separate Kubernetes cluster for canary version" },
+        { "id": "d", "text": "Dùng feature flag service (LaunchDarkly, Unleash) configured với 5% rollout percentage" }
+      ],
+      "correctKey": "b",
+      "explanation": "Service mesh traffic splitting (Istio VirtualService, Linkerd) allows weight-based routing at mesh level without application changes. Example Istio VirtualService: 95% weight tới subset 'stable', 5% tới subset 'canary'. Combined với Prometheus metrics monitor error rate và latency during canary window; automatic rollback if error rate exceeds threshold. Feature flags (D) complementary nhưng require application code evaluate flag — mesh-based routing là infrastructure-level. Phương án B đúng. Phương án A, C, D suboptimal."
+    }
+  ]
+}

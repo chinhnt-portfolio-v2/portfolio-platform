@@ -1,0 +1,247 @@
+{
+  "topicSlug": "react-ts",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kiểu TypeScript nào đúng để đại diện cho một React component nhận `name` (string) và tùy chọn `age` (number), trả về JSX?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "const Person: FunctionComponent<{ name: string; age?: number }> = ({ name, age }) => <div>{name} {age}</div>" },
+        { "id": "b", "text": "const Person = ({ name, age }: { name: string; age?: number }) => <div>{name} {age}</div>" },
+        { "id": "c", "text": "const Person: React.FC<{ name: string; age: number | undefined }> = ({ name, age }) => <div>{name} {age}</div>" },
+        { "id": "d", "text": "const Person: Component<{ name: string; age?: number }> = ({ name, age }) => <div>{name} {age}</div>" }
+      ],
+      "correctKey": "b",
+      "explanation": "Ký hiệu function đơn giản (B) là cách tiếp cận hiện đại và idiomatic nhất — khai báo kiểu props rõ ràng mà không có những quirks của React.FC/FunctionComponent. React.FC tự động thêm `children?: ReactNode`, điều này có thể không mong muốn, và hệ thống kiểu của nó có edge cases (như không suy luận kiểu trả về hoàn hảo cho generics). Option D `Component` là kiểu chỉ dành cho class."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Discriminated union trong TypeScript là gì và tại sao nó hữu ích trong React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một union của các kiểu trong đó mỗi kiểu có một thuộc tính literal chung ('discriminant') mà TypeScript sử dụng để thu hẹp kiểu — hữu ích cho việc render UI khác nhau dựa trên state (ví dụ: loading/success/error states)" },
+        { "id": "b", "text": "Một tính năng của TypeScript tự động loại trừ undefined khỏi union type" },
+        { "id": "c", "text": "Một pattern trong đó mỗi thành viên của union phải implement cùng một interface" },
+        { "id": "d", "text": "Một design pattern chỉ dành cho React class components trong TypeScript" }
+      ],
+      "correctKey": "a",
+      "explanation": "Một discriminated union có một field literal chung (discriminant) như `type Status = { kind: 'loading' } | { kind: 'success'; data: T } | { kind: 'error'; message: string }`. TypeScript thu hẹp kiểu khi bạn kiểm tra `status.kind`, cho phép conditional rendering exhaustive với type safety. Pattern này là cách idiomatic để model async states, wizard steps, hoặc bất kỳ UI có điều kiện nào trong ứng dụng TypeScript React."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Toán tử `satisfies` trong TypeScript 4.9+ làm gì và nó hữu ích như thế nào trong React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó assert rằng một giá trị khớp với một kiểu mà không làm widening kiểu — giữ nguyên inferred type hẹp trong khi validate đối với constraint" },
+        { "id": "b", "text": "Nó thu hẹp một union type thành một thành viên duy nhất" },
+        { "id": "c", "text": "Nó thay thế assertion kiểu `as` và an toàn hơn" },
+        { "id": "d", "text": "Nó tự động thỏa mãn tất cả các thuộc tính của interface mà không cần khai báo" }
+      ],
+      "correctKey": "a",
+      "explanation": "`satisfies` validate rằng một giá trị khớp với một kiểu trong khi giữ lại inferred type (hẹp hơn) của giá trị đó. Ví dụ: `const config = { height: 'auto', width: 100 } satisfies ThemeConfig` — config được gõ là `{ height: string; width: number }` (inferred), không chỉ là `ThemeConfig`. Trong React, điều này hữu ích để validate các đối tượng props, cấu hình theme, và định nghĩa routes mà không mất type inference."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kiểu `type Props = { children: React.ReactNode }` chấp nhận những children nào là hợp lệ?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Chỉ JSX elements" },
+        { "id": "b", "text": "Chỉ giá trị string" },
+        { "id": "c", "text": "JSX elements, strings, numbers, booleans, null, undefined, fragments, và arrays của tất cả những thứ này" },
+        { "id": "d", "text": "Chỉ React components, không phải giá trị nguyên thủy" }
+      ],
+      "correctKey": "c",
+      "explanation": "React.ReactNode là kiểu children linh hoạt nhất trong React — nó bao gồm mọi thứ có thể được render. `JSX.Element` (A) và `ReactElement` chỉ cover JSX expressions. `ReactNode` thậm chí bao gồm `undefined` và `null`, điều này quan trọng khi components render có điều kiện children. Để có tính linh hoạt tối đa, hãy dùng `React.ReactNode` cho children props."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Các utility types như `Partial<T>`, `Required<T>`, và `Pick<T, K>` trong TypeScript được evaluate tại compile time.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "TypeScript utility types được xóa tại compile time — chúng tạo ra các annotation kiểu mới nhưng không tạo ra JavaScript bổ sung. `Partial<T>` làm tất cả thuộc tính thành optional; `Required<T>` làm tất cả thành required; `Pick<T, K>` chọn các keys cụ thể. Chúng hoàn toàn là tính năng của static type system, được sử dụng cho prop transformations, API response typing, và form defaults."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`Omit<T, K>` làm gì trong TypeScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Xóa thuộc tính `K` khỏi kiểu `T`" },
+        { "id": "b", "text": "Tạo một kiểu chỉ với các thuộc tính của `T` không phải optional" },
+        { "id": "c", "text": "Loại trừ một kiểu khỏi union" },
+        { "id": "d", "text": "Làm tất cả thuộc tính của `T` thành optional" }
+      ],
+      "correctKey": "a",
+      "explanation": "Omit tạo một kiểu mới bằng cách xóa key(s) đã chỉ định khỏi một kiểu hiện có. `Omit<ButtonProps, 'onClick'>` xóa prop onClick, hữu ích khi wrap một component và ẩn inherited props. Nó thường được kết hợp với extends: `type EditableButtonProps = Omit<ButtonProps, 'disabled'> & { editable: boolean }`."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `interface` và `type` để định nghĩa prop shapes trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "interface có thể extends các interface khác; type có thể sử dụng union types và mapped types — cả hai đều hợp lệ cho React props, với interface được ưu tiên cho public APIs và type cho các phép biến đổi phức tạp" },
+        { "id": "b", "text": "type chỉ dành cho các giá trị nguyên thủy; interface dành cho object shapes" },
+        { "id": "c", "text": "interface dành cho class components; type dành cho function components" },
+        { "id": "d", "text": "Không có sự khác biệt — chúng có thể thay thế cho nhau trong mọi ngữ cảnh" }
+      ],
+      "correctKey": "a",
+      "explanation": "Cả hai đều hợp lệ. Interfaces có thể được extends (`interface A extends B`) và hỗ trợ declaration-merging (hữu ích cho việc augmenting third-party types). Types có thể biểu diễn unions, intersections, mapped types, và conditional types mà interfaces không thể. Đối với React prop shapes, interface là idiomatic cho shapes đơn giản (dễ đọc hơn trong error messages), nhưng type tốt hơn cho các phép biến đổi phức tạp. Cả hai đều hoạt động; tính nhất quán trong team quan trọng hơn việc chọn cái nào."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đoạn code này output gì?\n\ntype Status = 'idle' | 'loading' | 'success' | 'error';\n\nfunction render(status: Status) {\n  if (status === 'loading') return <Spinner />;\n  if (status === 'success') return <Content />;\n  if (status === 'error') return <Error />;\n  return <div>Idle</div>;\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Một loading spinner, content, error message, hoặc idle div dựa trên status — với TypeScript narrowing kiểu trong mỗi nhánh" },
+        { "id": "b", "text": "Một TypeScript error vì Status không phải là một React component hợp lệ" },
+        { "id": "c", "text": "Luôn render idle div vì string union không được narrowing đúng cách" },
+        { "id": "d", "text": "Chỉ render loading state; các nhánh khác gây ra type errors" }
+      ],
+      "correctKey": "a",
+      "explanation": "TypeScript's control flow analysis thu hẹp union type trong mỗi nhánh if. Sau `status === 'loading'`, TypeScript biết `status` là `'loading'` trong nhánh đó. Return cuối cùng `<div>Idle</div>` là exhaustive fallback cho thành viên `'idle'`. Nếu bạn bỏ `return <div>Idle</div>`, TypeScript sẽ suy luận chính xác rằng function có thể trả về `undefined` và raise một error."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Generic component trong React TypeScript là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một component sử dụng TypeScript generics để nhận một data prop được gõ, cho phép một List, Table, hoặc Select có thể tái sử dụng hoạt động với bất kỳ data shape nào" },
+        { "id": "b", "text": "Một component có thể được sử dụng như cả class và function component" },
+        { "id": "c", "text": "Một higher-order component wrap các components khác" },
+        { "id": "d", "text": "Một component render nội dung khác nhau dựa trên loại browser" }
+      ],
+      "correctKey": "a",
+      "explanation": "Một generic component sử dụng `<T>` để tham số hóa kiểu props của nó. Ví dụ: `function List<T>({ items, renderItem }: { items: T[]; renderItem: (item: T) => ReactNode })`. Điều này cho phép `List<User>` hoặc `List<Product>` với type safety đầy đủ — TypeScript biết kiểu của `item` trong `renderItem`. Generic components là thiết yếu cho các UI component driven by data có thể tái sử dụng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`React.ComponentProps<typeof MyComponent>` là gì và khi nào nó hữu ích?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Extract kiểu props từ một component type — hữu ích để forward props sang component khác hoặc tạo wrapper components nhận cùng props" },
+        { "id": "b", "text": "Trả về kiểu trả về của component" },
+        { "id": "c", "text": "Tạo một component mới render giống như component gốc" },
+        { "id": "d", "text": "Trả về kiểu của tất cả hooks được sử dụng bên trong component" }
+      ],
+      "correctKey": "a",
+      "explanation": "`ComponentProps<typeof MyComponent>` extract kiểu props từ một component reference. `const CardWrapper = (props: React.ComponentProps<typeof Card>) => <Card {...props} />` — điều này forward tất cả Card props mà không cần khai báo lại. Cũng hữu ích để type các event handlers nên khớp với props mà component mong đợi. Điều này sạch hơn việc khai báo lại kiểu props thủ công và tự động giữ đồng bộ."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`React.ElementType` đại diện cho gì trong TypeScript?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một string đại diện cho một HTML tag name (ví dụ: 'div', 'span')" },
+        { "id": "b", "text": "Một union của string (HTML tags) và React component types — kiểu rộng nhất cho bất cứ thứ gì có thể được render bởi React" },
+        { "id": "c", "text": "Một TypeScript utility type tạo một element type mới từ một kiểu hiện có" },
+        { "id": "d", "text": "Một kiểu cho React elements đã được render vào DOM" }
+      ],
+      "correctKey": "b",
+      "explanation": "`React.ElementType` là union của tất cả các kiểu element hợp lệ mà React có thể render — cả string elements nội tại (`'div'`, `'a'`) và component types (class hoặc function components, forwardRef, memo). Nó là kiểu của prop `as` trong các polymorphic components: `function Box({ as, children }: { as?: React.ElementType; children: ReactNode })`. Không có `ElementType`, prop `as` cần một union hẹp hơn."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa `type` và `interface` khi khai báo props cho một React component là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "interface hỗ trợ declaration merging (hữu ích cho việc extending third-party types) và extends; type hỗ trợ unions, intersections, và mapped types" },
+        { "id": "b", "text": "Không có sự khác biệt chức năng — cả hai tạo ra các đối tượng kiểu giống nhau tại runtime" },
+        { "id": "c", "text": "type được evaluate tại runtime trong khi interface bị xóa — type chậm hơn" },
+        { "id": "d", "text": "interface chỉ có thể được sử dụng trong class components; type dành cho function components" }
+      ],
+      "correctKey": "a",
+      "explanation": "Sự khác biệt chính là interfaces hỗ trợ declaration merging: nếu hai interfaces cùng tên được khai báo, TypeScript merge chúng. Điều này hữu ích để augment các module types. Types không thể được merge. Đối với React props, sự khác biệt thực tế là nhỏ trong hầu hết các trường hợp, nhưng interface được ưu tiên khi bạn muốn consumers `extends` kiểu props của bạn, và type được ưu tiên khi bạn cần union types hoặc utility transformations."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Keyword `infer` trong TypeScript conditional types là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó cho phép TypeScript suy luận một kiểu trong extends clause của một conditional type — được sử dụng để extract các kiểu từ các kiểu khác (ví dụ: extract kiểu trả về của một function)" },
+        { "id": "b", "text": "Nó cho phép TypeScript tự động suy luận kiểu props trong React components" },
+        { "id": "c", "text": "Nó suy luận kiểu của một biến từ giá trị khởi tạo của nó" },
+        { "id": "d", "text": "Nó làm cho TypeScript suy luận kiểu của async functions mà không cần explicit return types" }
+      ],
+      "correctKey": "a",
+      "explanation": "`infer` được sử dụng bên trong extends clause của một conditional type để capture một biến kiểu từ kiểu đang được kiểm tra. Ví dụ kinh điển: `type ReturnType<T> = T extends (...args: any[]) => infer R ? R : never` — điều này extract kiểu trả về của một function. Thư viện kiểu của React sử dụng `infer` rộng rãi. Không có `infer`, bạn không thể extract các kiểu positional từ generics."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`as const` làm gì trong TypeScript và tại sao nó hữu ích trong React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó thu hẹp một literal type thành form cụ thể nhất và làm cho kiểu đó readonly — hữu ích để định nghĩa các mảng constant của options hoặc cấu hình routes mà không cần explicit type annotations" },
+        { "id": "b", "text": "Nó convert một giá trị thành một constant tại runtime" },
+        { "id": "c", "text": "Nó assert một kiểu mà không thay đổi inferred type" },
+        { "id": "d", "text": "Nó tạo một mảng mới không thể được sửa đổi" }
+      ],
+      "correctKey": "a",
+      "explanation": "`as const` là một const assertion — nó thu hẹp một literal thành kiểu hẹp nhất và làm tất cả thuộc tính readonly. `const ROUTES = ['home', 'about'] as const` cho kiểu `readonly ['home', 'about']` thay vì `string[]`. Trong React, điều này hữu ích cho các option lists có type safety, cấu hình menu, và định nghĩa routes nơi bạn muốn nội dung mảng là literal types, không phải generic strings."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi TypeScript strict mode được bật, `useState<string | undefined>(undefined)` khởi tạo state đúng là `string | undefined`.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Với strict mode được bật, TypeScript suy luận đúng `string | undefined` từ giá trị khởi tạo `undefined`. Đây là pattern idiomatic khi initial state nên đại diện cho 'chưa có giá trị nào được load'. Thay thế `useState<string>('default')` sẽ đặt một default value. Cả hai pattern đều hợp lệ tùy thuộc vào việc bạn muốn biểu diễn 'loading' state qua undefined hay qua một boolean flag."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Type này tạo ra gì?\n\ntype Props = {\n  label: string;\n  value: number;\n  onChange: (value: number) => void;\n};\n\ntype FormProps = Omit<Props, 'onChange'> & {\n  onChange: (value: number, name: string) => void;\n};",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Một kiểu FormProps với label (string) và value (number) từ Props, cộng thêm onChange mở rộng nhận cả tham số value và name" },
+        { "id": "b", "text": "Một TypeScript error vì Omit không thể xóa một function property" },
+        { "id": "c", "text": "FormProps giống hệt Props vì Omit không có hiệu lực trên các function properties" },
+        { "id": "d", "text": "Một kiểu chỉ có label và value; onChange bị xóa hoàn toàn" }
+      ],
+      "correctKey": "a",
+      "explanation": "`Omit<Props, 'onChange'>` xóa `onChange` khỏi Props, để lại `label` và `value`. Intersection `& { onChange: ... }` sau đó thêm lại `onChange` với một tham số `name` bổ sung. Đây là pattern TypeScript idiomatic để mở rộng prop APIs — 'bỏ cái này, thay thế bằng một signature khác'. Nó tránh trùng lặp `label` và `value`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Mapped type trong TypeScript là gì và nó được sử dụng như thế nào trong React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một cấu trúc TypeScript lặp qua các keys của một kiểu sử dụng `[K in keyof T]` — được sử dụng để biến đổi prop types (ví dụ: làm tất cả optional, làm tất cả required, map thành event handlers)" },
+        { "id": "b", "text": "Một kiểu map một cấu trúc dữ liệu bên ngoài thành một TypeScript interface" },
+        { "id": "c", "text": "Một tính năng TypeScript chỉ được sử dụng để lặp qua các mảng tại runtime" },
+        { "id": "d", "text": "Một kiểu map URL paths thành React component routes" }
+      ],
+      "correctKey": "a",
+      "explanation": "Mapped types biến đổi các kiểu hiện có: `type Readonly<T> = { readonly [K in keyof T]: T[K] }`. Việc migrate prop-types-to-TypeScript của React, generation kiểu của thư viện form, và utilities `ComponentProps` sử dụng mapped types rộng rãi. Một pattern React phổ biến: `type EventHandlers<T> = { [K in keyof T as \\`on${Capitalize<string & K>}\\`]: (event: T[K]) => void }` — điều này tạo event handler props từ một data shape."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa `React.ComponentProps`, `React.ComponentPropsOf`, và `React PropsWithoutRef` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ComponentProps<typeof C> extract tất cả props từ component C; PropsWithoutRef xóa ref khỏi các props đó (cần cho forwardRef components); ComponentPropsOf không phải là một React type thực sự" },
+        { "id": "b", "text": "Chúng đều giống nhau — các alias khác nhau cho cùng một kiểu" },
+        { "id": "c", "text": "ComponentProps dành cho class components; PropsWithoutRef dành cho function components" },
+        { "id": "d", "text": "ComponentProps extract chỉ các props optional; PropsWithoutRef extract các props required" }
+      ],
+      "correctKey": "a",
+      "explanation": "`ComponentProps<typeof MyComponent>` extract prop types. Khi wrap một `forwardRef` component, kiểu được extract bao gồm prop `ref`, thứ mà bạn thường muốn bỏ qua khỏi props của wrapper (vì wrapper quản lý ref của riêng nó). Sử dụng `Omit<ComponentProps<typeof MyComponent>, 'ref'>` hoặc `PropsWithoutRef` từ React types. Lưu ý: `PropsWithoutRef` của React được thêm vào React 18 đặc biệt cho use case này."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Conditional type trong TypeScript là gì và nó cho phép các polymorphic component patterns trong React như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một kiểu evaluate thành một trong hai kiểu dựa trên một điều kiện (T extends U ? A : B) — được sử dụng cho các 'as' prop patterns polymorphic nơi API được component expose thay đổi dựa trên giá trị `as` (ví dụ: Box as 'a' nhận anchor-specific props)" },
+        { "id": "b", "text": "Một kiểu chỉ được evaluate khi component được render trong browser" },
+        { "id": "c", "text": "Một kiểu import có điều kiện các component types khác nhau tại build time" },
+        { "id": "d", "text": "Một kiểu kiểm tra xem một component là class hay function tại runtime" }
+      ],
+      "correctKey": "a",
+      "explanation": "Conditional types cho phép các polymorphic components: `type BoxProps<T extends ElementType> = T extends 'a' ? AnchorProps : DivProps`. Khi `Box as=\"a\"` — TypeScript thu hẹp thành `AnchorProps` và cung cấp autocomplete anchor-specific (href, rel, target). Không có conditional types, bạn phải expose tất cả props (bao gồm cả những thứ không liên quan như href trên div) hoặc mất type safety. Các thư viện như Chakra UI và Radix UI sử dụng pattern này rất nhiều."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "TypeScript's strict null checks (`strictNullChecks: true`) là compiler option duy nhất quan trọng cho React type safety.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Trong khi `strictNullChecks` rất quan trọng để bắt các lỗi null/undefined, `strict` mode (bật `strictNullChecks`, `noImplicitAny`, `strictFunctionTypes`, `strictPropertyInitialization`, v.v.) cung cấp type safety toàn diện. Đối với React cụ thể, `noUncheckedIndexedAccess` bắt array index out-of-bounds, và `exactOptionalPropertyTypes` xử lý các edge cases của optional property. Một tsconfig.json được cấu hình tốt nên bật `strict: true`."
+    }
+  ]
+}

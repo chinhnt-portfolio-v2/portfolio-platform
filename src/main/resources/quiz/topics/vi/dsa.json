@@ -1,0 +1,359 @@
+{
+  "topicSlug": "dsa",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian trung bình của chèn vào cuối ArrayList là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — append vào cuối array mất thời gian không đổi" },
+        { "id": "b", "text": "O(n) — phải quét toàn bộ array để tìm vị trí cuối" },
+        { "id": "c", "text": "O(n²)" },
+        { "id": "d", "text": "O(log n)" }
+      ],
+      "correctKey": "a",
+      "explanation": "ArrayList's internal array là indexed — accessing arr[size] là O(1). Khi có capacity, append là ghi đơn giản + tăng kích thước: O(1). O(n) chỉ khi array đầy và phải resize (thường 1.5×), nhưng amortized vẫn O(1)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính LIFO của stack là gì và ứng dụng phổ biến nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Last-In-First-Out — phần tử vào sau cùng được pop trước; dùng cho DFS, call stack, undo, và đánh giá biểu thức" },
+        { "id": "b", "text": "Last-In-First-Out — phần tử vào trước được pop trước; dùng cho BFS" },
+        { "id": "c", "text": "First-In-First-Out" },
+        { "id": "d", "text": "LIFO chỉ áp dụng cho linked lists" }
+      ],
+      "correctKey": "a",
+      "explanation": "LIFO (Last-In, First-Out) nghĩa là top của stack được pop trước. Ứng dụng: function call stack, undo/redo, matching brackets, DFS."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Hash table collision là gì và chiến lược giải quyết phổ biến?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Collision xảy ra khi hai key khác nhau sinh ra cùng hash code; chaining lưu các entry va chạm trong linked list ở bucket" },
+        { "id": "b", "text": "Collision khi hai thread truy cập đồng thời" },
+        { "id": "c", "text": "Collision chỉ xảy ra với string keys" },
+        { "id": "d", "text": "Chỉ có duy nhất một chiến lược: rehashing toàn bộ" }
+      ],
+      "correctKey": "a",
+      "explanation": "Collision khi hash(k1) == hash(k2) cho key khác nhau. Hai chiến lược: chaining (linked list/tree) và open addressing (linear/quadratic probing, double hashing)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Độ phức tạp thời gian tìm kiếm nhị phân trên mảng đã sắp xếp n phần tử?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(log n) — không gian tìm kiếm được chia đôi với mỗi so sánh" },
+        { "id": "b", "text": "O(n)" },
+        { "id": "c", "text": "O(1)" },
+        { "id": "d", "text": "O(n log n)" }
+      ],
+      "correctKey": "a",
+      "explanation": "Tìm kiếm nhị phân liên tục chia đôi không gian tìm kiếm: sau k bước còn n/2^k, thu hẹp về 1 khi 2^k ≥ n → k = ⌈log₂ n⌉."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Trong BST, độ phức tạp tìm kiếm, chèn và tìm phần tử nhỏ nhất là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Trung bình O(log n) cho cây cân bằng; xấu nhất O(n) cho cây lệch" },
+        { "id": "b", "text": "O(1)" },
+        { "id": "c", "text": "O(n)" },
+        { "id": "d", "text": "Search O(n); insert O(log n)" }
+      ],
+      "correctKey": "a",
+      "explanation": "BST duyệt một đường từ root đến leaf → O(h). Cây cân bằng (AVL, Red-Black): h ≈ log₂ n → O(log n). Cây lệch: h = n → O(n)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Quy hoạch động là gì và bài toán kinh điển nào nó giải tối ưu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "DP đánh đổi memory cho time bằng cách lưu kết quả overlapping subproblems; Fibonacci thuần O(2^n) trở thành O(n) với memoization" },
+        { "id": "b", "text": "DP là divide-and-conquer không caching" },
+        { "id": "c", "text": "DP là thuật toán tham lam" },
+        { "id": "d", "text": "DP chỉ áp dụng cho problems không có overlapping subproblems" }
+      ],
+      "correctKey": "a",
+      "explanation": "DP áp dụng khi subproblems overlap. Memoization (top-down) hoặc tabulation (bottom-up) loại bỏ tính toán thừa. Naive Fibonacci O(2^n) → O(n) với memoization."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuật toán Dijkstra với binary min-heap priority queue có độ phức tạp bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dijkstra tìm đường đi ngắn nhất từ một nguồn đến mọi đỉnh trong đồ thị không trọng số âm; với binary heap: O((V+E) log V)" },
+        { "id": "b", "text": "O(V + E)" },
+        { "id": "c", "text": "Dijkstra dùng BFS" },
+        { "id": "d", "text": "O(V³ log V)" }
+      ],
+      "correctKey": "a",
+      "explanation": "Dijkstra với binary min-heap: extract-min O(log V), decrease-key O(log V) → O(E log V) với O((V+E) log V). Không dùng được với trọng số âm."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Trie (prefix tree) là gì và hỗ trợ thao tác gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Trie là cây mỗi node lưu một ký tự; hỗ trợ O(m) search, insert, và prefix matching trong đó m là độ dài key" },
+        { "id": "b", "text": "Trie là binary search tree cho numeric keys" },
+        { "id": "c", "text": "Trie là hash table variant" },
+        { "id": "d", "text": "Trie tương đương B-tree" }
+      ],
+      "correctKey": "a",
+      "explanation": "Trie lưu strings theo paths: mỗi node là một ký tự, edges là ký tự tiếp theo. Operations O(m) với m = độ dài string. Lý tưởng cho autocomplete và prefix search."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bài toán LIS (Longest Increasing Subsequence) là gì và cách DP giải?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "LIS tìm subsequence tăng dần dài nhất; DP O(n²): dp[i] = 1 + max(dp[j]) với j < i và arr[j] < arr[i]" },
+        { "id": "b", "text": "LIS tìm contiguous subarray có tổng lớn nhất" },
+        { "id": "c", "text": "LIS chỉ giải bằng thuật toán tham lam" },
+        { "id": "d", "text": "LIS tìm tất cả permutations" }
+      ],
+      "correctKey": "a",
+      "explanation": "LIS: subsequence (không nhất thiết liên tục) tăng dần dài nhất. DP O(n²) hoặc O(n log n) dùng binary search."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt chính giữa singly linked list và doubly linked list?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Singly chỉ có next pointer; doubly có cả next và prev, cho phép O(1) duyệt ngược và O(1) xóa khi có tham chiếu node" },
+        { "id": "b", "text": "Doubly có O(1) search" },
+        { "id": "c", "text": "Doubly dùng ít bộ nhớ hơn" },
+        { "id": "d", "text": "Singly không triển khai được stack" }
+      ],
+      "correctKey": "a",
+      "explanation": "Singly: O(1) insertion at known position, O(n) search, O(n) deletion (cần tìm previous). Doubly: cả prev và next → O(1) backward traversal và O(1) deletion khi có node reference."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp tìm kiếm tuyến tính trên mảng chưa sắp xếp n phần tử trong trường hợp xấu nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1)" },
+        { "id": "b", "text": "O(log n)" },
+        { "id": "c", "text": "O(n)" },
+        { "id": "d", "text": "O(n²)" }
+      ],
+      "correctKey": "c",
+      "explanation": "Tìm kiếm tuyến tính kiểm tra mỗi phần tử tuần tự. Trường hợp xấu nhất (target vắng mặt hoặc ở cuối), tất cả n phần tử được kiểm tra → O(n)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp tìm kiếm trong max-heap?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — phần tử max luôn ở root" },
+        { "id": "b", "text": "O(log n)" },
+        { "id": "c", "text": "O(n)" },
+        { "id": "d", "text": "O(n log n)" }
+      ],
+      "correctKey": "c",
+      "explanation": "Max-heap chỉ đảm bảo parent ≥ children, không đảm bảo thứ tự giữa left và right. Để tìm một giá trị, phải quét toàn bộ → O(n)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuật toán sắp xếp nào có O(n²) worst-case? (Chọn tất cả)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Bubble sort" },
+        { "id": "b", "text": "Selection sort" },
+        { "id": "c", "text": "Insertion sort" },
+        { "id": "d", "text": "Merge sort" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Bubble sort, Selection sort, Insertion sort đều có O(n²) worst/avg. Merge sort đảm bảo O(n log n). Quick sort xấu nhất O(n²)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thao tác nào trên queue là O(1)? (Chọn tất cả)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Enqueue ở rear (với tail pointer)" },
+        { "id": "b", "text": "Dequeue từ front (với head pointer)" },
+        { "id": "c", "text": "Peek ở front" },
+        { "id": "d", "text": "Tìm kiếm theo index" }
+      ],
+      "correctKey": "a,b,c",
+      "explanation": "Enqueue, Dequeue, Peek đều O(1) với con trỏ head/tail. Tìm kiếm theo index cần duyệt → O(n)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Recursion tree cho Fibonacci F(n) có kích thước mũ. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Cây đệ quy Fibonacci có khoảng φ^n nodes (φ ≈ 1.618). Exponential redundancy này là lý do DP cần thiết."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "B-tree of order m có tối đa m children và m-1 keys. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "B-tree order m: maximum children = m, maximum keys = m-1. Minimum children = ceil(m/2) trừ root. Dùng trong databases và file systems."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt chính giữa BFS và DFS về data structure được dùng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "BFS dùng stack (LIFO) và khám phá sâu nhất trước; DFS dùng queue (FIFO) và khám phá theo level" },
+        { "id": "b", "text": "BFS dùng queue (FIFO) và khám phá theo level; DFS dùng stack (LIFO) hoặc đệ quy và khám phá theo chiều sâu" },
+        { "id": "c", "text": "Cả hai đều dùng queue" },
+        { "id": "d", "text": "Cả hai đều dùng stack" }
+      ],
+      "correctKey": "b",
+      "explanation": "BFS (Breadth-First Search) dùng queue — duyệt theo level. DFS (Depth-First Search) dùng stack hoặc đệ quy — khám phá một nhánh đến cuối rồi quay lại."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Độ phức tạp thời gian của merge sort và recurrence relation mô tả nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n log n); T(n) = T(n-1) + O(n)" },
+        { "id": "b", "text": "O(n log n); T(n) = 2T(n/2) + O(n)" },
+        { "id": "c", "text": "O(n²); T(n) = 2T(n/2) + O(n²)" },
+        { "id": "d", "text": "O(n); T(n) = T(n/2) + O(1)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Merge sort: chia đôi, đệ quy sort mỗi nửa, merge tuyến tính. T(n) = 2T(n/2) + O(n). Master theorem → Θ(n log n)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuật toán sắp xếp nào là comparison-based? (Chọn tất cả)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Quick sort" },
+        { "id": "b", "text": "Merge sort" },
+        { "id": "c", "text": "Counting sort" },
+        { "id": "d", "text": "Heap sort" }
+      ],
+      "correctKey": "a,b,d",
+      "explanation": "Quick sort, merge sort, heap sort là comparison-based. Counting sort KHÔNG phải — dùng giá trị làm chỉ mục mảng. Non-comparison sorts có thể beat Ω(n log n)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Union-Find (Disjoint Set Union) giải quyết bài toán nào hiệu quả? (Chọn tất cả)",
+      "questionType": "MULTIPLE_ANSWER",
+      "options": [
+        { "id": "a", "text": "Phát hiện hai phần tử cùng connected component" },
+        { "id": "b", "text": "Tìm đường đi ngắn nhất" },
+        { "id": "c", "text": "Phát hiện chu trình trong đồ thị" },
+        { "id": "d", "text": "Merge hai tập hợp thành một" }
+      ],
+      "correctKey": "a,c,d",
+      "explanation": "Union-Find: Find (tập nào chứa phần tử) và Union (merge hai tập). Giải quyết: connected components, cycle detection, Kruskal's MST. Near O(1) amortized với path compression và union by rank."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Lower bound Ω(n log n) cho comparison sorts dựa trên điều gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Có n! permutations và mỗi so sánh loại bỏ tối đa một nửa, cần Ω(log₂(n!)) ≈ Ω(n log n) so sánh" },
+        { "id": "b", "text": "Mỗi comparison sort phải kiểm tra mọi phần tử" },
+        { "id": "c", "text": "Binary search tối ưu là O(log n) và cần log n lần cho mỗi phần tử" },
+        { "id": "d", "text": "Master theorem case 1 chứng minh lower bound" }
+      ],
+      "correctKey": "a",
+      "explanation": "Decision tree model: mỗi so sánh có 2 outcomes. Để phân biệt n! permutations, cây phải có ≥ n! leaves → chiều cao ≥ log₂(n!) ≈ n log₂ n - n log₂ e."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Red-black tree đảm bảo O(log n) cho tìm kiếm, chèn và xóa. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Red-Black trees là self-balancing BSTs: chiều cao ≤ 2*log₂(n+1). Cả ba thao tác đều O(log n). Dùng trong C++ STL, Java TreeMap, Linux kernel."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Priority queue triển khai bằng binary heap có O(log n) insert và O(log n) extract-min. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Binary min-heap: insert thêm vào cuối và bubble up O(log n). Extract-min loại bỏ root, thay bằng last, bubble down O(log n)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuật toán Bellman-Ford cho đường đi ngắn nhất từ một nguồn có độ phức tạp bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(V + E)" },
+        { "id": "b", "text": "O(V log V + E log V)" },
+        { "id": "c", "text": "O(V×E)" },
+        { "id": "d", "text": "O(V³)" }
+      ],
+      "correctKey": "c",
+      "explanation": "Bellman-Ford: relax tất cả E edges V-1 lần → O(V×E). Sau V-1 passes, nếu còn edge nào relax được → negative weight cycle tồn tại."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuật toán Floyd-Warshall và độ phức tạp của nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Floyd-Warshall tìm all-pairs shortest paths bằng DP trên intermediate vertices; O(V³) time, O(V²) space" },
+        { "id": "b", "text": "O(V + E) cho all-pairs" },
+        { "id": "c", "text": "Tương đương Dijkstra chạy V lần" },
+        { "id": "d", "text": "Tìm minimum spanning tree" }
+      ],
+      "correctKey": "a",
+      "explanation": "Floyd-Warshall DP: dp[k][i][j] = shortest path i→j dùng vertices {1..k}. Triple nested loop → O(V³). Space O(V²). Tất cả pairs cùng lúc."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "A* search là gì và điều kiện optimality của nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "A* dùng f(n) = g(n) + h(n); tìm đường tối ưu nếu heuristic admissible (không overestimates) và consistent (satisfies triangle inequality)" },
+        { "id": "b", "text": "A* tương đương BFS" },
+        { "id": "c", "text": "A* là thuật toán tham lam" },
+        { "id": "d", "text": "A* tương đương Dijkstra với h(n)=0" }
+      ],
+      "correctKey": "a",
+      "explanation": "A* kết hợp path cost g(n) và heuristic h(n). Optimality: h(n) admissible (never overestimates) và consistent (h(n) ≤ cost(n→n') + h(n'))."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bitwise AND: 0b1101 & 0b1011 = ?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "0b1001 (9)" },
+        { "id": "b", "text": "0b1101" },
+        { "id": "c", "text": "0b0110" },
+        { "id": "d", "text": "Undefined" }
+      ],
+      "correctKey": "a",
+      "explanation": "AND: 1101 & 1011 = 1001. n & (n-1) xóa lowest set bit. XOR: a ^ a = 0."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bài toán rod cutting và cách DP giải?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Cho prices p[i] cho độ dài i, tìm max revenue; dp[i] = max(dp[i], p[j] + dp[i-j]) cho mọi j, O(n²) time" },
+        { "id": "b", "text": "Greedy luôn tối ưu" },
+        { "id": "c", "text": "Cắt không để thừa" },
+        { "id": "d", "text": "Tương đương activity selection" }
+      ],
+      "correctKey": "a",
+      "explanation": "Rod cutting: với mỗi i, thử tất cả first cuts j: revenue[i] = max(p[j] + revenue[i-j]). O(n²) time, O(n) space. Equivalent to 0/1 knapsack."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Độ phức tạp thời gian của A* với admissible heuristic?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Với admissible heuristic, A* mở rộng O(b^d) nodes. b = branching factor, d = độ sâu solution. Heuristic càng chính xác, càng ít nodes mở rộng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Divide-and-conquer luôn tạo O(n log n) algorithms. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "D&C complexity phụ thuộc cách divide và combine cost. Merge sort: O(n log n). Binary search: O(log n). Strassen: O(n^2.807). Karatsuba: O(n^1.585). Không phải luôn O(n log n)."
+    }
+  ]
+}

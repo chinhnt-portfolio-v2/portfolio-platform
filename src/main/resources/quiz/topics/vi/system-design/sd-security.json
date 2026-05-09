@@ -1,0 +1,247 @@
+{
+  "topicSlug": "sd-security",
+  "questions": [
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt cơ bản giữa authentication và authorization trong API security context là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Authentication và authorization giống nhau — cả hai đều verify user's identity trước khi grant access" },
+        { "id": "b", "text": "Authentication verifies WHO you are (identity proofing — username/password, OAuth token, SAML assertion); authorization verifies WHAT you are allowed to do (access control — permissions, roles, policies attached to your identity)" },
+        { "id": "c", "text": "Authorization verifies who you are; authentication determines what you can access" },
+        { "id": "d", "text": "Authentication chỉ relevant cho human users; authorization chỉ relevant cho machine-to-machine API calls" }
+      ],
+      "correctKey": "b",
+      "explanation": "Authentication (AuthN) trả lời: 'Bạn có phải là người bạn nói không?' — chứng minh identity qua credentials, tokens, hoặc certificates. Authorization (AuthZ) trả lời: 'Bạn được phép làm gì?' — enforce access control rules (RBAC roles, ABAC policies, OAuth scopes). User có thể authenticated (logged in) nhưng chỉ authorized để đọc own data, không delete other users' data. Phương án A reverses definitions. Phương án C reverses order. Phương án D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "JWT (JSON Web Token) là gì, và ba thành phần chính của nó là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "JWT là opaque token issued by OAuth2 servers; nó chỉ chứa một session ID tham chiếu server-side session state" },
+        { "id": "b", "text": "JWT là self-contained, URL-safe token với ba Base64URL-encoded parts separated by dots: Header (algorithm + token type), Payload (claims — user ID, roles, expiry), và Signature (HMAC or RSA signature verify payload integrity)" },
+        { "id": "c", "text": "JWT được encrypted by default — anyone với token có thể read payload nhưng cannot forge valid token without secret key" },
+        { "id": "d", "text": "JWT's payload được stored on authorization server và chỉ session ID transmitted tới client" }
+      ],
+      "correctKey": "b",
+      "explanation": "JWT (RFC 7519) là compact, URL-safe token format: Header (alg, typ) → Base64URL(Payload) → Base64URL(Signature). Payload chứa claims: registered (iss, sub, aud, exp, nbf, iat, jti), public, và private. JWTs có thể signed (JWS — HMAC or RSA/ECDSA) hoặc encrypted (JWE). Unsigned JWTs (alg=none) là known exploit — luôn validate algorithm và reject 'none'. Phương án A mô tả opaque token. Phương án C overstates encryption. Phương án D mô tả opposite."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "JWT token được signed với HS256 (HMAC-SHA256) sử dụng shared secret key. Server stores this secret key in source code. Security vulnerability nào điều này tạo, và correct approach là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Storing secret in source code secure as long as repository is private — no vulnerability exists" },
+        { "id": "b", "text": "Storing secret in source code exposes nó in version control history, CI/CD logs, và build artifacts even after removal; anyone with repo access có thể forge valid tokens — correct approach: dùng environment variables hoặc secrets manager (Vault, AWS Secrets Manager) injected at runtime, và rotate keys regularly" },
+        { "id": "c", "text": "HS256 vulnerable to brute force attacks on shared secret; dùng RS256 (asymmetric RSA) cannot be brute forced" },
+        { "id": "d", "text": "Vulnerability là JWTs too small và can be easily intercepted" }
+      ],
+      "correctKey": "b",
+      "explanation": "Embedding secrets in source code là serious security anti-pattern. Best practices: (1) inject secrets at runtime via environment variables hoặc secret injection sidecar, (2) dùng asymmetric keys (RS256/ES256) where server's private key signs tokens và public key distributed to validators — private key never needs to be on every service. Phương án A sai. Phương án C (RS256) là good practice nhưng không phải primary fix. Phương án D không liên quan."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "OAuth 2.0 Authorization Code flow là gì, và tại sao nó preferred over Implicit flow cho browser-based applications?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Authorization Code flow uses 6-digit OTP code sent via SMS; Implicit flow uses hardware token" },
+        { "id": "b", "text": "Authorization Code flow exchanges authorization code (obtained via browser redirect) for tokens at backend — tokens never pass through browser; Implicit flow passes tokens directly through URL fragment (visible in browser history, logs, referrer headers) — Authorization Code with PKCE là secure choice cho SPAs và mobile apps" },
+        { "id": "c", "text": "Implicit flow more secure than Authorization Code vì nó avoids extra network round trip" },
+        { "id": "d", "text": "OAuth 2.0 Authorization Code và Implicit flows equivalent — only difference là token format" }
+      ],
+      "correctKey": "b",
+      "explanation": "Authorization Code flow: browser → authorization server → redirects back với authorization code → backend exchanges code + client_secret for tokens. Tokens never touch browser URL or history. Implicit flow (deprecated by OAuth 2.1): access token returned via URL fragment — visible in browser history, referrer headers, server logs. Authorization Code + PKCE là modern standard cho SPAs. Phương án A, C, D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "PKCE (Proof Key for Code Exchange) là gì và tại sao nó required cho public clients (SPAs, mobile apps) trong OAuth 2.0?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PKCE là 6-digit TOTP code replaces password during OAuth authentication" },
+        { "id": "b", "text": "PKCE là cryptographically random code_verifier (tạo bởi client) và SHA256 hash (code_challenge) gửi during authorization; khi exchanging authorization code, client phải present original code_verifier — preventing authorization code interception attacks" },
+        { "id": "c", "text": "PKCE là fallback mechanism allows OAuth clients skip client_secret verification step when authorization server unavailable" },
+        { "id": "d", "text": "PKCE chỉ cần cho confidential clients (backend services); public clients không cần nó" }
+      ],
+      "correctKey": "b",
+      "explanation": "PKCE (RFC 7636) addresses authorization code interception attacks. Attack: attacker intercepts authorization code from redirect URL và exchanges nó for tokens. PKCE prevention: client generates code_verifier, hashes it, sends code_challenge with authorization request. Khi exchanging code, client must present code_verifier. PKCE now required (OAuth 2.1) cho ALL OAuth clients. Phương án A, C, D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Public API đang bị abuse bởi automated scripts sending thousands of requests per minute. API security mechanism nào most directly addresses this abuse?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Rate limiting — limits number of requests a client có thể make within a time window; exceeding clients receive 429 Too Many Requests — protects against both accidental và malicious abuse" },
+        { "id": "b", "text": "Throttling — API slows down responses tới abusive clients rather than rejecting them" },
+        { "id": "c", "text": "IP allowlisting — block all traffic except from known IP addresses" },
+        { "id": "d", "text": "OAuth 2.0 authentication" }
+      ],
+      "correctKey": "a",
+      "explanation": "Rate limiting direct mechanism for preventing API abuse. HTTP 429 Too Many Requests là standard response với Retry-After header. Distinct from throttling (B) which degrades quality rather than blocking; IP allowlisting (C) doesn't scale; OAuth (D) authenticates but doesn't limit request volume. Phương án A đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa encryption at rest và encryption in transit là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Encryption at rest protects data stored on disk (databases, files, backups) — using AES-256; encryption in transit protects data moving over network (TLS) — using TLS 1.2/1.3" },
+        { "id": "b", "text": "Encryption at rest và encryption in transit là cùng một thứ" },
+        { "id": "c", "text": "Encryption in transit chỉ cần cho cross-datacenter replication" },
+        { "id": "d", "text": "Encryption at rest sufficient for all security requirements" }
+      ],
+      "correctKey": "a",
+      "explanation": "Encryption at rest: protects stored data (AES-256 at file system level, volume encryption, database TDE). Encryption in transit: protects data on the wire (TLS 1.3). Both required for defense-in-depth. Phương án B, C, D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Principle of least privilege trong API và microservice security context là gì, và tại sao nó important?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Least privilege nghĩa là give every user an admin account" },
+        { "id": "b", "text": "Least privilege nghĩa là every principal (user, service, process) nên have only minimum permissions necessary to perform its task; nó limits blast radius khi credentials compromised và reduces attack surface" },
+        { "id": "c", "text": "Least privilege applies only to human users, not to machine-to-machine API calls" },
+        { "id": "d", "text": "Least privilege là compliance requirement cho financial services only" }
+      ],
+      "correctKey": "b",
+      "explanation": "Principle of Least Privilege (PoLP): grant minimum necessary permissions. Nếu microservice's credentials leaked, least privilege limits what an attacker có thể do. Phương án A, C, D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Web application stores user passwords. Correct approach to password storage là gì, và tại sao plain-text hoặc reversible encryption approaches sai?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Store passwords encrypted với AES-256 — decrypt và compare when user logs in" },
+        { "id": "b", "text": "Dùng slow, salted key derivation function (Argon2id preferred, bcrypt, scrypt, hoặc PBKDF2 với high work factor) để hash passwords; store only hash; hashing is one-way — original cannot be recovered from hash" },
+        { "id": "c", "text": "Store passwords using MD5 hashing without salt" },
+        { "id": "d", "text": "Store passwords in plain text và rely on HTTPS to protect them in transit" }
+      ],
+      "correctKey": "b",
+      "explanation": "Password hashing: dùng dedicated password hashing function với unique random salt per user và high work factor. Hashing (one-way) means original cannot be recovered — critical cho breach scenarios. Encryption (AES) is reversible. Salt prevents rainbow table attacks. Phương án A, C, D sai."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mutual TLS (mTLS) là gì và khi nào dùng nó cho service-to-service communication?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "mTLS là TLS where only server presents a certificate" },
+        { "id": "b", "text": "mTLS là bidirectional TLS: both client và server present và validate each other's X.509 certificates — dùng in microservices cho service mesh mTLS (Istio, Linkerd) để encrypt và authenticate all service-to-service traffic within cluster" },
+        { "id": "c", "text": "mTLS requires centralized PKI infrastructure; without CA, mTLS cannot function" },
+        { "id": "d", "text": "mTLS và OAuth 2.0 interchangeable" }
+      ],
+      "correctKey": "b",
+      "explanation": "Mutual TLS: both client và server authenticate each other via X.509 certificates. In service mesh (Istio, Linkerd), mTLS enforced transparently via sidecar proxies — certificates provisioned và rotated automatically by mesh control plane. mTLS provides: encryption in transit, service identity verification, audit trail. OAuth là identity-based; mTLS là transport-layer authentication. Phương án B đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Purpose của API key trong API security là gì, và limitations của nó compared to OAuth 2.0 tokens là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "API keys cung cấp same security as OAuth tokens và preferred cho all API authentication scenarios" },
+        { "id": "b", "text": "API keys identify calling application (which client) và can enforce rate limits per client; chúng không inherently identify user, carry authorization scopes, hoặc expire automatically — OAuth tokens carry identity, scopes, và time-limited; dùng API keys cho server-to-server authentication; dùng OAuth cho user-delegated access" },
+        { "id": "c", "text": "API keys là encrypted JWTs với built-in expiration" },
+        { "id": "d", "text": "API keys nên be stored in source code" }
+      ],
+      "correctKey": "b",
+      "explanation": "API keys identify project/application (not user). Limitations: don't carry user context, don't encode scopes/permissions, don't expire automatically. OAuth tokens carry identity (sub claim), scopes, và short expiry. API keys appropriate cho server-to-server (M2M) API access. Phương án B đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: JWT với valid signature từ trusted issuer (iss claim) là sufficient để trust claims in payload without additional validation.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Validating only signature insufficient. Must also validate: expiry (exp), not-before (nbf), audience (aud), issuer (iss), và algorithm (reject alg=none). Token từ trusted issuer với wrong audience hoặc expired timestamp có thể grant unintended access."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Đúng hay Sai: HTTPS (TLS) automatically encrypts all data stored in cookies.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "HTTPS/TLS only encrypts data in transit. Data stored in cookies on filesystem/disk NOT encrypted by TLS. To protect cookies at rest: Secure flag, HttpOnly flag, SameSite=Strict/Lax, và for highly sensitive data, encrypt cookie value at application layer."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bạn đang thiết kế API access control system cho SaaS application với multiple tenants. Tenant's admin chỉ nên manage users within their own organization. Fine-grained access control nào scales across many tenants và roles?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng static admin password cho each tenant" },
+        { "id": "b", "text": "Dùng RBAC với tenant-scoped roles: JWT chứa tenant_id claim và role; authorization layer checks both resource's tenant_id matches user's tenant_id AND role grants required permission — preventing cross-tenant access" },
+        { "id": "c", "text": "Store all tenant data in same database table without tenant isolation" },
+        { "id": "d", "text": "Dùng IP-based access control" }
+      ],
+      "correctKey": "b",
+      "explanation": "Multi-tenant RBAC với tenant scoping: user's JWT carries tenant_id + role claims. On every request, layer must: (1) verify resource's tenant_id matches user's tenant_id, (2) verify role grants permission. Without tenant_id checks, a 'super-admin' from one tenant có thể access another tenant's resources. Phương án B đúng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Attacker exploits SQL injection vulnerability để extract entire user database including password hashes. Security controls nào would have prevented this, và post-breach actions nào necessary?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SQL injection prevented by WAF rules alone" },
+        { "id": "b", "text": "Prevention: parameterized queries / prepared statements (never concatenate user input into SQL); input validation; least privilege DB user. Post-breach: incident response, GDPR breach notification (72h), force password reset, rotate credentials, notify affected users" },
+        { "id": "c", "text": "Nếu passwords hashed với bcrypt/Argon2id, no further action needed" },
+        { "id": "d", "text": "SQL injection can only be prevented by migrating to NoSQL databases" }
+      ],
+      "correctKey": "b",
+      "explanation": "SQL injection prevention: parameterized queries (#1 defense), input validation (whitelisting), least privilege DB accounts. Post-breach: incident response, GDPR notification within 72h, force password reset, rotate credentials. Phương án A insufficient. Phương án C sai (even strong hashes có thể brute-forced). Phương án D sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Microservices dùng OAuth 2.0 Access Tokens để authenticate và authorize requests. Access token có 1-hour expiry. Làm sao handle token refresh without disrupting users?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Issue new access token với 24-hour expiry mỗi khi old token expires" },
+        { "id": "b", "text": "Dùng Refresh Token: authorization server issues short-lived access token (1 hour) và long-lived refresh token (vd: 7 days); when access token expires, client silently exchanges refresh token for new access token — no user interaction needed; trade-offs: refresh tokens phải stored securely, must be revocable" },
+        { "id": "c", "text": "Increase access token expiry to 365 days" },
+        { "id": "d", "text": "Dùng same access token indefinitely without expiry" }
+      ],
+      "correctKey": "b",
+      "explanation": "Refresh token flow: client stores long-lived refresh token (HttpOnly cookie), uses it silently obtain new access tokens. Benefits: good UX, short-lived access tokens limit exposure. Security trade-offs: (1) refresh tokens are high-value targets, (2) must be revocable, (3) rotation on each use. Phương án C, D dangerous."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Financial transaction API nơi sensitive data (account numbers, transaction amounts) phải protected even from internal employees với database access. Additional security layer nào required?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Encryption at rest on database sufficient" },
+        { "id": "b", "text": "Dùng field-level encryption (FLE) hoặc tokenization: sensitive fields encrypted at application layer before sent to database; decryption keys stored in separate KMS — even DBAs với full table access cannot read sensitive fields without key" },
+        { "id": "c", "text": "Dùng RBAC restrict which employees can access financial tables" },
+        { "id": "d", "text": "Store financial data in separate database only accessible via stored procedures" }
+      ],
+      "correctKey": "b",
+      "explanation": "Field-level encryption (FLE) hoặc tokenization: encrypt sensitive fields (credit card numbers, SSN, account numbers) in application layer. Database stores ciphertext meaningless without key. KMS (AWS KMS, HashiCorp Vault) manages keys separately from data. RBAC (C) helps but doesn't prevent authorized DBAs reading data. Phương án B đúng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "API gateway in front of microservices. Client's API key compromised. Điều gì xảy ra khi revoke key, và how quickly có thể mitigate risk?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Revoking key takes effect immediately" },
+        { "id": "b", "text": "Revocation timing depends on caching: nếu gateway caches key validation results, revoked key có thể remain valid until cache expires; để achieve fast revocation: cache revocation events in Redis/blocklist với short TTL, use live validation endpoint, hoặc use short-lived JWTs" },
+        { "id": "c", "text": "API keys cannot be revoked" },
+        { "id": "d", "text": "Revoking key requires regenerating entire API gateway configuration" }
+      ],
+      "correctKey": "b",
+      "explanation": "API key revocation not instantaneous by default if gateway caches 'is this key valid?' lookups. Mitigation: (1) maintain revocation blocklist (Redis set) checked on every request, (2) short TTL for key validation cache, (3) for high-security, use short-lived JWTs instead. Phương án A overstates immediacy. Phương án C, D sai."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Đúng hay Sai: Using HTTPS cho all API calls là sufficient để protect against all common API security threats including injection attacks, unauthorized access, và data exposure.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "HTTPS only encrypts data in transit. It does NOT protect against: SQL injection, broken authentication, broken authorization (IDOR), excessive data exposure, rate limiting abuse, XSS, or insider threats. HTTPS is necessary but not sufficient. Defense-in-depth requires: authentication, authorization, input validation, output encoding, rate limiting, field-level encryption."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Microservices dùng service account credentials (long-lived API keys) stored as Kubernetes Secrets để authenticate service-to-service calls. Secrets are base64-encoded in etcd. Security risk là gì, và correct mitigation là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Base64 encoding is encryption — Kubernetes Secrets stored in etcd secure" },
+        { "id": "b", "text": "Base64 encoding is not encryption — anyone with etcd access có thể read secrets. Mitigations: enable Kubernetes encryption at rest (AES-CBC or AES-GCM), dùng external secrets manager (HashiCorp Vault, AWS Secrets Manager) với Kubernetes External Secrets Operator, hoặc dùng Istio SPIFFE/SPIRE issue short-lived X.509 certificates instead of long-lived API keys" },
+        { "id": "c", "text": "Store secrets in ConfigMaps instead of Secrets" },
+        { "id": "d", "text": "Risk minimal vì Kubernetes cluster access already restricted" }
+      ],
+      "correctKey": "b",
+      "explanation": "Kubernetes Secrets base64-encoded (not encrypted) by default. Mitigations: (1) enable Secret Encryption at Rest, (2) use External Secrets Operator sync from Vault/AWS Secrets Manager, (3) use SPIFFE/SPIRE issue short-lived X.509 certificates for mTLS. Phương án A, C, D sai."
+    }
+  ]
+}

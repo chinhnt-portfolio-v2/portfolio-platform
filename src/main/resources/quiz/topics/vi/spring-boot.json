@@ -1,0 +1,135 @@
+{
+  "topicSlug": "spring-boot",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Ưu điểm chính của constructor injection so với field injection qua @Autowired là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Constructor injection nhanh hơn vì nó bỏ qua Spring's dependency resolution" },
+        { "id": "b", "text": "Constructor injection làm dependencies explicit và cho phép các đối tượng immutable, testable mà không cần các Spring-specific annotations" },
+        { "id": "c", "text": "@Autowired field injection đã deprecated trong Spring 6.x, nên constructor injection là lựa chọn duy nhất" },
+        { "id": "d", "text": "Field injection cho phép circular dependencies mà constructor injection không thể resolve" }
+      ],
+      "correctKey": "b",
+      "explanation": "Constructor injection tạo immutable dependencies (final fields), làm contract rõ ràng trong IDE/API signature, và cho phép plain unit testing mà không cần Spring context. Field injection ẩn dependencies, bỏ qua final semantics, và làm testing khó hơn. Phương án A sai (không có speed difference). Phương án C sai (field injection vẫn hoạt động). Phương án D ngược: field injection che giấu circular dependencies thay vì giải quyết."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Annotation nào bạn nên dùng để define một class xử lý business logic và transaction boundaries?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Component — generic Spring-managed bean cho bất kỳ mục đích nào" },
+        { "id": "b", "text": "@Service — semantic đánh dấu class đó là một service layer với business logic" },
+        { "id": "c", "text": "@Repository — đánh dấu class đó là một data access component" },
+        { "id": "d", "text": "@Controller — dùng cho request handling ở web layer" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Service là một @Component chuyên dụng với semantic meaning: nó đánh dấu một service-layer class chứa business logic và thường nằm giữa controllers và repositories. @Component quá generic. @Repository mang DataAccessException translation semantics. @Controller cho web layer handlers."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "application.properties entry này làm gì?\n\nspring.datasource.url=jdbc:postgresql://localhost:5432/mydb\nspring.datasource.username=admin\nspring.datasource.password=secret",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Nó cấu hình một HikariCP connection pool tự động với các credentials được cung cấp" },
+        { "id": "b", "text": "Nó chỉ định nghĩa connection URL và credentials; một DataSource bean phải được tạo thủ công" },
+        { "id": "c", "text": "Nó tạo một Tomcat connection pool với default settings bằng HikariCP" },
+        { "id": "d", "text": "Nó bị ignore trừ khi @EnableConfigurationProperties được thêm vào main class" }
+      ],
+      "correctKey": "a",
+      "explanation": "Spring Boot's auto-configuration tự động tạo một HikariCP DataSource bean sử dụng các spring.datasource.* properties — không cần explicit @Bean. Spring Boot 2.x đã chuyển default pool từ Tomcat sang HikariCP."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "HTTP method nào đúng về mặt ngữ nghĩa cho việc update một resource một phần?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PUT — replace toàn bộ resource" },
+        { "id": "b", "text": "PATCH — apply một partial update cho resource" },
+        { "id": "c", "text": "POST — tạo một sub-resource mới dưới URI đã cho" },
+        { "id": "d", "text": "OPTIONS — trả về các operations được cho phép trên resource" }
+      ],
+      "correctKey": "b",
+      "explanation": "PATCH được thiết kế cho partial updates — request body chỉ chứa các fields cần thay đổi. PUT idempotent và dùng cho full replacement. POST tạo resources hoặc process actions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Propagation level nào của @Transactional gây một transaction mới được bắt đầu nếu một transaction đã tồn tại?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "REQUIRED (default) — join một transaction đã tồn tại hoặc tạo một cái mới" },
+        { "id": "b", "text": "REQUIRES_NEW — luôn suspend transaction hiện tại và bắt đầu một cái mới" },
+        { "id": "c", "text": "MANDATORY — yêu cầu một transaction đã tồn tại hoặc throw exception" },
+        { "id": "d", "text": "NESTED — tạo một savepoint trong transaction hiện tại" }
+      ],
+      "correctKey": "a",
+      "explanation": "REQUIRED là default propagation. Nếu transaction tồn tại, method join nó; ngược lại Spring tạo một cái mới. REQUIRES_NEW (B) luôn tạo transaction mới. MANDATORY (C) fail nếu không có transaction. NESTED (D) dùng JDBC savepoints."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@Configuration classes được Spring xử lý qua CGLIB proxy có mục đích gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CGLIB enable bytecode-level security checks trên configuration classes" },
+        { "id": "b", "text": "CGLIB cho phép method calls trên @Bean methods trong cùng @Configuration class trả về cached singleton instances thay vì re-execute method body" },
+        { "id": "c", "text": "CGLIB compile @Configuration classes ahead of time cho faster startup" },
+        { "id": "d", "text": "CGLIB proxies cần thiết để deserialize JSON thành Java objects trong REST controllers" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring wrap @Configuration classes trong một CGLIB subclass intercept các @Bean method calls. Điều này đảm bảo calling `userService()` trong cùng @Configuration class trả về singleton bean đã tạo — không phải một object mới từ re-executing method."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Annotation nào của Spring Data JPA correctly maps một unidirectional one-to-many relationship trong đó child là owning side?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@OneToMany trên parent với mappedBy trỏ đến foreign key column trong child entity" },
+        { "id": "b", "text": "@ManyToOne trên child entity referencing parent's primary key column" },
+        { "id": "c", "text": "@JoinColumn trên parent để đặt tên foreign key column trong child table" },
+        { "id": "d", "text": "Cả B và C — @ManyToOne trên child + @JoinColumn(name = \"...\") để specify FK column" }
+      ],
+      "correctKey": "d",
+      "explanation": "Trong unidirectional one-to-many where child is owning side, đặt @ManyToOne + @JoinColumn trên child entity. @JoinColumn specify tên foreign key column. Parent chỉ có List<Child> — không cần inverse @OneToMany. Owning side xác định Hibernate lưu FK ở đâu."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Trong Spring Security, thứ tự đúng của các filters trong default filter chain cho một JWT-based stateless API là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SessionCreationFilter → JwtAuthenticationFilter → AuthorizationFilter → UsernamePasswordAuthenticationFilter" },
+        { "id": "b", "text": "AuthorizationFilter → JwtAuthenticationFilter → ExceptionHandlingFilter → UsernamePasswordAuthenticationFilter" },
+        { "id": "c", "text": "SecurityContextPersistenceFilter → BearerTokenAuthenticationFilter → AuthorizationFilter" },
+        { "id": "d", "text": "WsSecurityFilter → Saml2AuthenticationFilter → OAuth2AuthorizationFilter" }
+      ],
+      "correctKey": "c",
+      "explanation": "Spring Security 5+ dùng một filter chain với thứ tự cụ thể. SecurityContextPersistenceFilter load security context rồi clear nó, sau đó BearerTokenAuthenticationFilter extract và validate JWT từ Authorization header, cuối cùng AuthorizationFilter kiểm tra access rules."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "@EnableCaching có mục đích gì và Spring quản lý cache eviction như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@EnableCaching tạo một in-memory ConcurrentHashMap cache tự động; eviction phải thủ công qua CacheManager.clear()" },
+        { "id": "b", "text": "@Cacheable intercept method calls và lưu results trong cache (ví dụ: Caffeine, Redis); @CacheEvict remove entries trước hoặc sau method execution" },
+        { "id": "c", "text": "@EnableCaching đồng bộ hóa method calls across JVM instances dùng JGroups; @CacheEvict broadcasts invalidation messages" },
+        { "id": "d", "text": "@Cacheable chạy đồng bộ — method thực thi và result được lưu; @CacheEvict chạy không đồng bộ trong một thread riêng" }
+      ],
+      "correctKey": "b",
+      "explanation": "@EnableCapping bật Spring's cache abstraction, cho phép @Cacheable (đọc từ cache), @CacheEvict (remove entries), và @CachePut (update). Spring tích hợp với Redis, Caffeine, EhCache qua CacheManager. @CacheEvict đồng bộ."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Spring Boot actuator endpoint nào được dùng để kiểm tra health của các external dependencies (ví dụ: database, Redis) như một phần của liveness/readiness probe?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "/actuator/beans — liệt kê tất cả Spring beans và dependency graph của chúng" },
+        { "id": "b", "text": "/actuator/health — tổng hợp health indicators bao gồm DataSource, Redis, disk space; exposes liveness và readiness states" },
+        { "id": "c", "text": "/actuator/httptrace — ghi lại các HTTP request/response exchanges gần đây để debug" },
+        { "id": "d", "text": "/actuator/info — trả về arbitrary application metadata được cấu hình qua management.info.* properties" }
+      ],
+      "correctKey": "b",
+      "explanation": "/actuator/health là endpoint tiêu chuẩn cho probes. Spring Boot auto-registers health indicators cho common dependencies. Spring Boot 2.3+ có built-in Kubernetes probe support: `management.endpoint.health.probes.enabled=true` exposes /health/liveness và /health/readiness."
+    }
+  ]
+}

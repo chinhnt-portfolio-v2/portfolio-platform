@@ -22,6 +22,8 @@ public interface QuizQuestionRepository extends JpaRepository<QuizQuestion, Long
 
     long countByTopicSlugAndLevelTag(String topicSlug, String levelTag);
 
+    List<QuizQuestion> findByTopicSlugInAndLang(List<String> topicSlugs, String lang);
+
     @Query("SELECT COUNT(q) FROM QuizQuestion q WHERE q.topicSlug = :topicSlug AND q.levelTag = :levelTag AND q.id IN (" +
            "SELECT pa.questionId FROM QuizAttempt pa WHERE pa.userId = :userId AND pa.isCorrect = true " +
            "GROUP BY pa.questionId HAVING COUNT(pa) >= 2)")

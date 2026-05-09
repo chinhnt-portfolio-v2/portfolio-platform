@@ -1,0 +1,253 @@
+{
+  "topicSlug": "react-perf",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "React.memo làm gì và khi nào nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.memo memoizes một component để nó skip re-rendering khi props shallowly equal — dùng nó trên các child components đắt giá re-render thường xuyên do parent updates" },
+        { "id": "b", "text": "React.memo caches component's rendered output như HTML" },
+        { "id": "c", "text": "React.memo replaces useMemo để cache các phép tính đắt giá" },
+        { "id": "d", "text": "React.memo tự động ngăn re-renders của tất cả child components globally" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.memo là một higher-order component memoizes rendering của component dựa trên prop changes. Nó thực hiện shallow comparison của props — nếu chúng bằng nhau, React skip render. Dùng nó trên các components: (1) render thường xuyên, (2) đắt giá, và (3) nhận props từ một parent thay đổi thường xuyên. Đừng lạm dụng — React.memo có một chi phí nhỏ (prop comparison), và nhiều components rẻ để render."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`useMemo` làm gì và khi nào nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useMemo memoizes một computed value, chỉ tính lại khi dependencies thay đổi — dùng nó cho các tính toán đắt giá không nên chạy trên mỗi render" },
+        { "id": "b", "text": "useMemo lưu trữ kết quả của một API call để reuse across components" },
+        { "id": "c", "text": "useMemo ngăn một component re-rendering khi props thay đổi" },
+        { "id": "d", "text": "useMemo caches một function reference và chỉ tạo lại nó khi dependencies thay đổi" }
+      ],
+      "correctKey": "a",
+      "explanation": "useMemo memoizes KẾT QUẢ của một computation: `const sorted = useMemo(() => expensiveSort(items), [items])`. Phép sort đắt giá chỉ chạy khi `items` thay đổi. Đừng dùng useMemo cho các computation trivial — memoization overhead (lưu trữ giá trị, so sánh deps) tốn nhiều hơn computation tiết kiệm được. Ngưỡng idiomatic: dùng cho các tính toán mất >1ms hoặc chạy trong một hot path."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`useCallback` làm gì và khi nào nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useCallback trả về một memoized function reference chỉ thay đổi khi dependencies thay đổi — dùng nó khi truyền callbacks như props đến React.memo-wrapped children để ngăn các re-renders không cần thiết" },
+        { "id": "b", "text": "useCallback ngăn một function được gọi quá thường xuyên (debouncing)" },
+        { "id": "c", "text": "useCallback caches kết quả của một function call" },
+        { "id": "d", "text": "useCallback làm một function chỉ chạy trên server side" }
+      ],
+      "correctKey": "a",
+      "explanation": "useCallback(fn, deps) tương đương với useMemo(() => fn, deps). Memoized function reference có nghĩa là prop reference được truyền đến một child component ổn định qua các renders, làm React.memo effective. Nếu không có useCallback, một `() => handleX(id)` arrow function mới được tạo trên mỗi render defeats React.memo's shallow comparison. Tuy nhiên, useCallback chỉ có ý nghĩa khi function được truyền đến một memoized child hoặc dùng như một useEffect dependency."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "React.memo, useMemo, và useCallback đều cải thiện performance by default và nên được apply ở khắp nơi.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Cả ba đều có overhead: React.memo thực hiện shallow prop comparison trên mỗi render; useMemo lưu trữ một giá trị và so sánh dependencies; useCallback lưu trữ một function reference. Với các computation rẻ và các non-performance-critical paths, overhead này vượt quá lợi ích. Hướng dẫn của React team: đừng optimize sớm. Profile trước (với React DevTools Profiler), sau đó apply các tools này vào các components thực sự chậm hoặc re-render quá thường xuyên."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`React.Profiler` làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Profiler đo độ thường xuyên một component render và chi phí của rendering — giúp xác định các components render quá thường xuyên hoặc đắt giá" },
+        { "id": "b", "text": "Profiler là một DevTools panel đo JavaScript execution time" },
+        { "id": "c", "text": "Profiler ngăn components re-rendering trong development" },
+        { "id": "d", "text": "Profiler là một production-only tool để monitor app performance" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.Profiler là một DevTools component: `<Profiler id=\"App\" onRender={onRenderCallback}><App /></Profiler>`. Callback `onRender` nhận render counts, durations, và props đã thay đổi. Đây là công cụ chính để xác định nơi cần optimize — đừng đoán, hãy đo. Profiler có thể được thêm trong cả development và production builds (có overhead)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Code splitting trong React là gì và đạt được bằng cách nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Code splitting chia JavaScript bundle thành các chunks nhỏ hơn load on demand — đạt được với React.lazy + Suspense hoặc dynamic import() — giảm initial load time và Time to Interactive" },
+        { "id": "b", "text": "Code splitting tách CSS khỏi JavaScript trong build output" },
+        { "id": "c", "text": "Code splitting là một server-side technique pre-render components trước khi gửi HTML đến client" },
+        { "id": "d", "text": "Code splitting chỉ available trong React Native, không phải web React" }
+      ],
+      "correctKey": "a",
+      "explanation": "Code splitting tạo các JavaScript chunks riêng biệt (qua Webpack/Vite/Rollup dynamic import) load khi cần. `<React.Suspense fallback={<Spinner />}><React.lazy(() => import('./Dashboard')) /></React.Suspense>` render Dashboard's chunk chỉ khi component đầu tiên render. Route-level splitting là pattern phổ biến nhất — mỗi route nhận chunk riêng của nó, load khi navigate."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Bundle size optimization trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Giảm lượng JavaScript được gửi đến browser — đạt được qua code splitting, tree shaking, loại bỏ unused dependencies, và phân tích bundle composition với source-map-explorer hoặc webpack-bundle-analyzer" },
+        { "id": "b", "text": "Nén React components bằng gzip trong browser" },
+        { "id": "c", "text": "Chuyển tất cả JavaScript đến một CDN mà không có code changes" },
+        { "id": "d", "text": "Giảm số lượng CSS classes được dùng bởi components" }
+      ],
+      "correctKey": "a",
+      "explanation": "Bundle size optimization giữ initial load nhanh. Các kỹ thuật: (1) dynamic imports cho route-level splitting, (2) thay các thư viện lớn bằng alternatives nhỏ hơn (ví dụ: date-fns thay vì moment.js), (3) tree shaking qua ES modules, (4) phân tích bundle với webpack-bundle-analyzer để phát hiện các dependencies lớn. Bundle nhỏ hơn có nghĩa là parse, compile, và execute nhanh hơn — tác động trực tiếp đến Core Web Vitals."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa `useCallback` và `useMemo` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useCallback memoizes một function reference (stable identity); useMemo memoizes một computed value — về cấu trúc useCallback(fn, deps) === useMemo(() => fn, deps), nhưng chúng phục vụ các semantic purposes khác nhau" },
+        { "id": "b", "text": "useMemo nhanh hơn useCallback vì nó không lưu trữ một function" },
+        { "id": "c", "text": "useCallback hoạt động với arrays; useMemo hoạt động với functions" },
+        { "id": "d", "text": "useCallback deprecated trong React 18" }
+      ],
+      "correctKey": "a",
+      "explanation": "Cả hai đều là memoization utilities — useCallback đặc biệt cho functions nơi stable reference identity quan trọng (props đến memoized children, useEffect dependencies). useMemo cho computed values. Chúng về cấu trúc giống nhau. Dùng cái đúng communicate intent: useCallback nói 'tôi cần function reference này ổn định', useMemo nói 'tôi cần giá trị này không được tính lại không cần thiết'."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Output của component này là gì?\n\nfunction Parent() {\n  const [count, setCount] = useState(0);\n\n  const handleClick = useCallback(() => {\n    console.log('Clicked:', count);\n  }, [count]);\n\n  return (\n    <div>\n      <MemoizedButton onClick={handleClick} />\n      <button onClick={() => setCount(c => c + 1)}>{count}</button>\n    </div>\n  );\n}\n\nconst MemoizedButton = React.memo(function Button({ onClick }: { onClick: () => void }) {\n  console.log('Button rendered');\n  return <button onClick={onClick}>Click me</button>;\n});",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "Button re-renders bất cứ khi nào count thay đổi, vì dependency của useCallback là count — count thay đổi tạo một handleClick reference mới, mà React.memo thấy khác" },
+        { "id": "b", "text": "Button không bao giờ re-render sau render đầu tiên" },
+        { "id": "c", "text": "Button re-renders trên mỗi click bất kể count" },
+        { "id": "d", "text": "TypeScript error vì useCallback và React.memo không thể dùng cùng nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "Dependency `[count]` có nghĩa `handleClick` được tạo lại bất cứ khi nào `count` thay đổi. Vì function reference thay đổi, React.memo's shallow comparison thấy một `onClick` prop khác và re-renders Button. Để làm Button thực sự ổn định, loại bỏ `count` khỏi dependency array (nếu không cần) hoặc dùng functional update pattern bên trong callback để tránh dependency."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt chính giữa default comparison của React.memo và một custom comparison function là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Mặc định React.memo dùng shallow comparison (Object.is) trên tất cả props; một areEqual function tùy chỉnh cho phép bạn định nghĩa deep hoặc domain-specific comparison logic để ngăn re-renders khi shallow comparison sẽ không đúng xem props như khác nhau" },
+        { "id": "b", "text": "Custom comparison functions nhanh hơn shallow comparison" },
+        { "id": "c", "text": "Custom comparison thay thế shallow comparison cho tất cả components globally" },
+        { "id": "d", "text": "React.memo luôn dùng deep comparison theo mặc định" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.memo(Component, (prevProps, nextProps) => boolean) chấp nhận một đối số thứ hai — một custom comparison function trả về true để skip re-render. Điều này hữu ích khi bạn có domain-specific equality (ví dụ: hai arrays với cùng items nên được coi là bằng nhau). Tuy nhiên, custom comparisons phải nhanh — một comparison chậm negates optimization. Trong hầu hết các trường hợp, dùng useMemo/useCallback để ổn định references đơn giản hơn custom comparison functions."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Nguyên nhân nào gây ra re-renders trong React và công cụ chính để ngăn các re-renders không cần thiết là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Parent re-renders (dùng React.memo trên children), state changes trong cùng component (colocate state), và context value changes (split hoặc memoize context) — công cụ chính: React.memo, useMemo, useCallback, useTransition, state colocation" },
+        { "id": "b", "text": "CSS class changes là nguyên nhân chính của re-renders" },
+        { "id": "c", "text": "Chỉ prop changes gây re-renders — state changes thì không" },
+        { "id": "d", "text": "Re-renders chỉ có thể được ngăn bằng cách loại bỏ tất cả state khỏi components" }
+      ],
+      "correctKey": "a",
+      "explanation": "Ba nguyên nhân chính: (1) Parent re-renders cascade đến children — fix bằng React.memo. (2) Local state changes gây component re-render — cân nhắc colocation (di chuyển state thấp hơn). (3) Context value changes broadcast đến tất cả consumers — fix bằng splitting contexts hoặc memoizing values. useTransition wrap urgent updates để deprioritize less urgent ones."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`React.lazy` làm gì mà regular imports không làm được?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.lazy dynamically imports một component và trả về nó — module không được load cho đến khi component được render lần đầu, cho phép code splitting mà không thay đổi exports của module" },
+        { "id": "b", "text": "React.lazy preloads tất cả components trước khi app bắt đầu" },
+        { "id": "c", "text": "React.lazy loại bỏ TypeScript errors từ các file component lớn" },
+        { "id": "d", "text": "React.lazy là một syntax replacement cho import() hoạt động at runtime" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.lazy nhận một function gọi `import()` — một dynamic import trả về Promise. Webpack thấy điều này và tạo một chunk riêng. Module được fetch khi component render lần đầu tiên. Quan trọng là chính component không cần thay đổi — bạn chỉ wrap import với React.lazy. `const Dashboard = React.lazy(() => import('./Dashboard'))`."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi bạn thấy một component re-rendering không cần thiết với React.memo, nguyên nhân có khả năng nhất là một prop (function hoặc object) là một reference mới trên mỗi render.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "React.memo so sánh props bằng reference (shallow comparison). Một inline function `onClick={() => handle(id)}` được tạo trong parent là một function object mới mỗi render. Shallow comparison thấy nó 'khác' so với function từ render trước, nên memoized component re-renders. Fix là useCallback trong parent để ổn định reference."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Output của code này là gì?\n\nfunction App() {\n  return (\n    <React.Suspense fallback={<div>Loading...</div>}>\n      <React.lazy(() => import('./HeavyPage')).then(m => m.default)}\n    </React.Suspense>\n  );\n}",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "TypeScript/React error — React.lazy expect một function trả về Promise resolve đến một module với default export, không phải một .then chain" },
+        { "id": "b", "text": "Component load đúng bằng cách resolve Promise được trả về bởi import()" },
+        { "id": "c", "text": "Component render default export sau 1-second delay" },
+        { "id": "d", "text": "Một infinite loading spinner vì .then không được phép trong React.lazy" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.lazy chấp nhận một function trả về Promise từ dynamic import(). Promise phải resolve đến một module với default export (hoặc một named export accessed qua `.default`). Chain `.then()` phá vỡ contract mong đợi — nó nên là `() => import('./HeavyPage')` không có `.then()`. Nếu module dùng một named export, dùng `() => import('./HeavyPage').then(m => m.NamedExport)` là syntax hợp lệ trong một số configs, nhưng idiomatic React.lazy dùng form đơn giản hơn."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mối quan hệ giữa `React.Profiler` và browser DevTools performance tab là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "React.Profiler đo React-specific rendering (component render counts, durations, tại sao components rendered) — browser DevTools đo JavaScript call stack và native DOM operations; dùng cả hai cùng nhau cho complete performance analysis" },
+        { "id": "b", "text": "React.Profiler thay thế browser DevTools performance tab" },
+        { "id": "c", "text": "Browser DevTools chỉ cho CSS performance; React Profiler xử lý JavaScript" },
+        { "id": "d", "text": "React.Profiler chỉ có thể được dùng trong production builds" }
+      ],
+      "correctKey": "a",
+      "explanation": "React.Profiler cung cấp insights ở mức component mà browser DevTools không có: components nào render, tại sao (props, state, context changes), và render durations. Browser DevTools flame charts show JavaScript call stacks. Dùng Profiler để tìm 'cái gì' (component nào chậm), sau đó DevTools để tìm 'tại sao' (function nào chậm). Kết hợp cả hai cho complete picture."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Memory leak trong React hooks là gì và nó xảy ra như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Một memory leak xảy ra khi một component register subscriptions, timers, hoặc event listeners trong useEffect nhưng fail cleanup on unmount — gây callback giữ references đến unmounted components và ngăn garbage collection" },
+        { "id": "b", "text": "Memory leaks chỉ xảy ra trong class components, không phải function components với hooks" },
+        { "id": "c", "text": "Memory leaks được gây ra bởi React's Virtual DOM implementation" },
+        { "id": "d", "text": "Memory leaks không thể xảy ra trong React vì framework quản lý memory tự động" }
+      ],
+      "correctKey": "a",
+      "explanation": "Leak cổ điển: `useEffect(() => { const id = setInterval(fn, 1000); }, [])` không có cleanup — interval tiếp tục chạy sau unmount, referencing old component. Fix: `return () => clearInterval(id)`. Tương tự, stale fetch callbacks (không dùng AbortController) và uncancelled event listeners leak memory. Trong development, React Strict Mode double-invokes effects đặc biệt để surface những bugs này."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Tác động của automatic batching của React 18 lên performance là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Automatic batching giảm số lượng re-renders bằng cách nhóm nhiều state updates (từ setTimeout, promises, event handlers) thành một render duy nhất — cải thiện performance mà không cần thay đổi code" },
+        { "id": "b", "text": "Automatic batching tăng re-renders vì nó xử lý nhiều updates hơn" },
+        { "id": "c", "text": "Automatic batching chỉ hoạt động trong development mode" },
+        { "id": "d", "text": "Automatic batching loại bỏ nhu cầu về useMemo và React.memo" }
+      ],
+      "correctKey": "a",
+      "explanation": "Trước React 18, updates trong setTimeout hoặc native event callbacks gây nhiều re-renders. React 18's automatic batching nhóm tất cả updates thành một render, bất kể chúng đến từ đâu. Đây là một transparent performance improvement — không cần thay đổi code. Nó bổ sung cho các concurrent features nhưng hoạt động ngay cả khi không có chúng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "`useTransition` giúp gì với performance trong React 18 concurrent mode?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useTransition đánh dấu một state update là non-urgent (một transition), cho phép React giữ UI responsive — browser vẫn có thể xử lý các updates urgent (typing, clicking) trong khi transition render ở background" },
+        { "id": "b", "text": "useTransition làm component render nhanh hơn bằng cách skip animations" },
+        { "id": "c", "text": "useTransition là một replacement cho useState tự động batch updates" },
+        { "id": "d", "text": "useTransition disable re-rendering hoàn toàn cho marked component" }
+      ],
+      "correctKey": "a",
+      "explanation": "useTransition wrap một state update trong một transition, cho React quyền interrupt nó nếu một higher-priority update đến. `const [isPending, startTransition] = useTransition()` — startTransition(() => setQuery(input)) đánh dấu query update là non-urgent. Typing (high priority) có thể interrupt filtering (low priority), giữ input responsive. Đây là React 18 concurrent rendering's scheduling đang hoạt động."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa `useTransition` và `useDeferredValue` là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "useTransition wrap một state update call để đánh dấu nó là non-urgent; useDeferredValue nhận một giá trị và tạo một phiên bản deferred update ở priority thấp hơn — cả hai phục vụ mục đích tương tự (giữ UI responsive) nhưng ở các mức khác nhau (state setter vs. value propagation)" },
+        { "id": "b", "text": "useDeferredValue nhanh hơn useTransition" },
+        { "id": "c", "text": "Chúng giống hệt nhau — tên khác cho cùng một React 18 API" },
+        { "id": "d", "text": "useDeferredValue chỉ hoạt động với useState; useTransition hoạt động với bất kỳ hook nào" }
+      ],
+      "correctKey": "a",
+      "explanation": "useTransition: bạn sở hữu state setter — đánh dấu update của bạn là một transition. useDeferredValue: bạn sở hữu giá trị — nhận một phiên bản deferred của nó. useDeferredValue hữu ích khi giá trị đến từ một context hoặc prop, không phải trực tiếp từ một setter bạn kiểm soát. useTransition cho bạn nhiều kiểm soát hơn trên update cụ thể nào để deprioritize. Cả hai ngăn các renders đắt giá block user input."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Profiler onRender callback này log gì cho một single render?\n\n<React.Profiler id=\"List\" onRender={(id, phase, actualDuration, baseDuration, startTime, commitTime, interactions) => {\n  console.log('Duration:', actualDuration, 'Base:', baseDuration, 'Phase:', phase);\n}}>\n  <List items={largeList} />\n</React.Profiler>",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        { "id": "a", "text": "actualDuration (thời gian render), baseDuration (thời gian ước tính không có memoization), và phase ('mount' hoặc 'update') — actualDuration > baseDuration có nghĩa memoization đã giúp; nếu actualDuration gần baseDuration, component đã render đầy đủ" },
+        { "id": "b", "text": "Browser's frame rate during the render" },
+        { "id": "c", "text": "Memory usage của List component" },
+        { "id": "d", "text": "Số lượng DOM nodes được tạo bởi List" }
+      ],
+      "correctKey": "a",
+      "explanation": "onRender callback là core của React.Profiler. actualDuration là thời gian render này mất; baseDuration là thời gian nó sẽ mất không có optimization (React.memo, v.v.). Nếu actualDuration < baseDuration, memoization đã giúp. Phase cho biết đây là mount (render đầu tiên) hay update (re-render). Interactions set chứa React 'trace' interactions đã trigger render này (nếu tracing được cấu hình)."
+    }
+  ]
+}

@@ -20,7 +20,7 @@ public class Wallet {
     private String name;
 
     @Column(nullable = false, length = 20)
-    private String type; // CASH, BANK, E_WALLET, POSTPAID
+    private String type; // CASH, BANK, E_WALLET, POSTPAID, SAVINGS, CREDIT
 
     @Column(precision = 15, scale = 2)
     private BigDecimal balance = BigDecimal.ZERO;

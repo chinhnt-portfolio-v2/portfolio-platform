@@ -1,0 +1,168 @@
+{
+  "topicSlug": "dsa-sorting",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian trung bình của quick sort là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n²) — quick sort suy biến thành hành vi bậc hai trên các tập dữ liệu thông thường" },
+        { "id": "b", "text": "O(n log n) — phân hoạch chia mảng gần đều ở mỗi cấp đệ quy với chi phí phân hoạch O(n) mỗi cấp" },
+        { "id": "c", "text": "O(n) — một lần phân hoạch duyệt qua toàn bộ mảng" },
+        { "id": "d", "text": "O(log n) — quick sort loại bỏ nửa phần tử với mỗi phép so sánh" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trường hợp trung bình của quick sort: T(n) = T(k) + T(n-k) + O(n), pivot rơi gần giữa. Giải recurrence → O(n log n). Giả định chiến lược pivot tốt (ngẫu nhiên, median-of-three). Trường hợp xấu nhất (pivot luôn là min hoặc max) → O(n²). Phương án A là trường hợp xấu nhất. Phương án C đánh giá thấp công việc. Phương án D là độ phức tạp tìm kiếm nhị phân."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp không gian của merge sort là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — merge sort có thể triển khai in-place với chỉ hoán đổi con trỏ" },
+        { "id": "b", "text": "O(log n) — độ sâu đệ quy là logarit, không cần mảng phụ" },
+        { "id": "c", "text": "O(n) — bước merge cần mảng tạm tỷ lệ với mảng con được gộp" },
+        { "id": "d", "text": "O(n log n) — mỗi cấp cần một mảng phụ mới" }
+      ],
+      "correctKey": "c",
+      "explanation": "Bước merge của merge sort cần một mảng tạm có kích thước tỷ lệ với mảng con được gộp → O(n) space. Độ sâu đệ quy là O(log n). Tổng: O(n) space phụ trợ (hoặc O(n + log n) = O(n)). Quick sort là O(log n) space (call stack), được ưu tiên hơn trong môi trường bộ nhớ hạn chế. Heap sort là O(1) — hoàn toàn in-place."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuật toán sắp xếp nào KHÔNG ổn định (unstable)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Merge sort — giữ nguyên thứ tự tương đối của các phần tử bằng nhau" },
+        { "id": "b", "text": "Selection sort — có thể hoán đổi phần tử bằng nhau qua các vị trí" },
+        { "id": "c", "text": "Insertion sort — chèn đệ quy giữ nguyên thứ tự" },
+        { "id": "d", "text": "Bubble sort — so sánh và hoán đổi liền kề" }
+      ],
+      "correctKey": "b",
+      "explanation": "Selection sort KHÔNG ổn định: khi hoán đổi phần tử min vào vị trí i, nó có thể hoán đổi phần tử bằng nhau đã ở trước. Ví dụ: [2a, 1, 2b] → sau khi hoán đổi min 1 vào vị trí 0, 2a bị đẩy ra sau 2b. Merge sort và insertion sort ổn định. Bubble sort cũng ổn định."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\narr = [64, 34, 25, 12, 22, 11, 90]\nn = len(arr)\nfor i in range(n):\n    for j in range(0, n-i-1):\n        if arr[j] > arr[j+1]:\n            arr[j], arr[j+1] = arr[j+1], arr[j]\nprint(arr)",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Selection sort — tìm min và hoán đổi vào vị trí i mỗi vòng lặp" },
+        { "id": "b", "text": "Insertion sort — dịch phần tử sang phải để chèn arr[i] vào phần sắp xếp" },
+        { "id": "c", "text": "Bubble sort — liên tục hoán đổi các phần tử liền kề nếu không đúng thứ tự, phần tử lớn nhất nổi lên cuối" },
+        { "id": "d", "text": "Merge sort — chia mảng đôi đệ quy và gộp" }
+      ],
+      "correctKey": "c",
+      "explanation": "Vòng lặp ngoài chạy n lần; vòng lặp trong thu hẹp từ n-i-1 mỗi lần, hoán đổi các cặp liền kề nếu không đúng thứ tự. Đây là bubble sort cổ điển: phần tử lớn nhất chưa sắp xếp 'nổi bọt' lên cuối trong mỗi lượt."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt chính giữa stable và unstable sorting là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Stable sort giữ nguyên thứ tự tương đối của các phần tử có cùng khóa; unstable không đảm bảo điều này" },
+        { "id": "b", "text": "Unstable sort nhanh hơn stable sort" },
+        { "id": "c", "text": "Stable sort chỉ hoạt động trên số nguyên" },
+        { "id": "d", "text": "Không có khác biệt" }
+      ],
+      "correctKey": "a",
+      "explanation": "Stable sort giữ nguyên thứ tự ban đầu của các phần tử bằng nhau. VD: sắp xếp danh sách sinh viên theo điểm, nếu hai sinh viên cùng điểm, stable sort giữ nguyên thứ tự nhập. Unstable sort có thể thay đổi thứ tự này. Selection sort không ổn định. Merge sort, insertion sort, bubble sort ổn định."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Heap sort có độ phức tạp trung bình là bao nhiêu và có ổn định không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n log n), KHÔNG ổn định" },
+        { "id": "b", "text": "O(n²), ổn định" },
+        { "id": "c", "text": "O(n log n), ổn định" },
+        { "id": "d", "text": "O(n log n), tùy implementation" }
+      ],
+      "correctKey": "a",
+      "explanation": "Heap sort: xây max-heap O(n), rồi extract-max liên tục O(n log n). Đảm bảo O(n log n) cho mọi trường hợp. KHÔNG ổn định: hoán đổi root vào cuối có thể thay đổi thứ tự tương đối của các phần tử bằng nhau. Là thuật toán in-place tốt nhất (O(1) space) với O(n log n) đảm bảo."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\narr = [5, 2, 9, 1, 5, 6]\narr.sort()\nprint(arr[1])",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "sort() sắp xếp tăng dần: [1, 2, 5, 5, 6, 9]. arr[1] = 2. Phương án A là giá trị đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuật toán sắp xếp nào hoạt động tốt nhất trên mảng Nearly Sorted (gần như đã sắp xếp)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Quick sort — pivot chọn tốt trên dữ liệu nearly sorted" },
+        { "id": "b", "text": "Insertion sort — chỉ cần ít phép di chuyển để chèn mỗi phần tử vào đúng vị trí" },
+        { "id": "c", "text": "Merge sort — luôn hiệu quả" },
+        { "id": "d", "text": "Selection sort — không quan tâm đến thứ tự ban đầu" }
+      ],
+      "correctKey": "b",
+      "explanation": "Insertion sort O(n) trên mảng nearly sorted: mỗi phần tử cần di chuyển rất ít so với vị trí đúng. Best case O(n) khi đã sắp xếp. Selection sort luôn O(n²). Quick sort có thể O(n²) nếu pivot chọn xấu trên nearly sorted."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Thuật toán sắp xếp nào có thể đạt O(n) trong điều kiện lý tưởng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Quick sort — khi pivot luôn là phần tử giữa" },
+        { "id": "b", "text": "Insertion sort — khi mảng đã sắp xếp" },
+        { "id": "c", "text": "Merge sort — khi mảng đã sắp xếp ngược" },
+        { "id": "d", "text": "Selection sort — không bao giờ tốt hơn O(n²)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Insertion sort best case O(n) khi mảng đã sắp xếp (không cần hoán đổi, chỉ so sánh một lần mỗi phần tử). Merge sort O(n log n) vẫn cố định dù dữ liệu gì. Quick sort O(n log n) trung bình. Selection sort luôn O(n²)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Counting sort có độ phức tạp O(n + k), nhưng k là gì và khi nào nó hiệu quả?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "k là số phần tử trong mảng — hiệu quả khi n lớn" },
+        { "id": "b", "text": "k là giá trị lớn nhất trong mảng — hiệu quả khi k = O(n), không phải comparison sort" },
+        { "id": "c", "text": "k là log(n) — luôn hiệu quả" },
+        { "id": "d", "text": "k là kích thước mảng đếm — bằng n" }
+      ],
+      "correctKey": "b",
+      "explanation": "Counting sort dùng mảng đếm có kích thước = max(arr). O(n + k) trong đó k = giá trị lớn nhất. Hiệu quả khi k = O(n) (ví dụ sắp xếp tuổi 0-150, số điểm 0-100). Không so sánh phần tử nên không bị giới hạn Ω(n log n). Nhưng nếu k = 10^9, không hiệu quả. Radix sort cải thiện bằng cách xử lý từng chữ số."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Radix sort sắp xếp bao nhiêu chữ số và dùng thuật toán con nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "d chữ số, dùng counting sort ổn định cho mỗi chữ số — tổng O(d × (n + k))" },
+        { "id": "b", "text": "log(n) chữ số, dùng quick sort" },
+        { "id": "c", "text": "n chữ số, dùng merge sort" },
+        { "id": "d", "text": "Chỉ một chữ số, dùng selection sort" }
+      ],
+      "correctKey": "a",
+      "explanation": "Radix sort: sắp xếp theo từng chữ số (từ LSD đến MSD) dùng counting sort ổn định. Độ phức tạp: O(d × (n + k)) trong đó d = số chữ số, k = base (thường là 10). Nếu d = O(log n) và k = O(1), được O(n log n). Hiệu quả khi d nhỏ và k nhỏ (số nguyên, chuỗi)."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuật toán sắp xếp nào được dùng trong hàm sorted() của Python (Timsort)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Quick sort đơn giản" },
+        { "id": "b", "text": "Merge sort thuần túy" },
+        { "id": "c", "text": "Timsort — hybrid giữa merge sort và insertion sort, tận dụng các đoạn đã sắp xếp trong dữ liệu thực tế" },
+        { "id": "d", "text": "Heap sort" }
+      ],
+      "correctKey": "c",
+      "explanation": "Timsort (Python, Java Arrays.sort()) là thuật toán hybrid: tìm các đoạn đã sắp xếp (runs) trong dữ liệu, merge bằng merge sort. Best case O(n) khi đã sắp xếp. Average/worst O(n log n). Rất hiệu quả trên dữ liệu thực tế có sẵn 'tính cục bộ'."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sắp xếp 1 triệu số nguyên nhỏ (0-1000). Thuật toán nào là lựa chọn tốt nhất?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Quick sort" },
+        { "id": "b", "text": "Counting sort hoặc Radix sort — O(n + k) = O(n)" },
+        { "id": "c", "text": "Merge sort" },
+        { "id": "d", "text": "Selection sort" }
+      ],
+      "correctKey": "b",
+      "explanation": "Counting sort: k = 1001 (giá trị lớn nhất). O(n + k) = O(1,000,000 + 1,001) ≈ O(n). Cực kỳ nhanh vì không so sánh. Radix sort cũng tốt. Quick/merge/selection sort đều chậm hơn cho bài toán có giới hạn giá trị này."
+    }
+  ]
+}

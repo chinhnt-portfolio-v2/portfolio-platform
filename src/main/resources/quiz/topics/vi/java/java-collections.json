@@ -1,0 +1,330 @@
+{
+  "topicSlug": "java-collections",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa List, Set và Map trong Java Collections Framework là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "List: ordered collection cho phép duplicates theo insertion order; Set: unordered collection không cho phép duplicates; Map: key-value pairs với keys là duy nhất, values có thể duplicate" },
+        { "id": "b", "text": "List và Set giống nhau; Map là kiểu duy nhất" },
+        { "id": "c", "text": "Set lưu trữ sorted elements; List lưu trữ unsorted" },
+        { "id": "d", "text": "Map không phải là một phần của Collections Framework" }
+      ],
+      "correctKey": "a",
+      "explanation": "List (ArrayList, LinkedList) duy trì thứ tự insertion và cho phép duplicates. Set (HashSet, TreeSet) không cho phép duplicates. Map (HashMap, TreeMap) lưu trữ key-value pairs — keys phải duy nhất, values có thể duplicate. Map không mở rộng Collection interface."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa ArrayList và LinkedList là gì? Khi nào nên dùng cái nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ArrayList dùng mảng động — truy cập theo index O(1) nhưng thêm/xóa ở giữa tốn chi phí cao (phải shift elements); LinkedList dùng doubly-linked list — thêm/xóa O(1) ở đầu/cuối nhưng truy cập theo index O(n)" },
+        { "id": "b", "text": "ArrayList và LinkedList hoàn toàn giống nhau về hiệu năng" },
+        { "id": "c", "text": "LinkedList truy cập theo index nhanh hơn ArrayList" },
+        { "id": "d", "text": "ArrayList không thể chứa null values" }
+      ],
+      "correctKey": "a",
+      "explanation": "ArrayList: random access O(1) nhưng insertion/deletion ở giữa O(n) vì cần shift. LinkedList: insertion/deletion O(1) ở đầu/cuối, nhưng random access O(n) vì phải traverse từ đầu. Dùng ArrayList khi cần truy cập index thường xuyên. Dùng LinkedList khi cần thêm/xóa ở đầu/cuối thường xuyên hoặc làm Queue."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "HashMap trong Java sử dụng phương thức nào để so sánh keys khi tìm kiếm?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "equals() để so sánh nội dung; hashCode() để xác định bucket" },
+        { "id": "b", "text": "Chỉ dùng hashCode()" },
+        { "id": "c", "text": "Chỉ dùng equals()" },
+        { "id": "d", "text": "Dùng == để so sánh keys" }
+      ],
+      "correctKey": "a",
+      "explanation": "HashMap dùng cả hashCode() (để tìm bucket nhanh) và equals() (để xác nhận chính xác key trong bucket). Hai objects có equals() = true phải có cùng hashCode(). Override hashCode() mà không override equals() (hoặc ngược lại) gây ra HashMap hoạt động sai."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "HashMap cho phép null key không? HashMap có đảm bảo thứ tự không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "HashMap cho phép đúng một null key và nhiều null values; HashMap không đảm bảo thứ tự và thứ tự có thể thay đổi theo thời gian" },
+        { "id": "b", "text": "HashMap không cho phép null key hoặc null value" },
+        { "id": "c", "text": "HashMap đảm bảo thứ tự insertion" },
+        { "id": "d", "text": "HashMap chỉ cho phép một null value duy nhất" }
+      ],
+      "correctKey": "a",
+      "explanation": "HashMap cho phép đúng một null key (vì keys là duy nhất) và nhiều null values. HashMap không đảm bảo thứ tự — nếu cần ordered map, dùng LinkedHashMap (insertion order) hoặc TreeMap (sorted order theo Comparable/Comparator)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "HashSet sử dụng cơ chế nào để đảm bảo không có duplicate elements?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "HashSet sử dụng hashCode() để xác định bucket và equals() để so sánh — một element chỉ được thêm nếu không có element nào với cùng hashCode và equals() trả về true đang tồn tại trong set" },
+        { "id": "b", "text": "HashSet duy trì một sorted list nội bộ để kiểm tra duplicates" },
+        { "id": "c", "text": "HashSet không kiểm tra duplicates — duplicates được tự động loại bỏ bởi JVM" },
+        { "id": "d", "text": "HashSet sử dụng == để so sánh" }
+      ],
+      "correctKey": "a",
+      "explanation": "HashSet sử dụng HashMap nội bộ để lưu trữ. Khi thêm một element, nó hashing và dùng equals() để xác nhận. Nếu hashCode() và equals() đều match, element bị coi là duplicate và không được thêm. Điều này có nghĩa custom classes phải override cả hashCode() và equals() đúng cách nếu muốn semantics 'equal' được hiểu đúng trong Set."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "HashMap có an toàn khi sử dụng từ nhiều threads đồng thời không?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "HashMap không phải thread-safe — sử dụng đồng thời có thể gây ra race conditions, loop vô hạn trong bucket traversal, hoặc inconsistent state. Dùng ConcurrentHashMap cho thread-safety hoặc Collections.synchronizedMap() để wrap" },
+        { "id": "b", "text": "HashMap là thread-safe và có thể dùng đồng thời từ nhiều threads" },
+        { "id": "c", "text": "Chỉ đọc HashMap từ nhiều threads là thread-safe" },
+        { "id": "d", "text": "HashMap tự động synchronization khi phát hiện nhiều threads" }
+      ],
+      "correctKey": "a",
+      "explanation": "HashMap không synchronized. Concurrent modification (một thread modify trong khi thread khác iterate) gây ConcurrentModificationException. Một số JDK cũ có thể gây loop vô hạn trong bucket traversal do rehash race. Giải pháp: ConcurrentHashMap (thread-safe và hiệu năng cao), Hashtable (legacy, synchronized nhưng chậm), hoặc Collections.synchronizedMap()."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa HashMap và Hashtable là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hashtable là synchronized (thread-safe) nhưng chậm hơn HashMap; Hashtable không cho phép null key hoặc null value; HashMap không synchronized và cho phép một null key. Đối với code hiện đại, ưu tiên ConcurrentHashMap thay vì Hashtable" },
+        { "id": "b", "text": "HashMap và Hashtable hoàn toàn giống nhau" },
+        { "id": "c", "text": "Hashtable nhanh hơn HashMap vì nó được synchronized" },
+        { "id": "d", "text": "HashMap không thể lưu trữ null values" }
+      ],
+      "correctKey": "a",
+      "explanation": "Hashtable là legacy class (pre-Collections), synchronized tại method level gây contention cao khi nhiều threads truy cập. HashMap (từ JDK 1.2) không synchronized, hiệu năng tốt hơn. Hashtable không cho phép null key/value; HashMap cho phép một null key. Với thread-safety, ConcurrentHashMap là lựa chọn hiện đại tốt hơn Hashtable."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "HashMap collision xảy ra khi nào và được xử lý như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Collision xảy ra khi hai keys khác nhau có cùng hashCode và map đến cùng một bucket. Xử lý: Linked list (JDK 7) hoặc balanced tree /红黑树 (JDK 8+) được dùng trong mỗi bucket để lưu trữ các entries có cùng hash" },
+        { "id": "b", "text": "Collision không thể xảy ra trong HashMap" },
+        { "id": "c", "text": "Collision được xử lý bằng cách ghi đè entry cũ" },
+        { "id": "d", "text": "Collision gây HashMap throw exception" }
+      ],
+      "correctKey": "a",
+      "explanation": "Hash collision là tình trạng hai keys khác nhau có cùng hashCode hoặc hashCode khác nhau nhưng cùng bucket index sau modulo. JDK 8+ dùng balanced tree thay vì linked list khi bucket có nhiều entries (từ 8 entries trở lên), giảm lookup từ O(n) xuống O(log n). TREEIFY_THRESHOLD và UNTREEIFY_THRESHOLD kiểm soát ngưỡng chuyển đổi."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "LinkedHashMap khác với HashMap như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "LinkedHashMap mở rộng HashMap nhưng duy trì doubly-linked list giữa các entries theo insertion order (hoặc access order với constructor accessOrder=true) — cho phép predictable iteration order" },
+        { "id": "b", "text": "LinkedHashMap nhanh hơn HashMap cho tất cả các operations" },
+        { "id": "c", "text": "LinkedHashMap không cho phép null key" },
+        { "id": "d", "text": "LinkedHashMap sử dụng Tree thay vì hash table" }
+      ],
+      "correctKey": "a",
+      "explanation": "LinkedHashMap thêm linked list nội bộ để duy trì thứ tự. Constructor LinkedHashMap(int initialCapacity, float loadFactor, boolean accessOrder): accessOrder=false (mặc định) = insertion order; accessOrder=true = access order (LRU cache pattern). Chi phí: thêm memory cho linked list pointers và overhead cho mỗi operation."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "TreeMap sử dụng cấu trúc dữ liệu nào bên trong và đảm bảo thứ tự gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "TreeMap sử dụng Red-Black Tree — đảm bảo entries được sorted theo keys sử dụng natural ordering (Comparable) hoặc custom Comparator được cung cấp khi khởi tạo. Các operations như lowerKey(), floorKey(), higherKey() có hiệu năng O(log n)" },
+        { "id": "b", "text": "TreeMap sử dụng Hash Table như HashMap" },
+        { "id": "c", "text": "TreeMap đảm bảo insertion order" },
+        { "id": "d", "text": "TreeMap không cho phép null key" }
+      ],
+      "correctKey": "a",
+      "explanation": "TreeMap dùng Red-Black Tree (self-balancing BST) đảm bảo O(log n) cho put, get, remove. Sorted order theo key's natural ordering hoặc supplied Comparator. Không cho phép null key nếu dùng natural ordering (vì null không comparable). Cung cấp các operations đặc biệt: lowerKey, floorKey, ceilingKey, higherKey, subMap, headMap, tailMap."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Iterator và ListIterator khác nhau như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Iterator chỉ duyệt forward một chiều (hasNext, next, remove); ListIterator mở rộng Iterator với bidirectional traversal (previous, hasPrevious), add/set/remove operations, và index access (nextIndex, previousIndex)" },
+        { "id": "b", "text": "Iterator chỉ dùng cho Set; ListIterator chỉ dùng cho List" },
+        { "id": "c", "text": "ListIterator nhanh hơn Iterator cho tất cả các operations" },
+        { "id": "d", "text": "Iterator và ListIterator giống nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "Iterator là generic cursor cho Collection hierarchy. ListIterator là subinterface chỉ cho List, hỗ trợ bidirectional traversal và modification. Dùng Iterator khi chỉ cần forward traversal hoặc khi duyệt any Collection. Dùng ListIterator khi cần điều hướng ngược hoặc modify list trong khi iterating."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "ConcurrentModificationException xảy ra khi nào và làm sao tránh được?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Xảy ra khi một collection được modify trong khi đang iterate bằng enhanced for-loop hoặc Iterator (fail-fast behavior). Tránh bằng: dùng Iterator.remove(), dùng ListIterator cho List modifications, dùng concurrent collections (CopyOnWriteArrayList), hoặc iterate trên một bản sao (snapshot)" },
+        { "id": "b", "text": "Chỉ xảy ra khi dùng HashMap" },
+        { "id": "c", "text": "ConcurrentModificationException không thể tránh được" },
+        { "id": "d", "text": "Chỉ xảy ra trong multi-threaded environment" }
+      ],
+      "correctKey": "a",
+      "explanation": "Fail-fast iterators kiểm tra modification count và throw CME nếu phát hiện collection bị modify ngoài iterator. Đây là safety check, không guaranteed. Tránh: dùng iterator.remove(), tạo snapshot trước khi iterate, hoặc dùng concurrent collections (ConcurrentHashMap, CopyOnWriteArrayList) được thiết kế cho concurrent access."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "PriorityQueue trong Java hoạt động như thế nào và khác với Queue thông thường?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PriorityQueue là một min-heap implementation — elements được ordered theo natural ordering hoặc supplied Comparator, không theo insertion order. peek()/poll() trả về element có priority cao nhất (nhỏ nhất theo mặc định)" },
+        { "id": "b", "text": "PriorityQueue giống Queue thông thường, chỉ khác tên gọi" },
+        { "id": "c", "text": "PriorityQueue đảm bảo FIFO ordering" },
+        { "id": "d", "text": "PriorityQueue không cho phép null elements" }
+      ],
+      "correctKey": "a",
+      "explanation": "PriorityQueue dùng min-heap (balanced binary tree) cung cấp O(log n) insert và poll. Không đảm bảo FIFO — thứ tự retrieval dựa trên priority. Null không được phép nếu không có Comparator. Constructor cho phép supply custom Comparator để định nghĩa priority. poll() remove element có priority cao nhất (nhỏ nhất theo mặc định)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa HashSet, LinkedHashSet và TreeSet là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "HashSet: unordered, sử dụng hash-based lookup O(1); LinkedHashSet: duy trì insertion order (dùng LinkedHashMap nội bộ); TreeSet: sorted order theo natural ordering hoặc Comparator, O(log n) lookup (dùng Red-Black Tree)" },
+        { "id": "b", "text": "Ba loại này giống nhau về cách hoạt động" },
+        { "id": "c", "text": "TreeSet nhanh hơn HashSet" },
+        { "id": "d", "text": "LinkedHashSet sử dụng Tree nội bộ" }
+      ],
+      "correctKey": "a",
+      "explanation": "HashSet: nhanh nhất, O(1) operations, không ordered. LinkedHashSet: O(1) với overhead, duy trì insertion order (hữu ích khi cần deduplication mà vẫn giữ thứ tự). TreeSet: O(log n), sorted order, cần elements comparable hoặc supply Comparator. Chọn dựa trên yêu cầu về ordering và hiệu năng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi nào nên dùng EnumSet thay vì HashSet?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "EnumSet dùng bitmap/bitset internals — hiệu năng cao hơn HashSet đáng kể cho enum keys, chiếm ít memory hơn, và duy trì natural enum ordering. Dùng EnumSet khi keys là enum types" },
+        { "id": "b", "text": "EnumSet không hỗ trợ null" },
+        { "id": "c", "text": "HashSet nhanh hơn EnumSet cho enum keys" },
+        { "id": "d", "text": "EnumSet là synchronized version của HashSet" }
+      ],
+      "correctKey": "a",
+      "explanation": "EnumSet dùng long values như bitset (mỗi bit đại diện cho một enum constant) — tất cả elements của một enum có cùng class, số lượng cố định. Hiệu năng: O(1) space và time, nhanh hơn HashSet đáng kể, iterable nhanh với iterator đi qua ordinals. Null không được phép. Vì enum count thường nhỏ, EnumSet rất efficient."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa fail-fast và fail-safe iterators là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Fail-fast: phát hiện concurrent modification và throw ConcurrentModificationException; fail-safe: iterate trên snapshot của collection tại thời điểm bắt đầu — modifications không affect iterator (e.g., ConcurrentHashMap, CopyOnWriteArrayList)" },
+        { "id": "b", "text": "Fail-fast nhanh hơn fail-safe" },
+        { "id": "c", "text": "Fail-safe chỉ hoạt động với ArrayList" },
+        { "id": "d", "text": "Fail-fast và fail-safe giống nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "Fail-fast iterators (HashMap, ArrayList) kiểm tra modification count và fail nhanh khi phát hiện concurrent modification. Fail-safe iterators (ConcurrentHashMap, CopyOnWriteArrayList) iterate trên snapshot hoặc independent copy — modifications không ảnh hưởng iteration. Fail-safe có overhead nhưng an toàn trong concurrent scenarios."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa CopyOnWriteArrayList và ArrayList là gì? Khi nào nên dùng?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CopyOnWriteArrayList là thread-safe, mỗi modification tạo bản sao mới của array nội bộ — iterations không bao giờ throw CME và không bao giờ observe modifications. Dùng cho scenarios hiếm gặp với read-heavy access và occasional writes (listeners, caches)" },
+        { "id": "b", "text": "CopyOnWriteArrayList nhanh hơn ArrayList cho write operations" },
+        { "id": "c", "text": "ArrayList là thread-safe" },
+        { "id": "d", "text": "CopyOnWriteArrayList không thể iterate" }
+      ],
+      "correctKey": "a",
+      "explanation": "CopyOnWriteArrayList mỗi write (add, set, remove) tạo bản sao mới của internal array — iterations operate trên snapshot, safe từ concurrent modification. Trade-off: write operations đắt (copy entire array) nên chỉ phù hợp cho read-heavy, write-occasional scenarios. Không phù hợp cho write-heavy workloads."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "IdentityHashMap khác với HashMap như thế nào về cách so sánh keys?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "IdentityHashMap dùng == (reference equality) thay vì equals() để so sánh keys — hai keys khác nhau nhưng equals() = true được coi là distinct entries. Useful cho serialization graphs, proxy patterns, hoặc maintain object identity across transformations" },
+        { "id": "b", "text": "IdentityHashMap dùng equals() như HashMap" },
+        { "id": "c", "text": "IdentityHashMap chỉ cho phép String keys" },
+        { "id": "d", "text": "IdentityHashMap và HashMap giống nhau" }
+      ],
+      "correctKey": "a",
+      "explanation": "IdentityHashMap dùng System.identityHashCode() (dựa trên object identity) và == để so sánh keys. Điều này khác với HashMap (dùng hashCode() và equals()). Useful khi cần reference equality semantics thay vì value equality. Không có giới hạn về số lượng entries (vì dùng array-based open addressing thay vì bucket). Use cases: object graph traversal, metadata tracking, debugging identity."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "WeakHashMap khác với HashMap như thế nào trong việc xử lý references?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "WeakHashMap giữ entries bằng weak references cho keys — khi key không có reference nào khác ngoài WeakHashMap, GC có thể reclaim entry đó. Dùng cho canonicalized mappings, caches tự dọn, hoặc registry patterns" },
+        { "id": "b", "text": "WeakHashMap tự động remove entries khi memory thấp" },
+        { "id": "c", "text": "WeakHashMap giữ keys bằng strong references như HashMap" },
+        { "id": "d", "text": "WeakHashMap chỉ hoạt động với String keys" }
+      ],
+      "correctKey": "a",
+      "explanation": "WeakHashMap keys được stored như WeakReference — khi GC phát hiện key không có strong/soft references khác, nó reclaim key, và WeakHashMap tự động remove entry đó. Useful cho: memoization với temporary keys, canonicalized mappings (intern pool), và memory-sensitive caches. Note: WeakHashMap chỉ áp dụng cho keys, không phải values."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Deque interface trong Java hỗ trợ những operations nào và được implement bởi những classes nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Deque = double-ended queue: hỗ trợ add/remove ở cả hai đầu. Implementations: ArrayDeque (resizable array, fast), LinkedList (doubly-linked list), BlockingDeque (thread-safe). Dùng làm Stack (LIFO) hoặc Queue (FIFO)" },
+        { "id": "b", "text": "Deque chỉ hỗ trợ operations ở một đầu" },
+        { "id": "c", "text": "Deque không có implementations trong JDK" },
+        { "id": "d", "text": "Deque chỉ hoạt động với primitive types" }
+      ],
+      "correctKey": "a",
+      "explanation": "Deque (Double-Ended Queue) hỗ trợ insertion và removal ở cả hai đầu: addFirst/addLast, removeFirst/removeLast, getFirst/getLast. ArrayDeque (JDK 7+, preferred over Stack và LinkedList cho Stack use case vì hiệu năng tốt hơn) và LinkedList implement Deque. Dùng ArrayDeque thay vì Stack để cải thiện hiệu năng."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "HashMap resize operation hoạt động như thế nào và tại sao nó tốn kém?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Khi HashMap đạt load factor threshold, nó tạo new array gấp đôi capacity và rehashes tất cả entries vào new buckets — O(n) operation là lý do chính gây performance spikes. Tốn kém vì phải recompute hash của mọi entry và redistribute" },
+        { "id": "b", "text": "Resize không tốn kém vì chỉ thêm một bucket mới" },
+        { "id": "c", "text": "Resize chỉ xảy ra một lần trong lifetime của HashMap" },
+        { "id": "d", "text": "Resize được thực hiện bất đồng bộ" }
+      ],
+      "correctKey": "a",
+      "explanation": "Resize (rehashing): khi size > capacity * loadFactor, HashMap doubles capacity và rehashes tất cả entries — O(n) gây latency spike. Default loadFactor = 0.75 là tradeoff giữa memory (lower = more buckets) và time (higher = fewer resizes). Pre-sizing với initialCapacity = (expectedSize / 0.75f) + 1.0f tránh resizes. ConcurrentHashMap tránh vấn đề này với per-segment resizing."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "HashMap collision resolution bằng Red-Black Tree (JDK 8+) tốt hơn Linked List như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Red-Black Tree cung cấp O(log n) worst-case cho operations trong bucket khi có nhiều collisions (JDK 7: LinkedList O(n)); treeification xảy ra khi bucket size >= 8 entries và UNTREEIFY_THRESHOLD = 6 quay về linked list" },
+        { "id": "b", "text": "Red-Black Tree có O(1) lookup" },
+        { "id": "c", "text": "Tree không được sử dụng trong HashMap" },
+        { "id": "d", "text": "LinkedList nhanh hơn Red-Black Tree" }
+      ],
+      "correctKey": "a",
+      "explanation": "JDK 8+ cải thiện HashMap từ LinkedList O(n) worst-case xuống Red-Black Tree O(log n) worst-case khi nhiều keys có cùng hash (hash collision attack mitigation). TREEIFY_THRESHOLD = 8 entries trigger conversion, UNTREEIFY_THRESHOLD = 6 trigger reversion. Red-Black tree là self-balancing BST đảm bảo logarithmic height."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Khi nào nên dùng HashMap vs TreeMap vs LinkedHashMap trong thực tế?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "HashMap: khi chỉ cần key-value lookup O(1) mà không cần ordering; TreeMap: khi cần sorted order hoặc range queries (subMap); LinkedHashMap: khi cần predictable iteration order (insertion hoặc access)" },
+        { "id": "b", "text": "Ba loại này hoán đổi cho nhau được" },
+        { "id": "c", "text": "Chỉ dùng HashMap cho mọi use case" },
+        { "id": "d", "text": "TreeMap luôn tốt hơn HashMap" }
+      ],
+      "correctKey": "a",
+      "explanation": "Chọn đúng loại Map dựa trên requirements: HashMap cho general-purpose O(1) lookup không ordering; TreeMap cho sorted keys, range queries, hoặc order-based operations; LinkedHashMap cho LRU caches (accessOrder=true) hoặc when insertion order matters trong iteration. Đánh giá tradeoff O(1) vs O(log n) và nhu cầu ordering."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa HashMap và ConcurrentHashMap về thread-safety là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "ConcurrentHashMap là thread-safe: dùng fine-grained locking (segment-level locking thay vì synchronized toàn bộ map như Hashtable), cho phép concurrent read operations và concurrent writes ở different segments. Get operations không blocked" },
+        { "id": "b", "text": "HashMap là thread-safe; ConcurrentHashMap không phải" },
+        { "id": "c", "text": "ConcurrentHashMap synchronized tất cả operations giống Hashtable" },
+        { "id": "d", "text": "HashMap nhanh hơn ConcurrentHashMap" }
+      ],
+      "correctKey": "a",
+      "explanation": "ConcurrentHashMap (JDK 5+) dùng fine-grained locking: các segments khác nhau có thể được locked đồng thời, cho phép high concurrency. JDK 8+ cải thiện với CAS operations và node-based locking thay vì segment-based, tăng concurrency hơn nữa. get() không cần locking (volatile reads). Với multi-threaded access, ConcurrentHashMap tốt hơn đáng kể so với Hashtable hoặc synchronized wrappers."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa HashMap và EnumMap về hiệu năng là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "EnumMap sử dụng primitive array nội bộ — truy cập O(1) với overhead cực thấp, an toàn về types (compile-time), và tất cả operations nhanh hơn HashMap đáng kể cho enum keys. Duyên vì enum count cố định tại compile time, array size được xác định trước" },
+        { "id": "b", "text": "EnumMap chậm hơn HashMap" },
+        { "id": "c", "text": "HashMap hiệu quả hơn EnumMap cho enum keys" },
+        { "id": "d", "text": "EnumMap là synchronized version của HashMap" }
+      ],
+      "correctKey": "a",
+      "explanation": "EnumMap dùng Object[] array với size = number of enum constants. Access: ordinal-based indexing = O(1) với direct array access — không hash computation, không collision resolution. Benefits: type safety tại compile time, faster iteration, lower memory. Đặc biệt hiệu quả khi enum có nhiều constants. Dùng EnumMap thay vì HashMap khi keys là enums."
+    }
+  ]
+}

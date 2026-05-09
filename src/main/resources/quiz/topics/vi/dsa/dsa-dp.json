@@ -1,0 +1,190 @@
+{
+  "topicSlug": "dsa-dp",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính chính làm cho một bài toán phù hợp với quy hoạch động?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Bài toán có thể chia thành các subproblems độc lập không overlap" },
+        { "id": "b", "text": "Bài toán có optimal substructure (lời giải tối ưu gồm các lời giải tối ưu của subproblems) và overlapping subproblems (cùng subproblem được giải nhiều lần)" },
+        { "id": "c", "text": "Bài toán yêu cầu lựa chọn tham lam ở mỗi bước" },
+        { "id": "d", "text": "Bài toán có thể giải bằng một lần duyệt qua dữ liệu" }
+      ],
+      "correctKey": "b",
+      "explanation": "DP áp dụng khi bài toán có: (1) optimal substructure — lời giải tối ưu chứa lời giải tối ưu của subproblems, và (2) overlapping subproblems — cùng subproblem lặp lại nhiều lần. Không có overlapping subproblems, memoization không có lợi."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Memoization trong quy hoạch động là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Lưu kết quả của các subproblems đã tính để khi subproblem đó lặp lại, lấy kết quả từ storage thay vì tính lại" },
+        { "id": "b", "text": "Xóa kết quả đã tính sau khi sử dụng để tiết kiệm bộ nhớ" },
+        { "id": "c", "text": "Nén dữ liệu dùng dictionary để giảm space complexity" },
+        { "id": "d", "text": "Sắp xếp subproblems theo thứ tự topological trước khi giải" }
+      ],
+      "correctKey": "a",
+      "explanation": "Memoization (top-down DP) cache kết quả function calls và trả về cached value cho các lần gọi sau với cùng arguments. Điều này chuyển đệ quy mũ (O(2^n)) thành O(n). Cache thường là hash map hoặc array. Gọi 'top-down' vì bắt đầu từ bài toán chính rồi đệ quy xuống subproblems."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian của thuật toán Fibonacci đệ quy thuần (không memoization) là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n)" },
+        { "id": "b", "text": "O(2^n)" },
+        { "id": "c", "text": "O(n log n)" },
+        { "id": "d", "text": "O(n!)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Fibonacci thuần: F(n) = F(n-1) + F(n-2). Cây đệ quy có hai nhánh ở mỗi node, cho khoảng 2^n nodes. F(2) được tính φ^(n-2) lần. Redundancy mũ này là lý do DP (memoization hoặc tabulation) cần thiết cho Fibonacci."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef fib(n, memo={}):\n    if n in memo: return memo[n]\n    if n <= 1: return n\n    memo[n] = fib(n-1, memo) + fib(n-2, memo)\n    return memo[n]\n\nprint(fib(6))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Fibonacci: F(0)=0, F(1)=1, F(n)=F(n-1)+F(n-2). Tính F(6): F(6)=F(5)+F(4)=8+5=13? Wait: F(0)=0, F(1)=1, F(2)=1, F(3)=2, F(4)=3, F(5)=5, F(6)=8. Kết quả: 8."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Tabulation trong quy hoạch động là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Sắp xếp dữ liệu dạng bảng tính" },
+        { "id": "b", "text": "Xây dựng bảng các lời giải subproblem từ dưới lên (từ base cases) rồi kết hợp chúng để giải các subproblem lớn hơn" },
+        { "id": "c", "text": "Dùng đệ quy và cache kết quả khi tính để tránh tính lại" },
+        { "id": "d", "text": "Loại bỏ các subproblems không đóng góp vào kết quả cuối cùng" }
+      ],
+      "correctKey": "b",
+      "explanation": "Tabulation (bottom-up DP) điền bảng theo thứ tự phụ thuộc, bắt đầu từ base cases và giải các subproblem lớn dần. Không cần đệ quy — cấu trúc bảng xác định thứ tự. Tránh overhead call stack."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp không gian của tính Fibonacci thứ n dùng memoization (top-down DP) là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(2^n)" },
+        { "id": "b", "text": "O(n)" },
+        { "id": "c", "text": "O(1)" },
+        { "id": "d", "text": "O(log n)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Memoized Fibonacci: cache lưu kết quả cho mỗi subproblem duy nhất từ F(0) đến F(n). Tối đa n+1 entries → O(n) space."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Ý tưởng cốt lõi của giải thuật 0/1 knapsack bằng quy hoạch động là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Thử tất cả subsets (2^n combinations)" },
+        { "id": "b", "text": "Với mỗi item, quyết định include/exclude; dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight_i] + value_i) nếu item vừa; dp table O(n×W) time và space" },
+        { "id": "c", "text": "Sắp xếp items theo value/weight và chọn tham lam" },
+        { "id": "d", "text": "Dùng hash map để lưu maximum value ở mỗi weight level" }
+      ],
+      "correctKey": "b",
+      "explanation": "0/1 knapsack: mỗi item lấy tối đa một lần. DP state dp[i][w] = max value dùng first i items với capacity w. Transition: skip (dp[i-1][w]) hoặc take (dp[i-1][w-w_i] + v_i) nếu vừa. Time: O(n×W), Space: O(n×W) hoặc O(W) với optimization."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef climb_stairs(n):\n    if n <= 2: return n\n    dp = [0] * (n + 1)\n    dp[1], dp[2] = 1, 2\n    for i in range(3, n + 1):\n        dp[i] = dp[i - 1] + dp[i - 2]\n    return dp[n]\n\nprint(climb_stairs(5))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "climb_stairs(n) giống Fibonacci(n+1). Base: dp[1]=1, dp[2]=2. dp[3]=3, dp[4]=5, dp[5]=8. 8 cách leo 5 bậc (1 hoặc 2 bước mỗi lần): (1,1,1,1,1), (1,1,1,2), (1,1,2,1), (1,2,1,1), (2,1,1,1), (2,2,1), (2,1,2), (1,2,2)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Recurrence relation cho tính số đường đi duy nhất trong lưới từ góc trên trái đến góc dưới phải (chỉ đi phải hoặc xuống) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "paths(m,n) = paths(m-1,n) × paths(m,n-1)" },
+        { "id": "b", "text": "paths(m,n) = paths(m-1,n) + paths(m,n-1)" },
+        { "id": "c", "text": "paths(m,n) = 2 × paths(m-1,n-1)" },
+        { "id": "d", "text": "paths(m,n) = (m+n)! / (m! × n!)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Grid path DP: đến cell (m,n) phải từ (m-1,n) hoặc (m,n-1). paths(m,n) = paths(m-1,n) + paths(m,n-1). Đây là Pascal's triangle recurrence. Kết quả đóng: C(m+n-2, m-1)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Bài toán LCS (Longest Common Subsequence) là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tìm substring liên tục dài nhất dùng hai con trỏ" },
+        { "id": "b", "text": "Tìm subsequence (không nhất thiết liên tục) dài nhất xuất hiện cùng thứ tự trong cả hai strings; dp[i][j] = dp[i-1][j-1]+1 nếu chars khớp, ngược lại max(dp[i-1][j], dp[i][j-1])" },
+        { "id": "c", "text": "Tìm shortest common supersequence" },
+        { "id": "d", "text": "Tương đương với longest palindromic subsequence" }
+      ],
+      "correctKey": "b",
+      "explanation": "LCS: subsequence = các phần tử theo thứ tự nhưng không nhất thiết liên tục. DP: nếu s1[i-1] == s2[j-1], dp[i][j] = dp[i-1][j-1] + 1. Ngược lại, dp[i][j] = max(dp[i-1][j], dp[i][j-1]). Time: O(mn), Space: O(mn) hoặc O(min(m,n))."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự đánh đổi chính giữa memoization (top-down) và tabulation (bottom-up) DP là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Memoization dùng nhiều space hơn nhưng nhanh hơn" },
+        { "id": "b", "text": "Memoization chỉ tính subproblems cần thiết (tránh tính thừa) nhưng dùng recursion stack space; tabulation tính tất cả subproblems (có thể tính thừa) nhưng không có overhead đệ quy" },
+        { "id": "c", "text": "Memoization yêu cầu biết thứ tự topological của subproblems" },
+        { "id": "d", "text": "Memoization luôn O(1) space; tabulation luôn O(n) space" }
+      ],
+      "correctKey": "b",
+      "explanation": "Top-down (memoization): cấu trúc đệ quy tự nhiên, chỉ tính subproblems thực sự cần. Bottom-up (tabulation): tính tất cả subproblems theo thứ tự, không overhead đệ quy, cache locality tốt hơn. Lựa chọn phụ thuộc bài toán."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Bài toán 0/1 knapsack có thể giải tối ưu bằng thuật toán tham lam chọn items theo tỷ lệ value/weight cao nhất. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Fractional knapsack (lấy phần nhỏ của items) giải được bằng tham lam. 0/1 knapsack (lấy nguyên items) KHÔNG giải được bằng tham lam. Counterexample: capacity=10, items: (value=10, weight=10) và (value=9, weight=9). Tham lam chọn item 2 trước (9/9=1), nhưng optimal là chọn item 1 cho value=10."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Quy hoạch động có thể áp dụng bất cứ khi nào bài toán có overlapping subproblems, bất kể có optimal substructure hay không. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Cả hai thuộc tính đều cần: (1) optimal substructure — lời giải tối ưu chứa lời giải tối ưu của subproblems, và (2) overlapping subproblems. Không có optimal substructure, caching subproblem results không dẫn đến lời giải toàn cục tối ưu."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef knapsack(weights, values, capacity):\n    n = len(weights)\n    dp = [[0] * (capacity + 1) for _ in range(n + 1)]\n    for i in range(1, n + 1):\n        for w in range(capacity + 1):\n            if weights[i-1] <= w:\n                dp[i][w] = max(dp[i-1][w], dp[i-1][w-weights[i-1]] + values[i-1])\n            else:\n                dp[i][w] = dp[i-1][w]\n    return dp[n][capacity]\n\nprint(knapsack([2, 3, 4, 5], [3, 4, 5, 6], 5))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "0/1 knapsack với capacity=5, items: (w=2,v=3), (w=3,v=4), (w=4,v=5), (w=5,v=6). Các combinations hợp lệ: (w=2,w=3) → v=7 (tối ưu). Maximum value = 7."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Thuộc tính optimal substructure trong DP là gì và tại sao nó cần thiết?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Optimal substructure nghĩa là subproblem lớn nhất phải được giải trước" },
+        { "id": "b", "text": "Optimal substructure nghĩa là lời giải tối ưu của toàn bộ bài toán có thể được xây dựng từ lời giải tối ưu của subproblems mà không cần xem lại chúng" },
+        { "id": "c", "text": "Optimal substructure nghĩa là tất cả subproblems có cùng giá trị tối ưu" },
+        { "id": "d", "text": "Optimal substructure nghĩa là DP recurrence luôn giảm kích thước bài toán theo hệ số cố định" }
+      ],
+      "correctKey": "b",
+      "explanation": "Optimal substructure: lời giải tối ưu của P chứa lời giải tối ưu của P1, P2..., Pk. Ví dụ: shortest path A→C qua B = shortest A→B + shortest B→C. Nếu sub-solutions không tối ưu, kết hợp không tối ưu. Cần thiết vì DP correctness dựa trên principle of optimality."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Bài toán House Robber và cách DP giải tối ưu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "rob[i] = max(rob[i-1], rob[i-2] + money[i]) — skip hoặc rob nhà này; O(n) time, O(1) space" },
+        { "id": "b", "text": "Thử tất cả 2^n subsets" },
+        { "id": "c", "text": "Sắp xếp theo giá trị và tham lam" },
+        { "id": "d", "text": "Dùng hash map để theo dõi" }
+      ],
+      "correctKey": "a",
+      "explanation": "House Robber: không thể rob hai nhà liền kề. Quyết định tại nhà i: skip (best = rob[i-1]) hoặc rob (best = money[i] + rob[i-2]). Recurrence: rob[i] = max(rob[i-1], rob[i-2] + money[i]). O(n) time, O(1) space với hai biến."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Độ phức tạp thời gian của DP 0/1 knapsack O(n×W) KHÔNG phải đa thức theo kích thước input. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "O(n×W) là pseudo-polynomial: W là một con số (không phải log của nó), nên input size là O(log W). Một thuật toán chạy trong O(n×W) là mũ trong bit-length của input. W=2^1000 → memory lớn và DP rất chậm. Điều này làm 0/1 knapsack NP-hard."
+    }
+  ]
+}

@@ -1,0 +1,135 @@
+{
+  "topicSlug": "spring-boot",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Ưu điểm chính của constructor injection so với field injection @Autowired là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Constructor injection nhanh hơn vì bỏ qua dependency resolution của Spring" },
+        { "id": "b", "text": "Constructor injection làm dependencies trở nên rõ ràng và tạo ra các đối tượng immutable, có thể test mà không cần annotation Spring-specific" },
+        { "id": "c", "text": "@Autowired field injection đã bị deprecated trong Spring 6.x, nên constructor injection là lựa chọn duy nhất" },
+        { "id": "d", "text": "Field injection cho phép circular dependencies mà constructor injection không thể giải quyết" }
+      ],
+      "correctKey": "b",
+      "explanation": "Constructor injection tạo ra dependencies immutable (final fields), làm contract trở nên rõ ràng trong signature của class/phương thức, và cho phép unit test đơn giản mà không cần Spring context — chỉ cần `new` class với mocks. Field injection ẩn dependencies, bỏ qua tính immutable, và làm test khó khăn hơn. Phương án A sai (không có sự khác biệt về tốc độ). Phương án C sai (field injection vẫn hoạt động, chỉ không được khuyến khích). Phương án D ngược lại: field injection che giấu circular dependencies chứ không giải quyết chúng."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Annotation nào nên dùng để định nghĩa một class xử lý business logic và transaction boundaries?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@Component — Spring-managed bean tổng quát cho mọi mục đích" },
+        { "id": "b", "text": "@Service — đánh dấu ngữ nghĩa class là service layer với business logic" },
+        { "id": "c", "text": "@Repository — đánh dấu class là data access component" },
+        { "id": "d", "text": "@Controller — dùng cho request handling ở web layer" }
+      ],
+      "correctKey": "b",
+      "explanation": "@Service là một @Component chuyên biệt với ý nghĩa ngữ nghĩa: nó biểu thị một class service layer đóng gói business logic và thường nằm giữa controllers và repositories. Về chức năng, nó giống @Component (đều là singleton-scoped Spring beans), nhưng stereotype giúp tổ chức code và targeting AOP. @Component quá tổng quát. @Repository mang ngữ nghĩa DataAccessException translation. @Controller cho web layer."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Cấu hình application.properties này làm gì?\n\nspring.datasource.url=jdbc:postgresql://localhost:5432/mydb\nspring.datasource.username=admin\nspring.datasource.password=secret",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Tự động cấu hình HikariCP connection pool với các credentials được cung cấp" },
+        { "id": "b", "text": "Chỉ định connection URL và credentials; DataSource bean phải được tạo thủ công" },
+        { "id": "c", "text": "Tạo Tomcat connection pool với cấu hình mặc định tương đương HikariCP" },
+        { "id": "d", "text": "Bị bỏ qua trừ khi thêm @EnableConfigurationProperties vào main class" }
+      ],
+      "correctKey": "a",
+      "explanation": "Auto-configuration của Spring Boot tự động tạo HikariCP DataSource bean sử dụng các properties spring.datasource.* — không cần @Bean rõ ràng. Spring Boot 2.x chuyển default pool từ Tomcat sang HikariCP. Phương án B sai vì auto-configuration xử lý việc tạo bean. Phương án C sai khi nhầm lẫn hai pool implementation. Phương án D sai; @EnableConfigurationProperties dùng cho custom configuration properties, không phải cho datasource built-in."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "HTTP method nào về mặt ngữ nghĩa phù hợp để cập nhật một resource một phần?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "PUT — thay thế toàn bộ resource" },
+        { "id": "b", "text": "PATCH — áp dụng cập nhật một phần vào resource" },
+        { "id": "c", "text": "POST — tạo resource mới dưới URI đã cho" },
+        { "id": "d", "text": "OPTIONS — trả về các operations được phép trên resource" }
+      ],
+      "correctKey": "b",
+      "explanation": "PATCH được thiết kế cho cập nhật một phần — request body chỉ chứa các fields cần thay đổi. PUT là idempotent và dùng cho thay thế toàn bộ (gửi đầy đủ resource). Trên thực tế, nhiều API dùng PUT cho cả hai, nhưng về ngữ nghĩa thì PATCH đúng cho cập nhật một phần. POST tạo resources tại URI do server xác định hoặc xử lý một action; nó không idempotent cũng không thay thế resource. OPTIONS tiết lộ capabilities nhưng không thay đổi gì."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Propagation level nào của @Transactional gây ra một transaction mới được tạo nếu một transaction đã tồn tại?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "REQUIRED (mặc định) — tham gia transaction hiện có hoặc tạo một transaction mới" },
+        { "id": "b", "text": "REQUIRES_NEW — luôn suspend transaction hiện có và tạo một transaction mới" },
+        { "id": "c", "text": "MANDATORY — yêu cầu transaction hiện có hoặc ném exception" },
+        { "id": "d", "text": "NESTED — tạo savepoint trong transaction hiện tại" }
+      ],
+      "correctKey": "a",
+      "explanation": "REQUIRED là propagation mặc định. Nếu transaction tồn tại, method tham gia nó; nếu không, Spring tạo một cái mới. REQUIRES_NEW (B) luôn tạo transaction mới, suspend cái ngoài — hữu ích cho các operations độc lập. MANDATORY (C) fail nếu không có transaction. NESTED (D) dùng JDBC savepoints để lồng sub-transaction trong outer (cần JPA/JDBC savepoint support). Điểm khác biệt chính giữa REQUIRED và REQUIRES_NEW là behavior về suspend."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "@Configuration classes được xử lý qua CGLIB proxy nhằm mục đích gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "CGLIB bật kiểm tra bảo mật bytecode-level trên các configuration classes" },
+        { "id": "b", "text": "CGLIB cho phép các lời gọi @Bean method trong cùng @Configuration class trả về các singleton instances đã được cache thay vì re-execute method body" },
+        { "id": "c", "text": "CGLIB compile các @Configuration classes trước thời điểm chạy để startup nhanh hơn" },
+        { "id": "d", "text": "CGLIB proxies bắt buộc để deserialize JSON thành Java objects trong REST controllers" }
+      ],
+      "correctKey": "b",
+      "explanation": "Spring bọc mỗi @Configuration class trong một CGLIB subclass tại runtime. Subclass này intercept các @Bean method calls. Interception đảm bảo rằng gọi `userService()` trong cùng @Configuration class trả về singleton bean đã được tạo ở lần gọi đầu — không phải một object mới từ việc re-execute method body. Điều này được gọi là 'configuration class enhancement'. Không có CGLIB, gọi `new UserService()` bên trong một @Bean khác sẽ tạo một instance riêng biệt, phá vỡ singleton semantics. Đây không phải về security, compile-time optimization, hay serialization."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Annotation Spring Data JPA nào đúng để ánh xạ một one-to-many relationship một chiều trong đó child là owning side?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@OneToMany trên parent với mappedBy trỏ đến foreign key column trong child entity" },
+        { "id": "b", "text": "@ManyToOne trên child entity tham chiếu đến primary key column của parent" },
+        { "id": "c", "text": "@JoinColumn trên parent để đặt tên foreign key column trong child table" },
+        { "id": "d", "text": "Cả B và C — @ManyToOne trên child + @JoinColumn(name = \"...\") để chỉ định FK column" }
+      ],
+      "correctKey": "d",
+      "explanation": "Trong one-to-many một chiều mà child là owning side, đặt @ManyToOne + @JoinColumn trên child entity. @JoinColumn chỉ định tên foreign key column trong child table (owning side). Parent entity chỉ có field List<Child> đơn giản — không cần inverse @OneToMany (đó là bidirectional). Phương án A mô tả inverse side của bidirectional mapping. Phương án C một mình thì không đủ (cần @ManyToOne trên child). Owning side xác định Hibernate lưu FK ở đâu."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Trong Spring Security, thứ tự đúng của các filters trong default filter chain cho một JWT-based stateless API là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "SessionCreationFilter → JwtAuthenticationFilter → AuthorizationFilter → UsernamePasswordAuthenticationFilter" },
+        { "id": "b", "text": "AuthorizationFilter → JwtAuthenticationFilter → ExceptionHandlingFilter → UsernamePasswordAuthenticationFilter" },
+        { "id": "c", "text": "SecurityContextPersistenceFilter → BearerTokenAuthenticationFilter → AuthorizationFilter" },
+        { "id": "d", "text": "WsSecurityFilter → Saml2AuthenticationFilter → OAuth2AuthorizationFilter" }
+      ],
+      "correctKey": "c",
+      "explanation": "Spring Security 5+ sử dụng một filter chain có thứ tự cụ thể. Với stateless JWT (Bearer token) API: SecurityContextPersistenceFilter chạy trước (load security context rồi clear), BearerTokenAuthenticationFilter extract và validate JWT từ Authorization header, AuthorizationFilter kiểm tra access rules. Phương án A đảo thứ tự và chứa UsernamePasswordAuthenticationFilter (form-login, không áp dụng cho pure JWT API). Phương án B đặt AuthorizationFilter trước (cần authenticated context trước). Phương án D mô tả WS-Federation/SAML/OAuth2 login flows, không phải stateless JWT bearer tokens."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "@EnableCaching có mục đích gì và Spring quản lý cache eviction như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "@EnableCaching tạo ConcurrentHashMap cache trong bộ nhớ tự động; eviction phải thủ công qua CacheManager.clear()" },
+        { "id": "b", "text": "@Cacheable intercept các method calls và lưu kết quả vào cache (ví dụ: Caffeine, Redis); @CacheEvict loại bỏ entries trước hoặc sau method execution" },
+        { "id": "c", "text": "@EnableCaching đồng bộ các method calls qua JVM instances dùng JGroups; @CacheEvict broadcast invalidation messages" },
+        { "id": "d", "text": "@Cacheable chạy đồng bộ — method thực thi và kết quả được lưu; @CacheEvict chạy bất đồng bộ trong một thread riêng" }
+      ],
+      "correctKey": "b",
+      "explanation": "@EnableCaching bật Spring's cache abstraction, cho phép @Cacheable (đọc từ cache trước method call), @CacheEvict (loại bỏ entries — trước hoặc sau via `beforeInvocation`), và @CachePut (cập nhật mà không ảnh hưởng return value). Spring tích hợp với Redis, Caffeine, EhCache, v.v. qua CacheManager. Phương án A: ConcurrentHashMap chỉ được dùng nếu không có cache provider nào được cấu hình — không phải production-ready. Phương án C sai khi mô tả JGroups-based distributed caching. Phương án D sai vì @CacheEvict đồng bộ; eviction bất đồng bộ gây race conditions."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Spring Boot actuator endpoint nào dùng để kiểm tra health của các dependencies bên ngoài (ví dụ: database, Redis) như một phần của liveness/readiness probe?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "/actuator/beans — liệt kê tất cả Spring beans và dependency graph" },
+        { "id": "b", "text": "/actuator/health — tổng hợp các health indicators bao gồm DataSource, Redis, disk space; expose trạng thái liveness và readiness" },
+        { "id": "c", "text": "/actuator/httptrace — ghi lại các HTTP request/response exchanges gần đây để debug" },
+        { "id": "d", "text": "/actuator/info — trả về metadata tùy ý của ứng dụng được cấu hình qua management.info.* properties" }
+      ],
+      "correctKey": "b",
+      "explanation": "/actuator/health là endpoint chuẩn cho probes. Spring Boot tự động đăng ký health indicators cho các dependencies phổ biến (DataSource, Redis, MongoDB, v.v.). Với Spring Boot 2.3+, hỗ trợ Kubernetes probe được tích hợp sẵn: `management.endpoint.health.probes.enabled=true` expose /health/liveness và /health/readiness tách biệt khỏi /health tổng hợp. Mỗi probe có thể cấu hình độc lập phụ thuộc vào các indicators cụ thể. Phương án A liệt kê beans, không phải health. Phương án C trace HTTP calls để debug. Phương án D trả về custom info, không phải dependency health."
+    }
+  ]
+}

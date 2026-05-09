@@ -1,0 +1,197 @@
+{
+  "topicSlug": "dsa-hash",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian trung bình tìm kiếm một key trong hash table là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — hash function tính bucket index trực tiếp" },
+        { "id": "b", "text": "O(n)" },
+        { "id": "c", "text": "O(log n)" },
+        { "id": "d", "text": "O(n²)" }
+      ],
+      "correctKey": "a",
+      "explanation": "Hash table cung cấp O(1) trung bình: hash(key) → bucket index trong O(1), rồi tìm trong bucket đó. Giả định hash function tốt (phân bố đều) và load factor được kiểm soát. Trường hợp xấu nhất (tất cả keys cùng hash) → O(n)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Hash collision là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Collision xảy ra khi hai key khác nhau sinh ra cùng hash value và phải ánh xạ vào cùng một bucket" },
+        { "id": "b", "text": "Collision xảy ra khi hash table đầy" },
+        { "id": "c", "text": "Collision xảy ra khi hash function tạo giá trị ngoài range bucket hợp lệ" },
+        { "id": "d", "text": "Collision xảy ra khi hai thread truy cập đồng thời" }
+      ],
+      "correctKey": "a",
+      "explanation": "Hash collision là khi hash(k1) == hash(k2) cho hai key k1 ≠ k2. Collision là không thể tránh khỏi về mặt toán học. Hai chiến lược giải quyết: chaining (linked list/tree ở mỗi bucket) và open addressing (linear probing, quadratic probing, double hashing)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Load factor của hash table là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Giá trị lớn nhất có thể lưu trước khi lỗi" },
+        { "id": "b", "text": "Tỷ lệ n/m trong đó n là số phần tử và m là số bucket; kiểm soát khi nào resize để duy trì O(1)" },
+        { "id": "c", "text": "Tỷ lệ thời gian hash computation với bucket lookup" },
+        { "id": "d", "text": "Số bits dùng cho hash function output" }
+      ],
+      "correctKey": "b",
+      "explanation": "Load factor α = n/m: số phần tử chia số bucket. Khi α vượt ngưỡng (VD: 0.75), resize bảng (tăng gấp đôi bucket), rehash tất cả keys (O(n)), reset α. Chi phí amortized mỗi thao tác: O(1)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Kết quả của đoạn code sau là gì?\n\nmap = {}\nmap['a'] = 1\nmap['b'] = 2\nmap['a'] = 3\nmap['c'] = 4\nprint(len(map))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Hash maps lưu key duy nhất: map['a'] = 1 tạo entry (a,1). map['a'] = 3 cập nhật entry 'a', không tạo entry mới. Kết quả: {a:3, b:2, c:4} → 3 key-value pairs. len(map) = 3."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Sự khác biệt giữa hash map và hash set là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Hash set lưu key-value; hash map chỉ lưu key" },
+        { "id": "b", "text": "Hash set chỉ lưu key với O(1) kiểm tra membership; hash map lưu key-value với O(1) lookup theo key" },
+        { "id": "c", "text": "Hash set dùng chaining; hash map dùng open addressing" },
+        { "id": "d", "text": "Hash set là cấu trúc có thứ tự; hash map không có thứ tự" }
+      ],
+      "correctKey": "b",
+      "explanation": "Hash set: lưu key duy nhất, hỗ trợ add, remove, contains trong O(1) trung bình. Hash map: lưu (key, value), hỗ trợ O(1) lookup theo key. Ứng dụng: caching, deduplication, counting frequencies."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp trường hợp xấu nhất của hash table với hash function tốt và resize đúng là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1)" },
+        { "id": "b", "text": "O(n)" },
+        { "id": "c", "text": "O(log n)" },
+        { "id": "d", "text": "O(n log n)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trường hợp xấu nhất O(n) xảy ra khi tất cả keys cùng hash vào một bucket. Có thể bị khai thác bởi hash flooding attack. Giảm thiểu: universal hashing, tree-based buckets (Java HashMap chuyển sang red-black tree khi chain > 8)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuộc tính lý tưởng của hash function cho hiệu suất hash table là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Perfect hash: mỗi key ánh xạ đến bucket duy nhất không collision" },
+        { "id": "b", "text": "Hash function đều: phân bố keys đều trên các bucket, giảm thiểu collision và đảm bảo O(1) trung bình" },
+        { "id": "c", "text": "Hash function nhanh trong O(1)" },
+        { "id": "d", "text": "Hash function deterministic" }
+      ],
+      "correctKey": "b",
+      "explanation": "Hash function lý tưởng phân bố keys đều trên các bucket. Perfect hash function là trường hợp đặc biệt của uniform hashing (chỉ khi key set tĩnh và biết trước). Option D là yêu cầu cơ bản nhưng không phải thuộc tính hiệu suất lý tưởng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\nfrom collections import Counter\n\nwords = ['apple', 'banana', 'apple', 'cherry', 'banana', 'apple']\ncounter = Counter(words)\nprint(counter['apple'], counter['banana'], counter.get('grape', 0))\nprint(counter.most_common(2))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Counter trên ['apple',3×, 'banana',2×, 'cherry',1×]: counter['apple']=3, counter['banana']=2, counter.get('grape',0)=0. counter.most_common(2) trả về top 2: [('apple',3), ('banana',2)]."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Linear probing trong open addressing là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Linear probing dùng hash function thứ hai để tìm bucket thay thế" },
+        { "id": "b", "text": "Linear probing tìm kiếm tuần tự qua các bucket liền kề (h+1, h+2, ...) đến khi tìm slot trống; đơn giản nhưng gây primary clustering" },
+        { "id": "c", "text": "Linear probing chỉ hoạt động với hash sets" },
+        { "id": "d", "text": "Linear probing lưu hash value gốc cùng key" }
+      ],
+      "correctKey": "b",
+      "explanation": "Open addressing: tất cả phần tử lưu trong mảng. Khi collision ở bucket h, linear probing kiểm tra h+1, h+2... Primary clustering: các slot liền kề tạo thành cụm, làm chuỗi probe dài hơn. Xóa phức tạp (cần tombstone markers)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sự khác biệt giữa separate chaining và open addressing cho giải quyết hash collision?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Separate chaining lưu tất cả keys va chạm trong linked list ở mỗi bucket; open addressing lưu tất cả phần tử trong một mảng và tìm slot thay thế" },
+        { "id": "b", "text": "Separate chaining dùng O(1) memory thêm cho mỗi phần tử" },
+        { "id": "c", "text": "Open addressing nhanh hơn khi load factor thấp" },
+        { "id": "d", "text": "Separate chaining yêu cầu hash function output range khớp số bucket" }
+      ],
+      "correctKey": "a",
+      "explanation": "Chaining: mỗi bucket là container (linked list, tree). Collision lưu trong bucket. Deletion dễ. Memory: O(n+m). Open addressing: mảng cố định m slots, collision giải quyết bằng probing. Deletion phức tạp (tombstones). Chaining tốt hơn khi load factor cao."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef two_sum(nums, target):\n    seen = {}\n    for num in nums:\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], num]\n        seen[num] = num\n    return []\n\nprint(two_sum([2, 7, 11, 15], 9))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Hash set two-sum trên [2,7,11,15] target 9: i=0, num=2, complement=7, seen={} → not in seen → seen={2}; i=1, num=7, complement=2, seen={2} → 2 in seen → return [2, 7]. Kết quả: [2, 7]."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Double hashing là gì và tại sao nó được ưu tiên hơn linear probing?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Double hashing áp dụng hai hash function liên tiếp" },
+        { "id": "b", "text": "Double hashing dùng hash function thứ hai để tính probe interval (h(key) + i×h2(key)), loại bỏ primary và secondary clustering" },
+        { "id": "c", "text": "Double hashing dùng hai bucket cho mỗi key" },
+        { "id": "d", "text": "Double hashing yêu cầu hai hash tables riêng biệt" }
+      ],
+      "correctKey": "b",
+      "explanation": "Double hashing: collision tại h, probe sequence là h(key), h(key)+h2(key), h(key)+2×h2(key)... h2(key) phải khác 0. Điều này ngăn clustering vì probe sequence phụ thuộc cả primary hash và key. Linear probing gây primary clustering."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi hash table load factor tiệm cận 1.0, thời gian tìm kiếm trung bình suy giảm về O(n). Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Khi α = n/m tiệm cận 1, bucket đầy hơn. Trong chaining, chain length = α. Trong open addressing, probe sequences dài hơn (trung bình ≈ 1/(1-α)). Khi α ≈ 1, tìm kiếm có thể probe gần như tất cả slots. Resize khi α vượt ~0.75 giữ O(1) amortized."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Hash set và hash map đều dùng hash function và giải quyết collision giống nhau. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Chiến lược collision resolution (chaining vs open addressing) là thuộc tính của implementation, không phải loại cấu trúc dữ liệu. Java's HashMap và HashSet đều dùng chaining với red-black tree fallback. Python's dict dùng open addressing. Lựa chọn collision resolution độc lập với việc lưu keys hay key-value pairs."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Java 8's HashMap chuyển từ linked-list chaining sang red-black tree khi chain vượt 8 phần tử. Tại sao?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Red-black tree cung cấp O(1) lookup" },
+        { "id": "b", "text": "Red-black tree cung cấp O(log n) trường hợp xấu nhất cho bucket với nhiều collision thay vì O(n) linked-list, đảm bảo không bucket nào suy giảm thành O(n) dưới hash flooding attacks" },
+        { "id": "c", "text": "Red-black tree dùng ít bộ nhớ hơn linked list khi chain > 8" },
+        { "id": "d", "text": "Red-black tree nhanh hơn cho chain ngắn" }
+      ],
+      "correctKey": "b",
+      "explanation": "Khi chain vượt 8 phần tử, bucket chuyển thành red-black tree. Red-black tree cho O(log n) trường hợp xấu nhất thay vì O(n) linked-list, quan trọng cho bảo mật (chống hash flooding). Dưới 8 phần tử, linked list nhanh hơn."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Consistent hashing là gì và nó giải quyết vấn đề gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Consistent hashing dùng hash function cố định" },
+        { "id": "b", "text": "Consistent hashing sắp xếp bucket identifiers trên một vòng (mod 2³²), mỗi key ánh xạ đến bucket gần nhất theo chiều kim đồng hồ; khi bucket được thêm/xóa, chỉ keys gần vị trí bucket đó remap, giảm thiểu cache invalidation trong distributed systems" },
+        { "id": "c", "text": "Consistent hashing yêu cầu tất cả servers hash vào cùng range bucket" },
+        { "id": "d", "text": "Consistent hashing tạo cùng output trên các ngôn ngữ khác nhau" }
+      ],
+      "correctKey": "b",
+      "explanation": "Consistent hashing (Karger et al., 1997): sắp xếp bucket identifiers trên vòng tròn. Khi bucket được thêm/xóa, chỉ O(k/n) keys remap. Quan trọng cho CDN, distributed caches (DynamoDB, Cassandra). Virtual nodes cải thiện phân bố tải."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef group_anagrams(strs):\n    from collections import defaultdict\n    groups = defaultdict(list)\n    for s in strs:\n        key = tuple(sorted(collections.Counter(s).items()))\n        groups[key].append(s)\n    return list(groups.values())\n\nprint(group_anagrams(['eat', 'tea', 'tan', 'ate', 'nat', 'bat']))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "a",
+      "explanation": "Grouping anagrams: dùng tần suất ký tự làm key. 'eat', 'tea', 'ate' cùng có {e:1,a:1,t:1} → cùng key. 'tan','nat' cùng {t:1,a:1,n:1}. 'bat' có {b:1,a:1,t:1} → key riêng. Kết quả: ba nhóm anagrams."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Hash function tốt cho strings nên xử lý mỗi ký tự của string để phân bố đều. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Polynomial rolling hash: H(s) = s[0]×B^(n-1) + s[1]×B^(n-2) + ... (mod M). Xử lý mỗi ký tự đảm bảo hash phụ thuộc tất cả ký tự và vị trí của chúng. Dùng base B (VD: 31, 33, 37) là số nguyên tố > alphabet size."
+    }
+  ]
+}

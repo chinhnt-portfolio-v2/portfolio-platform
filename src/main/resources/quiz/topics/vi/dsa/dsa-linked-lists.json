@@ -1,0 +1,196 @@
+{
+  "topicSlug": "dsa-linked-lists",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian truy cập phần tử theo chỉ mục trong danh sách liên kết đơn là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) — các node lưu trữ địa chỉ bộ nhớ trực tiếp để truy cập ngẫu nhiên" },
+        { "id": "b", "text": "O(n) — phải duyệt từ head đến chỉ mục đích" },
+        { "id": "c", "text": "O(log n) — tìm kiếm nhị phân có thể điều hướng các node danh sách liên kết" },
+        { "id": "d", "text": "O(n²)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Danh sách liên kết đơn không có truy cập ngẫu nhiên theo chỉ mục. Để đến chỉ mục i, phải bắt đầu từ head và theo next i lần — một bước đi tuần tự. Đây là đánh đổi cơ bản: danh sách liên kết hy sinh truy cập O(1) để đổi lấy chèn/xóa O(1) ở vị trí đã biết."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian chèn node ở đầu danh sách liên kết đơn là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(n)" },
+        { "id": "b", "text": "O(1)" },
+        { "id": "c", "text": "O(log n)" },
+        { "id": "d", "text": "O(1) — node mới tự đặt ở trước không cần thao tác con trỏ" }
+      ],
+      "correctKey": "b",
+      "explanation": "Chèn đầu là thao tác hiệu quả nhất của danh sách liên kết: (1) tạo node mới, (2) newNode.next = head, (3) head = newNode. Không cần duyệt. Đây là lý do danh sách liên kết lý tưởng cho stack."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Độ phức tạp thời gian chèn node ở cuối danh sách liên kết đơn khi có con trỏ tail là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1)" },
+        { "id": "b", "text": "O(n)" },
+        { "id": "c", "text": "O(log n)" },
+        { "id": "d", "text": "O(1) — chèn cuối giống chèn đầu" }
+      ],
+      "correctKey": "a",
+      "explanation": "Với con trỏ tail (tail.next = null, head riêng), chèn cuối: (1) tail.next = newNode, (2) tail = newNode. O(1) không cần duyệt. Không có tail pointer, chèn cuối O(n) vì phải duyệt từ head."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Thuật toán Floyd's cycle detection (tortoise and hare) phát hiện chu trình như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dùng hash set để đánh dấu node đã thăm" },
+        { "id": "b", "text": "Con rùa di chuyển 1 bước, thỏ di chuyển 2 bước; nếu gặp nhau thì có chu trình" },
+        { "id": "c", "text": "Đảo ngược danh sách liên kết và kiểm tra head có đến được từ tail" },
+        { "id": "d", "text": "So sánh độ dài danh sách với vị trí node cuối" }
+      ],
+      "correctKey": "b",
+      "explanation": "Thuật toán Floyd: hai con trỏ ở head. Slow (tortoise) tăng 1 node mỗi bước, fast (hare) tăng 2 nodes. Trong chu trình độ dài c, hare sẽ đuổi kịp tortoise. Chúng gặp nhau sau O(n) bước. Space: O(1)."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Đảo ngược danh sách liên kết đơn KHÔNG thay đổi điều gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Giá trị dữ liệu trong mỗi node giữ nguyên thứ tự ban đầu" },
+        { "id": "b", "text": "Các đối tượng node — chỉ con trỏ next được nối lại" },
+        { "id": "c", "text": "Bộ nhớ sử dụng — không có node được cấp phát hoặc giải phóng" },
+        { "id": "d", "text": "Độ phức tạp thời gian — đảo ngược in-place vẫn là O(n)" }
+      ],
+      "correctKey": "d",
+      "explanation": "Đảo ngược in-place dùng ba con trỏ (prev, curr, next) và nối lại mỗi node's next. Không có node được copy hay tạo lại. Thuật toán duyệt mỗi node một lần → O(n) time, O(1) space. Node object không thay đổi, chỉ pointer."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Ưu điểm chính của danh sách liên kết đôi so với danh sách liên kết đơn là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1) truy cập ngẫu nhiên" },
+        { "id": "b", "text": "O(1) xóa node khi có tham chiếu node, vì có thể cập nhật cả prev.next và next.prev" },
+        { "id": "c", "text": "Duyệt nhanh hơn" },
+        { "id": "d", "text": "Bộ nhớ thấp hơn" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trong danh sách đơn, xóa node X cần truy cập node trước đó. Trong danh sách đôi, node X có cả .prev và .next; để xóa X: X.prev.next = X.next; X.next.prev = X.prev. Cả hai cập nhật đều O(1) khi có tham chiếu node. Phương án A sai. Phương án D sai (đôi dùng nhiều bộ nhớ hơn)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Khi gộp hai danh sách liên kết đã sắp xếp, thuật toán tối ưu là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Gộp đệ quy: so sánh heads, gắn cái nhỏ hơn, đệ quy tiếp — O(n+m) time, O(1) space" },
+        { "id": "b", "text": "Chuyển cả hai thành mảng, sắp xếp, chuyển về" },
+        { "id": "c", "text": "Nối danh sách hai vào danh sách một, rồi chạy merge sort" },
+        { "id": "d", "text": "Dùng hash map" }
+      ],
+      "correctKey": "a",
+      "explanation": "Gộp hai danh sách đã sắp xếp là thao tác O(n+m) kinh điển: so sánh l1.val và l2.val, gắn cái nhỏ hơn vào kết quả, tăng con trỏ đó, lặp lại. Phương án iterative dùng O(1) space; đệ quy dùng O(n+m) call stack."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef reverse_linked_list(head):\n    prev, curr = None, head\n    while curr:\n        nxt = curr.next\n        curr.next = prev\n        prev = curr\n        curr = nxt\n    return prev\n\ndef to_list(head):\n    result = []\n    while head:\n        result.append(head.val)\n        head = head.next\n    return result\n\nhead = build_list([1, 2, 3, 4, 5])\nto_list(reverse_linked_list(head))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Đảo ngược in-place cổ điển: prev bắt đầu None (đuôi mới), curr bắt đầu ở head. Mỗi bước: curr.next = prev đảo hướng liên kết. Sau n bước, curr là None và prev là head mới. Kết quả: [5, 4, 3, 2, 1]."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Độ phức tạp thời gian tìm node giữa của danh sách liên kết đơn dùng kỹ thuật fast/slow pointer là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1)" },
+        { "id": "b", "text": "O(n)" },
+        { "id": "c", "text": "O(n/2)" },
+        { "id": "d", "text": "O(log n)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Khởi tạo slow = head, fast = head. Mỗi bước: slow = slow.next, fast = fast.next.next. Khi fast đến cuối, slow ở giữa. Một lần duyệt O(n). Option C không đúng vì chỉ là một lần duyệt."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Độ phức tạp thời gian phát hiện chu trình dùng thuật toán Floyd là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "O(1)" },
+        { "id": "b", "text": "O(n)" },
+        { "id": "c", "text": "O(n²)" },
+        { "id": "d", "text": "O(log n)" }
+      ],
+      "correctKey": "b",
+      "explanation": "Trong thuật toán Floyd, hare di chuyển 2 bước mỗi bước của tortoise. Nếu có chu trình, hare sẽ đuổi kịp trong một lần duyệt chu trình. Tối đa O(n) bước tổng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Sentinel/dummy node trong thao tác danh sách liên kết là gì và nó giải quyết vấn đề gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Dummy node lưu giá trị mặc định để tránh null pointer" },
+        { "id": "b", "text": "Dummy node là placeholder ở đầu danh sách, loại bỏ edge cases cho chèn/xóa đầu/cuối với logic cập nhật con trỏ thống nhất" },
+        { "id": "c", "text": "Sentinel node đánh dấu cuối danh sách để kết thúc sớm" },
+        { "id": "d", "text": "Sentinel node cache độ dài danh sách" }
+      ],
+      "correctKey": "b",
+      "explanation": "Dummy/sentinel node đặt trước head thực (hoặc sau tail). Nó loại bỏ edge cases: thay vì xử lý riêng chèn đầu (cập nhật head) và chèn giữa, tạo dummy và luôn có 'previous node' để cập nhật."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Danh sách liên kết đơn có thể đảo ngược trong O(1) không gian phụ. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Cách ba con trỏ (prev, curr, next) đảo ngược in-place chỉ với ba biến con trỏ, bất kể kích thước danh sách. O(1) space. Cách đệ quy dùng O(n) call stack, không phải O(1)."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Tìm node thứ k từ cuối trong danh sách liên kết đơn luôn cần duyệt O(n) đầy đủ. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "false",
+      "explanation": "Kỹ thuật hai con trỏ giải trong O(n) time, O(1) space trong một lần duyệt: di chuyển con trỏ thứ nhất k bước, rồi di chuyển cả hai cho đến khi con trỏ thứ nhất đến cuối — con trỏ thứ hai giờ cách cuối k bước."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sau khi phát hiện chu trình bằng thuật toán Floyd, làm sao tìm node bắt đầu chu trình (entry point)?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "Đặt slow về head và di chuyển cả hai 1 bước; chúng gặp nhau ở entry point sau μ bước" },
+        { "id": "b", "text": "Đo độ dài chu trình c, rồi duyệt c bước từ head để tìm entry" },
+        { "id": "c", "text": "Dùng fast di chuyển 3x tốc độ" },
+        { "id": "d", "text": "Slow và fast luôn gặp nhau ở entry point" }
+      ],
+      "correctKey": "a",
+      "explanation": "Sau khi Floyd phát hiện (slow và fast gặp trong chu trình), đặt slow về head. Di chuyển cả hai 1 bước, chúng sẽ gặp đúng ở entry point. Chứng minh: khoảng cách từ head đến entry = μ, từ entry đến điểm gặp = λ; tortoise đã đi μ + λ, hare đã đi μ + λ + c. Vì hare = 2 × tortoise → μ = c - λ."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Kết quả của thuật toán sau là gì?\n\ndef odd_even_linked_list(head):\n    if not head: return None\n    odd, even, even_head = head, head.next, head.next\n    while even and even.next:\n        odd.next = even.next\n        odd = odd.next\n        even.next = odd.next\n        even = even.next\n    odd.next = even_head\n    return head\n\nto_list(odd_even_linked_list(build_list([1, 2, 3, 4, 5])))",
+      "questionType": "CODE_OUTPUT",
+      "correctKey": "b",
+      "explanation": "Thuật toán tách theo chỉ mục chẵn/lẻ: các node lẻ (1,3,5) theo thứ tự, rồi các node chẵn (2,4). Kết quả: [1→3→5→2→4]."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Recurrence relation nào mô tả độ phức tạp thời gian của đảo ngược đệ quy danh sách liên kết, và độ phức tạp không gian là bao nhiêu?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        { "id": "a", "text": "T(n) = T(n-1) + O(1) → O(n) time; space O(1)" },
+        { "id": "b", "text": "T(n) = 2T(n/2) + O(n) → O(n log n) time; space O(log n)" },
+        { "id": "c", "text": "T(n) = T(n-1) + O(n) → O(n²) time; space O(n)" },
+        { "id": "d", "text": "T(n) = T(n-1) + O(1) → O(n) time; space O(n) vì call stack" }
+      ],
+      "correctKey": "d",
+      "explanation": "Đảo ngược đệ quy: reverse(head.next) trả head mới của đoạn đã đảo; rồi gắn head hiện tại vào đuôi. Mỗi lần gọi làm O(1) (nối lại liên kết) → T(n) = T(n-1) + O(1) → O(n) time. Đệ quy sâu n → O(n) call stack space."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Cả danh sách liên kết đơn và đôi đều có O(n) trong trường hợp xấu nhất cho tìm kiếm. Đúng hay sai?",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Cả hai đều cần duyệt tuần tự từ head để tìm giá trị. Chỉ khác biệt: danh sách đôi cho phép O(1) xóa khi có tham chiếu node (có con trỏ prev), còn đơn cần O(n) để tìm node trước đó. Không có cấu trúc nào có O(log n) hoặc O(1) tìm kiếm."
+    }
+  ]
+}

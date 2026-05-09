@@ -1,0 +1,469 @@
+{
+  "topicSlug": "react-ecosystem",
+  "questions": [
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`createPortal` làm gì trong React?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "createPortal render một React subtree vào một DOM node khác — được dùng cho modals, tooltips, và dropdowns cần escape khỏi CSS overflow, z-index, hoặc stacking context constraints của parent"
+        },
+        {
+          "id": "b",
+          "text": "createPortal tạo một React application entry point mới"
+        },
+        {
+          "id": "c",
+          "text": "createPortal render một React component vào một React Context khác"
+        },
+        {
+          "id": "d",
+          "text": "createPortal là một React Native API để render vào một native view"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "createPortal(child, domNode) mount child React tree vào một DOM element khác. React subtree vẫn tham gia vào React's event system (events bubble up qua React tree, không phải DOM tree). Điều này quan trọng cho modals — chúng cần visual overlay mọi thứ nhưng phải ở trong React tree để event propagation và accessibility hoạt động đúng."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Error Boundary trong React là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Một class component implement componentDidCatch hoặc static getDerivedStateFromError để bắt JavaScript errors ở bất kỳ đâu trong child component tree và hiển thị một fallback UI thay vì crash toàn bộ app"
+        },
+        {
+          "id": "b",
+          "text": "Một try-catch block bên trong một useEffect hook"
+        },
+        {
+          "id": "c",
+          "text": "Một function component ngăn errors được throw"
+        },
+        {
+          "id": "d",
+          "text": "Một React DevTools plugin làm nổi bật các components có lỗi"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Error Boundaries bắt errors trong quá trình rendering, lifecycle methods, và constructors của toàn bộ tree bên dưới. Chúng là class components — function components không thể là error boundaries (chưa). Một error boundary KHÔNG bắt: event handlers (dùng try/catch ở đó), async code (setTimeout), server-side rendering, hoặc errors trong chính boundary đó. Chúng là equivalent của try/catch cho component tree trong React."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Component `<Link>` của React Router làm gì so với thẻ `<a>` thông thường?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Link sử dụng client-side navigation (cập nhật URL và render route mới mà không reload toàn bộ trang), trong khi <a href> trigger một full browser page reload"
+        },
+        {
+          "id": "b",
+          "text": "Link chỉ là phiên bản styled của thẻ <a>"
+        },
+        {
+          "id": "c",
+          "text": "Thẻ <a> thực hiện client-side navigation; Link trigger một full page reload"
+        },
+        {
+          "id": "d",
+          "text": "Link và <a> giống hệt nhau trong React Router v6"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "React Router's `<Link>` intercepts clicks và sử dụng History API để cập nhật URL và render matched route mà không có full page reload. Điều này preserves JavaScript state (React state, form inputs, scroll position) và enables SPA experience. Dùng `<a href>` bên trong một Router app gây ra full page reload, phá hủy React tree. Luôn dùng `<Link>` cho internal navigation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`react-hook-form` là gì và ưu điểm chính của nó so với controlled components với useState là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "react-hook-form quản lý form state bằng cách register inputs và track giá trị của chúng mà không trigger re-renders trên mỗi keystroke — làm forms nhanh hơn đáng kể so với useState-based controlled inputs cho các forms lớn hoặc phức tạp"
+        },
+        {
+          "id": "b",
+          "text": "react-hook-form tự động validate tất cả fields dùng Zod schemas"
+        },
+        {
+          "id": "c",
+          "text": "react-hook-form là một replacement cho HTML form elements"
+        },
+        {
+          "id": "d",
+          "text": "react-hook-form tự động lưu trữ form data vào localStorage"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "react-hook-form sử dụng uncontrolled inputs — nó đọc values trực tiếp từ DOM khi cần (trên submit hoặc validation), thay vì lưu trữ chúng trong React state trên mỗi thay đổi. Điều này có nghĩa là typing trong một field KHÔNG trigger re-renders, làm nó nhanh hơn đáng kể cho forms với nhiều fields. Nó vẫn re-renders cho errors, touched fields, và submission states, nhưng tránh được overhead của useState uncontrolled input trên mỗi keystroke."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "TanStack Query (React Query) làm gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "TanStack Query quản lý async/server state — nó handle caching, background refetching, deduplication, loading/error states, và pagination cho các API calls — thay thế manual useEffect + useState cho data fetching"
+        },
+        {
+          "id": "b",
+          "text": "TanStack Query là một CSS-in-JS library để style React components"
+        },
+        {
+          "id": "c",
+          "text": "TanStack Query thay thế nhu cầu về REST API"
+        },
+        {
+          "id": "d",
+          "text": "TanStack Query là một state management library cho local UI state"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "TanStack Query (trước đây là React Query) là tiêu chuẩn cho async state management. Nó cung cấp: caching (stale-while-revalidate), background refetching, optimistic updates, pagination/infinite scroll helpers, và devtools. Nó tách biệt server state (data từ API) khỏi client state (UI state), đây là một mental model hữu ích. Nó không phải là state management library cho local UI — đó vẫn là useState hoặc Zustand."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "React Portals cho phép events bubble qua React tree ngay cả khi DOM node ở ngoài parent component.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "Mặc dù render vào một DOM node khác, một portal vẫn là một phần của React component tree. Events từ portal bubble up qua React tree (không phải DOM tree), có nghĩa là parent components có thể listen to portal events như thể portal là một child thông thường. Điều này thiết yếu cho modals — parent close buttons và backdrop clicks vẫn hoạt động đúng qua React event propagation."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "`<Outlet>` làm gì trong React Router v6?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Outlet render matched child route's component — được dùng trong layout components để render current route's page trong khi giữ layout (header, sidebar) visible"
+        },
+        {
+          "id": "b",
+          "text": "Outlet render parent route's component"
+        },
+        {
+          "id": "c",
+          "text": "Outlet là một hook để truy cập route parameters"
+        },
+        {
+          "id": "d",
+          "text": "Outlet navigate đến một route mới một cách có lập trình"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Outlet được dùng trong nested routing — `<Outlet />` trong một parent route component render matched child route. Ví dụ: `/dashboard` layout render một sidebar và `<Outlet />`, cái mà render hoặc `/dashboard/settings` hoặc `/dashboard/profile` tùy thuộc vào URL. Đây là standard layout/nested routing pattern trong React Router v6."
+    },
+    {
+      "levelTag": "JUNIOR",
+      "questionText": "Mục đích của `<BrowserRouter>` trong React Router là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "BrowserRouter sử dụng HTML5 History API (pushState/replaceState) để giữ URL và UI đồng bộ mà không cần full page reload — router tiêu chuẩn cho web apps với real URLs"
+        },
+        {
+          "id": "b",
+          "text": "BrowserRouter buộc tất cả navigation sử dụng hash-based URLs"
+        },
+        {
+          "id": "c",
+          "text": "BrowserRouter render routes server-side"
+        },
+        {
+          "id": "d",
+          "text": "BrowserRouter chỉ được dùng cho React Native applications"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "BrowserRouter sử dụng `window.history` API — URLs sạch (`/dashboard`) hoạt động với bất kỳ static file server hoặc CDN nào. Các routers khác: `HashRouter` sử dụng `#/dashboard` (hữu ích cho servers serve một single index.html), `MemoryRouter` lưu URL trong memory (testing, native apps). Cho standard web apps, BrowserRouter là lựa chọn đúng."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Hook `useParams` trả về gì trong React Router v6?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Một object của các cặp key-value khớp với URL parameters được định nghĩa trong route path — ví dụ: cho route `/users/:userId`, useParams() trả về { userId: '42' }"
+        },
+        {
+          "id": "b",
+          "text": "Một array của tất cả URL segments"
+        },
+        {
+          "id": "c",
+          "text": "Một string của current path"
+        },
+        {
+          "id": "d",
+          "text": "Full URL query string"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "useParams trả về các dynamic segments của URL được matched bởi route. Cho `/users/:userId/posts/:postId`, useParams() trả về `{ userId: '123', postId: '456' }`. Đây là strings. Nếu một segment là optional hoặc có default, param có thể là undefined. Đây là cách tiêu chuẩn để truy cập URL-based parameters trong route components."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Mục đích của `useNavigate` trong React Router v6 là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "useNavigate trả về một function để navigate có lập trình — hỗ trợ cả string paths (navigate('/dashboard')) và options (navigate(-1) cho Go back) — thay thế useHistory hook từ v5"
+        },
+        {
+          "id": "b",
+          "text": "useNavigate fetch data từ một API endpoint"
+        },
+        {
+          "id": "c",
+          "text": "useNavigate render một Link component"
+        },
+        {
+          "id": "d",
+          "text": "useNavigate được dùng để định nghĩa new routes at runtime"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "useNavigate thay thế useHistory từ React Router v5. `const navigate = useNavigate()` — `navigate('/settings')` navigate đến path. `navigate(-1)` đi back. `navigate('/confirm', { replace: true })` replaces current entry trong history. Nó cho phép imperatively navigating sau events (form submit, button click với side effects) mà không render một Link."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Output của form này với react-hook-form là gì?\n\nconst { register, handleSubmit, formState: { errors } } = useForm({\n  defaultValues: { email: '', name: '' },\n});\n\nreturn (\n  <form onSubmit={handleSubmit(data => console.log(data))}>\n    <input {...register('email', { required: true })} />\n    {errors.email && <span>Email is required</span>}\n    <input {...register('name', { minLength: { value: 2, message: 'Too short' } })} />\n    {errors.name && <span>{errors.name.message}</span>}\n    <button type=\"submit\">Submit</button>\n  </form>\n);",
+      "questionType": "CODE_OUTPUT",
+      "options": [
+        {
+          "id": "a",
+          "text": "Một form validate email (required) và name (minLength 2) trước khi submit — errors hiển thị inline khi validation fail; successful submission log data object của form"
+        },
+        {
+          "id": "b",
+          "text": "Một form luôn log data trên submit bất kể validation"
+        },
+        {
+          "id": "c",
+          "text": "Một form ngăn tất cả user input cho đến khi form được validate"
+        },
+        {
+          "id": "d",
+          "text": "Một form tự động submit khi user tab ra khỏi một field"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "react-hook-form's `register` function connects HTML inputs đến form state qua ref. Validation rules được định nghĩa inline. `handleSubmit` được gọi trên form submit — nó chạy validation trước và chỉ gọi callback nếu validation pass. `errors` là một object keyed bởi field name với validation error. Đây là core reactive validation pattern: validation được declarative và tied to registration."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "TanStack Query's `staleTime` khác với `gcTime` (trước đây là `cacheTime`) như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "staleTime kiểm soát khi nào data được coi là stale (sẵn sàng cho refetch); gcTime kiểm soát bao lâu unused query data ở trong memory trước khi bị garbage collected — staleTime là về refetch strategy, gcTime là về memory management"
+        },
+        {
+          "id": "b",
+          "text": "Chúng là aliases cho cùng một thứ"
+        },
+        {
+          "id": "c",
+          "text": "staleTime cho mutations; gcTime cho queries"
+        },
+        {
+          "id": "d",
+          "text": "gcTime xác định khi nào một query được tự động refetch"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "staleTime (default: 0) — data được coi là stale ngay sau khi fetch. `staleTime: 5000` có nghĩa 'đừng refetch on mount nếu data dưới 5 giây tuổi'. gcTime (default: 5 min) — bao lâu unused query data ở trong cache trước khi bị remove. Đặt staleTime dài hơn để tránh unnecessary background refetches; đặt gcTime dựa trên bao lâu bạn muốn data survive unmount/remount."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "Giới hạn chính của Error Boundary liên quan đến event handlers là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Error Boundaries KHÔNG bắt errors được throw bên trong event handlers, async code (setTimeout, promises), hoặc server-side rendering — những thứ đó phải được handle bằng try/catch, không phải Error Boundaries"
+        },
+        {
+          "id": "b",
+          "text": "Error Boundaries không thể bắt errors trong class components"
+        },
+        {
+          "id": "c",
+          "text": "Error Boundaries chỉ bắt errors trong first render"
+        },
+        {
+          "id": "d",
+          "text": "Error Boundaries không thể được dùng với React.memo"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Error Boundaries bắt render-phase errors only — không bắt: (1) event handlers (dùng try/catch trong handler), (2) async code (dùng .catch() trên promises), (3) SSR errors, hoặc (4) errors được throw trong chính boundary đó. Cho event handlers, wrap handler body trong try/catch. Cho async operations, dùng .catch() hoặc một async error boundary wrapper."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "TanStack Query's `useQuery` hook tự động deduplicate requests. Nếu hai components gọi useQuery với cùng queryKey đồng thời, chúng chia sẻ cùng một request.",
+      "questionType": "TRUE_FALSE",
+      "correctKey": "true",
+      "explanation": "TanStack Query deduplicates concurrent requests với cùng queryKey. Nếu Component A và Component B cùng gọi `useQuery({ queryKey: ['users'], queryFn: fetchUsers })` cùng lúc, chỉ MỘT network request được thực hiện. Cả hai components nhận cùng data. Điều này prevents the 'waterfall' của duplicate fetches và là một key performance feature của library."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "`createPortal` thường được dùng để làm gì trong các React component libraries?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Modals, tooltips, dropdown menus, và notification toasts — components cần visual escape khỏi parent's DOM hierarchy (cho z-index, overflow, hoặc stacking context) trong khi vẫn ở trong React component tree"
+        },
+        {
+          "id": "b",
+          "text": "Tạo new browser tabs từ một React application"
+        },
+        {
+          "id": "c",
+          "text": "Render React components vào iframes cho cross-origin isolation"
+        },
+        {
+          "id": "d",
+          "text": "Server-side rendering của React components"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Modals là canonical portal use case. Không có portals, một modal bên trong một parent với `overflow: hidden` hoặc `z-index: 0` sẽ bị clipped hoặc hidden. Portals render đến `document.body` (hoặc một portal root div cụ thể), bypass parent's CSS constraints. Radix UI, MUI, và Headless UI đều dùng portals cho modal và dropdown primitives của họ."
+    },
+    {
+      "levelTag": "MIDDLE",
+      "questionText": "TanStack Query's `useMutation` trả về gì và khi nào bạn nên dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "useMutation trả về một mutate function và isPending state — dùng nó cho POST/PUT/DELETE requests modify server state, không phải cho data fetching (useQuery cho reads, useMutation cho writes)"
+        },
+        {
+          "id": "b",
+          "text": "useMutation là một alternative cho useQuery để fetch large datasets"
+        },
+        {
+          "id": "c",
+          "text": "useMutation tự động retry failed requests indefinitely"
+        },
+        {
+          "id": "d",
+          "text": "useMutation yêu cầu một GraphQL subscription"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "useMutation cho writes: `const { mutate, isPending } = useMutation({ mutationFn: createUser, onSuccess: () => queryClient.invalidateQueries({ queryKey: ['users'] }) })`. `mutate(newUser)` trigger mutation. isPending track whether mutation đang in flight. `onSuccess` là nơi bạn invalidate queries để trigger re-fetch — giữ server state (TanStack Query cache) đồng bộ với mutations là key pattern."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Sự khác biệt giữa `NavLink` và `Link` trong React Router v6 là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "NavLink là một Link apply một active CSS class (hoặc gọi một `isActive` render prop) khi route matches — được dùng cho navigation menus để highlight current route mà không cần track active state thủ công"
+        },
+        {
+          "id": "b",
+          "text": "NavLink navigate đến external URLs; Link cho internal routes"
+        },
+        {
+          "id": "c",
+          "text": "NavLink render một <nav> element; Link render một <a> element"
+        },
+        {
+          "id": "d",
+          "text": "NavLink yêu cầu authentication; Link không"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "NavLink tự động apply `className=\"active\"` (hoặc một custom `className`/`style` dựa trên `isActive`) khi current URL matches NavLink's `to` prop. Đây là cách idiomatic để build navigation menus trong React Router — active state được drive bởi URL tự động, không cần manual state tracking. `Link` không có active-state behavior."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Component `<Navigate>` của React Router v6 là gì và khi nào bạn dùng nó?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Navigate là một component redirect đến một route khác khi được render — được dùng để redirect unauthenticated users, redirect sau một action thành công, hoặc conditionally navigate dựa trên state"
+        },
+        {
+          "id": "b",
+          "text": "Navigate là một hook để đọc current URL"
+        },
+        {
+          "id": "c",
+          "text": "Navigate là một replacement cho useNavigate"
+        },
+        {
+          "id": "d",
+          "text": "Navigate render một link mở trong một tab mới"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "`<Navigate to=\"/login\" replace />` replaces current history entry và navigate đến /login. Nó là component-based alternative cho `useNavigate()`. Common use cases: protected routes (redirect đến /login nếu not authenticated), post-action redirects (redirect đến /dashboard sau login). Trong React Router v6, `<Navigate>` được ưu tiên hơn old v5 `<Redirect>`."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Function `loader` trong data fetching pattern của React Router v6 là gì?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Một async function được attach vào một route fetch data trước khi route renders — data có sẵn qua useLoaderData và được return server-side trên initial load, cho phép parallel data fetching mà không cần useEffect"
+        },
+        {
+          "id": "b",
+          "text": "Một function lazy-loads route's component bundle"
+        },
+        {
+          "id": "c",
+          "text": "Một CSS file style route component"
+        },
+        {
+          "id": "d",
+          "text": "Một React hook để monitor component rendering performance"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "React Router v6's loaders work với framework's SSR và data loading patterns (đặc biệt trong các frameworks như Remix). Một loader là một pure async function return data — React Router đảm bảo tất cả loaders cho matched routes run in parallel trước rendering. `useLoaderData()` trong component accesses loader's return. Điều này eliminates useEffect + useState + loading spinners cho route-level data fetching."
+    },
+    {
+      "levelTag": "SENIOR",
+      "questionText": "Optimistic updating trong TanStack Query là gì và nó hoạt động như thế nào?",
+      "questionType": "MULTIPLE_CHOICE",
+      "options": [
+        {
+          "id": "a",
+          "text": "Optimistic updates immediately update query cache với expected result trước khi server confirms — sau đó rollback nếu mutation fails — cung cấp instant UI feedback mà không cần đợi server round-trip"
+        },
+        {
+          "id": "b",
+          "text": "Optimistic updates delay mutation cho đến khi user confirms"
+        },
+        {
+          "id": "c",
+          "text": "Optimistic updates fetch data trước khi render component"
+        },
+        {
+          "id": "d",
+          "text": "Optimistic updates chỉ có sẵn cho mutations sử dụng WebSockets"
+        }
+      ],
+      "correctKey": "a",
+      "explanation": "Pattern: `useMutation({ onMutate: async (newData) => { await queryClient.cancelQueries({ queryKey }); const snapshot = queryClient.getQueryData(...); queryClient.setQueryData(..., optimisticData); return { snapshot }; }, onError: (err, newData, context) => { queryClient.setQueryData(..., context.snapshot); }, onSettled: () => { queryClient.invalidateQueries(...); } })`. onMutate runs trước request; onError rolls back; onSettled re-fetches để lấy server's authoritative answer."
+    }
+  ]
+}
