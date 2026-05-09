@@ -23,7 +23,7 @@ BEGIN
     FROM budget_jars
     WHERE user_id = NEW.user_id AND id != COALESCE(NEW.id, -1);
     IF total + NEW.percentage > 100 THEN
-        RAISE EXCEPTION 'Total jar percentage would exceed 100%% (current: %%, adding: %%)', total, NEW.percentage;
+        RAISE EXCEPTION 'Total jar percentage would exceed 100%% (current: %, adding: %)', total, NEW.percentage;
     END IF;
     RETURN NEW;
 END;
