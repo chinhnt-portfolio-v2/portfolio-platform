@@ -20,14 +20,42 @@ public class BudgetService {
         this.transactionRepository = transactionRepository;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<BudgetResponse> getBudgets(UUID userId, String period) {
         List<Budget> budgets = budgetRepository.findByUserIdAndPeriodWithCategory(userId, period);
+        // Auto-rollover: if no budgets exist for this period, clone from the latest prior period.
+        // Spending is computed per-period from transactions, so the new period starts fresh while
+        // history of older periods is preserved as separate rows.
+        if (budgets.isEmpty()) {
+            budgets = rolloverFromPreviousPeriod(userId, period);
+        }
         List<BudgetResponse> result = new ArrayList<>();
         for (Budget b : budgets) {
             result.add(toResponse(b, userId, period));
         }
         return result;
+    }
+
+    private List<Budget> rolloverFromPreviousPeriod(UUID userId, String targetPeriod) {
+        String prev = budgetRepository.findLatestPeriodBefore(userId, targetPeriod).orElse(null);
+        if (prev == null) return List.of();
+        List<Budget> source = budgetRepository.findByUserIdAndPeriodWithCategory(userId, prev);
+        List<Budget> created = new ArrayList<>();
+        for (Budget src : source) {
+            // Defensive: skip if a budget for (user, category, targetPeriod) somehow already exists
+            if (budgetRepository.findByUserIdAndCategoryIdAndPeriod(userId, src.getCategoryId(), targetPeriod).isPresent()) {
+                continue;
+            }
+            Budget clone = new Budget();
+            clone.setUserId(userId);
+            clone.setCategoryId(src.getCategoryId());
+            clone.setMonthlyLimit(src.getMonthlyLimit());
+            clone.setAlertThreshold(src.getAlertThreshold());
+            clone.setPeriod(targetPeriod);
+            created.add(budgetRepository.save(clone));
+        }
+        // Re-fetch with JOIN FETCH so category fields are populated
+        return budgetRepository.findByUserIdAndPeriodWithCategory(userId, targetPeriod);
     }
 
     @Transactional

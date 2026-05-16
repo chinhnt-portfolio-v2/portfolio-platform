@@ -20,6 +20,11 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
     @Query("select b from Budget b left join fetch b.category where b.id = :id")
     Optional<Budget> findByIdWithCategory(@Param("id") Long id);
 
+    // Latest period (YYYY-MM) strictly before :period that this user has budgets for.
+    // Used by auto-rollover: when user opens a month with no budgets, clone from this period.
+    @Query("select max(b.period) from Budget b where b.userId = :userId and b.period < :period")
+    Optional<String> findLatestPeriodBefore(@Param("userId") UUID userId, @Param("period") String period);
+
     Optional<Budget> findByUserIdAndCategoryIdAndPeriod(UUID userId, Long categoryId, String period);
 
     void deleteByIdAndUserId(Long id, UUID userId);
