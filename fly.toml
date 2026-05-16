@@ -10,9 +10,9 @@ primary_region = "sin"  # Singapore — gần VN nhất
 [http_service]
   internal_port = 8080
   force_https = true
-  auto_stop_machines = "stop"   # Tự tắt khi không có traffic → tiết kiệm chi phí
-  auto_start_machines = true    # Tự bật khi có request
-  min_machines_running = 0      # 0 = tắt hoàn toàn khi idle
+  auto_stop_machines = "off"    # Không tự tắt → luôn awake (no cold start)
+  auto_start_machines = true    # Tự bật khi có request (fallback)
+  min_machines_running = 1      # Luôn giữ 1 machine chạy 24/7
 
   [[http_service.checks]]
     grace_period = "2m"
