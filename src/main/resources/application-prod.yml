@@ -76,16 +76,6 @@ dev.chinh.portfolio.rate-limit:
   requests-per-minute: 60
   burst-capacity: 10
 
-# NLP / AI configuration (optional in prod — empty proxy disables NLP feature gracefully)
-app:
-  nlp:
-    proxy-url: ${NLP_PROXY_URL:}
-    api-key: ${NLP_API_KEY:}
-    model: ${NLP_MODEL:claude-haiku-4-5-20251001}
-    max-tokens: 500
-    rate-limit-per-user: 20
-    rate-limit-window-minutes: 60
-
 # GitHub webhook configuration - production requires secret
 github:
   webhook:
@@ -95,6 +85,14 @@ github:
 app:
   frontend:
     url: https://wallet.chinhnt.xyz
+  # NLP / AI configuration (optional in prod — empty proxy disables NLP feature gracefully)
+  nlp:
+    proxy-url: ${NLP_PROXY_URL:}
+    api-key: ${NLP_API_KEY:}
+    model: ${NLP_MODEL:claude-haiku-4-5-20251001}
+    max-tokens: 500
+    rate-limit-per-user: 20
+    rate-limit-window-minutes: 60
 
 # Logging Configuration - Production
 logging:
