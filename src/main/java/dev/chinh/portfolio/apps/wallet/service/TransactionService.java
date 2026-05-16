@@ -58,7 +58,7 @@ public class TransactionService {
             autoGroup.setWalletId(req.walletId());
             autoGroup.setTitle(req.groupTitle() != null ? req.groupTitle() : "Mua trả sau");
             autoGroup.setGroupType("BNPL");
-            autoGroup.setTotalAmount(BigDecimal.valueOf(req.amount()));
+            autoGroup.setTotalAmount(req.amount());
             autoGroup.setPaidAmount(BigDecimal.ZERO);
             autoGroup.setCurrency("VND");
             autoGroup.setStatus("OPEN");
@@ -90,7 +90,7 @@ public class TransactionService {
         tx.setWalletId(req.walletId());
         tx.setCategoryId(req.categoryId());
         tx.setGroupId(resolvedGroupId);
-        tx.setAmount(BigDecimal.valueOf(req.amount()));
+        tx.setAmount(req.amount());
         tx.setType(req.type());
         tx.setTxnType(txnType);
         tx.setNote(req.note());
@@ -100,15 +100,15 @@ public class TransactionService {
 
         // Update wallet balance
         BigDecimal delta = req.type().equals("INCOME")
-                ? BigDecimal.valueOf(req.amount())
-                : BigDecimal.valueOf(req.amount()).negate();
+                ? req.amount()
+                : req.amount().negate();
         wallet.setBalance(wallet.getBalance().add(delta));
         walletRepo.save(wallet);
 
         // If linked to a debt group, update paid amount (for INCOME = repayment)
         if (resolvedGroupId != null && req.type().equals("INCOME")) {
             debtGroupRepo.findByIdAndUserId(resolvedGroupId, userId).ifPresent(group -> {
-                BigDecimal newPaid = group.getPaidAmount().add(BigDecimal.valueOf(req.amount()));
+                BigDecimal newPaid = group.getPaidAmount().add(req.amount());
                 group.setPaidAmount(newPaid);
                 if (newPaid.compareTo(group.getTotalAmount()) >= 0) {
                     group.setStatus("SETTLED");
@@ -133,7 +133,7 @@ public class TransactionService {
         // Simplified — full implementation would reverse old balance delta first
         Transaction tx = txRepo.findByIdAndUserId(txId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
-        if (req.amount() != null) tx.setAmount(BigDecimal.valueOf(req.amount()));
+        if (req.amount() != null) tx.setAmount(req.amount());
         if (req.note() != null) tx.setNote(req.note());
         return toResponse(txRepo.save(tx));
     }

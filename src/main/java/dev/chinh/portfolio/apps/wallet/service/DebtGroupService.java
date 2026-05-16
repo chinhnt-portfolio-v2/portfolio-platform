@@ -66,7 +66,7 @@ public class DebtGroupService {
         var wallet = walletRepo.findByIdAndUserId(req.walletId(), userId)
                 .orElseThrow(() -> new EntityNotFoundException("Wallet not found"));
 
-        BigDecimal amount = BigDecimal.valueOf(req.amount());
+        BigDecimal amount = req.amount();
 
         // Deduct from wallet
         wallet.setBalance(wallet.getBalance().subtract(amount));

@@ -32,7 +32,7 @@ public class RecurringService {
         rule.setUserId(userId);
         rule.setWalletId(req.walletId());
         rule.setCategoryId(req.categoryId());
-        rule.setAmount(BigDecimal.valueOf(req.amount()));
+        rule.setAmount(req.amount());
         rule.setType(req.type());
         rule.setFrequency(req.frequency());
         rule.setStartDate(LocalDate.parse(req.startDate()));
@@ -54,7 +54,7 @@ public class RecurringService {
         }
         rule.setWalletId(req.walletId());
         rule.setCategoryId(req.categoryId());
-        rule.setAmount(BigDecimal.valueOf(req.amount()));
+        rule.setAmount(req.amount());
         rule.setType(req.type());
         rule.setFrequency(req.frequency());
         rule.setStartDate(LocalDate.parse(req.startDate()));
