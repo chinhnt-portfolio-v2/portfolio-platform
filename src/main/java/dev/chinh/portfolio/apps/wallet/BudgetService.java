@@ -14,10 +14,12 @@ public class BudgetService {
 
     private final BudgetRepository budgetRepository;
     private final TransactionRepository transactionRepository;
+    private final CategoryRepository categoryRepository;
 
-    public BudgetService(BudgetRepository budgetRepository, TransactionRepository transactionRepository) {
+    public BudgetService(BudgetRepository budgetRepository, TransactionRepository transactionRepository, CategoryRepository categoryRepository) {
         this.budgetRepository = budgetRepository;
         this.transactionRepository = transactionRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     @Transactional
@@ -116,8 +118,10 @@ public class BudgetService {
         int threshold = b.getAlertThreshold() != null ? b.getAlertThreshold() : 80;
         String status = pct >= 100 ? "exceeded" : pct >= threshold ? "warning" : "ok";
 
-        dev.chinh.portfolio.apps.wallet.Category cat = null;
-        try { cat = b.getCategory(); } catch (Exception ignored) {}
+        // Load Category directly via repository to avoid Hibernate session-cache returning
+        // an uninitialized proxy (the @JoinColumn is insertable=false/updatable=false on Budget,
+        // so the relation is read-only and the proxy isn't populated on save).
+        dev.chinh.portfolio.apps.wallet.Category cat = categoryRepository.findById(b.getCategoryId()).orElse(null);
 
         dev.chinh.portfolio.apps.wallet.dto.TransactionResponse.CategorySummary catSummary;
         if (cat != null) {
