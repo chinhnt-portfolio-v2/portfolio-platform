@@ -13,6 +13,13 @@ public interface BudgetRepository extends JpaRepository<Budget, Long> {
 
     List<Budget> findByUserIdAndPeriod(UUID userId, String period);
 
+    // Eager-load Category to avoid LazyInitializationException in toResponse
+    @Query("select b from Budget b left join fetch b.category where b.userId = :userId and b.period = :period")
+    List<Budget> findByUserIdAndPeriodWithCategory(@Param("userId") UUID userId, @Param("period") String period);
+
+    @Query("select b from Budget b left join fetch b.category where b.id = :id")
+    Optional<Budget> findByIdWithCategory(@Param("id") Long id);
+
     Optional<Budget> findByUserIdAndCategoryIdAndPeriod(UUID userId, Long categoryId, String period);
 
     void deleteByIdAndUserId(Long id, UUID userId);

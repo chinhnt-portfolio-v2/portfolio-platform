@@ -2,7 +2,7 @@ app = "chinhnt-portfolio-platform"
 primary_region = "sin"  # Singapore — gần VN nhất
 
 [build]
-  image = "ghcr.io/chinhnt-portfolio-v2/portfolio-platform:latest"
+  dockerfile = "Dockerfile"
 
 [env]
   PORT = "8080"

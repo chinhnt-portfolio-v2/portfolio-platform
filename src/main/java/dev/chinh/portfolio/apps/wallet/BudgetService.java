@@ -22,7 +22,7 @@ public class BudgetService {
 
     @Transactional(readOnly = true)
     public List<BudgetResponse> getBudgets(UUID userId, String period) {
-        List<Budget> budgets = budgetRepository.findByUserIdAndPeriod(userId, period);
+        List<Budget> budgets = budgetRepository.findByUserIdAndPeriodWithCategory(userId, period);
         List<BudgetResponse> result = new ArrayList<>();
         for (Budget b : budgets) {
             result.add(toResponse(b, userId, period));
@@ -46,7 +46,9 @@ public class BudgetService {
         }
         budget.setPeriod(req.period());
         Budget saved = budgetRepository.save(budget);
-        return toResponse(saved, userId, req.period());
+        // Re-fetch with JOIN FETCH so category fields are populated in the response
+        Budget hydrated = budgetRepository.findByIdWithCategory(saved.getId()).orElse(saved);
+        return toResponse(hydrated, userId, req.period());
     }
 
     @Transactional
@@ -62,7 +64,8 @@ public class BudgetService {
             budget.setAlertThreshold(req.alertThreshold());
         }
         Budget saved = budgetRepository.save(budget);
-        return toResponse(saved, userId, saved.getPeriod());
+        Budget hydrated = budgetRepository.findByIdWithCategory(saved.getId()).orElse(saved);
+        return toResponse(hydrated, userId, hydrated.getPeriod());
     }
 
     @Transactional
