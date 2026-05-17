@@ -37,7 +37,8 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
             "quiz.chinhnt.xyz",
             "chinh.dev",
             "wallet.chinh.dev",
-            "localhost"
+            "localhost",
+            "walletapp://"
     );
 
     public OAuth2AuthenticationSuccessHandler(JwtService jwtService, SessionService sessionService) {

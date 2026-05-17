@@ -39,7 +39,8 @@ public class OAuth2Controller {
             "quiz.chinhnt.xyz",
             "chinh.dev",
             "wallet.chinh.dev",
-            "localhost"
+            "localhost",
+            "walletapp://"
     );
 
     public OAuth2Controller(
