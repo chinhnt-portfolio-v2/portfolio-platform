@@ -140,28 +140,25 @@ public class BudgetService {
     }
 
     private BigDecimal calculateSpent(UUID userId, Long categoryId, String period) {
-        String[] parts = period.split("-");
-        int year = Integer.parseInt(parts[0]);
-        int month = Integer.parseInt(parts[1]);
-        LocalDate from = LocalDate.of(year, month, 1);
-        LocalDate toDate = from.withDayOfMonth(from.lengthOfMonth());
-        Instant fromInst = from.atStartOfDay().toInstant(ZoneOffset.UTC);
-        Instant toInst = toDate.plusDays(1).atStartOfDay().toInstant(ZoneOffset.UTC);
+        // Month boundaries in the user's timezone (UTC+7), not UTC — otherwise transactions near
+        // a month edge land in the wrong month. Centralized in DateParsing (shared with StatsService).
+        Instant fromInst = dev.chinh.portfolio.apps.wallet.util.DateParsing.monthStart(period);
+        Instant toInst = dev.chinh.portfolio.apps.wallet.util.DateParsing.monthEndExclusive(period);
 
         try {
             return transactionRepository.sumExpenseSince(userId, categoryId, fromInst, toInst);
         } catch (Exception e) {
-            // Fallback: manual calculation
+            // Fallback: manual calculation (same window + txn-type policy as the query above)
             List<dev.chinh.portfolio.apps.wallet.Transaction> all =
                     transactionRepository.findByUserIdAndCategoryIdOrderByDateDesc(
                             userId, categoryId, org.springframework.data.domain.Pageable.unpaged());
             BigDecimal total = BigDecimal.ZERO;
             for (dev.chinh.portfolio.apps.wallet.Transaction t : all) {
-                if ("EXPENSE".equals(t.getType()) && t.getDate() != null) {
-                    LocalDate d = t.getDate().atZone(ZoneOffset.UTC).toLocalDate();
-                    if (!d.isBefore(from) && !d.isAfter(toDate)) {
-                        total = total.add(t.getAmount());
-                    }
+                boolean countable = "EXPENSE".equals(t.getType())
+                        && (t.getTxnType() == null || "PRINCIPAL".equals(t.getTxnType()));
+                if (countable && t.getDate() != null
+                        && !t.getDate().isBefore(fromInst) && t.getDate().isBefore(toInst)) {
+                    total = total.add(t.getAmount());
                 }
             }
             return total;

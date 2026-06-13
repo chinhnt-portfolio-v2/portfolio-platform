@@ -97,7 +97,7 @@ class TransactionServiceTest {
                 .thenReturn(page);
 
         List<TransactionResponse> result =
-                service.listTransactions(USER, "EXPENSE", null, null, null, null, null, 0, 20);
+                service.listTransactions(USER, "EXPENSE", null, null, null, null, null, null, 0, 20);
 
         assertThat(result).hasSize(1);
         assertThat(result.get(0).type()).isEqualTo("EXPENSE");
@@ -111,7 +111,7 @@ class TransactionServiceTest {
         when(txRepo.findAll(ArgumentMatchers.<Specification<Transaction>>any(), any(Pageable.class)))
                 .thenReturn(new PageImpl<>(List.of()));
 
-        service.listTransactions(USER, "", null, null, null, null, "  ", 0, 20);
+        service.listTransactions(USER, "", null, null, null, null, null, "  ", 0, 20);
 
         verify(txRepo).findAll(ArgumentMatchers.<Specification<Transaction>>any(), any(Pageable.class));
     }

@@ -2,6 +2,8 @@ package dev.chinh.portfolio.apps.wallet.util;
 
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 
 /**
@@ -14,6 +16,23 @@ import java.time.ZoneOffset;
 public final class DateParsing {
 
     private DateParsing() {
+    }
+
+    /**
+     * Application timezone for month/period bucketing. The wallet user is in Vietnam (UTC+7);
+     * computing month boundaries in this zone (not UTC) keeps "spent this month" accurate for
+     * transactions near a month edge. Single-user app → a fixed zone is acceptable.
+     */
+    public static final ZoneId APP_ZONE = ZoneId.of("Asia/Ho_Chi_Minh");
+
+    /** Inclusive start instant of a {@code "YYYY-MM"} period, in {@link #APP_ZONE}. */
+    public static Instant monthStart(String period) {
+        return YearMonth.parse(period).atDay(1).atStartOfDay(APP_ZONE).toInstant();
+    }
+
+    /** Exclusive end instant of a {@code "YYYY-MM"} period (start of next month), in {@link #APP_ZONE}. */
+    public static Instant monthEndExclusive(String period) {
+        return YearMonth.parse(period).plusMonths(1).atDay(1).atStartOfDay(APP_ZONE).toInstant();
     }
 
     /**

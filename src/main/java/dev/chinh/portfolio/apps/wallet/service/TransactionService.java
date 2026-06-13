@@ -38,7 +38,7 @@ public class TransactionService {
     }
 
     public List<TransactionResponse> listTransactions(UUID userId, String type, Long walletId,
-                                                      Long groupId, String dateFrom, String dateTo,
+                                                      Long categoryId, Long groupId, String dateFrom, String dateTo,
                                                       String search, int page, int size) {
         var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
         Instant from = (dateFrom != null && !dateFrom.isBlank()) ? DateParsing.parseFlexibleInstant(dateFrom) : null;
@@ -52,6 +52,8 @@ public class TransactionService {
             spec = spec.and((root, q, cb) -> cb.equal(root.get("type"), type));
         if (walletId != null)
             spec = spec.and((root, q, cb) -> cb.equal(root.get("walletId"), walletId));
+        if (categoryId != null)
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("categoryId"), categoryId));
         if (groupId != null)
             spec = spec.and((root, q, cb) -> cb.equal(root.get("groupId"), groupId));
         if (from != null) {
@@ -77,27 +79,36 @@ public class TransactionService {
         var wallet = walletRepo.findByIdAndUserId(req.walletId(), userId)
                 .orElseThrow(() -> new EntityNotFoundException("Wallet not found"));
 
-        // Resolve groupId: use provided groupId, or auto-create BNPL group for EXPENSE on POSTPAID wallet
+        // Resolve groupId. For an EXPENSE on a POSTPAID (pay-later) wallet with no explicit group,
+        // accumulate into ONE consolidated BNPL debt per wallet — find the active (OPEN/PARTIAL)
+        // group or open a fresh one — instead of creating a separate debt per purchase.
         Long resolvedGroupId = req.groupId();
         if (resolvedGroupId == null && req.type().equals("EXPENSE") && wallet.getType().equals("POSTPAID")) {
-            // Auto-create a BNPL debt group for this expense
-            DebtGroup autoGroup = new DebtGroup();
-            autoGroup.setUserId(userId);
-            autoGroup.setWalletId(req.walletId());
-            autoGroup.setTitle(req.groupTitle() != null ? req.groupTitle() : "Mua trả sau");
-            autoGroup.setGroupType("BNPL");
-            autoGroup.setTotalAmount(req.amount());
-            autoGroup.setPaidAmount(BigDecimal.ZERO);
-            autoGroup.setCurrency("VND");
-            autoGroup.setStatus("OPEN");
-            if (req.groupDueDate() != null) {
-                autoGroup.setDueDate(DateParsing.parseFlexibleInstant(req.groupDueDate()));
-            }
-            if (req.groupCounterparty() != null) {
-                autoGroup.setCounterparty(req.groupCounterparty());
-            }
-            autoGroup = debtGroupRepo.save(autoGroup);
-            resolvedGroupId = autoGroup.getId();
+            DebtGroup group = debtGroupRepo
+                    .findFirstByUserIdAndWalletIdAndGroupTypeAndStatusInOrderByCreatedAtAsc(
+                            userId, req.walletId(), "BNPL", java.util.List.of("OPEN", "PARTIAL"))
+                    .orElseGet(() -> {
+                        DebtGroup g = new DebtGroup();
+                        g.setUserId(userId);
+                        g.setWalletId(req.walletId());
+                        g.setTitle(req.groupTitle() != null ? req.groupTitle() : "Trả sau");
+                        g.setGroupType("BNPL");
+                        g.setTotalAmount(BigDecimal.ZERO);
+                        g.setPaidAmount(BigDecimal.ZERO);
+                        g.setCurrency("VND");
+                        g.setStatus("OPEN");
+                        if (req.groupDueDate() != null) {
+                            g.setDueDate(DateParsing.parseFlexibleInstant(req.groupDueDate()));
+                        }
+                        if (req.groupCounterparty() != null) {
+                            g.setCounterparty(req.groupCounterparty());
+                        }
+                        return g;
+                    });
+            // Accumulate this purchase into the consolidated debt total.
+            group.setTotalAmount(group.getTotalAmount().add(req.amount()));
+            group = debtGroupRepo.save(group);
+            resolvedGroupId = group.getId();
         } else if (resolvedGroupId != null) {
             // Validate provided group belongs to user
             if (!debtGroupRepo.existsByIdAndUserId(resolvedGroupId, userId))

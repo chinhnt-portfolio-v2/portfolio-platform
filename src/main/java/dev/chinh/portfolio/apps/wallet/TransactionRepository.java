@@ -42,9 +42,14 @@ public interface TransactionRepository
            "WHERE t.userId = :userId AND t.type = 'EXPENSE' AND t.date >= :since")
     BigDecimal sumExpenseSince(@Param("userId") UUID userId, @Param("since") Instant since);
 
+    // Budget "spent" for a category in [from, to): counts normal expenses AND pay-later
+    // PRINCIPAL purchases (a buy counts at purchase time) but excludes repayment txns
+    // (PAYMENT/INTEREST/FINAL_PAYMENT) so settling a debt does not double-count.
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
            "WHERE t.userId = :userId AND t.type = 'EXPENSE' " +
-           "AND t.categoryId = :categoryId AND t.date >= :from AND t.date < :to")
+           "AND t.categoryId = :categoryId " +
+           "AND (t.txnType IS NULL OR t.txnType = 'PRINCIPAL') " +
+           "AND t.date >= :from AND t.date < :to")
     BigDecimal sumExpenseSince(@Param("userId") UUID userId,
                                @Param("categoryId") Long categoryId,
                                @Param("from") Instant from,
@@ -75,4 +80,17 @@ public interface TransactionRepository
                                        @Param("categoryIds") java.util.Set<Long> categoryIds,
                                        @Param("from") Instant from,
                                        @Param("to") Instant to);
+
+    /**
+     * Total expense per category in [from, to), grouped by category. Mirrors the budget policy:
+     * counts normal + PRINCIPAL buys, excludes repayment txns and uncategorized rows.
+     */
+    @Query("SELECT t.categoryId AS categoryId, COALESCE(SUM(t.amount), 0) AS total " +
+           "FROM Transaction t WHERE t.userId = :userId AND t.type = 'EXPENSE' " +
+           "AND (t.txnType IS NULL OR t.txnType = 'PRINCIPAL') AND t.categoryId IS NOT NULL " +
+           "AND t.date >= :from AND t.date < :to GROUP BY t.categoryId")
+    List<dev.chinh.portfolio.apps.wallet.dto.CategorySpendProjection> sumExpenseByCategory(
+            @Param("userId") UUID userId,
+            @Param("from") Instant from,
+            @Param("to") Instant to);
 }

@@ -25,6 +25,7 @@ public class TransactionController {
             @CurrentUser UUID userId,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) Long walletId,
+            @RequestParam(required = false) Long categoryId,
             @RequestParam(required = false) Long groupId,
             @RequestParam(required = false) String dateFrom,
             @RequestParam(required = false) String dateTo,
@@ -32,7 +33,7 @@ public class TransactionController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "20") int size) {
         return ResponseEntity.ok(transactionService.listTransactions(
-                userId, type, walletId, groupId, dateFrom, dateTo, search, page, size));
+                userId, type, walletId, categoryId, groupId, dateFrom, dateTo, search, page, size));
     }
 
     @GetMapping("/transactions/{id}")

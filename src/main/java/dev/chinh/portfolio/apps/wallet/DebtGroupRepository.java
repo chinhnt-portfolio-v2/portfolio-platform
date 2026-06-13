@@ -20,6 +20,13 @@ public interface DebtGroupRepository extends JpaRepository<DebtGroup, Long> {
 
     boolean existsByIdAndUserId(Long id, UUID userId);
 
+    /**
+     * The active (OPEN/PARTIAL) consolidated debt of a given type for a wallet, oldest first.
+     * Used to accumulate pay-later purchases into ONE BNPL debt per wallet instead of one per buy.
+     */
+    Optional<DebtGroup> findFirstByUserIdAndWalletIdAndGroupTypeAndStatusInOrderByCreatedAtAsc(
+            UUID userId, Long walletId, String groupType, List<String> statuses);
+
     @Query("SELECT COALESCE(SUM(d.totalAmount - d.paidAmount), 0) FROM DebtGroup d " +
            "WHERE d.userId = :userId AND d.status != 'SETTLED' AND d.groupType IN ('BNPL', 'DEBT', 'PURCHASE_CREDIT')")
     BigDecimal totalDebt(@Param("userId") UUID userId);
