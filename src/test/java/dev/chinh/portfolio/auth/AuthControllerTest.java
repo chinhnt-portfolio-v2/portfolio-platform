@@ -264,8 +264,10 @@ class AuthControllerTest {
                     .andExpect(jsonPath("$.refreshToken").value("new-refresh-token"))
                     .andExpect(jsonPath("$.tokenType").value("Bearer"));
 
-            // Verify old session was deleted (token rotation)
-            verify(sessionService).deleteSession(testUser.getId());
+            // Verify only the rotated session was deleted (per-session rotation),
+            // NOT all of the user's sessions — so other devices/clients survive.
+            verify(sessionService).deleteSession(oldSession);
+            verify(sessionService, never()).deleteSession(any(UUID.class));
         }
 
         @Test
