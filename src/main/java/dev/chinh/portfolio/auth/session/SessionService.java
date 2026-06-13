@@ -158,4 +158,16 @@ public class SessionService {
     public void deleteSession(UUID userId) {
         sessionRepository.deleteByUserId(userId);
     }
+
+    /**
+     * Delete a single session by identity (used for refresh-token rotation).
+     * Unlike {@link #deleteSession(UUID)}, this leaves the user's other sessions
+     * (e.g. web app vs MCP, or multiple devices) intact so they do not evict
+     * each other on refresh.
+     * @param session the session to delete
+     */
+    @Transactional
+    public void deleteSession(Session session) {
+        sessionRepository.deleteById(session.getId());
+    }
 }

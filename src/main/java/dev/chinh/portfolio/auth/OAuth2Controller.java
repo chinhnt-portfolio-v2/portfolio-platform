@@ -1,6 +1,7 @@
 package dev.chinh.portfolio.auth;
 
 import dev.chinh.portfolio.auth.jwt.JwtService;
+import dev.chinh.portfolio.auth.oauth2.RedirectUriValidator;
 import dev.chinh.portfolio.auth.session.Session;
 import dev.chinh.portfolio.auth.session.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,7 +16,6 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -28,20 +28,6 @@ public class OAuth2Controller {
 
     @Value("${app.frontend.url:https://wallet.chinhnt.xyz}")
     private String defaultFrontendUrl;
-
-    private static final Set<String> ALLOWED_REDIRECT_DOMAINS = Set.of(
-            "wallet.chinhnt.xyz",
-            "vault.chinhnt.xyz",
-            "ledger.chinhnt.xyz",
-            "codebin.chinhnt.xyz",
-            "portfolio.chinhnt.xyz",
-            "devquiz.chinhnt.xyz",
-            "quiz.chinhnt.xyz",
-            "chinh.dev",
-            "wallet.chinh.dev",
-            "localhost",
-            "walletapp://"
-    );
 
     public OAuth2Controller(
             ClientRegistrationRepository clientRegistrationRepository,
@@ -200,8 +186,7 @@ public class OAuth2Controller {
             String decoded = new String(Base64.getUrlDecoder().decode(state), StandardCharsets.UTF_8);
             int sepIndex = decoded.lastIndexOf(STATE_SEPARATOR);
             String url = sepIndex > 0 ? decoded.substring(0, sepIndex) : decoded;
-            boolean allowed = ALLOWED_REDIRECT_DOMAINS.stream().anyMatch(url::contains);
-            return allowed ? url : defaultFrontendUrl;
+            return RedirectUriValidator.isAllowed(url) ? url : defaultFrontendUrl;
         } catch (Exception e) {
             return defaultFrontendUrl;
         }

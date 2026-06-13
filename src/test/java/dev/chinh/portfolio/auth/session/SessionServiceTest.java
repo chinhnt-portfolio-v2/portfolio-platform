@@ -214,6 +214,33 @@ class SessionServiceTest {
         }
     }
 
+    @Nested
+    @DisplayName("deleteSession")
+    class DeleteSessionTests {
+
+        @Test
+        @DisplayName("deleteSession(Session) deletes only that session by id (rotation)")
+        void shouldDeleteSingleSessionById() {
+            Session session = createTestSession("token", false, Instant.now().plus(7, ChronoUnit.DAYS));
+
+            sessionService.deleteSession(session);
+
+            verify(sessionRepository).deleteById(session.getId());
+            verify(sessionRepository, never()).deleteByUserId(any());
+        }
+
+        @Test
+        @DisplayName("deleteSession(UUID) deletes all of the user's sessions (logout)")
+        void shouldDeleteAllByUserId() {
+            UUID userId = UUID.randomUUID();
+
+            sessionService.deleteSession(userId);
+
+            verify(sessionRepository).deleteByUserId(userId);
+            verify(sessionRepository, never()).deleteById(any(UUID.class));
+        }
+    }
+
     private User createTestUser() {
         try {
             var constructor = User.class.getDeclaredConstructor();

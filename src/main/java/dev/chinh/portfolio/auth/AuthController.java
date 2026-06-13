@@ -123,8 +123,9 @@ public class AuthController {
         // 2. Get userId from validated session
         UUID userId = session.getUserId();
 
-        // 3. Delete old session (token rotation)
-        sessionService.deleteSession(userId);
+        // 3. Delete only the rotated session (not all the user's sessions) so other
+        //    clients/devices (e.g. web app vs MCP) keep their independent sessions.
+        sessionService.deleteSession(session);
 
         // 4. Load user to generate new access token
         User user = userService.findById(userId)

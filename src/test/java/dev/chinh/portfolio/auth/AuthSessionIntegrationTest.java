@@ -107,6 +107,47 @@ class AuthSessionIntegrationTest {
         }
 
         @Test
+        @DisplayName("4.1b: Multi-session - refreshing one session must NOT invalidate the user's other sessions")
+        void shouldNotEvictOtherSessionsOnRefresh() throws Exception {
+            // Register one user
+            RegisterRequest registerRequest = new RegisterRequest(testEmail, testPassword);
+            mockMvc.perform(post("/api/v1/auth/register")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(registerRequest)))
+                    .andExpect(status().isCreated());
+
+            LoginRequest loginRequest = new LoginRequest(testEmail, testPassword);
+
+            // Two independent logins => two sessions (simulating web app + MCP / two devices)
+            MvcResult loginA = mockMvc.perform(post("/api/v1/auth/login")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(loginRequest)))
+                    .andExpect(status().isOk()).andReturn();
+            MvcResult loginB = mockMvc.perform(post("/api/v1/auth/login")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(loginRequest)))
+                    .andExpect(status().isOk()).andReturn();
+
+            String refreshA = extractJsonPath(loginA, "refreshToken");
+            String refreshB = extractJsonPath(loginB, "refreshToken");
+
+            // Refresh session A
+            mockMvc.perform(post("/api/v1/auth/refresh")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(new RefreshRequest(refreshA))))
+                    .andExpect(status().isOk());
+
+            // Session B must STILL be valid — under the old delete-all-by-userId behavior this
+            // would have been rotated away and returned 401.
+            mockMvc.perform(post("/api/v1/auth/refresh")
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(new RefreshRequest(refreshB))))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.accessToken").exists())
+                    .andExpect(jsonPath("$.refreshToken").exists());
+        }
+
+        @Test
         @DisplayName("4.1: Should return 401 for expired refresh token")
         void shouldReturn401ForExpiredToken() throws Exception {
             // Use a fake/expired token

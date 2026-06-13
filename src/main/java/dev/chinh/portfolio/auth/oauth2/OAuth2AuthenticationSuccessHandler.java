@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
-import java.util.Set;
 
 @Component
 public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -26,20 +25,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Value("${app.frontend.url:https://wallet.chinhnt.xyz}")
     private String defaultFrontendUrl;
-
-    private static final Set<String> ALLOWED_REDIRECT_DOMAINS = Set.of(
-            "wallet.chinhnt.xyz",
-            "vault.chinhnt.xyz",
-            "ledger.chinhnt.xyz",
-            "codebin.chinhnt.xyz",
-            "portfolio.chinhnt.xyz",
-            "devquiz.chinhnt.xyz",
-            "quiz.chinhnt.xyz",
-            "chinh.dev",
-            "wallet.chinh.dev",
-            "localhost",
-            "walletapp://"
-    );
 
     public OAuth2AuthenticationSuccessHandler(JwtService jwtService, SessionService sessionService) {
         this.jwtService = jwtService;
@@ -99,7 +84,6 @@ public class OAuth2AuthenticationSuccessHandler implements AuthenticationSuccess
     }
 
     private boolean validateRedirectUrl(String url) {
-        return url != null && ALLOWED_REDIRECT_DOMAINS.stream()
-                .anyMatch(url::contains);
+        return RedirectUriValidator.isAllowed(url);
     }
 }
