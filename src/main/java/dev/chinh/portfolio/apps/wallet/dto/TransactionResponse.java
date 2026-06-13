@@ -23,7 +23,7 @@ public record TransactionResponse(
 ) {
     public record WalletSummary(Long id, String name, String icon, String color, String type) {}
     public record CategorySummary(Long id, String name, String icon, String color) {}
-    public record GroupSummary(Long id, String title) {}
+    public record GroupSummary(Long id, String title, String groupType) {}
 
     /** Factory from JPA entity (uses FK IDs only — relations loaded separately) */
     public static TransactionResponse from(dev.chinh.portfolio.apps.wallet.Transaction t) {
