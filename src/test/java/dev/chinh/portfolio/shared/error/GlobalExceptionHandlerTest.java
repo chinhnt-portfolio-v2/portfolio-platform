@@ -115,4 +115,13 @@ class GlobalExceptionHandlerTest {
                 .andExpect(jsonPath("$.error.code").value("FORBIDDEN"))
                 .andExpect(jsonPath("$.error.message").value("Access denied: resource does not belong to user"));
     }
+
+    @Test
+    void dateTimeParseException_returns400WithInvalidDateCode() throws Exception {
+        mockMvc.perform(get("/test/bad-date"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.error.code").value("INVALID_DATE"))
+                .andExpect(jsonPath("$.error.message").isNotEmpty());
+    }
 }

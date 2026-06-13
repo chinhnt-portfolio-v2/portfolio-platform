@@ -36,5 +36,11 @@ class TestStubController {
         throw new ForbiddenException("Access denied: resource does not belong to user");
     }
 
+    @GetMapping("/bad-date")
+    public void throwDateParse() {
+        // Triggers java.time.format.DateTimeParseException directly (B4 path).
+        java.time.Instant.parse("not-a-date");
+    }
+
     record ValidatedRequest(@Email @NotBlank String email) {}
 }

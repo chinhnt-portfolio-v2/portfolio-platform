@@ -2,17 +2,17 @@ package dev.chinh.portfolio.apps.wallet.service;
 
 import dev.chinh.portfolio.apps.wallet.*;
 import dev.chinh.portfolio.apps.wallet.dto.*;
+import dev.chinh.portfolio.apps.wallet.util.DateParsing;
 import dev.chinh.portfolio.shared.error.EntityNotFoundException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,9 +37,37 @@ public class TransactionService {
         this.debtGroupRepo = debtGroupRepo;
     }
 
-    public List<TransactionResponse> listTransactions(UUID userId, String type, Long walletId, Long groupId, int page, int size) {
+    public List<TransactionResponse> listTransactions(UUID userId, String type, Long walletId,
+                                                      Long groupId, String dateFrom, String dateTo,
+                                                      String search, int page, int size) {
         var pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "date"));
-        var txs = txRepo.findByUserIdOrderByDateDesc(userId, pageable).getContent();
+        Instant from = (dateFrom != null && !dateFrom.isBlank()) ? DateParsing.parseFlexibleInstant(dateFrom) : null;
+        // Exclusive upper bound: date-only dateTo includes the full named day (start of next day).
+        Instant to = (dateTo != null && !dateTo.isBlank()) ? DateParsing.parseFlexibleEndExclusive(dateTo) : null;
+
+        // Dynamic predicates: only non-null filters reach SQL. A single JPQL with
+        // "(:param IS NULL OR ...)" guards breaks on Postgres null-parameter typing.
+        Specification<Transaction> spec = (root, q, cb) -> cb.equal(root.get("userId"), userId);
+        if (type != null && !type.isBlank())
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("type"), type));
+        if (walletId != null)
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("walletId"), walletId));
+        if (groupId != null)
+            spec = spec.and((root, q, cb) -> cb.equal(root.get("groupId"), groupId));
+        if (from != null) {
+            Instant f = from;
+            spec = spec.and((root, q, cb) -> cb.greaterThanOrEqualTo(root.get("date"), f));
+        }
+        if (to != null) {
+            Instant t = to;
+            spec = spec.and((root, q, cb) -> cb.lessThan(root.get("date"), t));
+        }
+        if (search != null && !search.isBlank()) {
+            String pattern = "%" + search.toLowerCase() + "%";
+            spec = spec.and((root, q, cb) -> cb.like(cb.lower(root.get("note")), pattern));
+        }
+
+        var txs = txRepo.findAll(spec, pageable).getContent();
         return txs.stream().map(this::toResponse).toList();
     }
 
@@ -63,12 +91,7 @@ public class TransactionService {
             autoGroup.setCurrency("VND");
             autoGroup.setStatus("OPEN");
             if (req.groupDueDate() != null) {
-                // Accepts both "2026-04-28" (date-only) and "2026-04-28T00:00:00Z" (ISO instant)
-                String raw = req.groupDueDate();
-                Instant dueDate = raw.contains("T")
-                        ? Instant.parse(raw)
-                        : java.time.LocalDate.parse(raw).atStartOfDay(java.time.ZoneOffset.UTC).toInstant();
-                autoGroup.setDueDate(dueDate);
+                autoGroup.setDueDate(DateParsing.parseFlexibleInstant(req.groupDueDate()));
             }
             if (req.groupCounterparty() != null) {
                 autoGroup.setCounterparty(req.groupCounterparty());
@@ -94,7 +117,7 @@ public class TransactionService {
         tx.setType(req.type());
         tx.setTxnType(txnType);
         tx.setNote(req.note());
-        tx.setDate(req.date() != null ? Instant.parse(req.date()) : Instant.now());
+        tx.setDate(req.date() != null ? DateParsing.parseFlexibleInstant(req.date()) : Instant.now());
 
         tx = txRepo.save(tx);
 
@@ -130,12 +153,52 @@ public class TransactionService {
 
     @Transactional
     public TransactionResponse updateTransaction(UUID userId, Long txId, CreateTransactionRequest req) {
-        // Simplified — full implementation would reverse old balance delta first
         Transaction tx = txRepo.findByIdAndUserId(txId, userId)
                 .orElseThrow(() -> new EntityNotFoundException("Transaction not found"));
-        if (req.amount() != null) tx.setAmount(req.amount());
+
+        // 1. Reverse the OLD delta on the OLD wallet so balances do not drift.
+        var oldWallet = walletRepo.findByIdAndUserId(tx.getWalletId(), userId)
+                .orElseThrow(() -> new EntityNotFoundException("Wallet not found"));
+        oldWallet.setBalance(balanceOf(oldWallet).subtract(signedDelta(tx.getType(), tx.getAmount())));
+
+        // 2. Resolve the NEW field values (fall back to existing where omitted).
+        Long newWalletId = req.walletId() != null ? req.walletId() : tx.getWalletId();
+        if (req.walletId() != null && !req.walletId().equals(tx.getWalletId())
+                && !walletRepo.findByIdAndUserId(req.walletId(), userId).isPresent()) {
+            throw new EntityNotFoundException("Wallet not found");
+        }
+        BigDecimal newAmount = req.amount() != null ? req.amount() : tx.getAmount();
+        String newType = req.type() != null && !req.type().isBlank() ? req.type() : tx.getType();
+
+        tx.setWalletId(newWalletId);
+        tx.setAmount(newAmount);
+        tx.setType(newType);
+        if (req.categoryId() != null) tx.setCategoryId(req.categoryId());
         if (req.note() != null) tx.setNote(req.note());
+        if (req.date() != null) tx.setDate(DateParsing.parseFlexibleInstant(req.date()));
+
+        // 3. Apply the NEW delta to the NEW wallet, then persist both wallets.
+        Wallet targetWallet = newWalletId.equals(oldWallet.getId())
+                ? oldWallet
+                : walletRepo.findByIdAndUserId(newWalletId, userId)
+                        .orElseThrow(() -> new EntityNotFoundException("Wallet not found"));
+        if (targetWallet != oldWallet) {
+            walletRepo.save(oldWallet); // persist reversal on old wallet
+        }
+        targetWallet.setBalance(balanceOf(targetWallet).add(signedDelta(newType, newAmount)));
+        walletRepo.save(targetWallet);
+
         return toResponse(txRepo.save(tx));
+    }
+
+    /** Wallet balance treated as ZERO when null. */
+    private static BigDecimal balanceOf(Wallet wallet) {
+        return wallet.getBalance() != null ? wallet.getBalance() : BigDecimal.ZERO;
+    }
+
+    /** Signed effect of a transaction on a wallet balance: +amount for INCOME, -amount otherwise. */
+    private static BigDecimal signedDelta(String type, BigDecimal amount) {
+        return "INCOME".equals(type) ? amount : amount.negate();
     }
 
     @Transactional

@@ -14,7 +14,7 @@ public interface DebtGroupRepository extends JpaRepository<DebtGroup, Long> {
 
     List<DebtGroup> findByUserIdOrderByCreatedAtDesc(UUID userId);
 
-    List<DebtGroup> findByUserIdAndStatusOrderByCreatedAtDesc(UUID userId, String status);
+    List<DebtGroup> findByUserIdAndStatusInOrderByCreatedAtDesc(UUID userId, List<String> statuses);
 
     Optional<DebtGroup> findByIdAndUserId(Long id, UUID userId);
 

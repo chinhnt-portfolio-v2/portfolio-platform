@@ -13,7 +13,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface TransactionRepository extends JpaRepository<Transaction, Long> {
+public interface TransactionRepository
+        extends JpaRepository<Transaction, Long>,
+                org.springframework.data.jpa.repository.JpaSpecificationExecutor<Transaction> {
 
     Page<Transaction> findByUserIdOrderByDateDesc(UUID userId, Pageable pageable);
 
@@ -26,6 +28,11 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
     List<Transaction> findByGroupIdOrderByDateAsc(Long groupId);
 
     Optional<Transaction> findByIdAndUserId(Long id, UUID userId);
+
+    // Filtered listing uses JpaSpecificationExecutor.findAll(spec, pageable) — see
+    // TransactionService.listTransactions. A single JPQL with "(:param IS NULL OR ...)"
+    // guards fails on Postgres ("could not determine data type of parameter"), so
+    // predicates are added dynamically only for non-null filters.
 
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM Transaction t " +
            "WHERE t.userId = :userId AND t.type = 'INCOME' AND t.date >= :since")

@@ -75,6 +75,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(new ErrorDetail("BAD_REQUEST", ex.getMessage())));
     }
 
+    @ExceptionHandler(java.time.format.DateTimeParseException.class)
+    public ResponseEntity<ErrorResponse> handleDateTimeParse(java.time.format.DateTimeParseException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(new ErrorDetail("INVALID_DATE",
+                        "Invalid date format: " + ex.getParsedString())));
+    }
+
     @ExceptionHandler(RateLimitExceededException.class)
     public ResponseEntity<ErrorResponse> handleRateLimitExceeded(RateLimitExceededException ex) {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)

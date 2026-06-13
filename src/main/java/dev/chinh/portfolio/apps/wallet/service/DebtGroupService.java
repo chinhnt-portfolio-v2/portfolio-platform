@@ -2,6 +2,7 @@ package dev.chinh.portfolio.apps.wallet.service;
 
 import dev.chinh.portfolio.apps.wallet.*;
 import dev.chinh.portfolio.apps.wallet.dto.*;
+import dev.chinh.portfolio.apps.wallet.util.DateParsing;
 import dev.chinh.portfolio.shared.error.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +29,13 @@ public class DebtGroupService {
     public List<DebtGroupResponse> listGroups(UUID userId, String status) {
         List<DebtGroup> groups;
         if (status != null && !status.isEmpty()) {
-            groups = debtGroupRepo.findByUserIdAndStatusOrderByCreatedAtDesc(userId, status);
+            // Accepts comma-separated values ("OPEN,PARTIAL") — exact-string matching
+            // returned [] for multi-status queries from the dashboard widget.
+            List<String> statuses = java.util.Arrays.stream(status.split(","))
+                    .map(String::trim)
+                    .filter(s -> !s.isEmpty())
+                    .toList();
+            groups = debtGroupRepo.findByUserIdAndStatusInOrderByCreatedAtDesc(userId, statuses);
         } else {
             groups = debtGroupRepo.findByUserIdOrderByCreatedAtDesc(userId);
         }
@@ -51,7 +58,7 @@ public class DebtGroupService {
         g.setTotalAmount(BigDecimal.valueOf(req.totalAmount()));
         g.setCurrency("VND");
         g.setStatus("OPEN");
-        if (req.dueDate() != null) g.setDueDate(Instant.parse(req.dueDate()));
+        if (req.dueDate() != null) g.setDueDate(DateParsing.parseFlexibleInstant(req.dueDate()));
         if (req.interestRate() != null) g.setInterestRate(BigDecimal.valueOf(req.interestRate()));
         g.setCounterparty(req.counterparty());
         g = debtGroupRepo.save(g);
@@ -68,8 +75,9 @@ public class DebtGroupService {
 
         BigDecimal amount = req.amount();
 
-        // Deduct from wallet
-        wallet.setBalance(wallet.getBalance().subtract(amount));
+        // Deduct from wallet (null-safe: treat a null balance as ZERO)
+        BigDecimal currentBalance = wallet.getBalance() != null ? wallet.getBalance() : BigDecimal.ZERO;
+        wallet.setBalance(currentBalance.subtract(amount));
         walletRepo.save(wallet);
 
         // Create payment transaction

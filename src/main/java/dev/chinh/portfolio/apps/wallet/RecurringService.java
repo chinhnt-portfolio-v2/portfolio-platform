@@ -17,6 +17,7 @@ public class RecurringService {
         this.repository = repository;
     }
 
+    @Transactional(readOnly = true)
     public List<RecurringRuleResponse> getAll(UUID userId) {
         List<RecurringRule> rules = repository.findByUserIdAndStatusNot(userId, "CANCELLED");
         List<RecurringRuleResponse> result = new ArrayList<>();
@@ -123,7 +124,7 @@ public class RecurringService {
         );
     }
 
-    private static LocalDate computeNext(LocalDate from, String frequency) {
+    static LocalDate computeNext(LocalDate from, String frequency) {
         LocalDate today = LocalDate.now();
         LocalDate next = from;
         while (!next.isAfter(today)) {
@@ -132,7 +133,8 @@ public class RecurringService {
                 case "WEEKLY"  -> next.plusWeeks(1);
                 case "MONTHLY" -> next.plusMonths(1);
                 case "YEARLY"  -> next.plusYears(1);
-                default -> next;
+                // Guard: unknown frequency would never advance "next" → infinite loop.
+                default -> throw new IllegalArgumentException("Unknown recurring frequency: " + frequency);
             };
         }
         return next;
