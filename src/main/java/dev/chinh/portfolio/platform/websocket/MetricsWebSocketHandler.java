@@ -66,6 +66,15 @@ public class MetricsWebSocketHandler extends TextWebSocketHandler {
         log.debug("WebSocket disconnected: {}", session.getId());
     }
 
+    /**
+     * Whether any dashboard client is currently connected.
+     * Used by the scheduled health poll to skip DB writes when nobody is
+     * watching, allowing the database to autosuspend (scale to zero).
+     */
+    public boolean hasActiveSessions() {
+        return !sessions.isEmpty();
+    }
+
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         // One-way: BE → FE only. Incoming messages are ignored.

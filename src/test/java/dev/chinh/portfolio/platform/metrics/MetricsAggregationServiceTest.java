@@ -1,6 +1,7 @@
 package dev.chinh.portfolio.platform.metrics;
 
 import dev.chinh.portfolio.platform.metrics.ProjectHealthUpdatedEvent;
+import dev.chinh.portfolio.platform.websocket.MetricsWebSocketHandler;
 import dev.chinh.portfolio.platform.websocket.RefreshMetricsEvent;
 import dev.chinh.portfolio.shared.config.DemoAppRegistry;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,6 +47,8 @@ class MetricsAggregationServiceTest {
     private MetricsMapper mapper;
     @Mock
     private ApplicationEventPublisher eventPublisher;
+    @Mock
+    private MetricsWebSocketHandler webSocketHandler;
 
     @InjectMocks
     private MetricsAggregationService service;
@@ -278,6 +281,38 @@ class MetricsAggregationServiceTest {
         verify(demoAppRegistry, times(2)).getApps();
         verify(repository, times(0)).findByProjectSlug(anyString());
         verify(repository, times(0)).save(any());
+    }
+
+    // ======= DB autosuspend: gate scheduled poll on active WS clients =======
+
+    /**
+     * When no dashboard client is connected, the scheduled poll must NOT touch the
+     * database, so the DB can idle and autosuspend (scale to zero).
+     */
+    @Test
+    void scheduledPoll_noActiveClients_skipsPollingEntirely() {
+        when(webSocketHandler.hasActiveSessions()).thenReturn(false);
+
+        service.scheduledPoll();
+
+        verify(demoAppRegistry, times(0)).getApps();
+        verify(repository, times(0)).save(any());
+    }
+
+    /**
+     * When a dashboard client is connected, the scheduled poll runs as before.
+     */
+    @Test
+    void scheduledPoll_withActiveClients_pollsApps() {
+        when(webSocketHandler.hasActiveSessions()).thenReturn(true);
+        when(demoAppRegistry.getApps()).thenReturn(List.of(walletApp));
+        when(repository.findByProjectSlug(anyString())).thenReturn(Optional.empty());
+        stubRestClientSuccessAnyUri();
+        when(repository.save(any(ProjectHealth.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        service.scheduledPoll();
+
+        verify(repository, times(1)).save(any(ProjectHealth.class));
     }
 
     // ======= Story 6.4.2: Showcase.yml config-driven polling =======

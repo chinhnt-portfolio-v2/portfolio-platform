@@ -1,5 +1,6 @@
 package dev.chinh.portfolio.platform.metrics;
 
+import dev.chinh.portfolio.platform.websocket.MetricsWebSocketHandler;
 import dev.chinh.portfolio.platform.websocket.RefreshMetricsEvent;
 import dev.chinh.portfolio.shared.config.DemoAppRegistry;
 import org.slf4j.Logger;
@@ -23,20 +24,37 @@ public class MetricsAggregationService {
     private final RestClient restClient;
     private final MetricsMapper mapper;
     private final ApplicationEventPublisher eventPublisher;
+    private final MetricsWebSocketHandler webSocketHandler;
 
     public MetricsAggregationService(ProjectHealthRepository repository,
                                      DemoAppRegistry demoAppRegistry,
                                      RestClient restClient,
                                      MetricsMapper mapper,
-                                     ApplicationEventPublisher eventPublisher) {
+                                     ApplicationEventPublisher eventPublisher,
+                                     MetricsWebSocketHandler webSocketHandler) {
         this.repository = repository;
         this.demoAppRegistry = demoAppRegistry;
         this.restClient = restClient;
         this.mapper = mapper;
         this.eventPublisher = eventPublisher;
+        this.webSocketHandler = webSocketHandler;
     }
 
+    /**
+     * Scheduled health poll. Runs every 60s but skips entirely when no dashboard
+     * client is connected, so the database receives no writes while idle and can
+     * autosuspend (scale to zero). When a client connects, {@link #onRefreshRequest}
+     * triggers an immediate poll, so data is never stale for an active viewer.
+     */
     @Scheduled(fixedDelay = 60_000)
+    public void scheduledPoll() {
+        if (!webSocketHandler.hasActiveSessions()) {
+            log.debug("No active WebSocket clients — skipping scheduled poll to allow DB autosuspend");
+            return;
+        }
+        pollAll();
+    }
+
     public void pollAll() {
         log.debug("Starting health metrics poll for {} apps", demoAppRegistry.getApps().size());
         for (DemoAppRegistry.DemoApp app : demoAppRegistry.getApps()) {

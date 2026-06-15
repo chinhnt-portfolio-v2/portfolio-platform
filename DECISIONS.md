@@ -118,10 +118,12 @@ apps:
 
 ### Polling Behavior
 
-- `MetricsAggregationService.pollAll()` runs every 60 seconds (`@Scheduled(fixedDelay = 60000)`)
-- It iterates over `registry.getApps()` — if the config has 0 apps, nothing is polled
+- `MetricsAggregationService.scheduledPoll()` runs every 60 seconds (`@Scheduled(fixedDelay = 60000)`)
+- **Gated on active WebSocket clients**: if no dashboard client is connected (`MetricsWebSocketHandler.hasActiveSessions()` is false), the tick skips entirely and performs **no DB writes**. This lets the database autosuspend (scale to zero) while nobody is watching — critical for serverless Postgres (Neon) cost. When a client connects, `onRefreshRequest` triggers an immediate poll so data is never stale for an active viewer.
+- When clients are connected, `pollAll()` iterates over `registry.getApps()` — if the config has 0 apps, nothing is polled
 - Each app's `/health` endpoint is called via `RestClient`
 - Results are stored in `ProjectHealth` table and broadcast via WebSocket to FE clients
+- `CodeBinService.cleanupExpired()` runs daily at 03:00 (not hourly) for the same idle-DB reason
 
 ### Testing
 
