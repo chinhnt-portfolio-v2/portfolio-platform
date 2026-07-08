@@ -75,8 +75,17 @@ public class DebtGroupService {
 
         BigDecimal amount = req.amount();
 
+        // Validate before any mutation — @Transactional keeps the whole settle atomic.
+        // Reject over-payment (no clamp) and insufficient funds; error messages mirror the
+        // codes surfaced to the client (→ 400 BAD_REQUEST via GlobalExceptionHandler).
+        if (amount.compareTo(g.getRemaining()) > 0) {
+            throw new IllegalArgumentException("amount_exceeds_remaining");
+        }
         // Deduct from wallet (null-safe: treat a null balance as ZERO)
         BigDecimal currentBalance = wallet.getBalance() != null ? wallet.getBalance() : BigDecimal.ZERO;
+        if (currentBalance.compareTo(amount) < 0) {
+            throw new IllegalArgumentException("insufficient_balance");
+        }
         wallet.setBalance(currentBalance.subtract(amount));
         walletRepo.save(wallet);
 
