@@ -16,7 +16,11 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
  * with correct constraints (FK, UNIQUE).
  *
  * Requires Docker to be running for Testcontainers.
+ *
+ * DISABLED: Postgres-only — superseded by Turso/SQLite migration (Phase 3/4).
+ * Flyway is disabled; schema applied out-of-band via V1__init_schema.sql.
  */
+@org.junit.jupiter.api.Disabled("Postgres-only — superseded by Turso migration")
 @SpringBootTest
 @Import(TestcontainersConfiguration.class)
 class FlywayMigrationTest {

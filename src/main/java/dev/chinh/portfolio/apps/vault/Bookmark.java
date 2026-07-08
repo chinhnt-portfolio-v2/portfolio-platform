@@ -1,9 +1,13 @@
 package dev.chinh.portfolio.apps.vault;
 
+import dev.chinh.portfolio.shared.converter.StringListConverter;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+
 import java.time.Instant;
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -15,6 +19,7 @@ public class Bookmark {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID userId;
 
     @Column(name = "folder_id")
@@ -35,9 +40,9 @@ public class Bookmark {
     @Column(columnDefinition = "TEXT")
     private String thumbnail;
 
-    @JdbcTypeCode(SqlTypes.ARRAY)
-    @Column(columnDefinition = "TEXT[]")
-    private String[] tags = {};
+    @Convert(converter = StringListConverter.class)
+    @Column(columnDefinition = "TEXT")
+    private List<String> tags = Collections.emptyList();
 
     @Column(name = "is_archived")
     private Boolean isArchived = false;
@@ -81,8 +86,8 @@ public class Bookmark {
     public void setFavicon(String favicon) { this.favicon = favicon; }
     public String getThumbnail() { return thumbnail; }
     public void setThumbnail(String thumbnail) { this.thumbnail = thumbnail; }
-    public String[] getTags() { return tags; }
-    public void setTags(String[] tags) { this.tags = tags; }
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> tags) { this.tags = tags != null ? tags : Collections.emptyList(); }
     public Boolean getIsArchived() { return isArchived; }
     public void setIsArchived(Boolean isArchived) { this.isArchived = isArchived; }
     public Boolean getIsFavorite() { return isFavorite; }

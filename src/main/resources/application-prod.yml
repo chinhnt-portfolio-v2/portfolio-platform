@@ -19,24 +19,25 @@ spring:
     import: optional:classpath:showcase.yml
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    # SQLite file on a persistent Fly volume (mounted at /data). xerial driver.
+    url: jdbc:sqlite:${SQLITE_DB_PATH:/data/portfolio.db}?journal_mode=WAL&busy_timeout=5000&foreign_keys=true
+    driver-class-name: org.sqlite.JDBC
     hikari:
-      # Neon free tier connection limit is 3 concurrent connections
       maximum-pool-size: 3
       minimum-idle: 1
       connection-timeout: 30000
-      idle-timeout: 600000
-      keepalive-time: 30000  # Prevent Neon from closing idle connections on wake
-      max-lifetime: 1800000  # 30 minutes - refresh connections before they expire
 
+  # Flyway owns schema; applies V1__init_schema.sql on a fresh volume file at boot.
   flyway:
-    out-of-order: true
-    validate-on-migrate: false               # Disable checksum validation — V6/V7 checksums mismatch due to BOM history
-    placeholder-replacement: false          # Disable — SQL text may contain ${...} sequences (e.g. Spring banner-mode docs)
+    enabled: true
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    baseline-version: 0
 
   jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
     show-sql: false  # Never log SQL in production
     properties:
       hibernate:

@@ -108,7 +108,7 @@ public class CodeBinService {
     @Scheduled(cron = "0 0 3 * * *") // daily at 03:00 — keeps DB idle so it can autosuspend
     @Transactional
     public void cleanupExpired() {
-        pasteRepo.deleteExpired();
+        pasteRepo.deleteExpired(java.time.Instant.now());
     }
 
     // ── Helpers ─────────────────────────────────────────────

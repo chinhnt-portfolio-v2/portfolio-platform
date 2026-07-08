@@ -85,7 +85,7 @@ public class VaultService {
         b.setDescription(req.description());
         b.setFavicon(req.favicon() != null ? req.favicon() : deriveFavicon(req.url()));
         b.setFolderId(req.folderId());
-        b.setTags(req.tags() != null ? req.tags().toArray(new String[0]) : new String[]{});
+        b.setTags(req.tags() != null ? req.tags() : java.util.Collections.emptyList());
         return BookmarkResponse.from(bookmarkRepo.save(b));
     }
 
@@ -98,7 +98,7 @@ public class VaultService {
         if (req.description() != null) b.setDescription(req.description());
         if (req.favicon() != null) b.setFavicon(req.favicon());
         if (req.folderId() != null) b.setFolderId(req.folderId());
-        if (req.tags() != null) b.setTags(req.tags().toArray(new String[0]));
+        if (req.tags() != null) b.setTags(req.tags());
         return BookmarkResponse.from(bookmarkRepo.save(b));
     }
 

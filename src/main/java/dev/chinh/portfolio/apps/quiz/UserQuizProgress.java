@@ -1,6 +1,9 @@
 package dev.chinh.portfolio.apps.quiz;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
@@ -12,6 +15,7 @@ public class UserQuizProgress {
 
     @Id
     @Column(name = "user_id", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID userId;
 
     @Id

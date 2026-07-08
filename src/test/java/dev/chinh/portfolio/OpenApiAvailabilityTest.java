@@ -14,7 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * Verifies that the OpenAPI spec is accessible (AC#3 of Story 2.3).
  * Requires Docker Desktop running — Testcontainers starts a PostgreSQL container.
+ *
+ * DISABLED: Postgres-only — superseded by Turso/SQLite migration (Phase 3/4).
  */
+@org.junit.jupiter.api.Disabled("Postgres-only — superseded by Turso migration")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Import(TestcontainersConfiguration.class)
 class OpenApiAvailabilityTest {

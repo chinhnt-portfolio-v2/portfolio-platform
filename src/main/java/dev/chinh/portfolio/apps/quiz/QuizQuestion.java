@@ -23,7 +23,7 @@ public class QuizQuestion {
     @Column(name = "question_type", nullable = false, length = 20)
     private String questionType = "MULTIPLE_CHOICE"; // MULTIPLE_CHOICE | TRUE_FALSE | MULTIPLE_ANSWER
 
-    @Column(columnDefinition = "jsonb")
+    @Column(columnDefinition = "TEXT")
     private String options; // JSON array: [{"id":"a","text":"..."}]
 
     @Column(name = "correct_key", nullable = false, length = 20)

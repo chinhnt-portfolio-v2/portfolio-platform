@@ -30,7 +30,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Integration tests for AuthController - Session Refresh & Logout (Story 5.4)
  * Uses Testcontainers for PostgreSQL.
  * Requires Docker to be running.
+ *
+ * DISABLED: Postgres-only — superseded by Turso/SQLite migration (Phase 3/4).
  */
+@org.junit.jupiter.api.Disabled("Postgres-only — superseded by Turso migration")
 @SpringBootTest
 @AutoConfigureMockMvc
 @Import(TestcontainersConfiguration.class)

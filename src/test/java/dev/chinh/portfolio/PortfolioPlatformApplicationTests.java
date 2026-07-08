@@ -14,7 +14,10 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * context (including JPA + Flyway) can be validated without an external database.
  *
  * <p>Requires Docker to be running. Docker Desktop or Colima works.
+ *
+ * DISABLED: Postgres-only — superseded by Turso/SQLite migration (Phase 3/4).
  */
+@org.junit.jupiter.api.Disabled("Postgres-only — superseded by Turso migration")
 @SpringBootTest
 @Testcontainers
 class PortfolioPlatformApplicationTests {

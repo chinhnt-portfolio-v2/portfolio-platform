@@ -1,6 +1,9 @@
 package dev.chinh.portfolio.apps.ledger;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -15,6 +18,7 @@ public class LedgerEntry {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID userId;
 
     @Column(name = "wallet_id", nullable = false)

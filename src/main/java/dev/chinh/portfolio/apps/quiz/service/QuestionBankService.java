@@ -161,25 +161,20 @@ public class QuestionBankService {
 
         int saved = 0;
         for (JsonNode qNode : questionsNode) {
-            String levelTag = qNode.has("levelTag") ? qNode.get("levelTag").asText() : "JUNIOR";
-            String questionText = escapeString(qNode.has("questionText") ? qNode.get("questionText").asText() : "");
-            String questionType = qNode.has("questionType") ? qNode.get("questionType").asText() : "MULTIPLE_CHOICE";
-            String options = "null";
+            QuizQuestion q = new QuizQuestion();
+            q.setTopicSlug(topicSlug);
+            q.setLang(lang);
+            q.setLevelTag(qNode.has("levelTag") ? qNode.get("levelTag").asText() : "JUNIOR");
+            q.setQuestionText(qNode.has("questionText") ? qNode.get("questionText").asText() : "");
+            q.setQuestionType(qNode.has("questionType") ? qNode.get("questionType").asText() : "MULTIPLE_CHOICE");
             if (qNode.has("options")) {
-                options = "'" + escapeString(objectMapper.writeValueAsString(mapJsonOptions(qNode.get("options")))) + "'";
+                q.setOptions(objectMapper.writeValueAsString(mapJsonOptions(qNode.get("options"))));
             }
-            String correctKey = escapeString(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
-            String explanation = qNode.has("explanation")
-                    ? "'" + escapeString(qNode.get("explanation").asText()) + "'"
-                    : "null";
-
-            String sql = String.format(
-                    "INSERT INTO quiz_questions (id, topic_slug, level_tag, question_text, " +
-                    "question_type, options, correct_key, explanation, lang, created_at, updated_at) " +
-                    "VALUES (nextval('quiz_questions_id_seq'), '%s', '%s', '%s', '%s', %s, '%s', %s, '%s', NOW(), NOW())",
-                    topicSlug, levelTag, questionText, questionType, options, correctKey, explanation, lang);
-
-            entityManager.createNativeQuery(sql).executeUpdate();
+            q.setCorrectKey(qNode.has("correctKey") ? qNode.get("correctKey").asText() : "");
+            if (qNode.has("explanation")) {
+                q.setExplanation(qNode.get("explanation").asText());
+            }
+            entityManager.persist(q);
             saved++;
             if (saved % 50 == 0) {
                 entityManager.flush();
@@ -198,10 +193,6 @@ public class QuestionBankService {
                     o.has("text") ? o.get("text").asText() : ""));
         }
         return opts;
-    }
-
-    private String escapeString(String s) {
-        return s.replace("'", "''");
     }
 
     public SeedStatus getSeedStatus() {

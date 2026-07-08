@@ -8,13 +8,18 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: validate  # Flyway owns schema — Hibernate must NEVER create or modify tables
+      ddl-auto: none      # Turso/SQLite: schema applied out-of-band; Hibernate validate is too strict on SQLite affinity
     open-in-view: false   # Prevent lazy-loading anti-pattern in REST layer
+    database-platform: org.hibernate.community.dialect.SQLiteDialect
 
+  # Flyway owns the schema again (xerial SQLite IS Flyway-detectable, unlike the libSQL HTTP driver).
+  # On a fresh DB file (e.g. a new Fly volume) Flyway applies the consolidated baseline
+  # db/migration/V1__init_schema.sql automatically on boot.
   flyway:
+    enabled: true
     locations: classpath:db/migration
-    baseline-on-migrate: false  # Fresh database — no baseline needed
-    placeholder-replacement: false  # Disable — SQL text may contain ${...} sequences (e.g. Spring banner-mode docs)
+    baseline-on-migrate: true
+    baseline-version: 0
 
   cache:
     type: caffeine
@@ -50,12 +55,14 @@ spring:
       on-profile: local
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/portfolio_v2_local
-    username: ${DB_USERNAME:postgres}   # default for local dev only
-    password: ${DB_PASSWORD:postgres}   # default for local dev only
+    # Local dev: xerial SQLite driver on a local file. Build the file from
+    # db/migration/V1__init_schema.sql (+ optional Neon data) via the migration tooling.
+    url: jdbc:sqlite:${SQLITE_DB_PATH:./data/portfolio_local.db}
+    driver-class-name: org.sqlite.JDBC
     hikari:
-      maximum-pool-size: 5
+      maximum-pool-size: 1          # SQLite file allows a single writer — avoid "database is locked"
       connection-timeout: 30000
+      connection-init-sql: "PRAGMA foreign_keys=ON"  # SQLite enforces FKs per-connection only
 
   jpa:
     show-sql: false  # set to true temporarily if debugging queries locally
@@ -111,15 +118,15 @@ spring:
       on-profile: prod
 
   datasource:
-    url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
-    password: ${SPRING_DATASOURCE_PASSWORD}
+    # SQLite file on a persistent Fly volume (mounted at /data). xerial driver — full
+    # interactive-transaction support (Turso cloud over JDBC cannot do this with Hibernate).
+    # WAL = concurrent readers; busy_timeout = wait out the single-writer lock; FK enforced.
+    url: jdbc:sqlite:${SQLITE_DB_PATH:/data/portfolio.db}?journal_mode=WAL&busy_timeout=5000&foreign_keys=true
+    driver-class-name: org.sqlite.JDBC
     hikari:
-      maximum-pool-size: 3        # Neon free tier connection limit — keep pool small
+      maximum-pool-size: 3        # SQLite WAL: many readers + one writer; keep modest
       minimum-idle: 1
       connection-timeout: 30000
-      idle-timeout: 600000
-      keepalive-time: 30000       # Prevent Neon from closing idle connections on wake
 
 server:
   # Cloud Run terminates TLS and forwards requests with X-Forwarded-* headers.
@@ -145,12 +152,16 @@ spring:
       on-profile: dev
 
   datasource:
+    # Turso (libSQL) dev database. Same driver as prod.
     url: ${SPRING_DATASOURCE_URL}
-    username: ${SPRING_DATASOURCE_USERNAME}
+    username: ${SPRING_DATASOURCE_USERNAME:}
     password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.dbeaver.jdbc.driver.libsql.LibSqlDriver
     hikari:
       maximum-pool-size: 5
       connection-timeout: 30000
+      connection-test-query: "SELECT 1"
+      connection-init-sql: "PRAGMA foreign_keys=ON"
 
   jpa:
     show-sql: false

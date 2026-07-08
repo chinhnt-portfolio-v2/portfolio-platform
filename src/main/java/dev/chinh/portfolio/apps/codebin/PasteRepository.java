@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,6 +26,6 @@ public interface PasteRepository extends JpaRepository<Paste, Long> {
     void incrementViewCount(@Param("id") Long id);
 
     @Modifying
-    @Query("DELETE FROM Paste p WHERE p.expiresAt IS NOT NULL AND p.expiresAt < CURRENT_TIMESTAMP")
-    void deleteExpired();
+    @Query("DELETE FROM Paste p WHERE p.expiresAt IS NOT NULL AND p.expiresAt < :now")
+    void deleteExpired(@Param("now") Instant now);
 }

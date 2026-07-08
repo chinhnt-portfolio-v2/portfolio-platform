@@ -59,6 +59,40 @@ dev.chinh.portfolio/
 
 ## Database
 
+> **2026-06-24 — Migrated Neon PostgreSQL → SQLite (file on a Fly volume).** Reason: Neon free-tier
+> compute quota exhaustion caused a production outage. Engine is now plain SQLite.
+>
+> **Why NOT Turso cloud:** Turso cloud is only reachable over HTTP/WebSocket. The only JDBC driver
+> (DBeaver libSQL) speaks HTTP, and Turso's HTTP protocol does **not** support interactive
+> transactions — which Hibernate/JPA require for every write (`setAutoCommit(false)` → BEGIN →
+> COMMIT). `wss://` is rejected by the driver (`MalformedURLException: unknown protocol: wss`).
+> So Turso-cloud + Hibernate-over-JDBC is fundamentally incompatible. Since nothing in this stack
+> queries the DB directly (wallet-mcp / mobile / FE all go through the REST API), a single SQLite
+> file gives identical functionality with full transaction support. The decisions below supersede
+> the original Postgres setup.
+
+- Engine: **SQLite file** on a Fly persistent volume (`portfolio_data` mounted at `/data`,
+  prod URL `jdbc:sqlite:/data/portfolio.db?journal_mode=WAL&busy_timeout=5000&foreign_keys=true`).
+  Driver: xerial `org.xerial:sqlite-jdbc` (`org.sqlite.JDBC`) for BOTH local and prod.
+- Hibernate dialect: `org.hibernate.community.dialect.SQLiteDialect` (hibernate-community-dialects).
+- Hibernate `ddl-auto: none` — SQLite affinity makes `validate` too strict (false startup failures).
+- **Flyway OWNS the schema** (xerial SQLite is Flyway-detectable). A single consolidated baseline
+  `src/main/resources/db/migration/V1__init_schema.sql` (23 tables + 17 triggers) is applied on the
+  fresh volume file at first boot. The 18 original PostgreSQL migrations are archived under
+  `src/main/resources/db/migration-pg-archive/`.
+- HikariCP: pool-size small (1 local / 3 prod); WAL mode allows concurrent readers + one writer.
+- Unused leftovers from the Turso attempt (safe to remove later): the DBeaver libSQL JDBC dep in
+  pom.xml, the Turso cloud DB `portfolio-platform` (kept as a possible backup/sync target), and
+  `migration-tooling/push-sqlite-to-turso.mjs`.
+- Type mapping contract (Hibernate↔SQLite): UUID PK/FK → TEXT 36-char string
+  (`@GeneratedValue(strategy=UUID)` + `@JdbcTypeCode(SqlTypes.VARCHAR)`); timestamps → ISO-8601 UTC
+  TEXT via `InstantStringConverter(autoApply=true)`; boolean → INTEGER 0/1; JSONB/array → TEXT via
+  Jackson `AttributeConverter`; DECIMAL → NUMERIC affinity; INET → TEXT.
+- Data migration tooling: `migration-tooling/dump-neon-to-sqlite.mjs` (Neon → local SQLite, type
+  transform) + `push-sqlite-to-turso.mjs` (local SQLite → Turso, schema + batched data).
+
+### Original Flyway/Postgres setup (historical — pre-2026-06-23)
+
 - Migration tool: Flyway (not Liquibase) — SQL-native, zero config with Spring Boot
 - Migration location: `src/main/resources/db/migration/`
 - Naming: `V{n}__{description}.sql` (double underscore mandatory)

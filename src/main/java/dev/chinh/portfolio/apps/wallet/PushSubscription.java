@@ -1,6 +1,9 @@
 package dev.chinh.portfolio.apps.wallet;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.Instant;
 import java.util.UUID;
 
@@ -12,6 +15,7 @@ public class PushSubscription {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID userId;
     private String endpoint;
     private String p256dh;

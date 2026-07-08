@@ -1,11 +1,9 @@
 package dev.chinh.portfolio.platform.admin;
 
-import dev.chinh.portfolio.auth.user.User;
-import dev.chinh.portfolio.auth.user.UserRole;
 import jakarta.persistence.*;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -15,6 +13,7 @@ public class AnalyticsEvent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
     @Column(name = "event_type", nullable = false, length = 50)

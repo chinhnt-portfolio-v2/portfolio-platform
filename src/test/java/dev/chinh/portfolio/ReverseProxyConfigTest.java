@@ -22,7 +22,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * {@link ForwardedHeaderFilter} so Nginx-proxied requests have scheme/host/IP correctly resolved.
  *
  * <p>Requires Docker Desktop running — Testcontainers starts a PostgreSQL container.
+ *
+ * DISABLED: Postgres-only — superseded by Turso/SQLite migration (Phase 3/4).
  */
+@org.junit.jupiter.api.Disabled("Postgres-only — superseded by Turso migration")
 @SpringBootTest(
         webEnvironment = SpringBootTest.WebEnvironment.MOCK,
         properties = {

@@ -7,6 +7,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -17,6 +19,7 @@ public class ContactSubmission {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID id;
 
     @Column(name = "email", nullable = false, length = 255)
@@ -29,10 +32,10 @@ public class ContactSubmission {
     private String referralSource;  // nullable; value of ?from= query param
 
     /**
-     * PostgreSQL INET type mapped as String.
+     * IP address stored as plain TEXT (was INET in PostgreSQL).
      * NEVER expose this field in any DTO or API response.
      */
-    @Column(name = "ip_address", nullable = false, columnDefinition = "inet")
+    @Column(name = "ip_address", nullable = false)
     private String ipAddress;
 
     @Column(name = "submitted_at", nullable = false, updatable = false)

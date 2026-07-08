@@ -1,5 +1,6 @@
 package dev.chinh.portfolio.apps.wallet;
 
+import dev.chinh.portfolio.shared.converter.JsonAttributeConverter;
 import jakarta.persistence.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -18,6 +19,7 @@ public class DebtGroup {
     private Long id;
 
     @Column(name = "user_id", nullable = false)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private UUID userId;
 
     @Column(name = "wallet_id")
@@ -50,8 +52,8 @@ public class DebtGroup {
     @Column(length = 255)
     private String counterparty;
 
-    @JdbcTypeCode(SqlTypes.JSON)
-    @Column(columnDefinition = "jsonb")
+    @Convert(converter = JsonAttributeConverter.class)
+    @Column(columnDefinition = "TEXT")
     private Map<String, Object> notes;
 
     @Column(name = "created_at", nullable = false, updatable = false)
