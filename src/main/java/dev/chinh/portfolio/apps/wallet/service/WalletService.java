@@ -161,13 +161,14 @@ public class WalletService {
                 .toInstant();
 
         // Fetch raw rows — let Java do the year-month grouping.
-        // Exclude inter-wallet transfer legs so they don't inflate monthly income/expense.
+        // Exclude non-spend/non-income legs so they don't inflate monthly income/expense:
+        // inter-wallet transfers (TRANSFER_OUT/IN) and balance reconciliations (ADJUSTMENT).
         // txn_type is nullable — most manual/legacy txns are NULL, so the clause must be
         // NULL-safe (`NOT IN` alone would silently drop NULL rows via SQL 3-valued logic).
         List<Object[]> rows = em.createQuery(
                 "SELECT t.date, t.type, t.amount FROM Transaction t " +
                 "WHERE t.userId = :uid AND t.date >= :since " +
-                "AND (t.txnType IS NULL OR t.txnType NOT IN ('TRANSFER_OUT', 'TRANSFER_IN')) " +
+                "AND (t.txnType IS NULL OR t.txnType NOT IN ('TRANSFER_OUT', 'TRANSFER_IN', 'ADJUSTMENT')) " +
                 "ORDER BY t.date DESC",
                 Object[].class)
                 .setParameter("uid", userId)
